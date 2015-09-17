@@ -6,6 +6,9 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
+import ch.hsr.servicestoolkit.importer.ImportEndpoint;
+import ch.hsr.servicestoolkit.importer.ImportTransformer;
+
 @SpringBootApplication
 public class EngineServiceAppication extends SpringBootServletInitializer {
 
@@ -16,7 +19,7 @@ public class EngineServiceAppication extends SpringBootServletInitializer {
 
 	@Bean
 	ResourceConfig configureJersey() {
-		ResourceConfig result = new ResourceConfig(Endpoint.class, ObjectMapperContextResolver.class);
+		ResourceConfig result = new ResourceConfig(Endpoint.class, ImportEndpoint.class, ObjectMapperContextResolver.class);
 		return result;
 	}
 

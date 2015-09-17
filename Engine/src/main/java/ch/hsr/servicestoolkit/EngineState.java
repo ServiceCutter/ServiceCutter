@@ -3,6 +3,9 @@ package ch.hsr.servicestoolkit;
 public class EngineState {
 	private String description;
 
+	public EngineState() {
+	}
+
 	public EngineState(String description) {
 		this.setDescription(description);
 	}

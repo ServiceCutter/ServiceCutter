@@ -27,8 +27,9 @@ public class Endpoint {
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void startProcessing(String[] entities) {
+	public String startProcessing(String[] entities) {
 		log.info("started process, consumed {} entities: {}", entities.length, Arrays.toString(entities));
+		return "started!";
 	}
 
 }

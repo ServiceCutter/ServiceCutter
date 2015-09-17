@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit;
+package ch.hsr.servicestoolkit.model;
 
 public class EngineState {
 	private String description;

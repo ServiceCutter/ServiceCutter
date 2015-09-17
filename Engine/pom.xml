@@ -10,6 +10,10 @@
 	<artifactId>Engine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+
 	<!-- Add typical dependencies for a web application -->
 	<dependencies>
 		<dependency>
@@ -34,6 +38,58 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.sebastian-daschner</groupId>
+				<artifactId>jaxrs-analyzer-maven-plugin</artifactId>
+				<version>0.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>analyze-jaxrs</goal>
+						</goals>
+						<configuration>
+							<backend>swagger</backend>
+							<deployedDomain>localhost</deployedDomain>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.sebastian-daschner
+										</groupId>
+										<artifactId>
+											jaxrs-analyzer-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.5,)
+										</versionRange>
+										<goals>
+											<goal>analyze-jaxrs</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>

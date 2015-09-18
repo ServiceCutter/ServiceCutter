@@ -1,0 +1,5 @@
+engine:
+  image: services-toolkit/engine
+#  build: Engine/docker
+  ports:
+   - "40000:8080"

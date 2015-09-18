@@ -1,0 +1,141 @@
+{
+  "entities": [
+    {
+      "name": "Reservation",
+      "attributes": [
+        {
+          "name": "reserviertAm"
+        },
+        {
+          "name": "status"
+        }
+      ]
+    },
+    {
+      "name": "Kunde",
+      "attributes": [
+        {
+          "name": "name"
+        },
+        {
+          "name": "adresse"
+        }
+      ]
+    },
+    {
+      "name": "VideoTitel",
+      "attributes": [
+        {
+          "name": "titel"
+        },
+        {
+          "name": "preisProTag"
+        }
+      ]
+    },
+    {
+      "name": "Ausleihposition",
+      "attributes": [
+        {
+          "name": "zurueckAm"
+        },
+        {
+          "name": "barcode"
+        }
+      ]
+    },
+    {
+      "name": "Ausleihe",
+      "attributes": [
+        {
+          "name": "ausgeliehenAm"
+        },
+        {
+          "name": "abgerechnetAm"
+        }
+      ]
+    },
+    {
+      "name": "Bezahlung",
+      "attributes": [
+        
+      ]
+    },
+    {
+      "name": "Kreditkartenzahlung",
+      "attributes": [
+        {
+          "name": "kartenID"
+        },
+        {
+          "name": "gueltigBis"
+        },
+        {
+          "name": "kaution"
+        },
+        {
+          "name": "erstelltAm"
+        }
+      ]
+    },
+    {
+      "name": "DVD",
+      "attributes": [
+        
+      ]
+    },
+    {
+      "name": "Barzahlung",
+      "attributes": [
+        
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "origin": "Kreditkartenzahlung",
+      "destination": "Bezahlung",
+      "type": "INHERITANCE"
+    },
+    {
+      "origin": "Barzahlung",
+      "destination": "Bezahlung",
+      "type": "INHERITANCE"
+    },
+    {
+      "origin": "Ausleihe",
+      "destination": "Bezahlung",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "Ausleihe",
+      "destination": "Ausleihposition",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "Ausleihposition",
+      "destination": "DVD",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "DVD",
+      "destination": "VideoTitel",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Reservation",
+      "destination": "VideoTitel",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Kunde",
+      "destination": "Reservation",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Kunde",
+      "destination": "Ausleihe",
+      "type": "AGGREGATION"
+    }
+  ]
+}

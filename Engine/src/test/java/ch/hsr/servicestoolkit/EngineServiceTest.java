@@ -3,6 +3,7 @@ package ch.hsr.servicestoolkit;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +25,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import ch.hsr.servicestoolkit.model.EngineState;
+import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.ModelEntity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -48,19 +51,40 @@ public class EngineServiceTest {
 	}
 
 	@Test
-	public void startProcessing() {
-		String[] sampleData = new String[] {"foo", "bar"};
-		HttpEntity<String[]> request = createJsonHttpRequest(sampleData);
+	public void createEmptyModel() {
+		HttpEntity<String[]> request = createJsonProvidingHttpRequest(null);
 		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine", HttpMethod.PUT, request, String.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		assertEquals("started!", entity.getBody());
 	}
 
-	private HttpEntity<String[]> createJsonHttpRequest(String[] sampleData) {
+	@Test
+	public void createModelWithEntities() {
+		int before = countModels();
+		//
+		Model model = new Model();
+		model.getEntities().add(new ModelEntity());
+		HttpEntity<Model> request = createJsonProvidingHttpRequest(model);
+		// create a model
+		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine", HttpMethod.PUT, request, String.class);
+		assertEquals(HttpStatus.OK, entity.getStatusCode());
+		assertEquals("started!", entity.getBody());
+		// test whether created model is visible
+		assertEquals(before + 1, countModels());
+	}
+
+	private int countModels() {
+		@SuppressWarnings("rawtypes")
+		ResponseEntity<List> response = restTemplate.getForEntity("http://localhost:" + this.port + "/engine/models", List.class);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		int models = response.getBody().size();
+		return models;
+	}
+
+	private <T> HttpEntity<T> createJsonProvidingHttpRequest(T model) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String[]> request = new HttpEntity<String[]>(sampleData, headers);
-		return request;
+		return new HttpEntity<T>(model, headers);
 	}
 
 }

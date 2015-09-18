@@ -7,11 +7,12 @@
 		<version>1.2.5.RELEASE</version>
 	</parent>
 	<groupId>ch.hsr.servicestoolkit</groupId>
-	<artifactId>Engine</artifactId>
+	<artifactId>engine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
 		<java.version>1.8</java.version>
+		<docker.image.prefix>services-toolkit</docker.image.prefix>
 	</properties>
 
 	<!-- Add typical dependencies for a web application -->
@@ -33,6 +34,20 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-hibernate4</artifactId>
+			<version>2.6.2</version>
 		</dependency>
 	</dependencies>
 
@@ -59,6 +74,22 @@
 					</execution>
 				</executions>
 			</plugin>
+        		<plugin>
+        			<groupId>com.spotify</groupId>
+        			<artifactId>docker-maven-plugin</artifactId>
+            			<version>0.2.3</version>
+            			<configuration>
+                			<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                			<dockerDirectory>docker</dockerDirectory>
+                			<resources>
+                    				<resource>
+                        				<targetPath>/</targetPath>
+                        				<directory>${project.build.directory}</directory>
+                        				<include>${project.build.finalName}.jar</include>
+                    				</resource>
+                			</resources>
+            			</configuration>
+        		</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

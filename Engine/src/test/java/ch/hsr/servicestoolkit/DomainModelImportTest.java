@@ -45,37 +45,37 @@ public class DomainModelImportTest {
 
 	@Before
 	public void setUp() {
-		restTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter()));
+		restTemplate.setMessageConverters(
+				Arrays.asList(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter()));
 	}
 
 	@Test
 	public void modelImport() throws IOException, URISyntaxException {
 		DomainModel input = readDomainModelFromFile("test_domain_model.json");
 
-		HttpEntity<DomainModel> request = createJsonHttpRequest(input);
-		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.PUT, request, String.class);
-		
+		HttpEntity<DomainModel> request = createJsonHttpEntityFromObject(input);
+		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import",
+				HttpMethod.PUT, request, String.class);
+
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
-		// model 1319051726 has been created 
+		// model 1319051726 has been created
 		assertTrue(entity.getBody().startsWith("model "));
 	}
 
-	private DomainModel readDomainModelFromFile(String file) throws URISyntaxException, UnsupportedEncodingException, IOException {
+	private DomainModel readDomainModelFromFile(String file)
+			throws URISyntaxException, UnsupportedEncodingException, IOException {
 		URL url = this.getClass().getClassLoader().getResource(file);
-        Path resPath = java.nio.file.Paths.get(url.toURI());
-        String input = new String(java.nio.file.Files.readAllBytes(resPath), Charset.defaultCharset().name());
-        ObjectMapper mapper = new ObjectMapperContextResolver().getContext(null);
-        DomainModel domainModel = mapper.readValue(input, DomainModel.class);
+		Path resPath = java.nio.file.Paths.get(url.toURI());
+		String input = new String(java.nio.file.Files.readAllBytes(resPath), Charset.defaultCharset().name());
+		ObjectMapper mapper = new ObjectMapperContextResolver().getContext(null);
+		DomainModel domainModel = mapper.readValue(input, DomainModel.class);
 		return domainModel;
 	}
 
-	private HttpEntity<DomainModel> createJsonHttpRequest(DomainModel domainModel) {
+	private <T> HttpEntity<T> createJsonHttpEntityFromObject(T obj) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<DomainModel> request = new HttpEntity<>(domainModel, headers);
-		
-		return request;
+		return new HttpEntity<T>(obj, headers);
 	}
 
-	
 }

@@ -16,24 +16,31 @@ public class Model {
 	@Id
 	@GeneratedValue
 	private Long id;
+
+	private String name;
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "model")
-	private List<ModelEntity> entities = new ArrayList<>();
+	private List<DataField> dataFields = new ArrayList<DataField>();
 
-	public List<ModelEntity> getEntities() {
-		return entities;
+	public List<DataField> getDataFields() {
+		return dataFields;
 	}
 
-	public void setEntities(List<ModelEntity> entities) {
-		this.entities = entities;
+	public void setDataFields(List<DataField> dataFields) {
+		this.dataFields = dataFields;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

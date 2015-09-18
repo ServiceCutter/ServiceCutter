@@ -1,6 +1,7 @@
 The services toolkit consists of the following components:
 
 * Engine - the REST API (Spring Boot, Jersey)
+* Editor - a Web App to Edit the model (JHipster)
 
 ## Docker
 

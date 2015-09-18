@@ -3,6 +3,7 @@ package ch.hsr.servicestoolkit.importer;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -20,11 +21,12 @@ public class ImportEndpoint {
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public String importDomainModel(DomainModel model) {
-		for(EntityRelation r :model.getRelations()){
-			System.out.println(r.getOrigin().getName() + " - "+ r.getDestination());
+		for (EntityRelation r : model.getRelations()) {
+			System.out.println(r.getOrigin().getName() + " - " + r.getDestination());
 		}
-		return "model "+model.hashCode() +" has been created";
+		return "model " + model.hashCode() + " has been created";
 	}
 
 }

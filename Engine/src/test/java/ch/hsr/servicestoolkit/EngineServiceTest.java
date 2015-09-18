@@ -45,7 +45,7 @@ public class EngineServiceTest {
 
 	@Test
 	public void statusCheck() {
-		ResponseEntity<EngineState> entity = this.restTemplate.getForEntity("http://localhost:" + this.port + "/engine", EngineState.class);
+		ResponseEntity<EngineState> entity = restTemplate.getForEntity("http://localhost:" + this.port + "/engine", EngineState.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		assertEquals("Engine is up and running.", entity.getBody().getDescription());
 	}
@@ -53,7 +53,7 @@ public class EngineServiceTest {
 	@Test
 	public void createEmptyModel() {
 		HttpEntity<String[]> request = createJsonProvidingHttpRequest(null);
-		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine", HttpMethod.PUT, request, String.class);
+		ResponseEntity<String> entity = restTemplate.exchange("http://localhost:" + this.port + "/engine", HttpMethod.PUT, request, String.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		assertEquals("started!", entity.getBody());
 	}
@@ -66,7 +66,7 @@ public class EngineServiceTest {
 		model.getEntities().add(new ModelEntity());
 		HttpEntity<Model> request = createJsonProvidingHttpRequest(model);
 		// create a model
-		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine", HttpMethod.PUT, request, String.class);
+		ResponseEntity<String> entity = restTemplate.exchange("http://localhost:" + this.port + "/engine", HttpMethod.PUT, request, String.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		assertEquals("started!", entity.getBody());
 		// test whether created model is visible

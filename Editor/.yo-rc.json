@@ -1,0 +1,21 @@
+{
+  "generator-jhipster": {
+    "baseName": "editor",
+    "packageName": "ch.hsr.servicestoolkit.editor",
+    "packageFolder": "ch/hsr/servicestoolkit/editor",
+    "authenticationType": "session",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "no",
+    "websocket": "spring-websocket",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": "no",
+    "useSass": true,
+    "buildTool": "maven",
+    "frontendBuilder": "grunt",
+    "javaVersion": "8",
+    "enableTranslation": false,
+    "rememberMeKey": "4af236f585750c12ea6878ba281cedb21d7ad1ec"
+  }
+}

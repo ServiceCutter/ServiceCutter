@@ -1,3 +1,8 @@
+editor:
+  image: services-toolkit/editor
+  ports:
+   - "40001:8080"
+
 engine:
   image: services-toolkit/engine
 #  build: Engine/docker

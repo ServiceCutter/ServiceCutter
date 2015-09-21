@@ -1,7 +1,21 @@
+db:
+  image: postgres:9.4
+  restart: always
+  expose:
+    - 5432
+  environment:
+    POSTGRES_USER: "editor"
+    POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
+
 editor:
   image: services-toolkit/editor
   ports:
    - "40001:8080"
+  links:
+    - db
+  environment:
+    POSTGRES_USER: "editor"
+    POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
 
 engine:
   image: services-toolkit/engine

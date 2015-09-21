@@ -8,6 +8,8 @@ endpoints.jolokia.enabled: false
 # security configuration (this key should be unique for your application, and kept secret)
 jhipster.security.rememberme.key: 4af236f585750c12ea6878ba281cedb21d7ad1ec
 
+application.links.engine: http://localhost:8090
+
 async:
     corePoolSize: 2
     maxPoolSize: 50
@@ -30,8 +32,8 @@ spring:
             enabled: false
 
 swagger:
-    title: editor API
-    description: editor applications and beyond!
+    title: Editor API
+    description: 
     version: 0.0.1
     termsOfServiceUrl: http://jhipster.github.io/
     contact:

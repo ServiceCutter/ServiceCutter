@@ -17,7 +17,7 @@ angular.module('editorApp')
             if (file && !file.$error) {
             	$scope.status = 'uploading';
 				Upload.upload({
-					url: 'editor/upload',
+					url: 'api/editor/upload',
 					file: file,
 					progress: function(e){}
 				}).then(function(data, status, headers, config) {

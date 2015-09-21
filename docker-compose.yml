@@ -13,6 +13,7 @@ editor:
    - "40001:8080"
   links:
     - db
+    - engine
   environment:
     POSTGRES_USER: "editor"
     POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
@@ -20,5 +21,7 @@ editor:
 engine:
   image: services-toolkit/engine
 #  build: Engine/docker
+  expose:
+   - 8080
   ports:
    - "40000:8080"

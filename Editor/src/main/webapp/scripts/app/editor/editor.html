@@ -27,6 +27,12 @@
 				
 				<p>Name: <strong>{{model.name}}</strong></p>
 				
+				<p>Entities:</p>
+				
+				<ul>
+					<li ng-repeat="entity in model.entities">#{{entity.id}} - {{entity.name}}</li>
+				</ul>
+				
 				<p>Data Fields:</p>
 				
 				<ul>

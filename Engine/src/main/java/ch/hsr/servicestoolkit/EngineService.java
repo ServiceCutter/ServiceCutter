@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
@@ -38,8 +40,7 @@ public class EngineService {
 	private CouplingCriterionRepository couplingCriterionRepository;
 
 	@Autowired
-	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository,
-			CouplingCriterionRepository couplingCriterionRepository) {
+	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository, CouplingCriterionRepository couplingCriterionRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
@@ -74,12 +75,15 @@ public class EngineService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/models/{id}/couplingcriteria")
 	@Transactional
-	public Set<CouplingCriterion> getCouplingCriteria(@PathParam("id") Long id) {
+	public Set<CouplingCriterion> getCouplingCriteria(@PathParam("id") Long id, @QueryParam("type") String type) {
 		Set<CouplingCriterion> result = new HashSet<>();
 		Model model = modelRepository.findOne(id);
+		CriterionType sameEntitiy = StringUtils.hasText(type) ? CriterionType.valueOf(type) : null;
 		for (DataField dataField : model.getDataFields()) {
 			for (CouplingCriterion qa : dataField.getCouplingCriteria()) {
-				result.add(qa);
+				if (sameEntitiy == null || sameEntitiy.equals(qa.getCriterionType())) {
+					result.add(qa);
+				}
 			}
 		}
 		log.debug("return criteria for model {}: {}", model.getName(), result.toString());
@@ -98,8 +102,7 @@ public class EngineService {
 			for (DataField inputDataField : inputCriterion.getDataFields()) {
 				DataField dbDataField = findDbDataField(model.getDataFields(), inputDataField.getName());
 				if (dbDataField == null) {
-					throw new IllegalArgumentException(
-							"referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
+					throw new IllegalArgumentException("referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
 				}
 				mappedСriterion.getDataFields().add(dbDataField);
 				mappedСriterion.setCriterionType(inputCriterion.getCriterionType());

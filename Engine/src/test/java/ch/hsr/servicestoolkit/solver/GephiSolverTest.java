@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.QualityAttribute;
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SolverConfiguration.class })
@@ -73,17 +73,17 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field1"));
 		model.addDataField(createDataField("field2"));
 
-		addQualityAttributeToAllFields(model, CriterionType.COMPOSITION_ENTITY);
+		addCriterionToAllFields(model, CriterionType.COMPOSITION_ENTITY);
 
 		model.addDataField(createDataField("field3"));
 
-		addQualityAttributeToAllFields(model, CriterionType.SAME_ENTITIY);
+		addCriterionToAllFields(model, CriterionType.SAME_ENTITIY);
 
 		model.addDataField(createDataField("field4"));
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
 
-		addQualityAttributeToAllFields(model, CriterionType.AGGREGATED_ENTITY);
+		addCriterionToAllFields(model, CriterionType.AGGREGATED_ENTITY);
 
 		model.addDataField(createDataField("field7"));
 		model.addDataField(createDataField("field8"));
@@ -98,14 +98,14 @@ public class GephiSolverTest {
 		assertEquals(3, result.get(0).getDataFields().size());
 	}
 
-	private void addQualityAttributeToAllFields(Model model, CriterionType compositionEntity) {
-		QualityAttribute attribute = new QualityAttribute();
-		attribute.setDataFields(model.getDataFields());
-		attribute.setCriterionType(compositionEntity);
-		attribute.setId(idGenerator.incrementAndGet());
+	private void addCriterionToAllFields(Model model, CriterionType compositionEntity) {
+		CouplingCriterion criterion = new CouplingCriterion();
+		criterion.setDataFields(model.getDataFields());
+		criterion.setCriterionType(compositionEntity);
+		criterion.setId(idGenerator.incrementAndGet());
 
 		for (DataField dataField : model.getDataFields()) {
-			dataField.addQualityAttributes(attribute);
+			dataField.addCouplingCriterion(criterion);
 		}
 	}
 

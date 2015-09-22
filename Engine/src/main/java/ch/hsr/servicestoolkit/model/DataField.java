@@ -17,16 +17,16 @@ public class DataField {
 	private String name;
 
 	@ManyToMany(mappedBy = "dataFields")
-	private List<QualityAttribute> qualityAttributes = new ArrayList<>();
+	private List<CouplingCriterion> couplingCriteria = new ArrayList<>();
 
-	public List<QualityAttribute> getQualityAttributes() {
-		return qualityAttributes;
+	public List<CouplingCriterion> getCouplingCriteria() {
+		return couplingCriteria;
 	}
 
-	public void setQualityAttributes(List<QualityAttribute> qualityAttributes) {
-		this.qualityAttributes.clear();
-		if (qualityAttributes != null) {
-			this.qualityAttributes.addAll(qualityAttributes);
+	public void setCouplingCriteria(List<CouplingCriterion> couplingCriteria) {
+		this.couplingCriteria.clear();
+		if (couplingCriteria != null) {
+			this.couplingCriteria.addAll(couplingCriteria);
 		}
 	}
 
@@ -46,8 +46,8 @@ public class DataField {
 		this.id = id;
 	}
 
-	public void addQualityAttributes(QualityAttribute attribute) {
-		this.qualityAttributes.add(attribute);
+	public void addCouplingCriterion(CouplingCriterion criterion) {
+		this.couplingCriteria.add(criterion);
 	}
 
 }

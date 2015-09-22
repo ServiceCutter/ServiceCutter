@@ -26,9 +26,9 @@ public class SolverConfiguration {
 
 	}
 
-	public Double getWeightForQualityAttribute(CriterionType criterionType) {
+	public Double getWeightForCouplingCriterion(CriterionType criterionType) {
 		if (!weights.containsKey(criterionType)) {
-			log.error("no weight defined for qualityAttr: " + criterionType + ". Use 0");
+			log.error("no weight defined for coupling criterion: " + criterionType + ". Use 0");
 			return 0d;
 		}
 		return weights.get(criterionType);

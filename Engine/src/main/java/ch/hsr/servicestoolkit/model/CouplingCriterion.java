@@ -13,7 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 @Entity
-public class QualityAttribute {
+public class CouplingCriterion {
 
 	@Id
 	@GeneratedValue
@@ -23,9 +23,9 @@ public class QualityAttribute {
 	private CriterionType criterionType;
 
 	@ManyToMany
-	@JoinTable(name = "datafield_to_qualityattribute", joinColumns = {
+	@JoinTable(name = "datafield_to_couplingcriterion", joinColumns = {
 			@JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "qualityattr_id", referencedColumnName = "id") })
+					@JoinColumn(name = "criterion_id", referencedColumnName = "id") })
 	private List<DataField> dataFields = new ArrayList<>();
 
 	public List<DataField> getDataFields() {
@@ -72,7 +72,7 @@ public class QualityAttribute {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		QualityAttribute other = (QualityAttribute) obj;
+		CouplingCriterion other = (CouplingCriterion) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

@@ -20,7 +20,7 @@ public class SolverConfigurationTest {
 	@Test
 	public void testEmptyConfig() {
 		SolverConfiguration config = new SolverConfiguration();
-		assertEquals(new Double(0d), config.getWeightForQualityAttribute(CriterionType.SAME_ENTITIY));
+		assertEquals(new Double(0d), config.getWeightForCouplingCriterion(CriterionType.SAME_ENTITIY));
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class SolverConfigurationTest {
 		weights.put(CriterionType.SAME_ENTITIY, 2.4d);
 		SolverConfiguration config = new SolverConfiguration();
 		config.setWeights(weights);
-		assertEquals(new Double(2.4d), config.getWeightForQualityAttribute(CriterionType.SAME_ENTITIY));
+		assertEquals(new Double(2.4d), config.getWeightForCouplingCriterion(CriterionType.SAME_ENTITIY));
 	}
 
 }

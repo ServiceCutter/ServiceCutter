@@ -28,11 +28,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.QualityAttribute;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -82,44 +82,44 @@ public class EngineServiceRestTest {
 	}
 
 	@Test
-	public void addQualityAttributesToExistingModel() {
+	public void addCriterionToExistingModel() {
 		Long modelId = createModelOnApi();
 
-		List<QualityAttribute> input = createQualityAttributes();
+		List<CouplingCriterion> input = createCouplingCriteria();
 
-		HttpEntity<List<QualityAttribute>> request = createJsonProvidingHttpRequest(input);
-		// write quality attributes
+		HttpEntity<List<CouplingCriterion>> request = createJsonProvidingHttpRequest(input);
+		// write criteria
 		ResponseEntity<String> entity = this.restTemplate.exchange(
-				"http://localhost:" + this.port + "/engine/models/" + modelId + "/qualityattributes", HttpMethod.PUT,
+				"http://localhost:" + this.port + "/engine/models/" + modelId + "/couplingcriteria", HttpMethod.PUT,
 				request, String.class);
 		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
 
-		// read written quality attributes
-		ResponseEntity<Set<QualityAttribute>> assertResult = this.restTemplate.exchange(
-				"http://localhost:" + this.port + "/engine/models/" + modelId + "/qualityattributes", HttpMethod.GET,
-				createEmptyHttpRequest(), new ParameterizedTypeReference<Set<QualityAttribute>>() {
+		// read written criteria
+		ResponseEntity<Set<CouplingCriterion>> assertResult = this.restTemplate.exchange(
+				"http://localhost:" + this.port + "/engine/models/" + modelId + "/couplingcriteria", HttpMethod.GET,
+				createEmptyHttpRequest(), new ParameterizedTypeReference<Set<CouplingCriterion>>() {
 				});
 		assertEquals(1, assertResult.getBody().size());
-		for (QualityAttribute attr : assertResult.getBody()) {
-			assertNotNull(attr.getCriterionType());
-			assertNotNull(attr.getId());
+		for (CouplingCriterion criterion : assertResult.getBody()) {
+			assertNotNull(criterion.getCriterionType());
+			assertNotNull(criterion.getId());
 		}
 
 	}
 
-	private List<QualityAttribute> createQualityAttributes() {
-		QualityAttribute attr1 = new QualityAttribute();
-		attr1.setCriterionType(CriterionType.AGGREGATED_ENTITY);
+	private List<CouplingCriterion> createCouplingCriteria() {
+		CouplingCriterion criterion = new CouplingCriterion();
+		criterion.setCriterionType(CriterionType.AGGREGATED_ENTITY);
 		DataField dataField = new DataField();
 		dataField.setName("firstField");
 		DataField dataField2 = new DataField();
 		dataField2.setName("secondField");
 
-		attr1.getDataFields().add(dataField);
-		attr1.getDataFields().add(dataField2);
+		criterion.getDataFields().add(dataField);
+		criterion.getDataFields().add(dataField2);
 
-		List<QualityAttribute> input = new ArrayList<>();
-		input.add(attr1);
+		List<CouplingCriterion> input = new ArrayList<>();
+		input.add(criterion);
 		return input;
 	}
 

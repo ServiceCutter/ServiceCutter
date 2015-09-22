@@ -30,9 +30,9 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.QualityAttribute;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 
 public class GephiSolver implements Solver {
@@ -54,7 +54,7 @@ public class GephiSolver implements Solver {
 		}
 		this.model = model;
 		this.config = config;
-		if (findQualityAttributes().isEmpty()) {
+		if (findCouplingCriteria().isEmpty()) {
 			throw new InvalidParameterException(
 					"model needs at least 1 coupling criterion in order for gephi clusterer to work");
 		}
@@ -112,27 +112,27 @@ public class GephiSolver implements Solver {
 		return result;
 	}
 
-	private Set<QualityAttribute> findQualityAttributes() {
-		Set<QualityAttribute> qualityAttributes = new HashSet<>();
-		// TODO refactor model of field and qualityAttributes
+	private Set<CouplingCriterion> findCouplingCriteria() {
+		Set<CouplingCriterion> couplingCriteria = new HashSet<>();
+		// TODO refactor model of field and criteria
 		for (DataField field : model.getDataFields()) {
-			for (QualityAttribute attr : field.getQualityAttributes()) {
-				if (!qualityAttributes.contains(attr)) {
-					qualityAttributes.add(attr);
+			for (CouplingCriterion criterion : field.getCouplingCriteria()) {
+				if (!couplingCriteria.contains(criterion)) {
+					couplingCriteria.add(criterion);
 				}
 			}
 		}
-		return qualityAttributes;
+		return couplingCriteria;
 	}
 
 	private void buildEdges() {
-		for (QualityAttribute attr : findQualityAttributes()) {
+		for (CouplingCriterion criterion : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
-			for (int i = 0; i < attr.getDataFields().size(); i++) {
-				for (int j = i + 1; j < attr.getDataFields().size(); j++) {
-					Node nodeA = getNodeByAttr(attr.getDataFields().get(i));
-					Node nodeB = getNodeByAttr(attr.getDataFields().get(j));
-					float weight = config.getWeightForQualityAttribute(attr.getCriterionType()).floatValue();
+			for (int i = 0; i < criterion.getDataFields().size(); i++) {
+				for (int j = i + 1; j < criterion.getDataFields().size(); j++) {
+					Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
+					Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
+					float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
 					Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
 					if (existingEdge != null) {
 						log.debug("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
@@ -147,7 +147,7 @@ public class GephiSolver implements Solver {
 		}
 	}
 
-	private Node getNodeByAttr(DataField dataField) {
+	private Node getNodeByDataField(DataField dataField) {
 		return nodes.get(dataField.getName());
 	}
 

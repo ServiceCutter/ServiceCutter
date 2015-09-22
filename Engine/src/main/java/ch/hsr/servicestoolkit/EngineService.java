@@ -19,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.QualityAttribute;
+import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
-import ch.hsr.servicestoolkit.repository.QualityAttributeRepository;
 import jersey.repackaged.com.google.common.collect.Lists;
 
 @Component
@@ -35,14 +35,14 @@ public class EngineService {
 	private Logger log = LoggerFactory.getLogger(EngineService.class);
 	private ModelRepository modelRepository;
 	private DataFieldRepository dataRepository;
-	private QualityAttributeRepository qualityAttrRepository;
+	private CouplingCriterionRepository couplingCriterionRepository;
 
 	@Autowired
 	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository,
-			QualityAttributeRepository qualityAttrRepository) {
+			CouplingCriterionRepository couplingCriterionRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
-		this.qualityAttrRepository = qualityAttrRepository;
+		this.couplingCriterionRepository = couplingCriterionRepository;
 	}
 
 	@GET
@@ -72,41 +72,41 @@ public class EngineService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/models/{id}/qualityattributes")
+	@Path("/models/{id}/couplingcriteria")
 	@Transactional
-	public Set<QualityAttribute> getQualityAttributes(@PathParam("id") Long id) {
-		Set<QualityAttribute> result = new HashSet<>();
+	public Set<CouplingCriterion> getCouplingCriteria(@PathParam("id") Long id) {
+		Set<CouplingCriterion> result = new HashSet<>();
 		Model model = modelRepository.findOne(id);
 		for (DataField dataField : model.getDataFields()) {
-			for (QualityAttribute qa : dataField.getQualityAttributes()) {
+			for (CouplingCriterion qa : dataField.getCouplingCriteria()) {
 				result.add(qa);
 			}
 		}
-		log.debug("return qualityattributes for model {}: {}", model.getName(), result.toString());
+		log.debug("return criteria for model {}: {}", model.getName(), result.toString());
 		return result;
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/models/{id}/qualityattributes")
+	@Path("/models/{id}/couplingcriteria")
 	@Transactional
-	public void storeQualityAttributes(Set<QualityAttribute> attributes, @PathParam("id") Long id) {
+	public void storeCouplingCriteria(Set<CouplingCriterion> criteria, @PathParam("id") Long id) {
 		Model model = modelRepository.findOne(id);
 		// TODO: refactor
-		for (QualityAttribute inputQualityAttribute : attributes) {
-			QualityAttribute mappedQualityAttribute = new QualityAttribute();
-			for (DataField inputDataField : inputQualityAttribute.getDataFields()) {
+		for (CouplingCriterion inputCriterion : criteria) {
+			CouplingCriterion mappedСriterion = new CouplingCriterion();
+			for (DataField inputDataField : inputCriterion.getDataFields()) {
 				DataField dbDataField = findDbDataField(model.getDataFields(), inputDataField.getName());
 				if (dbDataField == null) {
 					throw new IllegalArgumentException(
 							"referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
 				}
-				mappedQualityAttribute.getDataFields().add(dbDataField);
-				mappedQualityAttribute.setCriterionType(inputQualityAttribute.getCriterionType());
-				dbDataField.getQualityAttributes().add(inputQualityAttribute);
-				qualityAttrRepository.save(mappedQualityAttribute);
+				mappedСriterion.getDataFields().add(dbDataField);
+				mappedСriterion.setCriterionType(inputCriterion.getCriterionType());
+				dbDataField.getCouplingCriteria().add(inputCriterion);
+				couplingCriterionRepository.save(mappedСriterion);
 				dataRepository.save(dbDataField);
-				log.debug("added quality attribute {} to model {}", inputQualityAttribute.getId(), model.getName());
+				log.debug("added coupling criterion {} to model {}", inputCriterion.getId(), model.getName());
 			}
 		}
 	}

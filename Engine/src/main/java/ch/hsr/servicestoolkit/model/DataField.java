@@ -24,7 +24,10 @@ public class DataField {
 	}
 
 	public void setQualityAttributes(List<QualityAttribute> qualityAttributes) {
-		this.qualityAttributes = qualityAttributes;
+		this.qualityAttributes.clear();
+		if (qualityAttributes != null) {
+			this.qualityAttributes.addAll(qualityAttributes);
+		}
 	}
 
 	public String getName() {
@@ -41,6 +44,10 @@ public class DataField {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public void addQualityAttributes(QualityAttribute attribute) {
+		this.qualityAttributes.add(attribute);
 	}
 
 }

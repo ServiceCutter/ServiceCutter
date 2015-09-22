@@ -38,7 +38,8 @@ public class EngineService {
 	private QualityAttributeRepository qualityAttrRepository;
 
 	@Autowired
-	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository, QualityAttributeRepository qualityAttrRepository) {
+	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository,
+			QualityAttributeRepository qualityAttrRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
 		this.qualityAttrRepository = qualityAttrRepository;
@@ -97,9 +98,11 @@ public class EngineService {
 			for (DataField inputDataField : inputQualityAttribute.getDataFields()) {
 				DataField dbDataField = findDbDataField(model.getDataFields(), inputDataField.getName());
 				if (dbDataField == null) {
-					throw new IllegalArgumentException("referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
+					throw new IllegalArgumentException(
+							"referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
 				}
 				mappedQualityAttribute.getDataFields().add(dbDataField);
+				mappedQualityAttribute.setCriterionType(inputQualityAttribute.getCriterionType());
 				dbDataField.getQualityAttributes().add(inputQualityAttribute);
 				qualityAttrRepository.save(mappedQualityAttribute);
 				dataRepository.save(dbDataField);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -17,9 +19,13 @@ public class QualityAttribute {
 	@GeneratedValue
 	private Long id;
 
+	@Enumerated(EnumType.STRING)
+	private CriterionType criterionType;
+
 	@ManyToMany
-	@JoinTable(name = "datafield_to_qualityattribute", joinColumns = {@JoinColumn(name = "datafield_id", referencedColumnName = "id")}, inverseJoinColumns = {
-			@JoinColumn(name = "qualityattr_id", referencedColumnName = "id")})
+	@JoinTable(name = "datafield_to_qualityattribute", joinColumns = {
+			@JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "qualityattr_id", referencedColumnName = "id") })
 	private List<DataField> dataFields = new ArrayList<>();
 
 	public List<DataField> getDataFields() {
@@ -27,7 +33,10 @@ public class QualityAttribute {
 	}
 
 	public void setDataFields(List<DataField> dataFields) {
-		this.dataFields = dataFields;
+		this.dataFields.clear();
+		if (dataFields != null) {
+			this.dataFields.addAll(dataFields);
+		}
 	}
 
 	public Long getId() {
@@ -36,6 +45,14 @@ public class QualityAttribute {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public CriterionType getCriterionType() {
+		return criterionType;
+	}
+
+	public void setCriterionType(CriterionType rating) {
+		this.criterionType = rating;
 	}
 
 	// TODO use helper for hashcode and equals
@@ -63,5 +80,4 @@ public class QualityAttribute {
 			return false;
 		return true;
 	}
-
 }

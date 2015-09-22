@@ -15,6 +15,19 @@
 		<docker.image.prefix>services-toolkit</docker.image.prefix>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>gephi-snapshots</id>
+			<name>Gephi Snapshots</name>
+			<url>http://nexus.gephi.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>gephi-releases</id>
+			<name>Gephi Releases</name>
+			<url>http://nexus.gephi.org/nexus/content/repositories/releases/</url>
+		</repository>
+	</repositories>
+
 	<!-- Add typical dependencies for a web application -->
 	<dependencies>
 		<dependency>
@@ -49,6 +62,35 @@
 			<artifactId>jackson-datatype-hibernate4</artifactId>
 			<version>2.6.2</version>
 		</dependency>
+		<dependency>
+			<groupId>org.gephi</groupId>
+			<artifactId>gephi-toolkit</artifactId>
+			<version>0.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.gephi</groupId>
+			<artifactId>clustering-plugin</artifactId>
+			<version>0.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.gephi</groupId>
+			<artifactId>algorithms-plugin</artifactId>
+			<version>0.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.gephi</groupId>
+			<artifactId>newman-plugin</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/girvan_newman_gephi_plugin.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.gephi</groupId>
+			<artifactId>newman-plugin-missing-dependencies</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/girvan_newman_missing_dependencies.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<!-- Package as an executable jar -->
@@ -74,22 +116,22 @@
 					</execution>
 				</executions>
 			</plugin>
-        		<plugin>
-        			<groupId>com.spotify</groupId>
-        			<artifactId>docker-maven-plugin</artifactId>
-            			<version>0.2.3</version>
-            			<configuration>
-                			<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-                			<dockerDirectory>docker</dockerDirectory>
-                			<resources>
-                    				<resource>
-                        				<targetPath>/</targetPath>
-                        				<directory>${project.build.directory}</directory>
-                        				<include>${project.build.finalName}.jar</include>
-                    				</resource>
-                			</resources>
-            			</configuration>
-        		</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.2.3</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<dockerDirectory>docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>

@@ -55,7 +55,7 @@ angular.module('editorApp')
         	if($scope.modelId != 0) {
         		$http.get('http://localhost:8090/engine/models/' + $scope.modelId).
 	        		success(function(data) {
-	        			$scope.model = JSON.stringify(data);
+	        			$scope.model = data;
 	                });
         		
         	}

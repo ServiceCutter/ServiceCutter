@@ -12,8 +12,20 @@
 			
 			<span>{{status}}</span>
 			
-			<p>{{model}}</p>
-
+			<div ng-show="modelId">
+			
+				<h2>Model #{{modelId}}</h2>
+				
+				<p>Name: <strong>{{model.name}}</strong></p>
+				
+				<p>Data Fields:</p>
+				
+				<ul>
+					<li ng-repeat="dataField in model.dataFields">#{{dataField.id}} - {{dataField.name}}</li>
+				</ul>
+			
+			</div>
+			
         </div>
     </div>
 </div>

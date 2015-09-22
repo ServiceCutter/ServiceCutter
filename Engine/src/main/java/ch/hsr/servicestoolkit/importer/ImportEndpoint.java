@@ -1,10 +1,12 @@
 package ch.hsr.servicestoolkit.importer;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -34,11 +36,11 @@ public class ImportEndpoint {
 		this.modelRepository = modelRepository;
 	}
 
-	@PUT
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public String importDomainModel(DomainModel domainModel) {
+	public Map<String, Object> importDomainModel(DomainModel domainModel) {
 		Assert.notNull(domainModel);
 		Model model = new Model();
 		model.setName("imported " + new Date().toString());
@@ -51,10 +53,10 @@ public class ImportEndpoint {
 			}
 		}
 		modelRepository.save(model);
-		// for (EntityRelation r : domainModel.getRelations()) {
-		// log.debug("{} - {}", r.getOrigin().getName(), r.getDestination());
-		// }
-		return "model " + model.getId() + " has been created";
+		Map<String, Object> result = new HashMap<>();
+		result.put("message", "model " + model.getId() + " has been created");
+		result.put("id", model.getId());
+		return result;
 	}
 
 }

@@ -1,6 +1,7 @@
 package ch.hsr.servicestoolkit.editor.web.rest;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class EditorResource {
 	@Value("${application.links.engine}")
 	private String engineUrl;
 
-	@RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.TEXT_PLAIN_VALUE)
+	@RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
 		ResponseEntity<?> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -44,8 +45,10 @@ public class EditorResource {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
-			ResponseEntity<String> responseEntity = rest.exchange(engineUrl + "/engine/import", HttpMethod.PUT, requestEntity, String.class);
-			String serviceResponse = responseEntity.getBody();
+			@SuppressWarnings("rawtypes")
+			ResponseEntity<Map> responseEntity = rest.exchange(engineUrl + "/engine/import", HttpMethod.POST, requestEntity, Map.class);
+			@SuppressWarnings("unchecked")
+			Map<String, Object> serviceResponse = responseEntity.getBody();
 			log.debug("importer response: {}", serviceResponse);
 			result = new ResponseEntity<>(serviceResponse, HttpStatus.CREATED);
 		} catch (IOException e) {

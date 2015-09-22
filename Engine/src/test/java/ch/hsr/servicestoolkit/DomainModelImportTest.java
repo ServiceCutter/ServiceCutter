@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,11 +54,12 @@ public class DomainModelImportTest {
 		DomainModel input = readDomainModelFromFile("test_domain_model.json");
 
 		HttpEntity<DomainModel> request = createJsonHttpEntityFromObject(input);
-		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.PUT, request, String.class);
+		@SuppressWarnings("rawtypes")
+		ResponseEntity<Map> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request, Map.class);
 
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		// model 1319051726 has been created
-		assertTrue(entity.getBody().startsWith("model "));
+		assertTrue(((String) entity.getBody().get("message")).startsWith("model "));
 	}
 
 	private DomainModel readDomainModelFromFile(String file) throws URISyntaxException, UnsupportedEncodingException, IOException {

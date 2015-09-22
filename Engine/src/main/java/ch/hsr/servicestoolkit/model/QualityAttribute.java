@@ -18,9 +18,8 @@ public class QualityAttribute {
 	private Long id;
 
 	@ManyToMany
-	@JoinTable(name = "datafield_to_qualityattribute", joinColumns = {
-			@JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "qualityattr_id", referencedColumnName = "id") })
+	@JoinTable(name = "datafield_to_qualityattribute", joinColumns = {@JoinColumn(name = "datafield_id", referencedColumnName = "id")}, inverseJoinColumns = {
+			@JoinColumn(name = "qualityattr_id", referencedColumnName = "id")})
 	private List<DataField> dataFields = new ArrayList<>();
 
 	public List<DataField> getDataFields() {
@@ -39,6 +38,7 @@ public class QualityAttribute {
 		this.id = id;
 	}
 
+	// TODO use helper for hashcode and equals
 	@Override
 	public int hashCode() {
 		final int prime = 31;

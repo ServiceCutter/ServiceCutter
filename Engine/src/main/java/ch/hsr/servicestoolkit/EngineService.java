@@ -23,9 +23,9 @@ import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.QualityAttribute;
-import ch.hsr.servicestoolkit.repo.DataFieldRepository;
-import ch.hsr.servicestoolkit.repo.ModelRepository;
-import ch.hsr.servicestoolkit.repo.QualityAttributeRepository;
+import ch.hsr.servicestoolkit.repository.DataFieldRepository;
+import ch.hsr.servicestoolkit.repository.ModelRepository;
+import ch.hsr.servicestoolkit.repository.QualityAttributeRepository;
 import jersey.repackaged.com.google.common.collect.Lists;
 
 @Component
@@ -38,8 +38,7 @@ public class EngineService {
 	private QualityAttributeRepository qualityAttrRepository;
 
 	@Autowired
-	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository,
-			QualityAttributeRepository qualityAttrRepository) {
+	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository, QualityAttributeRepository qualityAttrRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
 		this.qualityAttrRepository = qualityAttrRepository;
@@ -61,48 +60,50 @@ public class EngineService {
 	}
 
 	@GET
-	@Path("/models/{modelName}")
-	public Model getModel(@PathParam("modelName") String modelName) {
-		modelRepository.findAll();
-		return modelRepository.findByName(modelName);
+	@Path("/models/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Transactional
+	public Model getModel(@PathParam("id") Long id) {
+		Model result = modelRepository.findOne(id);
+		result.getDataFields().size(); // init lazy collection
+		return result;
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/models/{modelName}/qualityattributes")
+	@Path("/models/{id}/qualityattributes")
 	@Transactional
-	public Set<QualityAttribute> getQualityAttributes(@PathParam("modelName") String modelName) {
+	public Set<QualityAttribute> getQualityAttributes(@PathParam("id") Long id) {
 		Set<QualityAttribute> result = new HashSet<>();
-		Model model = findModel(modelName);
+		Model model = modelRepository.findOne(id);
 		for (DataField dataField : model.getDataFields()) {
 			for (QualityAttribute qa : dataField.getQualityAttributes()) {
 				result.add(qa);
 			}
 		}
-		log.debug("return qualityattributes for model {}: {}", modelName, result.toString());
+		log.debug("return qualityattributes for model {}: {}", model.getName(), result.toString());
 		return result;
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/models/{modelName}/qualityattributes")
+	@Path("/models/{id}/qualityattributes")
 	@Transactional
-	public void storeQualityAttributes(Set<QualityAttribute> attributes, @PathParam("modelName") String modelName) {
-		Model model = findModel(modelName);
+	public void storeQualityAttributes(Set<QualityAttribute> attributes, @PathParam("id") Long id) {
+		Model model = modelRepository.findOne(id);
 		// TODO: refactor
 		for (QualityAttribute inputQualityAttribute : attributes) {
 			QualityAttribute mappedQualityAttribute = new QualityAttribute();
 			for (DataField inputDataField : inputQualityAttribute.getDataFields()) {
 				DataField dbDataField = findDbDataField(model.getDataFields(), inputDataField.getName());
 				if (dbDataField == null) {
-					throw new IllegalArgumentException(
-							"referenced data field not existing: " + modelName + ":" + inputDataField.getName());
+					throw new IllegalArgumentException("referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
 				}
 				mappedQualityAttribute.getDataFields().add(dbDataField);
 				dbDataField.getQualityAttributes().add(inputQualityAttribute);
 				qualityAttrRepository.save(mappedQualityAttribute);
 				dataRepository.save(dbDataField);
-				log.debug("added quality attribute {} to model {}", inputQualityAttribute.getId(), modelName);
+				log.debug("added quality attribute {} to model {}", inputQualityAttribute.getId(), model.getName());
 			}
 		}
 	}
@@ -110,7 +111,8 @@ public class EngineService {
 	@PUT
 	@Path("/models/{modelName}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void createModel(Model model, @PathParam("modelName") String modelName) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Model createModel(Model model, @PathParam("modelName") String modelName) {
 		final String finalModelName = getNameForModel(model, modelName);
 		if (model == null) {
 			model = new Model();
@@ -119,13 +121,6 @@ public class EngineService {
 
 		log.info("created model {} containing {} datafields.", finalModelName, model.getDataFields().size());
 		modelRepository.save(model);
-	}
-
-	private Model findModel(String modelName) {
-		Model model = modelRepository.findByName(modelName);
-		if (model == null) {
-			throw new IllegalArgumentException("model " + modelName + " not found!");
-		}
 		return model;
 	}
 

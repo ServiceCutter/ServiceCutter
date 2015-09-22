@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.repo;
+package ch.hsr.servicestoolkit.repository;
 
 import org.springframework.data.repository.CrudRepository;
 

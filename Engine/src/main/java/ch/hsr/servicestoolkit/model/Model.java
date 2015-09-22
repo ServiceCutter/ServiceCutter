@@ -16,7 +16,6 @@ public class Model {
 	@Id
 	@GeneratedValue
 	private Long id;
-
 	private String name;
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -27,8 +26,12 @@ public class Model {
 		return dataFields;
 	}
 
-	public void setDataFields(List<DataField> dataFields) {
+	void setDataFields(List<DataField> dataFields) {
 		this.dataFields = dataFields;
+	}
+
+	public void addDataField(DataField dataField) {
+		dataFields.add(dataField);
 	}
 
 	public Long getId() {

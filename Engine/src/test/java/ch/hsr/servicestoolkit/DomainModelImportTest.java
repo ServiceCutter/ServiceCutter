@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +49,6 @@ public class DomainModelImportTest {
 	}
 
 	@Test
-	@Ignore
 	public void modelImport() throws IOException, URISyntaxException {
 		DomainModel input = readDomainModelFromFile("test_domain_model.json");
 

@@ -19,9 +19,8 @@ public class EngineServiceTest {
 
 	@Test
 	public void testCreateModel() {
-		service.createModel(new Model(), "first");
-		Model result = service.getModel("first");
-
+		Long id = service.createModel(new Model(), "first").getId();
+		Model result = service.getModel(id);
 		assertEquals("first", result.getName());
 	}
 
@@ -29,9 +28,8 @@ public class EngineServiceTest {
 	public void testCreateModelSameName() {
 		Model model = new Model();
 		model.setName("second");
-		service.createModel(model, "second");
-		Model result = service.getModel("second");
-
+		Long id = service.createModel(model, "second").getId();
+		Model result = service.getModel(id);
 		assertEquals("second", result.getName());
 	}
 
@@ -52,9 +50,8 @@ public class EngineServiceTest {
 	public void testCreateModelNoParamName() {
 		Model model = new Model();
 		model.setName("fourth");
-		service.createModel(model, "");
-		Model result = service.getModel("fourth");
-
+		Long id = service.createModel(model, "").getId();
+		Model result = service.getModel(id);
 		assertEquals("fourth", result.getName());
 	}
 }

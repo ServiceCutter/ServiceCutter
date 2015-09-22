@@ -1,6 +1,7 @@
 package ch.hsr.servicestoolkit.editor.web.rest;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -34,6 +35,15 @@ public class EditorResource {
 	private final RestTemplate rest = new RestTemplate();
 	@Value("${application.links.engine}")
 	private String engineUrl;
+
+	@RequestMapping(value = "/config", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity<Map<String, String>> getConfig() {
+		Map<String, String> response = new HashMap<>();
+		response.put("engineUrl", engineUrl);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+
+	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed

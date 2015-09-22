@@ -6,11 +6,20 @@
         <div class="col-md-8">
             <h1>Services Toolkit Editor</h1>
             
-            <p>Upload a model.json file to start the process.</p>
+            <p>Select an existing model or use the json file upload to start the process.</p>
+            
+            <form class="form-inline">
+            	<div class="form-group">
+		            <select id="modelId" class="form-control" ng-model="modelId" ng-options="item.id as 'Model #' + item.id for item in availableModels">
+		            	<option value=''>- Choose an existing model -</option>
+		            </select>
+            	</div>
+	
+				<div class="btn btn-default" ngf-select ng-model="file" ngf-multiple="false">Upload File</div>
 
-			<div class="btn btn-default" ngf-select ng-model="file" ngf-multiple="false">Select File</div>
+				<span>{{status}}</span>
+            </form>
 			
-			<span>{{status}}</span>
 			
 			<div ng-show="modelId">
 			

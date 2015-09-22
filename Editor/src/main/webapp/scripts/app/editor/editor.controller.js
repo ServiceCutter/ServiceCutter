@@ -7,58 +7,61 @@ angular.module('editorApp')
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
         
-        $scope.status = 'No upload yet.';
-        $scope.modelId = 0;
-        $scope.model = null;
         
         $scope.$watch('file', function () {
         	$scope.upload($scope.file);
         });
         
+        $scope.$watch('modelId', function () {
+        	$scope.showModel();
+        });
+        
         $scope.upload = function (file) {
             if (file && !file.$error) {
-            	$scope.status = 'uploading';
+            	$scope.status = 'Uploading...';
 				Upload.upload({
 					url: 'api/editor/upload',
 					file: file,
 					progress: function(e){}
-				}).then(function(data, status, headers, config) {
-					$scope.status = data['data']['message'];
-					$scope.modelId = parseInt(data['data']['id']);
-					$scope.showModel();
-				}); 
+				}).success(function(data, status, headers, config) {
+					$scope.status = data['message'];
+					$scope.loadAvailableModels();
+					$scope.modelId = parseInt(data['id']);
+//					$scope.showModel();
+				}).error(function (data, status, headers, config) {
+					$scope.status = 'Upload failed! (' + data['error'] + ')';
+		        }); 
 
-//                for (var i = 0; i < files.length; i++) {
-//                  var file = files[i];
-//                  if (!file.$error) {
-//                    Upload.upload({
-//                        url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
-//                        fields: {
-//                            'username': $scope.username
-//                        },
-//                        file: file
-//                    }).progress(function (evt) {
-//                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-//                        $scope.log = 'progress: ' + progressPercentage + '% ' +
-//                                    evt.config.file.name + '\n' + $scope.log;
-//                    }).success(function (data, status, headers, config) {
-//                        $timeout(function() {
-//                            $scope.log = 'file: ' + config.file.name + ', Response: ' + JSON.stringify(data) + '\n' + $scope.log;
-//                        });
-//                    });
-//                  }
-//                }
             }
         };
         
         $scope.showModel = function () {
         	if($scope.modelId != 0) {
-        		$http.get('http://localhost:8090/engine/models/' + $scope.modelId).
+        		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId).
 	        		success(function(data) {
 	        			$scope.model = data;
 	                });
         		
         	}
+        };
+
+        $scope.loadConfig = function () {
+    		$http.get('/api/editor/config').
+	    		success(function(data) {
+	    			$scope.config = data;
+	    			$scope.loadAvailableModels();
+            });
+        };
+        
+        $scope.loadAvailableModels = function () {
+    		$http.get($scope.config['engineUrl'] + '/engine/models').
+	    		success(function(data) {
+	    			$scope.availableModels = data;
+            });
         }
         
+        $scope.status = 'No upload yet.';
+        $scope.modelId = 0;
+        $scope.model = null;
+        $scope.loadConfig();
     }]);

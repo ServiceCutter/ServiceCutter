@@ -3,10 +3,13 @@ package ch.hsr.servicestoolkit.solver;
 import static org.junit.Assert.assertEquals;
 
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -15,10 +18,10 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { SolverConfiguration.class })
@@ -53,59 +56,53 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
 		GephiSolver solver = new GephiSolver(model, config);
-		List<BoundedContext> result1 = solver.solve(3);
+		Set<BoundedContext> result1 = solver.solveWithMarkov();
 		assertEquals(3, result1.size());
 		for (BoundedContext context : result1) {
 			assertEquals(2, context.getDataFields().size());
 		}
 
-		List<BoundedContext> result2 = solver.solve(2);
+		Set<BoundedContext> result2 = solver.solveWithMarkov();
 		assertEquals(2, result2.size());
 		for (BoundedContext context : result2) {
 			assertEquals(3, context.getDataFields().size());
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testSimpleModelSomeEdges() {
 		Model model = new Model();
 		model.addDataField(createDataField("field1"));
 		model.addDataField(createDataField("field2"));
-
-		addCriterionToAllFields(model, CriterionType.COMPOSITION_ENTITY);
-
 		model.addDataField(createDataField("field3"));
-
-		addCriterionToAllFields(model, CriterionType.SAME_ENTITIY);
-
 		model.addDataField(createDataField("field4"));
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
 
-		addCriterionToAllFields(model, CriterionType.AGGREGATED_ENTITY);
-
-		model.addDataField(createDataField("field7"));
-		model.addDataField(createDataField("field8"));
-		model.addDataField(createDataField("field9"));
-		model.addDataField(createDataField("field10"));
-		model.addDataField(createDataField("field11"));
-		model.addDataField(createDataField("field12"));
+		addCriterionFields(model, CriterionType.SAME_ENTITIY, new String[] { "field1", "field2", "field3" });
+		addCriterionFields(model, CriterionType.SAME_ENTITIY, new String[] { "field4", "field5", "field6" });
 
 		GephiSolver solver = new GephiSolver(model, config);
-		List<BoundedContext> result = solver.solve(3);
-		assertEquals(1, result.size());
-		assertEquals(3, result.get(0).getDataFields().size());
+		Set<BoundedContext> result = solver.solveWithMarkov();
+
+		assertEquals(2, result.size());
+		for (BoundedContext context : result) {
+			assertEquals(3, context.getDataFields().size());
+		}
 	}
 
-	private void addCriterionToAllFields(Model model, CriterionType compositionEntity) {
+	private void addCriterionFields(Model model, CriterionType compositionEntity, String[] fields) {
 		CouplingCriterion criterion = new CouplingCriterion();
-		criterion.setDataFields(model.getDataFields());
+		List<String> fieldsFilter = Arrays.asList(fields);
+		criterion.setDataFields(model.getDataFields().stream().filter(f -> fieldsFilter.contains(f.getName()))
+				.collect(Collectors.toList()));
 		criterion.setCriterionType(compositionEntity);
 		criterion.setId(idGenerator.incrementAndGet());
 
 		for (DataField dataField : model.getDataFields()) {
-			dataField.addCouplingCriterion(criterion);
+			if (fieldsFilter.contains(dataField.getName())) {
+				dataField.addCouplingCriterion(criterion);
+			}
 		}
 	}
 

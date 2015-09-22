@@ -91,6 +91,20 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/lib/girvan_newman_missing_dependencies.jar</systemPath>
 		</dependency>
+		<dependency>
+			<groupId>org.gephi</groupId>
+			<artifactId>markov_cluster_gephi_plugin</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/markov_cluster_gephi_plugin.jar</systemPath>
+		</dependency>
+		<!-- needed for markov clusterer -->
+		<dependency>
+			<groupId>com.googlecode.efficient-java-matrix-library</groupId>
+			<artifactId>ejml</artifactId>
+			<version>0.25</version>
+		</dependency>
+
 	</dependencies>
 
 	<!-- Package as an executable jar -->

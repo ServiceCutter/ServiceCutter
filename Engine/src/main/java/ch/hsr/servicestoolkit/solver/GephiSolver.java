@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.gephi.clustering.api.Cluster;
+import org.gephi.clustering.spi.Clusterer;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -31,11 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
+import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
-public class GephiSolver implements Solver {
+public class GephiSolver {
 
 	private Model model;
 	private Map<String, Node> nodes;
@@ -90,26 +92,45 @@ public class GephiSolver implements Solver {
 		}
 	}
 
-	@Override
-	public List<BoundedContext> solve(int numberOfClusters) {
+	public Set<BoundedContext> solveWithGirvanNewman(int numberOfClusters) {
 		Log.debug("solve cluster with numberOfClusters = " + numberOfClusters);
-		List<BoundedContext> result = new ArrayList<>();
 
 		GirvanNewmanClusterer clusterer = new GirvanNewmanClusterer();
 		clusterer.setPreferredNumberOfClusters(numberOfClusters);
 		clusterer.execute(graphModel);
+		return getClustererResult(clusterer);
+	}
+
+	public Set<BoundedContext> solveWithMarkov() {
+		Log.debug("solve cluster with MCL");
+
+		MCClusterer clusterer = new MCClusterer();
+		clusterer.setInflation(2d); // the higher to more clusters?
+		clusterer.setExtraClusters(false);
+		clusterer.setSelfLoop(false);
+		clusterer.setPower(2);
+		clusterer.setPrune(0d);
+		clusterer.execute(graphModel);
+		return getClustererResult(clusterer);
+	}
+
+	// Returns a HashSet as the algorithms return redundant clusters
+	private Set<BoundedContext> getClustererResult(Clusterer clusterer) {
+		Set<BoundedContext> result = new HashSet<>();
 		if (clusterer.getClusters() != null) {
 			for (Cluster cluster : clusterer.getClusters()) {
 				List<String> dataFields = new ArrayList<>();
 				for (Node node : cluster.getNodes()) {
-					dataFields.add(node.getNodeData().getLabel());
+					dataFields.add(node.toString());
 				}
-				result.add(new BoundedContext(dataFields));
-				log.debug("cluster found: {}", Arrays.toString(cluster.getNodes()));
+				BoundedContext boundedContext = new BoundedContext(dataFields);
+				result.add(boundedContext);
+				log.debug("BoundedContext found: {}, {}", boundedContext.getDataFields().toString(),
+						boundedContext.hashCode());
 			}
 		}
-
 		return result;
+
 	}
 
 	private Set<CouplingCriterion> findCouplingCriteria() {
@@ -128,19 +149,21 @@ public class GephiSolver implements Solver {
 	private void buildEdges() {
 		for (CouplingCriterion criterion : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
-			for (int i = 0; i < criterion.getDataFields().size(); i++) {
-				for (int j = i + 1; j < criterion.getDataFields().size(); j++) {
-					Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
-					Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
-					float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
-					Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
-					if (existingEdge != null) {
-						log.debug("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
-						existingEdge.setWeight(existingEdge.getWeight() + weight);
-					} else {
-						log.debug("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
-						Edge edge = graphModel.factory().newEdge(nodeA, nodeB, weight, false);
-						undirectedGraph.addEdge(edge);
+			if (criterion.getCriterionType().equals(CriterionType.SAME_ENTITIY)) {
+				for (int i = 0; i < criterion.getDataFields().size(); i++) {
+					for (int j = i + 1; j < criterion.getDataFields().size(); j++) {
+						Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
+						Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
+						float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
+						Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
+						if (existingEdge != null) {
+							log.debug("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
+							existingEdge.setWeight(existingEdge.getWeight() + weight);
+						} else {
+							log.debug("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
+							Edge edge = graphModel.factory().newEdge(nodeA, nodeB, weight, false);
+							undirectedGraph.addEdge(edge);
+						}
 					}
 				}
 			}

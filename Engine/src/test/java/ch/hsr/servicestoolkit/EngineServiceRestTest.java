@@ -44,14 +44,12 @@ public class EngineServiceRestTest {
 
 	@Before
 	public void setUp() {
-		restTemplate.setMessageConverters(
-				Arrays.asList(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter()));
+		restTemplate.setMessageConverters(Arrays.asList(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter()));
 	}
 
 	@Test
 	public void statusCheck() {
-		ResponseEntity<EngineState> entity = this.restTemplate.getForEntity("http://localhost:" + this.port + "/engine",
-				EngineState.class);
+		ResponseEntity<EngineState> entity = this.restTemplate.getForEntity("http://localhost:" + this.port + "/engine", EngineState.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		assertEquals("Engine is up and running.", entity.getBody().getDescription());
 	}
@@ -60,13 +58,11 @@ public class EngineServiceRestTest {
 	public void createEmptyModel() {
 
 		HttpEntity<String[]> request = createJsonProvidingHttpRequest(null);
-		ResponseEntity<String> requestResult = this.restTemplate.exchange(
-				"http://localhost:" + this.port + "/engine/models/testModel", HttpMethod.PUT, request, String.class);
-		assertEquals(HttpStatus.NO_CONTENT, requestResult.getStatusCode());
+		ResponseEntity<Model> requestResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/testModel", HttpMethod.PUT, request, Model.class);
+		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
+		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<Model> assertResult = this.restTemplate.exchange(
-				"http://localhost:" + this.port + "/engine/models/testModel", HttpMethod.GET, createEmptyHttpRequest(),
-				Model.class);
+		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET, createEmptyHttpRequest(), Model.class);
 		assertEquals("testModel", assertResult.getBody().getName());
 	}
 
@@ -80,20 +76,17 @@ public class EngineServiceRestTest {
 
 	@Test
 	public void addQualityAttributesToExistingModel() {
-		String model = createModelOnApi();
+		Long modelId = createModelOnApi();
 
 		List<QualityAttribute> input = createQualityAttributes();
 
 		HttpEntity<List<QualityAttribute>> request = createJsonProvidingHttpRequest(input);
 		// write quality attributes
-		ResponseEntity<String> entity = this.restTemplate.exchange(
-				"http://localhost:" + this.port + "/engine/models/" + model + "/qualityattributes", HttpMethod.PUT,
-				request, String.class);
+		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + modelId + "/qualityattributes", HttpMethod.PUT, request, String.class);
 		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
 
 		// read written quality attributes
-		ResponseEntity<Set<QualityAttribute>> assertResult = this.restTemplate.exchange(
-				"http://localhost:" + this.port + "/engine/models/" + model + "/qualityattributes", HttpMethod.GET,
+		ResponseEntity<Set<QualityAttribute>> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + modelId + "/qualityattributes", HttpMethod.GET,
 				createEmptyHttpRequest(), new ParameterizedTypeReference<Set<QualityAttribute>>() {
 				});
 		assertEquals(1, assertResult.getBody().size());
@@ -115,20 +108,17 @@ public class EngineServiceRestTest {
 		return input;
 	}
 
-	private String createModelOnApi() {
+	private Long createModelOnApi() {
 		Model model = createModel();
 		HttpEntity<Model> request = createJsonProvidingHttpRequest(model);
-		ResponseEntity<String> entity = this.restTemplate.exchange(
-				"http://localhost:" + this.port + "/engine/models/" + model.getName(), HttpMethod.PUT, request,
-				String.class);
-		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
-		return model.getName();
+		ResponseEntity<Model> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + model.getName(), HttpMethod.PUT, request, Model.class);
+		assertEquals(HttpStatus.OK, entity.getStatusCode());
+		return entity.getBody().getId();
 	}
 
 	private int countModels() {
 		@SuppressWarnings("rawtypes")
-		ResponseEntity<List> response = restTemplate.getForEntity("http://localhost:" + this.port + "/engine/models",
-				List.class);
+		ResponseEntity<List> response = restTemplate.getForEntity("http://localhost:" + this.port + "/engine/models", List.class);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		int models = response.getBody().size();
 		return models;

@@ -149,6 +149,7 @@ public class GephiSolver {
 	private void buildEdges() {
 		for (CouplingCriterion criterion : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
+			// TODO: remove filter or extract parameter
 			if (criterion.getCriterionType().equals(CriterionType.SAME_ENTITIY)) {
 				for (int i = 0; i < criterion.getDataFields().size(); i++) {
 					for (int j = i + 1; j < criterion.getDataFields().size(); j++) {

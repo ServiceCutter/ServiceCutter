@@ -4,11 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +20,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
@@ -43,12 +39,6 @@ public class EngineServiceRestTest {
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
-
-	@Before
-	public void setUp() {
-		restTemplate.setMessageConverters(
-				Arrays.asList(new MappingJackson2HttpMessageConverter(), new StringHttpMessageConverter()));
-	}
 
 	@Test
 	public void statusCheck() {

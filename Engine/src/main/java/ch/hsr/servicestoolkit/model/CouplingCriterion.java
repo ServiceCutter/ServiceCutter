@@ -18,18 +18,21 @@ public class CouplingCriterion {
 	@Id
 	@GeneratedValue
 	private Long id;
-
 	@Enumerated(EnumType.STRING)
 	private CriterionType criterionType;
+	private String name;
 
 	@ManyToMany
-	@JoinTable(name = "datafield_to_couplingcriterion", joinColumns = {
-			@JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "criterion_id", referencedColumnName = "id") })
+	@JoinTable(name = "datafield_to_couplingcriterion", joinColumns = {@JoinColumn(name = "datafield_id", referencedColumnName = "id")}, inverseJoinColumns = {
+			@JoinColumn(name = "criterion_id", referencedColumnName = "id")})
 	private List<DataField> dataFields = new ArrayList<>();
 
 	public List<DataField> getDataFields() {
 		return dataFields;
+	}
+
+	public void addDataField(DataField dataField) {
+		dataFields.add(dataField);
 	}
 
 	public void setDataFields(List<DataField> dataFields) {
@@ -79,5 +82,13 @@ public class CouplingCriterion {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

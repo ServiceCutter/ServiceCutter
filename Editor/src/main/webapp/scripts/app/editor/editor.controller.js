@@ -27,7 +27,6 @@ angular.module('editorApp')
 					$scope.status = data['message'];
 					$scope.loadAvailableModels();
 					$scope.modelId = parseInt(data['id']);
-//					$scope.showModel();
 				}).error(function (data, status, headers, config) {
 					$scope.status = 'Upload failed! (' + data['error'] + ')';
 		        }); 
@@ -40,8 +39,11 @@ angular.module('editorApp')
         		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId).
 	        		success(function(data) {
 	        			$scope.model = data;
-	                });
-        		
+	            });
+        		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId + '/couplingcriteria?type=SAME_ENTITIY').
+	        		success(function(data) {
+	        			$scope.model['entities'] = data;
+                });        		
         	}
         };
 

@@ -20,8 +20,11 @@ import org.springframework.util.Assert;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
 import ch.hsr.servicestoolkit.importer.api.EntityModel;
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 
 @Component
@@ -30,10 +33,12 @@ public class ImportEndpoint {
 
 	private final Logger log = LoggerFactory.getLogger(ImportEndpoint.class);
 	private final ModelRepository modelRepository;
+	private final CouplingCriterionRepository couplingCriterionRepository;
 
 	@Autowired
-	public ImportEndpoint(ModelRepository modelRepository) {
+	public ImportEndpoint(ModelRepository modelRepository, CouplingCriterionRepository couplingCriterionRepository) {
 		this.modelRepository = modelRepository;
+		this.couplingCriterionRepository = couplingCriterionRepository;
 	}
 
 	@POST
@@ -45,11 +50,16 @@ public class ImportEndpoint {
 		Model model = new Model();
 		model.setName("imported " + new Date().toString());
 		for (EntityModel entityModel : domainModel.getEntities()) {
+			CouplingCriterion criterion = new CouplingCriterion();
+			criterion.setName(entityModel.getName());
+			criterion.setCriterionType(CriterionType.SAME_ENTITIY);
+			couplingCriterionRepository.save(criterion);
 			for (EntityAttribute entityAttribute : entityModel.getAttributes()) {
 				DataField dataField = new DataField();
 				dataField.setName(entityAttribute.getName());
 				model.addDataField(dataField);
 				log.info("added data field '{}' on entity '{}'", dataField.getName(), entityModel.getName());
+				criterion.addDataField(dataField);
 			}
 		}
 		modelRepository.save(model);

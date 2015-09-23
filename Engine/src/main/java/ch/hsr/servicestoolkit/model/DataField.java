@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import org.springframework.util.StringUtils;
+
 @Entity
 public class DataField {
 
@@ -60,7 +62,7 @@ public class DataField {
 	}
 
 	public String getContextName() {
-		return context + "." + name;
+		return (StringUtils.hasText(context) ? context + "." : "") + name;
 	}
 
 }

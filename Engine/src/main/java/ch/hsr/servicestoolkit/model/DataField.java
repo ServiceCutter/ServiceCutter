@@ -15,6 +15,7 @@ public class DataField {
 	@GeneratedValue
 	private Long id;
 	private String name;
+	private String context;
 
 	@ManyToMany(mappedBy = "dataFields")
 	private List<CouplingCriterion> couplingCriteria = new ArrayList<>();
@@ -48,6 +49,18 @@ public class DataField {
 
 	public void addCouplingCriterion(CouplingCriterion criterion) {
 		this.couplingCriteria.add(criterion);
+	}
+
+	public String getContext() {
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
+	}
+
+	public String getContextName() {
+		return context + "." + name;
 	}
 
 }

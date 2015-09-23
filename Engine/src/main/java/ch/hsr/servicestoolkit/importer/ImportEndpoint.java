@@ -57,6 +57,7 @@ public class ImportEndpoint {
 			for (EntityAttribute entityAttribute : entityModel.getAttributes()) {
 				DataField dataField = new DataField();
 				dataField.setName(entityAttribute.getName());
+				dataField.setContext(entityModel.getName());
 				model.addDataField(dataField);
 				log.info("added data field '{}' on entity '{}'", dataField.getName(), entityModel.getName());
 				criterion.addDataField(dataField);

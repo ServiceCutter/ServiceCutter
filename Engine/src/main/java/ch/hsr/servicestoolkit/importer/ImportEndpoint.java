@@ -36,7 +36,7 @@ public class ImportEndpoint {
 	private final CouplingCriterionRepository couplingCriterionRepository;
 
 	@Autowired
-	public ImportEndpoint(ModelRepository modelRepository, CouplingCriterionRepository couplingCriterionRepository) {
+	public ImportEndpoint(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository) {
 		this.modelRepository = modelRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 	}
@@ -45,7 +45,7 @@ public class ImportEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public Map<String, Object> importDomainModel(DomainModel domainModel) {
+	public Map<String, Object> importDomainModel(final DomainModel domainModel) {
 		Assert.notNull(domainModel);
 		Model model = new Model();
 		model.setName("imported " + new Date().toString());
@@ -64,6 +64,8 @@ public class ImportEndpoint {
 			}
 		}
 		modelRepository.save(model);
+		// TODO: remove return value and set location header to URL of generated
+		// model
 		Map<String, Object> result = new HashMap<>();
 		result.put("message", "model " + model.getId() + " has been created");
 		result.put("id", model.getId());

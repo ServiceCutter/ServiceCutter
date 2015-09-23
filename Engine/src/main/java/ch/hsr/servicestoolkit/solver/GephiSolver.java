@@ -47,7 +47,7 @@ public class GephiSolver {
 
 	private Logger log = LoggerFactory.getLogger(GephiSolver.class);
 
-	public GephiSolver(Model model, SolverConfiguration config) {
+	public GephiSolver(final Model model, final SolverConfiguration config) {
 		if (model == null || model.getDataFields().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
 		}
@@ -57,8 +57,7 @@ public class GephiSolver {
 		this.model = model;
 		this.config = config;
 		if (findCouplingCriteria().isEmpty()) {
-			throw new InvalidParameterException(
-					"model needs at least 1 coupling criterion in order for gephi clusterer to work");
+			throw new InvalidParameterException("model needs at least 1 coupling criterion in order for gephi clusterer to work");
 		}
 		nodes = new HashMap<>();
 
@@ -92,7 +91,7 @@ public class GephiSolver {
 		}
 	}
 
-	public Set<BoundedContext> solveWithGirvanNewman(int numberOfClusters) {
+	public Set<BoundedContext> solveWithGirvanNewman(final int numberOfClusters) {
 		Log.debug("solve cluster with numberOfClusters = " + numberOfClusters);
 
 		GirvanNewmanClusterer clusterer = new GirvanNewmanClusterer();
@@ -107,15 +106,15 @@ public class GephiSolver {
 		MCClusterer clusterer = new MCClusterer();
 		clusterer.setInflation(2d); // the higher to more clusters?
 		clusterer.setExtraClusters(false);
-		clusterer.setSelfLoop(false);
-		clusterer.setPower(2);
+		clusterer.setSelfLoop(true); // must be true
+		clusterer.setPower(1);
 		clusterer.setPrune(0d);
 		clusterer.execute(graphModel);
 		return getClustererResult(clusterer);
 	}
 
 	// Returns a HashSet as the algorithms return redundant clusters
-	private Set<BoundedContext> getClustererResult(Clusterer clusterer) {
+	private Set<BoundedContext> getClustererResult(final Clusterer clusterer) {
 		Set<BoundedContext> result = new HashSet<>();
 		if (clusterer.getClusters() != null) {
 			for (Cluster cluster : clusterer.getClusters()) {
@@ -125,8 +124,7 @@ public class GephiSolver {
 				}
 				BoundedContext boundedContext = new BoundedContext(dataFields);
 				result.add(boundedContext);
-				log.debug("BoundedContext found: {}, {}", boundedContext.getDataFields().toString(),
-						boundedContext.hashCode());
+				log.debug("BoundedContext found: {}, {}", boundedContext.getDataFields().toString(), boundedContext.hashCode());
 			}
 		}
 		return result;
@@ -153,15 +151,15 @@ public class GephiSolver {
 			if (criterion.getCriterionType().equals(CriterionType.SAME_ENTITIY)) {
 				for (int i = 0; i < criterion.getDataFields().size(); i++) {
 					for (int j = i + 1; j < criterion.getDataFields().size(); j++) {
+						float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
 						Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
 						Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
-						float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
 						Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
 						if (existingEdge != null) {
-							log.debug("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
+							log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
 							existingEdge.setWeight(existingEdge.getWeight() + weight);
 						} else {
-							log.debug("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
+							log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
 							Edge edge = graphModel.factory().newEdge(nodeA, nodeB, weight, false);
 							undirectedGraph.addEdge(edge);
 						}
@@ -171,7 +169,7 @@ public class GephiSolver {
 		}
 	}
 
-	private Node getNodeByDataField(DataField dataField) {
+	private Node getNodeByDataField(final DataField dataField) {
 		return nodes.get(dataField.getName());
 	}
 

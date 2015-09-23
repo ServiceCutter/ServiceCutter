@@ -6,13 +6,22 @@ public class BoundedContext {
 
 	List<String> dataFields;
 
-	public BoundedContext(List<String> dataFields) {
+	public BoundedContext(final List<String> dataFields) {
 		super();
 		this.dataFields = dataFields;
 	}
 
+	public BoundedContext() {
+		// needed for Jackson
+	}
+
 	public List<String> getDataFields() {
 		return dataFields;
+	}
+
+	@Override
+	public String toString() {
+		return "BoundedContext [dataFields=" + dataFields + "]";
 	}
 
 	@Override
@@ -24,19 +33,24 @@ public class BoundedContext {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		BoundedContext other = (BoundedContext) obj;
 		if (dataFields == null) {
-			if (other.dataFields != null)
+			if (other.dataFields != null) {
 				return false;
-		} else if (!dataFields.equals(other.dataFields))
+			}
+		} else if (!dataFields.equals(other.dataFields)) {
 			return false;
+		}
 		return true;
 	}
 

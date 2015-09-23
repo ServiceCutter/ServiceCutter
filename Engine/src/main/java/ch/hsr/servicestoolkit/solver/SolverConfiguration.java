@@ -17,16 +17,20 @@ public class SolverConfiguration {
 
 	private Logger log = LoggerFactory.getLogger(SolverConfiguration.class);
 
-	public void setWeights(Map<CriterionType, Double> weights) {
+	public void setWeights(final Map<CriterionType, Double> weights) {
 		if (weights != null) {
 			this.weights = weights;
 		} else {
 			throw new InvalidParameterException("weights should not be null!");
 		}
-
 	}
 
-	public Double getWeightForCouplingCriterion(CriterionType criterionType) {
+	// needed for jackson deserialization
+	public Map<CriterionType, Double> getWeights() {
+		return weights;
+	}
+
+	public Double getWeightForCouplingCriterion(final CriterionType criterionType) {
 		if (!weights.containsKey(criterionType)) {
 			log.error("no weight defined for coupling criterion: " + criterionType + ". Use 0");
 			return 0d;

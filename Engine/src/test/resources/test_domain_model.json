@@ -58,7 +58,9 @@
     {
       "name": "Bezahlung",
       "attributes": [
-        
+        {
+          "name": "erstelltAm"
+        }
       ]
     },
     {
@@ -72,22 +74,23 @@
         },
         {
           "name": "kaution"
-        },
-        {
-          "name": "erstelltAm"
         }
       ]
     },
     {
       "name": "DVD",
       "attributes": [
-        
+        {
+          "name": "hersteller"
+        }
       ]
     },
     {
       "name": "Barzahlung",
       "attributes": [
-        
+        {
+          "name": "rueckgeld"
+        }
       ]
     }
   ],

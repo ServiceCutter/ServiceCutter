@@ -1,7 +1,9 @@
 package ch.hsr.servicestoolkit.importer;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -20,6 +22,8 @@ import org.springframework.util.Assert;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
 import ch.hsr.servicestoolkit.importer.api.EntityModel;
+import ch.hsr.servicestoolkit.importer.api.EntityRelation;
+import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
@@ -34,11 +38,15 @@ public class ImportEndpoint {
 	private final Logger log = LoggerFactory.getLogger(ImportEndpoint.class);
 	private final ModelRepository modelRepository;
 	private final CouplingCriterionRepository couplingCriterionRepository;
+	private final Map<RelationType, CriterionType> typeMapping = new HashMap<>();
 
 	@Autowired
 	public ImportEndpoint(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository) {
 		this.modelRepository = modelRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
+		typeMapping.put(RelationType.AGGREGATION, CriterionType.AGGREGATED_ENTITY);
+		typeMapping.put(RelationType.COMPOSITION, CriterionType.COMPOSITION_ENTITY);
+		typeMapping.put(RelationType.INHERITANCE, CriterionType.INHERITANCE);
 	}
 
 	@POST
@@ -49,11 +57,13 @@ public class ImportEndpoint {
 		Assert.notNull(domainModel);
 		Model model = new Model();
 		model.setName("imported " + new Date().toString());
+		Map<EntityModel, List<DataField>> fieldsByModel = new HashMap<>();
 		for (EntityModel entityModel : domainModel.getEntities()) {
 			CouplingCriterion criterion = new CouplingCriterion();
 			criterion.setName(entityModel.getName());
 			criterion.setCriterionType(CriterionType.SAME_ENTITIY);
 			couplingCriterionRepository.save(criterion);
+			List<DataField> fields = new ArrayList<>();
 			for (EntityAttribute entityAttribute : entityModel.getAttributes()) {
 				DataField dataField = new DataField();
 				dataField.setName(entityAttribute.getName());
@@ -61,7 +71,22 @@ public class ImportEndpoint {
 				model.addDataField(dataField);
 				log.info("added data field '{}' on entity '{}'", dataField.getName(), entityModel.getName());
 				criterion.addDataField(dataField);
+				fields.add(dataField);
 			}
+			fieldsByModel.put(entityModel, fields);
+		}
+		for (EntityRelation relation : domainModel.getRelations()) {
+			CouplingCriterion criterion = new CouplingCriterion();
+			criterion.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
+			CriterionType type = typeMapping.get(relation.getType());
+			criterion.setCriterionType(type);
+			List<DataField> fields = new ArrayList<>();
+			fields.addAll(fieldsByModel.get(relation.getOrigin()));
+			fields.addAll(fieldsByModel.get(relation.getDestination()));
+			for (DataField dataField : fields) {
+				criterion.addDataField(dataField);
+			}
+			couplingCriterionRepository.save(criterion);
 		}
 		modelRepository.save(model);
 		// TODO: remove return value and set location header to URL of generated

@@ -78,11 +78,12 @@ public class EngineService {
 	public Set<CouplingCriterion> getCouplingCriteria(@PathParam("id") Long id, @QueryParam("type") String type) {
 		Set<CouplingCriterion> result = new HashSet<>();
 		Model model = modelRepository.findOne(id);
-		CriterionType sameEntitiy = StringUtils.hasText(type) ? CriterionType.valueOf(type) : null;
+		CriterionType typeFilter = StringUtils.hasText(type) ? CriterionType.valueOf(type) : null;
 		for (DataField dataField : model.getDataFields()) {
-			for (CouplingCriterion qa : dataField.getCouplingCriteria()) {
-				if (sameEntitiy == null || sameEntitiy.equals(qa.getCriterionType())) {
-					result.add(qa);
+			for (CouplingCriterion criterion : dataField.getCouplingCriteria()) {
+				if (typeFilter == null || typeFilter.equals(criterion.getCriterionType())) {
+					// criterion.getDataFields().size(); // init list
+					result.add(criterion);
 				}
 			}
 		}

@@ -26,13 +26,42 @@ angular.module('editorApp')
     			var contextNodes = new VisDataSet([]);
     			var contextEdges = new VisDataSet([]);
     			var nodeId = 1;
+    			var entitiesById = {};
     			for (var x in $scope.model.entities) {
-    				contextNodes.add({id: nodeId, label: $scope.model.entities[x].name});
+    				var name = $scope.model.entities[x].name;
+    				contextNodes.add({id: nodeId, label: name});
+    				entitiesById[name] = nodeId;
     				nodeId++;
     			}
     			// TODO add real data!
-    			contextEdges.add({from: 1, to: 2, arrows: 'to'});
-    			contextEdges.add({from: 3, to: 4, arrows: 'to'});
+    			var relations = $scope.model['relations'];
+    			//alert(JSON.stringify(aggregations));
+    			for (var x in relations) {
+    				var relation = relations[x];
+    				if(relation.criterionType == 'COMPOSITION_ENTITY') {
+    					var names = relation.name.split('.');
+    					var from = names[0];
+    					var to = names[1];
+    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'to', width: 3};
+    					contextEdges.add(edge);
+    				}
+    				if(relation.criterionType == 'AGGREGATED_ENTITY') {
+    					var names = relation.name.split('.');
+    					var from = names[0];
+    					var to = names[1];
+    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'to', width: 1};
+    					contextEdges.add(edge);
+    				}
+    				if(relation.criterionType == 'INHERITANCE') {
+    					var names = relation.name.split('.');
+    					var from = names[0];
+    					var to = names[1];
+    					var edge = {from: entitiesById[from], to: entitiesById[to], dashes: true, arrows: 'to', width: 1};
+    					contextEdges.add(edge);
+    				}
+    			}
+//    			contextEdges.add({from: 1, to: 2, arrows: 'to'});
+//    			contextEdges.add({from: 3, to: 4, arrows: 'to'});
     	        $scope.graphData = {
 	            	'nodes': contextNodes,
 	            	'edges': contextEdges
@@ -64,9 +93,10 @@ angular.module('editorApp')
 	        		success(function(data) {
 	        			$scope.model = data;
 	            });
-        		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId + '/couplingcriteria?type=SAME_ENTITIY').
+        		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId + '/couplingcriteria').
 	        		success(function(data) {
-	        			$scope.model['entities'] = data;
+	        			$scope.model['relations'] = data;
+	        			$scope.model['entities'] = data.filter(function(item) { return item.criterionType == 'SAME_ENTITIY' ;});
                 });        		
         	}
         };

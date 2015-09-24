@@ -91,4 +91,5 @@ public class CouplingCriterion {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 }

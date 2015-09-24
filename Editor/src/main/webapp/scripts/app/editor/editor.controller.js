@@ -10,7 +10,9 @@ angular.module('editorApp')
         $scope.graphOptions = {
 			autoResize: true,
 			height: '400',
-			width: '100%'
+			width: '100%',
+			nodes: { shadow: { enabled: true, size: 5 } },
+			edges: { shadow: { enabled: true, size: 5 } }
 		};
         
         $scope.$watch('file', function () {
@@ -27,10 +29,12 @@ angular.module('editorApp')
     			var contextEdges = new VisDataSet([]);
     			var nodeId = 1;
     			var entitiesById = {};
+    			$scope.modelsById = {};
     			for (var x in $scope.model.entities) {
     				var name = $scope.model.entities[x].name;
     				contextNodes.add({id: nodeId, label: name});
     				entitiesById[name] = nodeId;
+    				$scope.modelsById[nodeId] = name;
     				nodeId++;
     			}
     			// TODO add real data!
@@ -42,32 +46,49 @@ angular.module('editorApp')
     					var names = relation.name.split('.');
     					var from = names[0];
     					var to = names[1];
-    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'to', width: 3};
+    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'middle', width: 1};
     					contextEdges.add(edge);
     				}
     				if(relation.criterionType == 'AGGREGATED_ENTITY') {
     					var names = relation.name.split('.');
     					var from = names[0];
     					var to = names[1];
-    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'to', width: 1};
+    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'middle', dashes: true, width: 1};
     					contextEdges.add(edge);
     				}
     				if(relation.criterionType == 'INHERITANCE') {
     					var names = relation.name.split('.');
     					var from = names[0];
     					var to = names[1];
-    					var edge = {from: entitiesById[from], to: entitiesById[to], dashes: true, arrows: 'to', width: 1};
+    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'to', width: 1};
     					contextEdges.add(edge);
     				}
     			}
-//    			contextEdges.add({from: 1, to: 2, arrows: 'to'});
-//    			contextEdges.add({from: 3, to: 4, arrows: 'to'});
     	        $scope.graphData = {
 	            	'nodes': contextNodes,
 	            	'edges': contextEdges
 	            };
         	}
         });
+
+        $scope.selectNode = function(param) {
+        	if(param.nodes.length > 0) { // TODO handle multi-select
+        		var firstNode = parseInt(param.nodes[0]);
+        		var selectedNode = $scope.modelsById[firstNode];
+        		$scope.$apply(function() {
+        			$scope.model.filteredDataFields = $scope.model.dataFields.filter(function(field) {return selectedNode == field.context;});
+        		});
+        	} else {
+        		$scope.$apply(function() {
+        			$scope.model.filteredDataFields = $scope.model.dataFields;
+        		});
+        	}
+        };
+
+        $scope.graphEvents = {
+        	selectNode: $scope.selectNode,
+        	deselectNode: $scope.selectNode
+        };
         
         $scope.upload = function (file) {
             if (file && !file.$error) {
@@ -92,6 +113,7 @@ angular.module('editorApp')
         		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId).
 	        		success(function(data) {
 	        			$scope.model = data;
+	        			$scope.model.filteredDataFields = $scope.model.dataFields;
 	            });
         		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId + '/couplingcriteria').
 	        		success(function(data) {
@@ -119,5 +141,6 @@ angular.module('editorApp')
         $scope.status = 'No upload yet.';
         $scope.modelId = 0;
         $scope.model = null;
+        $scope.modelsById = {};
         $scope.loadConfig();
     }]);

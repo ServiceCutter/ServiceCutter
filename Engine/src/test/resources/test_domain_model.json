@@ -81,7 +81,10 @@
       "name": "DVD",
       "attributes": [
         {
-          "name": "hersteller"
+          "name": "einkaufsDatum"
+        },
+        {
+          "name": "einkaufsPreis"
         }
       ]
     },

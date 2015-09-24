@@ -1,12 +1,17 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('EditorController', ['$scope', '$http', 'Principal', 'Upload', function ($scope, $http, Principal, Upload) {
+    .controller('EditorController', ['$scope', '$http', 'Principal', 'Upload', 'VisDataSet', function ($scope, $http, Principal, Upload, VisDataSet) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
         
+        $scope.graphOptions = {
+			autoResize: true,
+			height: '400',
+			width: '100%'
+		};
         
         $scope.$watch('file', function () {
         	$scope.upload($scope.file);
@@ -14,6 +19,25 @@ angular.module('editorApp')
         
         $scope.$watch('modelId', function () {
         	$scope.showModel();
+        });
+        
+        $scope.$watch("model['entities']", function () {
+        	if ($scope.model != null && $scope.model.entities != null) {
+    			var contextNodes = new VisDataSet([]);
+    			var contextEdges = new VisDataSet([]);
+    			var nodeId = 1;
+    			for (var x in $scope.model.entities) {
+    				contextNodes.add({id: nodeId, label: $scope.model.entities[x].name});
+    				nodeId++;
+    			}
+    			// TODO add real data!
+    			contextEdges.add({from: 1, to: 2, arrows: 'to'});
+    			contextEdges.add({from: 3, to: 4, arrows: 'to'});
+    	        $scope.graphData = {
+	            	'nodes': contextNodes,
+	            	'edges': contextEdges
+	            };
+        	}
         });
         
         $scope.upload = function (file) {

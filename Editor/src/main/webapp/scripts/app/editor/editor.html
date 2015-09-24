@@ -19,19 +19,14 @@
 
 				<span>{{status}}</span>
             </form>
-			
+            
+            <vis-network data="graphData" options="graphOptions"></vis-network>
 			
 			<div ng-show="modelId">
 			
 				<h2>Model #{{modelId}}</h2>
 				
 				<p>Name: <strong>{{model.name}}</strong></p>
-				
-				<p>Entities:</p>
-				
-				<ul>
-					<li ng-repeat="entity in model.entities">#{{entity.id}} - {{entity.name}}</li>
-				</ul>
 				
 				<p>Data Fields:</p>
 				

@@ -1,35 +1,36 @@
 {
-    "name": "editor",
-    "version": "0.0.0",
-    "appPath": "src/main/webapp",
-    "testPath": "src/test/javascript/spec",
-    "dependencies": {
-        "angular": "1.4.5",
-        "angular-aria": "1.4.5",
-        "angular-bootstrap": "0.13.3",
-        "angular-cache-buster": "0.4.3",
-        "angular-cookies": "1.4.5",
-        "angular-local-storage": "0.2.2",
-        "angular-resource": "1.4.5",
-        "angular-sanitize": "1.4.5",
-        "angular-ui-router": "0.2.15",
-        "bootstrap-sass": "3.3.5",
-        "jquery": "2.1.4",
-        "json3": "3.3.2",
-        "modernizr": "2.8.3",
-        "ng-file-upload": "7.0.17",
-        "ngInfiniteScroll": "1.2.0",
-        "sockjs-client": "1.0.3",
-        "stomp-websocket": "2.3.4",
-        "swagger-ui": "2.1.2"
-    },
-    "devDependencies": {
-        "angular-mocks": "1.4.5",
-        "angular-scenario": "1.4.5"
-    },
-    "resolutions": {
-        "angular": "1.4.5",
-        "angular-cookies": "1.4.5",
-        "jquery": "2.1.4"
-    }
+  "name": "editor",
+  "version": "0.0.0",
+  "appPath": "src/main/webapp",
+  "testPath": "src/test/javascript/spec",
+  "dependencies": {
+    "angular": "1.4.5",
+    "angular-aria": "1.4.5",
+    "angular-bootstrap": "0.13.3",
+    "angular-cache-buster": "0.4.3",
+    "angular-cookies": "1.4.5",
+    "angular-local-storage": "0.2.2",
+    "angular-resource": "1.4.5",
+    "angular-sanitize": "1.4.5",
+    "angular-ui-router": "0.2.15",
+    "angular-visjs": "~4.0.2",
+    "bootstrap-sass": "3.3.5",
+    "jquery": "2.1.4",
+    "json3": "3.3.2",
+    "modernizr": "2.8.3",
+    "ng-file-upload": "7.0.17",
+    "ngInfiniteScroll": "1.2.0",
+    "sockjs-client": "1.0.3",
+    "stomp-websocket": "2.3.4",
+    "swagger-ui": "2.1.2"
+  },
+  "devDependencies": {
+    "angular-mocks": "1.4.5",
+    "angular-scenario": "1.4.5"
+  },
+  "resolutions": {
+    "angular": "1.4.5",
+    "angular-cookies": "1.4.5",
+    "jquery": "2.1.4"
+  }
 }

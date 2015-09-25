@@ -20,9 +20,12 @@
 				<span>{{status}}</span>
             </form>
             
-            <vis-network data="graphData" options="graphOptions" events="graphEvents"></vis-network>
-			
 			<div ng-show="modelId">
+
+	            <div class="graph-container" ngsf-fullscreen>
+	            	<vis-network data="graphData" options="graphOptions" events="graphEvents"></vis-network>
+		            <button class="btn btn-default" ngsf-toggle-fullscreen><span class="glyphicon glyphicon-resize-full"></span></button>
+	            </div>
 			
 				<h2>Model #{{modelId}}</h2>
 				

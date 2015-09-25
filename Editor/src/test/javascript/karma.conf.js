@@ -22,6 +22,8 @@ module.exports = function (config) {
             'main/webapp/bower_components/angular-local-storage/dist/angular-local-storage.js',
             'main/webapp/bower_components/angular-resource/angular-resource.js',
             'main/webapp/bower_components/angular-sanitize/angular-sanitize.js',
+            'main/webapp/bower_components/screenfull/dist/screenfull.js',
+            'main/webapp/bower_components/angular-screenfull/dist/angular-screenfull.js',
             'main/webapp/bower_components/angular-ui-router/release/angular-ui-router.js',
             'main/webapp/bower_components/vis/dist/vis.min.js',
             'main/webapp/bower_components/angular-visjs/angular-vis.js',

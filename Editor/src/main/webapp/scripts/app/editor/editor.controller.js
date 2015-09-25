@@ -9,7 +9,7 @@ angular.module('editorApp')
         
         $scope.graphOptions = {
 			autoResize: true,
-			height: '400',
+			height: '100%',
 			width: '100%',
 			nodes: { shadow: { enabled: true, size: 5 } },
 			edges: { shadow: { enabled: true, size: 5 } }
@@ -84,10 +84,15 @@ angular.module('editorApp')
         		});
         	}
         };
+        
+        $scope.graphResize = function(param) {
+        	this.fit(); // Zooms out so all nodes fit on the canvas.
+        };
 
         $scope.graphEvents = {
         	selectNode: $scope.selectNode,
-        	deselectNode: $scope.selectNode
+        	deselectNode: $scope.selectNode,
+        	resize: $scope.graphResize
         };
         
         $scope.upload = function (file) {
@@ -136,11 +141,12 @@ angular.module('editorApp')
 	    		success(function(data) {
 	    			$scope.availableModels = data;
             });
-        }
+        };
         
         $scope.status = 'No upload yet.';
         $scope.modelId = 0;
         $scope.model = null;
+        $scope.isFullScreen = false;
         $scope.modelsById = {};
         $scope.loadConfig();
     }]);

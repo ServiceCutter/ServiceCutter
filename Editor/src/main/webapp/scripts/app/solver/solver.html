@@ -12,23 +12,14 @@
 	
 				<span>{{status}}</span>
             </form>
-            
-            <!-- ng-show="graphLoaded" events="graphEvents" -->
-            <vis-network data="graphData" options="graphOptions"></vis-network>
-            
+
             <div ng-show="modelId">
+
+				<div class="graph-container" ngsf-fullscreen>
+	            	<vis-network data="graphData" options="graphOptions" events="graphEvents"></vis-network>
+	            	<button class="btn btn-default" ngsf-toggle-fullscreen><span class="glyphicon glyphicon-resize-full"></span></button>
+		        </div>
             
-	            <h2>List of Bounded Contexts</h2>
-	            
-				<div ng-repeat="bc in boundedContexts" class="panel panel-default">
-					<div class="panel-heading">BC Name</div>
-					<div class="panel-body">
-						<ul>
-							<li ng-repeat="field in bc.dataFields">{{field}}</li>
-						</ul>
-					</div>
-				</div>
-	            
 			</div>
         </div>
     </div>

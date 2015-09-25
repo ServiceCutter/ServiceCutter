@@ -9,9 +9,17 @@ angular.module('editorApp')
         
         $scope.graphOptions = {
 			autoResize: true,
-			height: '400',
+			height: '100%',
 			width: '100%'
 		};
+        
+        $scope.graphResize = function(param) {
+        	this.fit(); // Zooms out so all nodes fit on the canvas.
+        };
+
+        $scope.graphEvents = {
+        	resize: $scope.graphResize
+        };
         
         $scope.$watch('modelId', function () {
         	$scope.solveModel($scope.modelId);

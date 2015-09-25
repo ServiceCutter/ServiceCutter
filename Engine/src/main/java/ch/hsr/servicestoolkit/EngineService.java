@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -115,8 +116,8 @@ public class EngineService {
 		}
 	}
 
-	@PUT
-	@Path("/models/{modelName}")
+	@POST
+	@Path("/models")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Model createModel(Model model, @PathParam("modelName") String modelName) {

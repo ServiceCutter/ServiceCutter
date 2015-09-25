@@ -56,17 +56,17 @@ public class SolverEndpointTest {
 		DomainModel model = IntegrationTestHelper.readDomainModelFromFile("test_domain_model.json");
 
 		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
-		ResponseEntity<Map<String, Object>> modelResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST,
-				request, new ParameterizedTypeReference<Map<String, Object>>() {
+		ResponseEntity<Map<String, Object>> modelResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,
+				new ParameterizedTypeReference<Map<String, Object>>() {
 				});
 
 		Integer modelId = (Integer) modelResponse.getBody().get("id");
-		ResponseEntity<Set<BoundedContext>> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId,
-				HttpMethod.POST, IntegrationTestHelper.createHttpRequestWithPostObj(config), new ParameterizedTypeReference<Set<BoundedContext>>() {
+		ResponseEntity<Set<BoundedContext>> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST,
+				IntegrationTestHelper.createHttpRequestWithPostObj(config), new ParameterizedTypeReference<Set<BoundedContext>>() {
 				});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
-		assertEquals(6, solverResponse.getBody().size()); // 6 entities defined
+		assertEquals(9, solverResponse.getBody().size()); // 6 entities defined
 
 	}
 

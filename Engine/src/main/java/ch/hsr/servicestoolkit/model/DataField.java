@@ -11,6 +11,7 @@ import javax.persistence.ManyToMany;
 import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class DataField {
@@ -63,6 +64,7 @@ public class DataField {
 		this.context = context;
 	}
 
+	@JsonProperty
 	public String getContextName() {
 		return (StringUtils.hasText(context) ? context + "." : "") + name;
 	}

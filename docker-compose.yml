@@ -17,6 +17,7 @@ editor:
   environment:
     POSTGRES_USER: "editor"
     POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
+    ENGINE_LINK: "http://sinv-56064.edu.hsr.ch:40000"
 
 engine:
   image: services-toolkit/engine

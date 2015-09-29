@@ -26,6 +26,11 @@
 			<name>Gephi Releases</name>
 			<url>http://nexus.gephi.org/nexus/content/repositories/releases/</url>
 		</repository>
+		<repository>
+			<id>project-3rd-party</id>
+			<name>Project 3rd Party JARs</name>
+			<url>http://sinv-56064.edu.hsr.ch/nexus/content/repositories/thirdparty</url>
+		</repository>
 	</repositories>
 
 	<!-- Add typical dependencies for a web application -->
@@ -81,22 +86,16 @@
 			<groupId>org.gephi</groupId>
 			<artifactId>newman-plugin</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/girvan_newman_gephi_plugin.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.gephi</groupId>
 			<artifactId>newman-plugin-missing-dependencies</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/girvan_newman_missing_dependencies.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.gephi</groupId>
 			<artifactId>markov_cluster_gephi_plugin</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/markov_cluster_gephi_plugin.jar</systemPath>
 		</dependency>
 		<!-- needed for markov clusterer -->
 		<dependency>

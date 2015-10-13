@@ -15,11 +15,11 @@ angular.module('editorApp')
 			edges: { shadow: { enabled: true, size: 5 } }
 		};
         $scope.$watch('file', function () {
-        	$scope.upload($scope.file, 'model', 'status');
+        	$scope.upload($scope.file, 'model', 'status', true);
         });
         
         $scope.$watch('transactionsFile', function () {
-        	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/transactions', 'transactionStatus');
+        	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/transactions', 'transactionStatus', false);
         });
         
         $scope.$watch('modelId', function () {
@@ -98,7 +98,7 @@ angular.module('editorApp')
         	resize: $scope.graphResize
         };
         
-        $scope.upload = function (file, url, statusField) {
+        $scope.upload = function (file, url, statusField, reload) {
             if (file && !file.$error) {
             	$scope[statusField] = 'Uploading...';
 				Upload.upload({
@@ -106,9 +106,11 @@ angular.module('editorApp')
 					file: file,
 					progress: function(e){}
 				}).success(function(data, status, headers, config) {
-					$scope[statusField] = data['message'];
-					$scope.loadAvailableModels();
-					$scope.modelId = parseInt(data['id']);
+					$scope[statusField] = 'Upload successful!';
+					if(reload){
+						$scope.loadAvailableModels();
+						$scope.modelId = parseInt(data['id']);
+					}
 				}).error(function (data, status, headers, config) {
 					$scope[statusField] = 'Upload failed! (' + data['error'] + ')';
 		        }); 

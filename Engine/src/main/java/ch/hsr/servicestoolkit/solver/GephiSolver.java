@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CriterionType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
@@ -78,8 +77,7 @@ public class GephiSolver {
 		previewModel.getProperties().putValue(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.GRAY));
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
-		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT,
-				previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(20));
+		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT, previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(20));
 
 		// Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
@@ -147,22 +145,19 @@ public class GephiSolver {
 	private void buildEdges() {
 		for (CouplingCriterion criterion : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
-			// TODO: remove filter or extract parameter
-			if (criterion.getCriterionType().equals(CriterionType.SAME_ENTITIY)) {
-				for (int i = 0; i < criterion.getDataFields().size(); i++) {
-					for (int j = i + 1; j < criterion.getDataFields().size(); j++) {
-						float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
-						Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
-						Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
-						Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
-						if (existingEdge != null) {
-							log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
-							existingEdge.setWeight(existingEdge.getWeight() + weight);
-						} else {
-							log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
-							Edge edge = graphModel.factory().newEdge(nodeA, nodeB, weight, false);
-							undirectedGraph.addEdge(edge);
-						}
+			for (int i = 0; i < criterion.getDataFields().size(); i++) {
+				for (int j = i + 1; j < criterion.getDataFields().size(); j++) {
+					float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
+					Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
+					Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
+					Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
+					if (existingEdge != null) {
+						log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
+						existingEdge.setWeight(existingEdge.getWeight() + weight);
+					} else {
+						log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
+						Edge edge = graphModel.factory().newEdge(nodeA, nodeB, weight, false);
+						undirectedGraph.addEdge(edge);
 					}
 				}
 			}

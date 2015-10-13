@@ -8,7 +8,9 @@ endpoints.jolokia.enabled: false
 # security configuration (this key should be unique for your application, and kept secret)
 jhipster.security.rememberme.key: 4af236f585750c12ea6878ba281cedb21d7ad1ec
 
-application.links.engine: http://localhost:8090
+application.links.engine:
+    host: localhost
+    port: 8090
 
 async:
     corePoolSize: 2

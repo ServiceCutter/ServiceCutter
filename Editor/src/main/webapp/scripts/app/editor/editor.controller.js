@@ -120,29 +120,21 @@ angular.module('editorApp')
         
         $scope.showModel = function () {
         	if($scope.modelId != 0) {
-        		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId).
+        		$http.get('/api/engine/models/' + $scope.modelId).
 	        		success(function(data) {
 	        			$scope.model = data;
 	        			$scope.model.filteredDataFields = $scope.model.dataFields;
 	            });
-        		$http.get($scope.config['engineUrl'] + '/engine/models/' + $scope.modelId + '/couplingcriteria').
+        		$http.get('/api/engine/models/' + $scope.modelId + '/couplingcriteria').
 	        		success(function(data) {
 	        			$scope.model['relations'] = data;
 	        			$scope.model['entities'] = data.filter(function(item) { return item.criterionType == 'SAME_ENTITIY' ;});
                 });        		
         	}
         };
-
-        $scope.loadConfig = function () {
-    		$http.get('/api/editor/config').
-	    		success(function(data) {
-	    			$scope.config = data;
-	    			$scope.loadAvailableModels();
-            });
-        };
         
         $scope.loadAvailableModels = function () {
-    		$http.get($scope.config['engineUrl'] + '/engine/models').
+    		$http.get('api/engine/models').
 	    		success(function(data) {
 	    			$scope.availableModels = data;
             });
@@ -153,5 +145,5 @@ angular.module('editorApp')
         $scope.model = null;
         $scope.isFullScreen = false;
         $scope.modelsById = {};
-        $scope.loadConfig();
+        $scope.loadAvailableModels();
     }]);

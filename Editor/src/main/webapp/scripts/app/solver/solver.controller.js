@@ -28,7 +28,7 @@ angular.module('editorApp')
         $scope.solveModel = function(modelId) {
         	if(parseInt(modelId) > 0) {
         		var solverConfig = {'weights': {'SAME_ENTITIY': 1}};
-        		$http.post($scope.config['engineUrl'] + '/engine/solver/' + modelId, solverConfig).
+        		$http.post('/api/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
 		    			$scope.boundedContexts = data;
 		    			var contextNodes = new VisDataSet([]);
@@ -54,21 +54,13 @@ angular.module('editorApp')
         	}
         }
         
-        $scope.loadConfig = function () {
-    		$http.get('/api/editor/config').
-	    		success(function(data) {
-	    			$scope.config = data;
-	    			$scope.loadAvailableModels();
-            });
-        };
-
         $scope.loadAvailableModels = function () {
-    		$http.get($scope.config['engineUrl'] + '/engine/models').
+    		$http.get('/api/engine/models').
 	    		success(function(data) {
 	    			$scope.availableModels = data;
             });
         }
         
-        $scope.loadConfig();
+        $scope.loadAvailableModels();
         
     }]);

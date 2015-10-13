@@ -1,0 +1,28 @@
+[
+	{
+		"fieldsRead": [],
+		"fieldsWritten":["firstname","name","street","city","creditCard","accountNr"],
+		"name":"createCusomter",
+		"frequency":0.2
+	},
+	{	"fieldsRead": ["price"],
+		"fieldsWritten":["bookingDate","paymentDate","totalPrice","bookingState"],
+		"name":"createBooking",
+		"frequency":0.7
+	},
+	{	"fieldsRead": [],
+		"fieldsWritten":["articleName", "price", "serial"],
+		"name":"createArticle",
+		"frequency":0.1
+	},
+	{	"fieldsRead": ["articleName", "price", "serial"],
+		"fieldsWritten":[],
+		"name":"searchArticles",
+		"frequency":0.9
+	},
+	{	"fieldsRead": ["creditCard"],
+		"fieldsWritten":["paymentDate", "bookingState"],
+		"name":"payBooking",
+		"frequency":0.7
+	}
+]

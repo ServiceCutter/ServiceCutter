@@ -20,18 +20,21 @@ public class Model {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "model")
-	private List<DataField> dataFields = new ArrayList<DataField>();
+	private List<DataField> dataFields = new ArrayList<>();
 
 	public List<DataField> getDataFields() {
 		return dataFields;
 	}
 
-	void setDataFields(List<DataField> dataFields) {
-		this.dataFields = dataFields;
-	}
-
 	public void addDataField(DataField dataField) {
 		dataFields.add(dataField);
+	}
+
+	public void setDataFields(List<DataField> dataFields) {
+		this.dataFields.clear();
+		if (dataFields != null) {
+			this.dataFields.addAll(dataFields);
+		}
 	}
 
 	public Long getId() {

@@ -1,6 +1,7 @@
 package ch.hsr.servicestoolkit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -43,7 +44,8 @@ public class DomainModelImportTest {
 				});
 
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
-		// model 1319051726 has been created
+
+		assertNotNull(entity.getBody().get("id"));
 		assertTrue(((String) entity.getBody().get("message")).startsWith("model "));
 	}
 

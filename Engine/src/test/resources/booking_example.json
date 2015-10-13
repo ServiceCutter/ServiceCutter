@@ -1,0 +1,70 @@
+{
+  "entities": [
+    {
+      "name": "Customer",
+      "attributes": [
+        {
+          "name": "firstname"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "street"
+        },
+        {
+          "name": "city"
+        },
+        {
+          "name": "accountNr"
+        },
+        {
+          "name": "creditCard"
+        }
+      ]
+    },
+    {
+      "name": "Booking",
+      "attributes": [
+        {
+          "name": "bookingDate"
+        },
+        {
+          "name": "paymentDate"
+        },
+        {
+          "name": "totalPrice"
+        },
+        {
+          "name": "bookingState"
+        }
+      ]
+    },
+    {
+      "name": "Article",
+      "attributes": [
+        {
+          "name": "articleName"
+        },
+        {
+          "name": "price"
+        },
+        {
+          "name": "serial"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "origin": "Booking",
+      "destination": "Article",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Booking",
+      "destination": "Customer",
+      "type": "AGGREGATION"
+    }
+  ]
+}

@@ -17,5 +17,5 @@
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/Engine}"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/engine}"/>
 </launchConfiguration>

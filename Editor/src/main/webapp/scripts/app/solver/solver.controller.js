@@ -27,7 +27,7 @@ angular.module('editorApp')
 
         $scope.solveModel = function(modelId) {
         	if(parseInt(modelId) > 0) {
-        		var solverConfig = {'weights': {'SAME_ENTITIY': 1}};
+        		var solverConfig = {'weights': {'SAME_ENTITIY': 0.2,'COMPOSITION_ENTITY':0.2,'WRITE_BUSINESS_TRANSACTION':0.4,'READ_WRITE_BUSINESS_TRANSACTION':0.2,'READ_BUSINESS_TRANSACTION':0.1}};
         		$http.post($scope.config['engineUrl'] + '/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
 		    			$scope.boundedContexts = data;

@@ -119,16 +119,16 @@ public class ImportEndpoint {
 
 			for (int i = 0; i < fieldsRead.size(); i++) {
 				for (int j = i + 1; j < fieldsRead.size(); j++) {
-					saveCriterion(CriterionType.READ_BUSINESS_TRANSACTION, fieldsRead.get(i), fieldsRead.get(j));
+					saveCriterion(model, CriterionType.READ_BUSINESS_TRANSACTION, fieldsRead.get(i), fieldsRead.get(j));
 				}
 				for (int k = 0; k < fieldsWritten.size(); k++) {
 					// it can be that a field is both defined in fieldsRead and
 					// fieldsWritten. Don't add criterion on itself
 					if (!fieldsRead.get(i).equals(fieldsWritten.get(k))) {
-						saveCriterion(CriterionType.READ_WRITE_BUSINESS_TRANSACTION, fieldsRead.get(i), fieldsWritten.get(k));
+						saveCriterion(model, CriterionType.READ_WRITE_BUSINESS_TRANSACTION, fieldsRead.get(i), fieldsWritten.get(k));
 					}
 					for (int l = k + 1; l < fieldsWritten.size(); l++) {
-						saveCriterion(CriterionType.WRITE_BUSINESS_TRANSACTION, fieldsWritten.get(k), fieldsWritten.get(l));
+						saveCriterion(model, CriterionType.WRITE_BUSINESS_TRANSACTION, fieldsWritten.get(k), fieldsWritten.get(l));
 					}
 
 				}
@@ -137,20 +137,20 @@ public class ImportEndpoint {
 
 	}
 
-	private void saveCriterion(final CriterionType type, final String... fields) {
+	private void saveCriterion(final Model model, final CriterionType type, final String... fields) {
 		CouplingCriterion criterion = new CouplingCriterion();
 		criterion.setCriterionType(type);
 		for (String field : fields) {
-			DataField dataField = dataFieldRepository.findByName(field);
+			DataField dataField = dataFieldRepository.findByNameAndModel(field, model);
 			if (dataField == null) {
-				log.error("DataField with name {} nod fount!", field);
-				continue;
+				log.error("DataField with name {} nod found! Criterion not saved", field);
+				return;
 			}
 			dataField.addCouplingCriterion(criterion);
 			criterion.addDataField(dataField);
 		}
 
-		log.info("save coupling criterion of type {} on fiels {}", type.name(), Arrays.toString(fields));
+		log.info("save coupling criterion of type {} on fields {}", type.name(), Arrays.toString(fields));
 		couplingCriterionRepository.save(criterion);
 	}
 

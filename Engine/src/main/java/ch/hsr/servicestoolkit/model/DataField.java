@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 import org.springframework.util.StringUtils;
 
@@ -22,6 +23,9 @@ public class DataField {
 	private String name;
 	private String context;
 
+	@ManyToOne
+	private Model model;
+
 	@ManyToMany(mappedBy = "dataFields")
 	private List<CouplingCriterion> couplingCriteria = new ArrayList<>();
 
@@ -29,7 +33,7 @@ public class DataField {
 		return couplingCriteria;
 	}
 
-	public void setCouplingCriteria(List<CouplingCriterion> couplingCriteria) {
+	public void setCouplingCriteria(final List<CouplingCriterion> couplingCriteria) {
 		this.couplingCriteria.clear();
 		if (couplingCriteria != null) {
 			this.couplingCriteria.addAll(couplingCriteria);
@@ -40,7 +44,7 @@ public class DataField {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -48,11 +52,19 @@ public class DataField {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
-	public void addCouplingCriterion(CouplingCriterion criterion) {
+	public Model getModel() {
+		return model;
+	}
+
+	public void setModel(final Model model) {
+		this.model = model;
+	}
+
+	public void addCouplingCriterion(final CouplingCriterion criterion) {
 		this.couplingCriteria.add(criterion);
 	}
 
@@ -60,7 +72,7 @@ public class DataField {
 		return context;
 	}
 
-	public void setContext(String context) {
+	public void setContext(final String context) {
 		this.context = context;
 	}
 
@@ -70,7 +82,7 @@ public class DataField {
 	}
 
 	@JsonIgnore
-	public void setContextName(String foo) {
+	public void setContextName(final String foo) {
 		// do nothing
 	}
 

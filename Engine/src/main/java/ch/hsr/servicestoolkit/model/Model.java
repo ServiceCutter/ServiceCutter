@@ -26,11 +26,11 @@ public class Model {
 		return dataFields;
 	}
 
-	public void addDataField(DataField dataField) {
+	public void addDataField(final DataField dataField) {
 		dataFields.add(dataField);
 	}
 
-	public void setDataFields(List<DataField> dataFields) {
+	public void setDataFields(final List<DataField> dataFields) {
 		this.dataFields.clear();
 		if (dataFields != null) {
 			this.dataFields.addAll(dataFields);
@@ -45,8 +45,38 @@ public class Model {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Model other = (Model) obj;
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		return true;
 	}
 
 }

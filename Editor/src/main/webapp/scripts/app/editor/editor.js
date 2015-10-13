@@ -15,7 +15,7 @@ angular.module('editorApp')
                         controller: 'EditorController'
                     }
                 },
-                resolve: {
+                resolve: { 
                     
                 }
             });

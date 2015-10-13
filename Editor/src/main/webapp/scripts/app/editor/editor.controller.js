@@ -4,7 +4,7 @@ angular.module('editorApp')
     .controller('EditorController', ['$scope', '$http', 'Principal', 'Upload', 'VisDataSet', function ($scope, $http, Principal, Upload, VisDataSet) {
         Principal.identity().then(function(account) {
             $scope.account = account;
-            $scope.isAuthenticated = Principal.isAuthenticated;
+            $scope.isAuthenticated = Principal.isAuthenticated; 
         });
         
         $scope.graphOptions = {
@@ -14,9 +14,12 @@ angular.module('editorApp')
 			nodes: { shadow: { enabled: true, size: 5 } },
 			edges: { shadow: { enabled: true, size: 5 } }
 		};
-        
         $scope.$watch('file', function () {
-        	$scope.upload($scope.file);
+        	$scope.upload($scope.file, 'model', 'status');
+        });
+        
+        $scope.$watch('transactionsFile', function () {
+        	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/transactions', 'transactionStatus');
         });
         
         $scope.$watch('modelId', function () {
@@ -95,19 +98,19 @@ angular.module('editorApp')
         	resize: $scope.graphResize
         };
         
-        $scope.upload = function (file) {
+        $scope.upload = function (file, url, statusField) {
             if (file && !file.$error) {
-            	$scope.status = 'Uploading...';
+            	$scope[statusField] = 'Uploading...';
 				Upload.upload({
-					url: 'api/editor/upload',
+					url: 'api/editor/'+url,
 					file: file,
 					progress: function(e){}
 				}).success(function(data, status, headers, config) {
-					$scope.status = data['message'];
+					$scope[statusField] = data['message'];
 					$scope.loadAvailableModels();
 					$scope.modelId = parseInt(data['id']);
 				}).error(function (data, status, headers, config) {
-					$scope.status = 'Upload failed! (' + data['error'] + ')';
+					$scope[statusField] = 'Upload failed! (' + data['error'] + ')';
 		        }); 
 
             }

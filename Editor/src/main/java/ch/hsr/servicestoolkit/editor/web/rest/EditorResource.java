@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,9 +46,9 @@ public class EditorResource {
 
 	}
 
-	@RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/model", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity<?> uploadModelFile(@RequestParam("file") final MultipartFile file) {
 		ResponseEntity<?> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		try {
 			String theString = IOUtils.toString(file.getInputStream());
@@ -61,6 +62,27 @@ public class EditorResource {
 			Map<String, Object> serviceResponse = responseEntity.getBody();
 			log.debug("importer response: {}", serviceResponse);
 			result = new ResponseEntity<>(serviceResponse, HttpStatus.CREATED);
+		} catch (IOException e) {
+			log.error("", e);
+		}
+		return result;
+	}
+
+	@RequestMapping(value = "/model/{modelId}/transactions", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity<Void> uploadBusinessTransactionFile(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
+		ResponseEntity<Void> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		try {
+			String theString = IOUtils.toString(file.getInputStream());
+			log.debug("modelId:{}", modelId);
+			log.debug("file content:{}", theString);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
+			String path = engineUrl + "/engine/import/" + modelId + "/businessTransactions/";
+			log.debug("post transactions on {}", path);
+			ResponseEntity<Void> responseEntity = rest.exchange(path, HttpMethod.POST, requestEntity, Void.class);
+			result = new ResponseEntity<Void>(responseEntity.getStatusCode());
 		} catch (IOException e) {
 			log.error("", e);
 		}

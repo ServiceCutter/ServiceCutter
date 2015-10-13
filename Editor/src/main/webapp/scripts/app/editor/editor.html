@@ -25,7 +25,7 @@
 	            <div class="graph-container" ngsf-fullscreen>
 	            	<vis-network data="graphData" options="graphOptions" events="graphEvents"></vis-network>
 		            <button class="btn btn-default" ngsf-toggle-fullscreen><span class="glyphicon glyphicon-resize-full"></span></button>
-	            </div>
+	            </div> 
 			
 				<h2>Model #{{modelId}}</h2>
 				
@@ -39,6 +39,16 @@
 			
 			</div>
 			
+			<div ng-show="modelId">
+				 <form class="form-inline">
+					<p>Upload user story definitions for model #{{modelId}}:
+					<div class="btn btn-default" ngf-select ng-model="transactionsFile" ngf-multiple="false">Upload user stories</div>
+
+					<span>{{transactionStatus}}</span>
+					</p>
+	            </form>
+            </div>
+
         </div>
     </div>
 </div>

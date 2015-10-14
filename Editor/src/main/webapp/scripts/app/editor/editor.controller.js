@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('EditorController', ['$scope', '$http', 'Principal', 'Upload', 'VisDataSet', function ($scope, $http, Principal, Upload, VisDataSet) {
+    .controller('EditorController', function ($scope, $http, Principal, Upload, VisDataSet, Model) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated; 
@@ -120,30 +120,20 @@ angular.module('editorApp')
         
         $scope.showModel = function () {
         	if($scope.modelId != 0) {
-        		$http.get('/api/engine/models/' + $scope.modelId).
-	        		success(function(data) {
-	        			$scope.model = data;
-	        			$scope.model.filteredDataFields = $scope.model.dataFields;
-	            });
-        		$http.get('/api/engine/models/' + $scope.modelId + '/couplingcriteria').
-	        		success(function(data) {
-	        			$scope.model['relations'] = data;
-	        			$scope.model['entities'] = data.filter(function(item) { return item.criterionType == 'SAME_ENTITIY' ;});
-                });        		
+        		$scope.model = Model.get({id:$scope.modelId}, function(model) {
+        			$scope.model.filteredDataFields = model.dataFields
+        		});
+        		Model.getCoupling({id:$scope.modelId}, function(coupling) {
+        			$scope.model['relations'] = coupling;
+        			$scope.model['entities'] = coupling.filter(function(item) { return item.criterionType == 'SAME_ENTITIY' ;});
+
+        		});
         	}
-        };
-        
-        $scope.loadAvailableModels = function () {
-    		$http.get('api/engine/models').
-	    		success(function(data) {
-	    			$scope.availableModels = data;
-            });
         };
         
         $scope.status = 'No upload yet.';
         $scope.modelId = 0;
         $scope.model = null;
-        $scope.isFullScreen = false;
         $scope.modelsById = {};
-        $scope.loadAvailableModels();
-    }]);
+        $scope.availableModels = Model.all();
+    });

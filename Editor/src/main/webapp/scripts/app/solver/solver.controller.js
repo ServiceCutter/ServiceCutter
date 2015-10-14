@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('SolverController', ['$scope', '$http', 'Principal', 'VisDataSet', function ($scope, $http, Principal, VisDataSet) {
+    .controller('SolverController', function ($scope, $http, Principal, VisDataSet, Model) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -54,13 +54,6 @@ angular.module('editorApp')
         	}
         }
         
-        $scope.loadAvailableModels = function () {
-    		$http.get('/api/engine/models').
-	    		success(function(data) {
-	    			$scope.availableModels = data;
-            });
-        }
+        $scope.availableModels = Model.all();
         
-        $scope.loadAvailableModels();
-        
-    }]);
+    });

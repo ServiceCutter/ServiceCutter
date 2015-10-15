@@ -41,7 +41,7 @@ public class EngineService {
 	private CouplingCriterionRepository couplingCriterionRepository;
 
 	@Autowired
-	public EngineService(ModelRepository modelRepository, DataFieldRepository dataRepository, CouplingCriterionRepository couplingCriterionRepository) {
+	public EngineService(final ModelRepository modelRepository, final DataFieldRepository dataRepository, final CouplingCriterionRepository couplingCriterionRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
@@ -66,7 +66,7 @@ public class EngineService {
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public Model getModel(@PathParam("id") Long id) {
+	public Model getModel(@PathParam("id") final Long id) {
 		Model result = modelRepository.findOne(id);
 		result.getDataFields().size(); // init lazy collection
 		return result;
@@ -76,7 +76,7 @@ public class EngineService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/models/{id}/couplingcriteria")
 	@Transactional
-	public Set<CouplingCriterion> getCouplingCriteria(@PathParam("id") Long id, @QueryParam("type") String type) {
+	public Set<CouplingCriterion> getCouplingCriteria(@PathParam("id") final Long id, @QueryParam("type") final String type) {
 		Set<CouplingCriterion> result = new HashSet<>();
 		Model model = modelRepository.findOne(id);
 		CriterionType typeFilter = StringUtils.hasText(type) ? CriterionType.valueOf(type) : null;
@@ -96,13 +96,13 @@ public class EngineService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/models/{id}/couplingcriteria")
 	@Transactional
-	public void storeCouplingCriteria(Set<CouplingCriterion> criteria, @PathParam("id") Long id) {
+	public void storeCouplingCriteria(final Set<CouplingCriterion> criteria, @PathParam("id") final Long id) {
 		Model model = modelRepository.findOne(id);
 		// TODO: refactor
 		for (CouplingCriterion inputCriterion : criteria) {
 			CouplingCriterion mappedСriterion = new CouplingCriterion();
 			for (DataField inputDataField : inputCriterion.getDataFields()) {
-				DataField dbDataField = findDbDataField(model.getDataFields(), inputDataField.getName());
+				DataField dbDataField = dataRepository.findByNameAndModel(inputDataField.getName(), model);
 				if (dbDataField == null) {
 					throw new IllegalArgumentException("referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
 				}
@@ -120,7 +120,7 @@ public class EngineService {
 	@Path("/models")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Model createModel(Model model, @PathParam("modelName") String modelName) {
+	public Model createModel(Model model, @PathParam("modelName") final String modelName) {
 		final String finalModelName = getNameForModel(model, modelName);
 		if (model == null) {
 			model = new Model();
@@ -132,17 +132,7 @@ public class EngineService {
 		return model;
 	}
 
-	// TODO: put this in a repository
-	private DataField findDbDataField(List<DataField> dataFields, String name) {
-		for (DataField field : dataFields) {
-			if (field.getName().equals(name)) {
-				return field;
-			}
-		}
-		return null;
-	}
-
-	private String getNameForModel(Model model, String name) {
+	private String getNameForModel(final Model model, final String name) {
 		String modelName = (model == null || StringUtils.isEmpty(model.getName())) ? null : model.getName();
 		if (modelName == null && StringUtils.isEmpty(name)) {
 			throw new IllegalArgumentException("no name defined for model");

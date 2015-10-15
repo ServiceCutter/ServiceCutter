@@ -24,6 +24,7 @@ public class DataField {
 	private String context;
 
 	@ManyToOne
+	@JsonIgnore
 	private Model model;
 
 	@ManyToMany(mappedBy = "dataFields")

@@ -76,6 +76,7 @@ public class ImportEndpoint {
 				dataField.setName(entityAttribute.getName());
 				dataField.setContext(entityModel.getName());
 				model.addDataField(dataField);
+				dataField.setModel(model);
 				log.info("added data field '{}' on entity '{}'", dataField.getName(), entityModel.getName());
 				criterion.addDataField(dataField);
 				fields.add(dataField);
@@ -140,10 +141,10 @@ public class ImportEndpoint {
 	private void saveCriterion(final Model model, final CriterionType type, final String... fields) {
 		CouplingCriterion criterion = new CouplingCriterion();
 		criterion.setCriterionType(type);
+
 		for (String field : fields) {
-			DataField dataField = dataFieldRepository.findByName(field);
-			// DataField dataField =
-			// dataFieldRepository.findByNameAndModel(field, model);
+			DataField dataField = dataFieldRepository.findByNameAndModel(field, model);
+
 			if (dataField == null) {
 				log.error("DataField with name {} nod found! Criterion not saved", field);
 				return;

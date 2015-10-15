@@ -127,6 +127,12 @@ public class EngineService {
 		}
 		model.setName(finalModelName);
 
+		// ensure bidirectional relationship is set up correct. // TODO
+		// refactor?
+		for (DataField fields : model.getDataFields()) {
+			fields.setModel(model);
+		}
+
 		log.info("created model {} containing {} datafields.", finalModelName, model.getDataFields().size());
 		modelRepository.save(model);
 		return model;

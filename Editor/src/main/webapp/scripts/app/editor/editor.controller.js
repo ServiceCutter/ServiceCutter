@@ -16,6 +16,7 @@ angular.module('editorApp')
 		};
         $scope.$watch('file', function () {
         	$scope.upload($scope.file, 'model', 'status', true);
+        	$scope.transactionStatus = '';
         });
         
         $scope.$watch('transactionsFile', function () {

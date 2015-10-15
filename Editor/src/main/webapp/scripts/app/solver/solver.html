@@ -2,32 +2,32 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Services Toolkit Solver</h1>
-
-			<form class="form-inline">
-				<div class="form-group">
-					<select id="modelId" class="form-control" ng-model="modelId"
-						ng-options="item.id as 'Model #' + item.id for item in availableModels">
-						<option value=''>- Choose an existing model -</option>
-					</select>
+			<div class="col-md-8">
+				<form class="form-inline">
+					<div class="form-group">
+						<select id="modelId" class="form-control" ng-model="modelId"
+							ng-options="item.id as 'Model #' + item.id for item in availableModels">
+							<option value=''>- Choose an existing model -</option>
+						</select>
+					</div>
+					
+	
+					<span>{{status}}</span>
+				</form>
+	
+				<div ng-show="modelId">
+	
+					<div class="graph-container" ngsf-fullscreen>
+						<vis-network data="graphData" options="graphOptions"
+							events="graphEvents"></vis-network>
+						<button class="btn btn-default" ngsf-toggle-fullscreen>
+							<span class="glyphicon glyphicon-resize-full"></span>
+						</button>
+					</div>
+	
 				</div>
-				
-
-				<span>{{status}}</span>
-			</form>
-
-			<div ng-show="modelId">
-
-				<div class="graph-container" ngsf-fullscreen>
-					<vis-network data="graphData" options="graphOptions"
-						events="graphEvents"></vis-network>
-					<button class="btn btn-default" ngsf-toggle-fullscreen>
-						<span class="glyphicon glyphicon-resize-full"></span>
-					</button>
-				</div>
-
 			</div>
-
-			<div>
+			<div class="col-md-4">
 				<h3>Coupling Criteria Params:</h3>
 				<div>
 					SameEntity:<br />

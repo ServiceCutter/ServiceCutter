@@ -11,6 +11,7 @@ angular.module('editorApp')
 			autoResize: true,
 			height: '100%',
 			width: '100%',
+			interaction: { multiselect: true },
 			nodes: { shadow: { enabled: true, size: 5 } },
 			edges: { shadow: { enabled: true, size: 5 } }
 		};
@@ -77,10 +78,9 @@ angular.module('editorApp')
 
         $scope.selectNode = function(param) {
         	if(param.nodes.length > 0) { // TODO handle multi-select
-        		var firstNode = parseInt(param.nodes[0]);
-        		var selectedNode = $scope.modelsById[firstNode];
+        		var selectedNodes = param.nodes.map(function(node) { return $scope.modelsById[parseInt(node)]; });
         		$scope.$apply(function() {
-        			$scope.model.filteredDataFields = $scope.model.dataFields.filter(function(field) {return selectedNode == field.context;});
+        			$scope.model.filteredDataFields = $scope.model.dataFields.filter(function(field) {return selectedNodes.indexOf(field.context) >= 0;});
         		});
         	} else {
         		$scope.$apply(function() {

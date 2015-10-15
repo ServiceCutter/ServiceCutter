@@ -108,7 +108,7 @@ angular.module('editorApp')
 				}).success(function(data, status, headers, config) {
 					$scope[statusField] = 'Upload successful!';
 					if(reload){
-						$scope.loadAvailableModels();
+						$scope.availableModels = Model.all();
 						$scope.modelId = parseInt(data['id']);
 					}
 				}).error(function (data, status, headers, config) {

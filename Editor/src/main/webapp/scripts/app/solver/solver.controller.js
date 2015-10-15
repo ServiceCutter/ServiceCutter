@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('SolverController', ['$scope', '$http', 'Principal', 'VisDataSet', function ($scope, $http, Principal, VisDataSet) {
+    .controller('SolverController', function ($scope, $http, Principal, VisDataSet, Model) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -43,7 +43,7 @@ angular.module('editorApp')
         										  'extraClusters': $scope.extraClusterSlider
         							}
         		};
-        		$http.post($scope.config['engineUrl'] + '/engine/solver/' + modelId, solverConfig).
+        		$http.post('/api/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
 		    			$scope.boundedContexts = data;
 		    			var contextNodes = new VisDataSet([]);
@@ -69,22 +69,6 @@ angular.module('editorApp')
         	}
         }
         
-        $scope.loadConfig = function () {
-    		$http.get('/api/editor/config').
-	    		success(function(data) {
-	    			$scope.config = data;
-	    			$scope.loadAvailableModels();
-            });
-        };
-
-        $scope.loadAvailableModels = function () {
-    		$http.get($scope.config['engineUrl'] + '/engine/models').
-	    		success(function(data) {
-	    			$scope.availableModels = data;
-            });
-        }
-
-		
 		$scope.sameEntitySlider = 0.2;
 		$scope.compositionSlider = 0.2;
 		$scope.writeSlider = 0.4;
@@ -96,9 +80,6 @@ angular.module('editorApp')
 		$scope.pruneSlider = 0.0;
 		$scope.extraClusterSlider = 0;
 
-        $scope.loadConfig();
-
-
-
+        $scope.availableModels = Model.all();
         
-    }]);
+    });

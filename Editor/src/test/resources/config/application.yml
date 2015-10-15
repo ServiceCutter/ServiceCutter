@@ -2,6 +2,9 @@ server:
     port: 10344
     address: localhost
 
+application.links.engine:
+    host: localhost
+    port: 8090
 
 # security configuration (this key should be unique for your application, and kept secret)
 jhipster.security.rememberme.key: 4af236f585750c12ea6878ba281cedb21d7ad1ec

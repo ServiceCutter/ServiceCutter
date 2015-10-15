@@ -1,0 +1,29 @@
+{
+  "name": "angularjs-slider",
+  "version": "1.0.0",
+  "description": "AngularJS slider directive with no external dependencies. Mobile friendly!.",
+  "main": "dist/rzslider.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rzajac/angularjs-slider.git"
+  },
+  "keywords": [
+    "angular",
+    "slider"
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-angular-templates": "^0.5.7",
+    "grunt-contrib-mincss": "~0.3.2",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-ng-annotate": "^1.0.1",
+    "grunt-recess": "~0.4.0",
+    "grunt-replace": "^0.11.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-serve": "^0.1.6",
+    "recess": "~1.1.9"
+  },
+  "author": "Rafal Zajac <rzajac@gmail.com>, Valentin Hervieu <valentin@hervieu.me>, Jussi Saarivirta <jusasi@gmail.com>, Angelin Sirbu <angelin.sirbu@gmail.com>",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

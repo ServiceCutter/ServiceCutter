@@ -22,12 +22,27 @@ angular.module('editorApp')
         };
         
         $scope.$watch('modelId', function () {
-        	$scope.solveModel($scope.modelId);
+        	$scope.solve();
         });
+        
+        $scope.solve=function(){
+        	 $scope.solveModel($scope.modelId);
+        }
 
         $scope.solveModel = function(modelId) {
         	if(parseInt(modelId) > 0) {
-        		var solverConfig = {'weights': {'SAME_ENTITIY': 0.2,'COMPOSITION_ENTITY':0.2,'WRITE_BUSINESS_TRANSACTION':0.4,'READ_WRITE_BUSINESS_TRANSACTION':0.2,'READ_BUSINESS_TRANSACTION':0.1}};
+        		var solverConfig = {'weights': {'SAME_ENTITIY': $scope.sameEntitySlider,
+        										'COMPOSITION_ENTITY':$scope.compositionSlider,
+        										'WRITE_BUSINESS_TRANSACTION':$scope.writeSlider,
+        										'READ_WRITE_BUSINESS_TRANSACTION':$scope.readWriteSlider,
+        										'READ_BUSINESS_TRANSACTION':$scope.readSlider
+        										},
+        							'mclParams': {'inflation': $scope.inflationSlider,
+        										  'power': $scope.powerSlider,
+        										  'prune': $scope.pruneSlider,
+        										  'extraClusters': $scope.extraClusterSlider
+        							}
+        		};
         		$http.post($scope.config['engineUrl'] + '/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
 		    			$scope.boundedContexts = data;
@@ -68,7 +83,22 @@ angular.module('editorApp')
 	    			$scope.availableModels = data;
             });
         }
-        
+
+		
+		$scope.sameEntitySlider = 0.2;
+		$scope.compositionSlider = 0.2;
+		$scope.writeSlider = 0.4;
+		$scope.readSlider = 0.1;
+		$scope.readWriteSlider = 0.2;
+		
+		$scope.powerSlider = 1;
+		$scope.inflationSlider = 2;
+		$scope.pruneSlider = 0.0;
+		$scope.extraClusterSlider = 0;
+
         $scope.loadConfig();
+
+
+
         
     }]);

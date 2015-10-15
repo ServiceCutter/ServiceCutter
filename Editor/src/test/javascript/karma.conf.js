@@ -33,6 +33,7 @@ module.exports = function (config) {
             'main/webapp/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
             'main/webapp/bower_components/sockjs-client/dist/sockjs.js',
             'main/webapp/bower_components/stomp-websocket/lib/stomp.min.js',
+            'main/webapp/bower_components/angularjs-slider/dist/rzslider.js',
             'main/webapp/bower_components/angular-mocks/angular-mocks.js',
             // endbower
             'main/webapp/scripts/app/app.js',

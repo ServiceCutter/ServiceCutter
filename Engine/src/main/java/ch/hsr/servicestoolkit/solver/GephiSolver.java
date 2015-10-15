@@ -102,11 +102,12 @@ public class GephiSolver {
 		Log.debug("solve cluster with MCL");
 
 		MCClusterer clusterer = new MCClusterer();
-		clusterer.setInflation(2d); // the higher to more clusters?
-		clusterer.setExtraClusters(false);
+		// the higher the more clusters?
+		clusterer.setInflation(config.getValueForMCLAlgorithm("inflation"));
+		clusterer.setExtraClusters(config.getValueForMCLAlgorithm("extraClusters") > 0);
 		clusterer.setSelfLoop(true); // must be true
-		clusterer.setPower(1);
-		clusterer.setPrune(0d);
+		clusterer.setPower(config.getValueForMCLAlgorithm("power"));
+		clusterer.setPrune(config.getValueForMCLAlgorithm("prune"));
 		clusterer.execute(graphModel);
 		return getClustererResult(clusterer);
 	}
@@ -151,10 +152,10 @@ public class GephiSolver {
 					Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
 					Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
 					Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
-					if (existingEdge != null) {
+					if (existingEdge != null && weight > 0) {
 						log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
 						existingEdge.setWeight(existingEdge.getWeight() + weight);
-					} else {
+					} else if (weight > 0) {
 						log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
 						Edge edge = graphModel.factory().newEdge(nodeA, nodeB, weight, false);
 						undirectedGraph.addEdge(edge);

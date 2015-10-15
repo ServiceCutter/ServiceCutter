@@ -14,6 +14,7 @@ import ch.hsr.servicestoolkit.model.CriterionType;
 public class SolverConfiguration {
 
 	private Map<CriterionType, Double> weights = new HashMap<>();
+	private Map<String, Double> mclParams = new HashMap<>();
 
 	private Logger log = LoggerFactory.getLogger(SolverConfiguration.class);
 
@@ -25,9 +26,21 @@ public class SolverConfiguration {
 		}
 	}
 
+	public void setMclParams(final Map<String, Double> mclParams) {
+		if (mclParams != null) {
+			this.mclParams = mclParams;
+		} else {
+			throw new InvalidParameterException("mclParams should not be null!");
+		}
+	}
+
 	// needed for jackson deserialization
 	public Map<CriterionType, Double> getWeights() {
 		return weights;
+	}
+
+	public Map<String, Double> getMclParams() {
+		return mclParams;
 	}
 
 	public Double getWeightForCouplingCriterion(final CriterionType criterionType) {
@@ -37,4 +50,13 @@ public class SolverConfiguration {
 		}
 		return weights.get(criterionType);
 	}
+
+	public Double getValueForMCLAlgorithm(final String key) {
+		if (!mclParams.containsKey(key)) {
+			log.error("no value defined for algorithm param: " + key + ". Use 0");
+			return 0d;
+		}
+		return mclParams.get(key);
+	}
+
 }

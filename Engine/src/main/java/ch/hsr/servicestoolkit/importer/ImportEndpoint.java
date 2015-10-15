@@ -141,7 +141,9 @@ public class ImportEndpoint {
 		CouplingCriterion criterion = new CouplingCriterion();
 		criterion.setCriterionType(type);
 		for (String field : fields) {
-			DataField dataField = dataFieldRepository.findByNameAndModel(field, model);
+			DataField dataField = dataFieldRepository.findByName(field);
+			// DataField dataField =
+			// dataFieldRepository.findByNameAndModel(field, model);
 			if (dataField == null) {
 				log.error("DataField with name {} nod found! Criterion not saved", field);
 				return;

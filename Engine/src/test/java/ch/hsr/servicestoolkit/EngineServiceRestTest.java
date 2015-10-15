@@ -54,8 +54,8 @@ public class EngineServiceRestTest {
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET, IntegrationTestHelper.createEmptyHttpRequest(),
-				Model.class);
+		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET,
+				IntegrationTestHelper.createEmptyHttpRequest(), Model.class);
 		assertEquals("testModel", assertResult.getBody().getName());
 	}
 
@@ -75,12 +75,13 @@ public class EngineServiceRestTest {
 
 		HttpEntity<List<CouplingCriterion>> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
 		// write criteria
-		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + modelId + "/couplingcriteria", HttpMethod.PUT, request, String.class);
+		ResponseEntity<String> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + modelId + "/couplingcriteria", HttpMethod.PUT, request,
+				String.class);
 		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
 
 		// read written criteria
-		ResponseEntity<Set<CouplingCriterion>> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + modelId + "/couplingcriteria", HttpMethod.GET,
-				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<Set<CouplingCriterion>>() {
+		ResponseEntity<Set<CouplingCriterion>> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + modelId + "/couplingcriteria",
+				HttpMethod.GET, IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<Set<CouplingCriterion>>() {
 				});
 		assertEquals(1, assertResult.getBody().size());
 		for (CouplingCriterion criterion : assertResult.getBody()) {
@@ -129,6 +130,8 @@ public class EngineServiceRestTest {
 		field1.setName("firstField");
 		DataField field2 = new DataField();
 		field2.setName("secondField");
+		field1.setModel(model);
+		field2.setModel(model);
 		model.getDataFields().add(field1);
 		model.getDataFields().add(field2);
 		return model;

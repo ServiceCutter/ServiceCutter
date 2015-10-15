@@ -89,6 +89,10 @@ public class IntegrationTestHelper {
 		}
 		config.setWeights(weights);
 
+		config.getMclParams().put("inflation", 2d);
+		config.getMclParams().put("power", 1d);
+		config.getMclParams().put("prune", 0.0);
+
 		return config;
 	}
 

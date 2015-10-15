@@ -38,6 +38,9 @@ public class GephiSolverTest {
 		weights.put(CriterionType.SAME_ENTITIY, 0.5d);
 		weights.put(CriterionType.COMPOSITION_ENTITY, 0.2d);
 		config.setWeights(weights);
+		config.getMclParams().put("inflation", 2d);
+		config.getMclParams().put("power", 1d);
+		config.getMclParams().put("prune", 0.0);
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -91,11 +94,10 @@ public class GephiSolverTest {
 		}
 	}
 
-	private void addCriterionFields(Model model, CriterionType compositionEntity, String[] fields) {
+	private void addCriterionFields(final Model model, final CriterionType compositionEntity, final String[] fields) {
 		CouplingCriterion criterion = new CouplingCriterion();
 		List<String> fieldsFilter = Arrays.asList(fields);
-		criterion.setDataFields(model.getDataFields().stream().filter(f -> fieldsFilter.contains(f.getName()))
-				.collect(Collectors.toList()));
+		criterion.setDataFields(model.getDataFields().stream().filter(f -> fieldsFilter.contains(f.getName())).collect(Collectors.toList()));
 		criterion.setCriterionType(compositionEntity);
 		criterion.setId(idGenerator.incrementAndGet());
 
@@ -106,7 +108,7 @@ public class GephiSolverTest {
 		}
 	}
 
-	private DataField createDataField(String field) {
+	private DataField createDataField(final String field) {
 		DataField dataField = new DataField();
 		dataField.setName(field);
 		return dataField;

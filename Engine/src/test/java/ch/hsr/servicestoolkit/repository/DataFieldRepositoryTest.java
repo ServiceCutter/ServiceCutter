@@ -31,16 +31,16 @@ public class DataFieldRepositoryTest {
 	@Before
 	public void setUp() {
 		model = new Model();
-		// model.setName("imported Thu Oct 15 09:28:12 CEST 2015");
+		model.setName("imported Thu Oct 15 09:28:12 CEST 2015");
 		modelRepo.save(model);
 
 		Model model2 = new Model();
-		// model2.setName("imported Thu Oct 15 09:28:11 CEST 2015");
+		model2.setName("imported Thu Oct 15 09:28:11 CEST 2015");
 		modelRepo.save(model2);
 
 		DataField field1 = new DataField();
 		field1.setName(FIELD_1);
-		// field1.setModel(model);
+		field1.setModel(model);
 		model.addDataField(field1);
 
 		DataField field2 = new DataField();

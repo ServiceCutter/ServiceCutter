@@ -1,11 +1,7 @@
 <div ng-cloak>
+    <h1>Services Toolkit Editor</h1>
     <div class="row">
-        <div class="col-md-4">
-            <span class="hipster img-responsive img-rounded"></span>
-        </div>
         <div class="col-md-8">
-            <h1>Services Toolkit Editor</h1>
-            
             <p>Select an existing model or use the json file upload to start the process.</p>
             
             <form class="form-inline">
@@ -27,6 +23,13 @@
 		            <button class="btn btn-default" ngsf-toggle-fullscreen><span class="glyphicon glyphicon-resize-full"></span></button>
 	            </div> 
 			
+			</div>
+	            
+        </div>
+        <div class="col-md-4">
+            
+			<div ng-show="modelId">
+
 				<h2>Model #{{modelId}}</h2>
 				
 				<p>Name: <strong>{{model.name}}</strong></p>

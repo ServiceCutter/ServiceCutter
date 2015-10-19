@@ -69,7 +69,7 @@ public class CouplingCriterion {
 	public boolean equals(Object obj) {
 		if (obj instanceof CouplingCriterion) {
 			CouplingCriterion other = (CouplingCriterion) obj;
-			return Objects.equal(this, other) || Objects.equal(id, other.id);
+			return this == other || Objects.equal(id, other.id);
 		} else {
 			return false;
 		}

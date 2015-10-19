@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import com.google.common.base.Objects;
+
 @Entity
 public class CouplingCriterion {
 
@@ -58,30 +60,19 @@ public class CouplingCriterion {
 		this.criterionType = rating;
 	}
 
-	// TODO use helper for hashcode and equals
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+		return Objects.hashCode(id);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+		if (obj instanceof CouplingCriterion) {
+			CouplingCriterion other = (CouplingCriterion) obj;
+			return Objects.equal(this, other) || Objects.equal(id, other.id);
+		} else {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CouplingCriterion other = (CouplingCriterion) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+		}
 	}
 
 	public String getName() {

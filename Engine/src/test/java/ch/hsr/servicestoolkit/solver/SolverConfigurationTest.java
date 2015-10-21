@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.CriterionType;
+import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 
 public class SolverConfigurationTest {
 
@@ -20,16 +20,16 @@ public class SolverConfigurationTest {
 	@Test
 	public void testEmptyConfig() {
 		SolverConfiguration config = new SolverConfiguration();
-		assertEquals(new Double(0d), config.getWeightForCouplingCriterion(CriterionType.SAME_ENTITIY));
+		assertEquals(new Double(0d), config.getWeightForCouplingCriterion(CouplingCriteriaVariant.SAME_ENTITY));
 	}
 
 	@Test
 	public void testRealConfig() {
-		HashMap<CriterionType, Double> weights = new HashMap<CriterionType, Double>();
-		weights.put(CriterionType.SAME_ENTITIY, 2.4d);
+		HashMap<String, Double> weights = new HashMap<String, Double>();
+		weights.put(CouplingCriteriaVariant.SAME_ENTITY, 2.4d);
 		SolverConfiguration config = new SolverConfiguration();
 		config.setWeights(weights);
-		assertEquals(new Double(2.4d), config.getWeightForCouplingCriterion(CriterionType.SAME_ENTITIY));
+		assertEquals(new Double(2.4d), config.getWeightForCouplingCriterion(CouplingCriteriaVariant.SAME_ENTITY));
 	}
 
 }

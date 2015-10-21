@@ -40,7 +40,6 @@ public class DataFieldRepositoryTest {
 
 		DataField field1 = new DataField();
 		field1.setName(FIELD_1);
-		field1.setModel(model);
 		model.addDataField(field1);
 
 		DataField field2 = new DataField();
@@ -54,11 +53,6 @@ public class DataFieldRepositoryTest {
 	public void testFindByName() {
 		Assert.assertNotNull(dataRepo.findByName(FIELD_1));
 		Assert.assertNotNull(dataRepo.findByName(FIELD_2));
-	}
-
-	@Test
-	public void testFindByNameAndModel() {
-		Assert.assertNotNull(dataRepo.findByNameAndModel(FIELD_1, model));
 	}
 
 }

@@ -1,13 +1,14 @@
 package ch.hsr.servicestoolkit.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -18,23 +19,16 @@ public class Model {
 	private Long id;
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "model")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "model", fetch = FetchType.EAGER)
 	private List<DataField> dataFields = new ArrayList<>();
 
 	public List<DataField> getDataFields() {
-		return dataFields;
+		return Collections.unmodifiableList(dataFields);
 	}
 
 	public void addDataField(final DataField dataField) {
 		dataFields.add(dataField);
-	}
-
-	public void setDataFields(final List<DataField> dataFields) {
-		this.dataFields.clear();
-		if (dataFields != null) {
-			this.dataFields.addAll(dataFields);
-		}
+		dataField.setModel(this);
 	}
 
 	public Long getId() {

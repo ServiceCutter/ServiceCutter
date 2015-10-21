@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
+import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 
 @Component
 @Path("/engine/solver")
@@ -25,10 +26,12 @@ public class SolverEndpoint {
 
 	private final Logger log = LoggerFactory.getLogger(SolverEndpoint.class);
 	private final ModelRepository modelRepository;
+	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
-	public SolverEndpoint(ModelRepository modelRepository) {
+	public SolverEndpoint(ModelRepository modelRepository, MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
 		this.modelRepository = modelRepository;
+		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 	}
 
 	@POST
@@ -36,13 +39,13 @@ public class SolverEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{modelId}")
 	@Transactional
-	public Set<BoundedContext> solveModel(SolverConfiguration config, @PathParam("modelId") Long id) {
+	public Set<BoundedContext> solveModel(@PathParam("modelId") Long id, SolverConfiguration config) {
 		Model model = modelRepository.findOne(id);
 		if (model == null || config == null) {
 			return Collections.emptySet();
 		}
 
-		GephiSolver solver = new GephiSolver(model, config);
+		GephiSolver solver = new GephiSolver(model, config, monoCouplingInstanceRepository);
 		Set<BoundedContext> result = solver.solveWithMarkov();
 		log.info("model {} solved, found bounded contexts: {}", model.getName(), result.toString());
 		return result;

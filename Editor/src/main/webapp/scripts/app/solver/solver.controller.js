@@ -31,9 +31,9 @@ angular.module('editorApp')
 
         $scope.solveModel = function(modelId) {
         	if(parseInt(modelId) > 0) {
-        		var solverConfig = {'weights': {'SAME_ENTITIY': $scope.sameEntitySlider,
-        										'COMPOSITION_ENTITY':$scope.compositionSlider,
-        										'WRITE_BUSINESS_TRANSACTION':$scope.writeSlider,
+        		var solverConfig = {'weights': {'Same Entity': $scope.sameEntitySlider,
+        										'Composition':$scope.compositionSlider,
+        										'Business Transaction':$scope.writeSlider,
         										'READ_WRITE_BUSINESS_TRANSACTION':$scope.readWriteSlider,
         										'READ_BUSINESS_TRANSACTION':$scope.readSlider
         										},

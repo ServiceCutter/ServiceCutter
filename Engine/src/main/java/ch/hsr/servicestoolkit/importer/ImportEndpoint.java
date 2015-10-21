@@ -1,11 +1,12 @@
 package ch.hsr.servicestoolkit.importer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -26,13 +27,16 @@ import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
 import ch.hsr.servicestoolkit.importer.api.EntityModel;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CriterionType;
+import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionFactory;
 import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
+import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 
 @Component
 @Path("/engine/import")
@@ -41,17 +45,18 @@ public class ImportEndpoint {
 	private final Logger log = LoggerFactory.getLogger(ImportEndpoint.class);
 	private final ModelRepository modelRepository;
 	private final CouplingCriterionRepository couplingCriterionRepository;
-	private final Map<RelationType, CriterionType> typeMapping = new HashMap<>();
 	private DataFieldRepository dataFieldRepository;
+	private CouplingCriterionFactory couplingCriterionFactory;
+	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
-	public ImportEndpoint(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository, final DataFieldRepository dataFieldRepository) {
+	public ImportEndpoint(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository, final DataFieldRepository dataFieldRepository,
+			CouplingCriterionFactory couplingCriterionFactory, MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
 		this.modelRepository = modelRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.dataFieldRepository = dataFieldRepository;
-		typeMapping.put(RelationType.AGGREGATION, CriterionType.AGGREGATED_ENTITY);
-		typeMapping.put(RelationType.COMPOSITION, CriterionType.COMPOSITION_ENTITY);
-		typeMapping.put(RelationType.INHERITANCE, CriterionType.INHERITANCE);
+		this.couplingCriterionFactory = couplingCriterionFactory;
+		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 	}
 
 	@POST
@@ -63,40 +68,46 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 		Model model = new Model();
+		modelRepository.save(model);
 		model.setName("imported " + new Date().toString());
 		Map<EntityModel, List<DataField>> fieldsByModel = new HashMap<>();
+
+		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.SAME_ENTITY);
+
 		for (EntityModel entityModel : domainModel.getEntities()) {
-			CouplingCriterion criterion = new CouplingCriterion();
-			criterion.setName(entityModel.getName());
-			criterion.setCriterionType(CriterionType.SAME_ENTITIY);
-			couplingCriterionRepository.save(criterion);
-			List<DataField> fields = new ArrayList<>();
+			MonoCouplingInstance couplingInstance = sameEntityVariant.createInstance();
+			monoCouplingInstanceRepository.save(couplingInstance);
+			String entityName = entityModel.getName();
+			couplingInstance.setName(entityName);
 			for (EntityAttribute entityAttribute : entityModel.getAttributes()) {
 				DataField dataField = new DataField();
 				dataField.setName(entityAttribute.getName());
-				dataField.setContext(entityModel.getName());
+				dataField.setContext(entityName);
 				model.addDataField(dataField);
-				dataField.setModel(model);
-				log.info("added data field '{}' on entity '{}'", dataField.getName(), entityModel.getName());
-				criterion.addDataField(dataField);
-				fields.add(dataField);
+				dataFieldRepository.save(dataField);
+				couplingInstance.addDataField(dataField);
 			}
-			fieldsByModel.put(entityModel, fields);
+			fieldsByModel.put(entityModel, couplingInstance.getDataFields());
 		}
+
+		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.AGGREGATION, false);
+		CouplingCriteriaVariant compositionVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.COMPOSITION, false);
+		CouplingCriteriaVariant inheritanceVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.INHERITANCE, false);
+
 		for (EntityRelation relation : domainModel.getRelations()) {
-			CouplingCriterion criterion = new CouplingCriterion();
-			criterion.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
-			CriterionType type = typeMapping.get(relation.getType());
-			criterion.setCriterionType(type);
-			List<DataField> fields = new ArrayList<>();
-			fields.addAll(fieldsByModel.get(relation.getOrigin()));
-			fields.addAll(fieldsByModel.get(relation.getDestination()));
-			for (DataField dataField : fields) {
-				criterion.addDataField(dataField);
+			DualCouplingInstance instance = null;
+			if (RelationType.AGGREGATION.equals(relation.getType())) {
+				instance = (DualCouplingInstance) aggregationVariant.createInstance();
+			} else if (RelationType.COMPOSITION.equals(relation.getType())) {
+				instance = (DualCouplingInstance) compositionVariant.createInstance();
+			} else {
+				instance = (DualCouplingInstance) inheritanceVariant.createInstance();
 			}
-			couplingCriterionRepository.save(criterion);
+			monoCouplingInstanceRepository.save(instance);
+			instance.setDataFields(fieldsByModel.get(relation.getOrigin()));
+			instance.setSecondDataFields(fieldsByModel.get(relation.getDestination()));
+			instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
 		}
-		modelRepository.save(model);
 		// TODO: remove return value and set location header to URL of generated
 		// model
 		Map<String, Object> result = new HashMap<>();
@@ -114,47 +125,31 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
+		// TODO add support for read/write/mixed
+		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findOrCreateVariant("Business Transaction", "Mixed", true);
 		for (BusinessTransaction transaction : transactions) {
-			List<String> fieldsRead = transaction.getFieldsRead();
-			List<String> fieldsWritten = transaction.getFieldsWritten();
-
-			for (int i = 0; i < fieldsRead.size(); i++) {
-				for (int j = i + 1; j < fieldsRead.size(); j++) {
-					saveCriterion(model, CriterionType.READ_BUSINESS_TRANSACTION, fieldsRead.get(i), fieldsRead.get(j));
-				}
-				for (int k = 0; k < fieldsWritten.size(); k++) {
-					// it can be that a field is both defined in fieldsRead and
-					// fieldsWritten. Don't add criterion on itself
-					if (!fieldsRead.get(i).equals(fieldsWritten.get(k))) {
-						saveCriterion(model, CriterionType.READ_WRITE_BUSINESS_TRANSACTION, fieldsRead.get(i), fieldsWritten.get(k));
-					}
-					for (int l = k + 1; l < fieldsWritten.size(); l++) {
-						saveCriterion(model, CriterionType.WRITE_BUSINESS_TRANSACTION, fieldsWritten.get(k), fieldsWritten.get(l));
-					}
-
-				}
-			}
+			MonoCouplingInstance instance = aggregationVariant.createInstance();
+			monoCouplingInstanceRepository.save(instance);
+			instance.setName(transaction.getName());
+			Set<DataField> dataFields = new HashSet<>();
+			dataFields.addAll(loadDataFields(transaction.getFieldsRead()));
+			dataFields.addAll(loadDataFields(transaction.getFieldsWritten()));
+			instance.setDataFields(dataFields);
 		}
 
 	}
 
-	private void saveCriterion(final Model model, final CriterionType type, final String... fields) {
-		CouplingCriterion criterion = new CouplingCriterion();
-		criterion.setCriterionType(type);
-
-		for (String field : fields) {
-			DataField dataField = dataFieldRepository.findByNameAndModel(field, model);
-
-			if (dataField == null) {
-				log.error("DataField with name {} nod found! Criterion not saved", field);
-				return;
+	List<DataField> loadDataFields(List<String> fields) {
+		List<DataField> dataFields = new ArrayList<>();
+		for (String fieldName : fields) {
+			DataField dataField = dataFieldRepository.findByName(fieldName);
+			if (dataField != null) {
+				dataFields.add(dataField);
+			} else {
+				log.warn("Ignoring field with name {}", fieldName);
 			}
-			dataField.addCouplingCriterion(criterion);
-			criterion.addDataField(dataField);
 		}
-
-		log.info("save coupling criterion of type {} on fields {}", type.name(), Arrays.toString(fields));
-		couplingCriterionRepository.save(criterion);
+		return dataFields;
 	}
 
 }

@@ -35,40 +35,27 @@ angular.module('editorApp')
     			var nodeId = 1;
     			var entitiesById = {};
     			$scope.modelsById = {};
-    			for (var x in $scope.model.entities) {
-    				var name = $scope.model.entities[x].name;
-    				contextNodes.add({id: nodeId, label: name});
-    				entitiesById[name] = nodeId;
-    				$scope.modelsById[nodeId] = name;
+    			angular.forEach($scope.model.entities, function(entity) {
+    				contextNodes.add({id: nodeId, label: entity.name});
+    				entitiesById[entity.name] = nodeId;
+    				$scope.modelsById[nodeId] = entity.name;
     				nodeId++;
-    			}
-    			// TODO add real data!
-    			var relations = $scope.model['relations'];
-    			//alert(JSON.stringify(aggregations));
-    			for (var x in relations) {
-    				var relation = relations[x];
-    				if(relation.criterionType == 'COMPOSITION_ENTITY') {
+    			});
+    			var relationTypes = {
+    					'Composition': {arrows: 'middle', width: 1},
+    					'Aggregation': {arrows: 'middle', dashes: true, width: 1},
+    					'Inheritance': {arrows: 'to', width: 1}};
+    			
+    			angular.forEach($scope.model['relations'], function(relation) {
+    				var relationStyle = null;
+    				if(relationStyle = relationTypes[relation.couplingCriteriaVariant.name]) {
     					var names = relation.name.split('.');
     					var from = names[0];
     					var to = names[1];
-    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'middle', width: 1};
+    					var edge = jQuery.extend({from: entitiesById[from], to: entitiesById[to], },relationStyle);
     					contextEdges.add(edge);
     				}
-    				if(relation.criterionType == 'AGGREGATED_ENTITY') {
-    					var names = relation.name.split('.');
-    					var from = names[0];
-    					var to = names[1];
-    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'middle', dashes: true, width: 1};
-    					contextEdges.add(edge);
-    				}
-    				if(relation.criterionType == 'INHERITANCE') {
-    					var names = relation.name.split('.');
-    					var from = names[0];
-    					var to = names[1];
-    					var edge = {from: entitiesById[from], to: entitiesById[to], arrows: 'to', width: 1};
-    					contextEdges.add(edge);
-    				}
-    			}
+    			});
     	        $scope.graphData = {
 	            	'nodes': contextNodes,
 	            	'edges': contextEdges
@@ -77,7 +64,7 @@ angular.module('editorApp')
         });
 
         $scope.selectNode = function(param) {
-        	if(param.nodes.length > 0) { // TODO handle multi-select
+        	if(param.nodes.length > 0) {
         		var selectedNodes = param.nodes.map(function(node) { return $scope.modelsById[parseInt(node)]; });
         		$scope.$apply(function() {
         			$scope.model.filteredDataFields = $scope.model.dataFields.filter(function(field) {return selectedNodes.indexOf(field.context) >= 0;});
@@ -126,7 +113,7 @@ angular.module('editorApp')
         		});
         		Model.getCoupling({id:$scope.modelId}, function(coupling) {
         			$scope.model['relations'] = coupling;
-        			$scope.model['entities'] = coupling.filter(function(item) { return item.criterionType == 'SAME_ENTITIY' ;});
+        			$scope.model['entities'] = coupling.filter(function(item) { return item.couplingCriteriaVariant.name == 'Same Entity' ;});
 
         		});
         	}
@@ -136,5 +123,7 @@ angular.module('editorApp')
         $scope.modelId = 0;
         $scope.model = null;
         $scope.modelsById = {};
-        $scope.availableModels = Model.all();
+        $scope.availableModels = Model.all(function(models) {
+        	$scope.status = 'Select a model or upload a new one.';
+        });
     });

@@ -22,7 +22,6 @@ public class CouplingCriterionTest {
 		other.setId(42l);
 		assertThat(cc.equals(other), is(Boolean.TRUE));
 		// other fields are different
-		cc.setCriterionType(CriterionType.INHERITANCE);
 		assertThat(cc.equals(other), is(Boolean.TRUE));
 	}
 

@@ -1,8 +1,14 @@
 package ch.hsr.servicestoolkit.solver;
 
+import static ch.hsr.servicestoolkit.model.CouplingCriteriaVariant.AGGREGATION;
+import static ch.hsr.servicestoolkit.model.CouplingCriteriaVariant.COMPOSITION;
+import static ch.hsr.servicestoolkit.model.CouplingCriteriaVariant.SAME_ENTITY;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -18,34 +24,37 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CriterionType;
+import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { SolverConfiguration.class })
+@ContextConfiguration(classes = {SolverConfiguration.class})
 public class GephiSolverTest {
 
 	private SolverConfiguration config;
 	private AtomicLong idGenerator = new AtomicLong(10);
+	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Before
 	public void setup() {
 		config = new SolverConfiguration();
-		Map<CriterionType, Double> weights = new HashMap<>();
-		weights.put(CriterionType.AGGREGATED_ENTITY, 0.1d);
-		weights.put(CriterionType.SAME_ENTITIY, 0.5d);
-		weights.put(CriterionType.COMPOSITION_ENTITY, 0.2d);
+		Map<String, Double> weights = new HashMap<>();
+		weights.put(AGGREGATION, 0.1d);
+		weights.put(SAME_ENTITY, 0.5d);
+		weights.put(COMPOSITION, 0.2d);
 		config.setWeights(weights);
 		config.getMclParams().put("inflation", 2d);
 		config.getMclParams().put("power", 1d);
 		config.getMclParams().put("prune", 0.0);
+		monoCouplingInstanceRepository = mock(MonoCouplingInstanceRepository.class);
 	}
 
 	@Test(expected = InvalidParameterException.class)
 	public void testEmptyModel() {
-		new GephiSolver(new Model(), config);
+		new GephiSolver(new Model(), config, monoCouplingInstanceRepository);
 	}
 
 	@Ignore
@@ -58,7 +67,7 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field4"));
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
-		GephiSolver solver = new GephiSolver(model, config);
+		GephiSolver solver = new GephiSolver(model, config, monoCouplingInstanceRepository);
 		Set<BoundedContext> result1 = solver.solveWithMarkov();
 		assertEquals(3, result1.size());
 		for (BoundedContext context : result1) {
@@ -82,10 +91,12 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
 
-		addCriterionFields(model, CriterionType.SAME_ENTITIY, new String[] { "field1", "field2", "field3" });
-		addCriterionFields(model, CriterionType.SAME_ENTITIY, new String[] { "field4", "field5", "field6" });
+		List<MonoCouplingInstance> instances = new ArrayList<>();
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field1", "field2", "field3"}));
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field4", "field5", "field6"}));
+		when(monoCouplingInstanceRepository.findByModel(model.getId())).thenReturn(instances);
 
-		GephiSolver solver = new GephiSolver(model, config);
+		GephiSolver solver = new GephiSolver(model, config, monoCouplingInstanceRepository);
 		Set<BoundedContext> result = solver.solveWithMarkov();
 
 		assertEquals(2, result.size());
@@ -94,18 +105,19 @@ public class GephiSolverTest {
 		}
 	}
 
-	private void addCriterionFields(final Model model, final CriterionType compositionEntity, final String[] fields) {
-		CouplingCriterion criterion = new CouplingCriterion();
+	private MonoCouplingInstance addCriterionFields(final Model model, final String variantName, final String[] fields) {
+		MonoCouplingInstance instance = new MonoCouplingInstance();
 		List<String> fieldsFilter = Arrays.asList(fields);
-		criterion.setDataFields(model.getDataFields().stream().filter(f -> fieldsFilter.contains(f.getName())).collect(Collectors.toList()));
-		criterion.setCriterionType(compositionEntity);
-		criterion.setId(idGenerator.incrementAndGet());
+		instance.setDataFields(model.getDataFields().stream().filter(f -> fieldsFilter.contains(f.getName())).collect(Collectors.toList()));
+		createVariant(variantName, instance);
+		instance.setId(idGenerator.incrementAndGet());
+		return instance;
+	}
 
-		for (DataField dataField : model.getDataFields()) {
-			if (fieldsFilter.contains(dataField.getName())) {
-				dataField.addCouplingCriterion(criterion);
-			}
-		}
+	void createVariant(final String variantName, MonoCouplingInstance instance) {
+		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
+		variant.setName(variantName);
+		instance.setCouplingCriteriaVariant(variant);
 	}
 
 	private DataField createDataField(final String field) {

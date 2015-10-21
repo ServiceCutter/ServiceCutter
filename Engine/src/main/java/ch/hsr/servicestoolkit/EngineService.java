@@ -12,7 +12,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
@@ -22,13 +21,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CriterionType;
-import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
+import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import jersey.repackaged.com.google.common.collect.Lists;
 
 @Component
@@ -39,12 +38,15 @@ public class EngineService {
 	private ModelRepository modelRepository;
 	private DataFieldRepository dataRepository;
 	private CouplingCriterionRepository couplingCriterionRepository;
+	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
-	public EngineService(final ModelRepository modelRepository, final DataFieldRepository dataRepository, final CouplingCriterionRepository couplingCriterionRepository) {
+	public EngineService(final ModelRepository modelRepository, final DataFieldRepository dataRepository, final CouplingCriterionRepository couplingCriterionRepository,
+			MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
+		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 	}
 
 	@GET
@@ -67,26 +69,21 @@ public class EngineService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
 	public Model getModel(@PathParam("id") final Long id) {
-		Model result = modelRepository.findOne(id);
-		result.getDataFields().size(); // init lazy collection
-		return result;
+		return modelRepository.findOne(id);
 	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/models/{id}/couplingcriteria")
 	@Transactional
-	public Set<CouplingCriterion> getCouplingCriteria(@PathParam("id") final Long id, @QueryParam("type") final String type) {
-		Set<CouplingCriterion> result = new HashSet<>();
+	public Set<MonoCouplingInstance> getCouplingCriteria(@PathParam("id") final Long id) {
+		Set<MonoCouplingInstance> result = new HashSet<>();
 		Model model = modelRepository.findOne(id);
-		CriterionType typeFilter = StringUtils.hasText(type) ? CriterionType.valueOf(type) : null;
-		for (DataField dataField : model.getDataFields()) {
-			for (CouplingCriterion criterion : dataField.getCouplingCriteria()) {
-				if (typeFilter == null || typeFilter.equals(criterion.getCriterionType())) {
-					// criterion.getDataFields().size(); // init list
-					result.add(criterion);
-				}
-			}
+		List<MonoCouplingInstance> instances = monoCouplingInstanceRepository.findByModel(model.getId());
+		result.addAll(instances);
+		for (MonoCouplingInstance monoCouplingInstance : instances) {
+			monoCouplingInstance.getDataFields().size(); // TODO find better
+															// solution
 		}
 		log.debug("return criteria for model {}: {}", model.getName(), result.toString());
 		return result;
@@ -97,23 +94,26 @@ public class EngineService {
 	@Path("/models/{id}/couplingcriteria")
 	@Transactional
 	public void storeCouplingCriteria(final Set<CouplingCriterion> criteria, @PathParam("id") final Long id) {
-		Model model = modelRepository.findOne(id);
-		// TODO: refactor
-		for (CouplingCriterion inputCriterion : criteria) {
-			CouplingCriterion mappedСriterion = new CouplingCriterion();
-			for (DataField inputDataField : inputCriterion.getDataFields()) {
-				DataField dbDataField = dataRepository.findByNameAndModel(inputDataField.getName(), model);
-				if (dbDataField == null) {
-					throw new IllegalArgumentException("referenced data field not existing: " + model.getName() + ":" + inputDataField.getName());
-				}
-				mappedСriterion.getDataFields().add(dbDataField);
-				mappedСriterion.setCriterionType(inputCriterion.getCriterionType());
-				dbDataField.getCouplingCriteria().add(inputCriterion);
-				couplingCriterionRepository.save(mappedСriterion);
-				dataRepository.save(dbDataField);
-				log.debug("added coupling criterion {} to model {}", inputCriterion.getId(), model.getName());
-			}
-		}
+		// Model model = modelRepository.findOne(id);
+		// TODO: rewrite if needed
+		// for (CouplingCriterion inputCriterion : criteria) {
+		// CouplingCriterion mappedСriterion = new CouplingCriterion();
+		// for (DataField inputDataField : inputCriterion.getDataFields()) {
+		// DataField dbDataField =
+		// dataRepository.findByNameAndModel(inputDataField.getName(), model);
+		// if (dbDataField == null) {
+		// throw new IllegalArgumentException("referenced data field not
+		// existing: " + model.getName() + ":" + inputDataField.getName());
+		// }
+		// mappedСriterion.getDataFields().add(dbDataField);
+		// mappedСriterion.setCriterionType(inputCriterion.getCriterionType());
+		// dbDataField.getCouplingCriteria().add(inputCriterion);
+		// couplingCriterionRepository.save(mappedСriterion);
+		// dataRepository.save(dbDataField);
+		// log.debug("added coupling criterion {} to model {}",
+		// inputCriterion.getId(), model.getName());
+		// }
+		// }
 	}
 
 	@POST
@@ -126,12 +126,6 @@ public class EngineService {
 			model = new Model();
 		}
 		model.setName(finalModelName);
-
-		// ensure bidirectional relationship is set up correct. // TODO
-		// refactor?
-		for (DataField fields : model.getDataFields()) {
-			fields.setModel(model);
-		}
 
 		log.info("created model {} containing {} datafields.", finalModelName, model.getDataFields().size());
 		modelRepository.save(model);

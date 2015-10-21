@@ -6,4 +6,6 @@ import ch.hsr.servicestoolkit.model.CouplingCriterion;
 
 public interface CouplingCriterionRepository extends CrudRepository<CouplingCriterion, Long> {
 
+	CouplingCriterion readByName(String name);
+
 }

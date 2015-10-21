@@ -8,17 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import ch.hsr.servicestoolkit.model.CriterionType;
-
 @Component
 public class SolverConfiguration {
 
-	private Map<CriterionType, Double> weights = new HashMap<>();
+	private Map<String, Double> weights = new HashMap<>();
 	private Map<String, Double> mclParams = new HashMap<>();
 
 	private Logger log = LoggerFactory.getLogger(SolverConfiguration.class);
 
-	public void setWeights(final Map<CriterionType, Double> weights) {
+	public void setWeights(final Map<String, Double> weights) {
 		if (weights != null) {
 			this.weights = weights;
 		} else {
@@ -35,7 +33,7 @@ public class SolverConfiguration {
 	}
 
 	// needed for jackson deserialization
-	public Map<CriterionType, Double> getWeights() {
+	public Map<String, Double> getWeights() {
 		return weights;
 	}
 
@@ -43,7 +41,7 @@ public class SolverConfiguration {
 		return mclParams;
 	}
 
-	public Double getWeightForCouplingCriterion(final CriterionType criterionType) {
+	public Double getWeightForCouplingCriterion(final String criterionType) {
 		if (!weights.containsKey(criterionType)) {
 			log.error("no weight defined for coupling criterion: " + criterionType + ". Use 0");
 			return 0d;

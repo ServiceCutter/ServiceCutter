@@ -30,9 +30,10 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
@@ -43,10 +44,12 @@ public class GephiSolver {
 	private SolverConfiguration config;
 	private UndirectedGraph undirectedGraph;
 	private GraphModel graphModel;
+	private final MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	private Logger log = LoggerFactory.getLogger(GephiSolver.class);
 
-	public GephiSolver(final Model model, final SolverConfiguration config) {
+	public GephiSolver(final Model model, final SolverConfiguration config, MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
+		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 		if (model == null || model.getDataFields().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
 		}
@@ -130,27 +133,28 @@ public class GephiSolver {
 
 	}
 
-	private Set<CouplingCriterion> findCouplingCriteria() {
-		Set<CouplingCriterion> couplingCriteria = new HashSet<>();
+	private Set<MonoCouplingInstance> findCouplingCriteria() {
+		// Set<CouplingCriterion> couplingCriteria = new HashSet<>();
 		// TODO refactor model of field and criteria
-		for (DataField field : model.getDataFields()) {
-			for (CouplingCriterion criterion : field.getCouplingCriteria()) {
-				if (!couplingCriteria.contains(criterion)) {
-					couplingCriteria.add(criterion);
-				}
-			}
-		}
-		return couplingCriteria;
+		// monoCouplingInstanceRepository.find
+		// for (DataField field : model.getDataFields()) {
+		// for (CouplingCriterion criterion : field.g()) {
+		// if (!couplingCriteria.contains(criterion)) {
+		// couplingCriteria.add(criterion);
+		// }
+		// }
+		// }
+		return new HashSet<>(monoCouplingInstanceRepository.findByModel(model.getId()));
 	}
 
 	private void buildEdges() {
-		for (CouplingCriterion criterion : findCouplingCriteria()) {
+		for (MonoCouplingInstance instance : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
-			for (int i = 0; i < criterion.getDataFields().size(); i++) {
-				for (int j = i + 1; j < criterion.getDataFields().size(); j++) {
-					float weight = config.getWeightForCouplingCriterion(criterion.getCriterionType()).floatValue();
-					Node nodeA = getNodeByDataField(criterion.getDataFields().get(i));
-					Node nodeB = getNodeByDataField(criterion.getDataFields().get(j));
+			for (int i = 0; i < instance.getDataFields().size(); i++) {
+				for (int j = i + 1; j < instance.getDataFields().size(); j++) {
+					float weight = config.getWeightForCouplingCriterion(instance.getCouplingCriteriaVariant().getName()).floatValue();
+					Node nodeA = getNodeByDataField(instance.getDataFields().get(i));
+					Node nodeB = getNodeByDataField(instance.getDataFields().get(j));
 					Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
 					if (existingEdge != null && weight > 0) {
 						log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);

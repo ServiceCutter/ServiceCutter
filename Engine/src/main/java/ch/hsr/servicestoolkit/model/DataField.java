@@ -1,12 +1,8 @@
 package ch.hsr.servicestoolkit.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import org.springframework.util.StringUtils;
@@ -22,24 +18,9 @@ public class DataField {
 	private Long id;
 	private String name;
 	private String context;
-
 	@ManyToOne
 	@JsonIgnore
 	private Model model;
-
-	@ManyToMany(mappedBy = "dataFields")
-	private List<CouplingCriterion> couplingCriteria = new ArrayList<>();
-
-	public List<CouplingCriterion> getCouplingCriteria() {
-		return couplingCriteria;
-	}
-
-	public void setCouplingCriteria(final List<CouplingCriterion> couplingCriteria) {
-		this.couplingCriteria.clear();
-		if (couplingCriteria != null) {
-			this.couplingCriteria.addAll(couplingCriteria);
-		}
-	}
 
 	public String getName() {
 		return name;
@@ -55,18 +36,6 @@ public class DataField {
 
 	public void setId(final Long id) {
 		this.id = id;
-	}
-
-	public Model getModel() {
-		return model;
-	}
-
-	public void setModel(final Model model) {
-		this.model = model;
-	}
-
-	public void addCouplingCriterion(final CouplingCriterion criterion) {
-		this.couplingCriteria.add(criterion);
 	}
 
 	public String getContext() {
@@ -85,6 +54,14 @@ public class DataField {
 	@JsonIgnore
 	public void setContextName(final String foo) {
 		// do nothing
+	}
+
+	public Model getModel() {
+		return model;
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
 	}
 
 }

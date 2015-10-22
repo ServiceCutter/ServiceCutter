@@ -43,6 +43,17 @@
 			</div>
 			
 			<div ng-show="modelId">
+			
+				<h3>Coupling</h3>
+				
+				<ul>
+					<li ng-repeat="coupling in model.coupling">{{coupling.couplingCriteriaVariant.couplingCriterion.name}} - <strong>{{coupling.couplingCriteriaVariant.name}}</strong> - {{coupling.name}}
+					<ul>
+						<li>{{ listFieldNames(coupling.dataFields) }}</li>
+					</ul>
+					</li>
+				</ul>
+			
 				 <form class="form-inline">
 					<p>Upload user story definitions for model #{{modelId}}:
 					<div class="btn btn-default" ngf-select ng-model="transactionsFile" ngf-multiple="false">Upload user stories</div>

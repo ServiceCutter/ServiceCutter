@@ -30,6 +30,7 @@ public class CouplingCriterionFactory {
 			result = new CouplingCriteriaVariant();
 			result.setName(variant);
 			result.setMonoCoupling(false);
+			result.setCouplingCriterion(couplingCriterion);
 			couplingCriteriaVariantRepository.save(result);
 		}
 		return result;

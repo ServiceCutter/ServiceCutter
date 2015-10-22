@@ -46,7 +46,7 @@ angular.module('editorApp')
     					'Aggregation': {arrows: 'middle', dashes: true, width: 1},
     					'Inheritance': {arrows: 'to', width: 1}};
     			
-    			angular.forEach($scope.model['relations'], function(relation) {
+    			angular.forEach($scope.model['coupling'], function(relation) {
     				var relationStyle = null;
     				if(relationStyle = relationTypes[relation.couplingCriteriaVariant.name]) {
     					var names = relation.name.split('.');
@@ -112,12 +112,17 @@ angular.module('editorApp')
         			$scope.model.filteredDataFields = model.dataFields
         		});
         		Model.getCoupling({id:$scope.modelId}, function(coupling) {
-        			$scope.model['relations'] = coupling;
+        			$scope.model['coupling'] = coupling;
         			$scope.model['entities'] = coupling.filter(function(item) { return item.couplingCriteriaVariant.name == 'Same Entity' ;});
-
         		});
         	}
         };
+        
+        $scope.listFieldNames = function (fields) {
+        	return fields.map(function (o,i) {
+        		return o.name;
+        	}).join(', ');
+        }
         
         $scope.status = 'No upload yet.';
         $scope.modelId = 0;

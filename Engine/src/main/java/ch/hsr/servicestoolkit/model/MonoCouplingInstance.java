@@ -18,6 +18,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import ch.hsr.servicestoolkit.model.service.Service;
+import ch.hsr.servicestoolkit.model.service.ServiceCut;
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
@@ -81,5 +84,23 @@ public class MonoCouplingInstance {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isSatisfiedBy(ServiceCut cut) {
+		// TYPE: proximity
+		for (Service service : cut.getServices()) {
+			for (DataField dataField : dataFields) {
+				// if service contains any of the data fields
+				if (service.getDataFields().contains(dataField)) {
+					// then is has to contain ALL of them
+					if (service.getDataFields().containsAll(dataFields)) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 }

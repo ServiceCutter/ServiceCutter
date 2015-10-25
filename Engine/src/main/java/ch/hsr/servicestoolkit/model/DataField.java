@@ -22,6 +22,13 @@ public class DataField {
 	@JsonIgnore
 	private Model model;
 
+	public DataField() {
+	}
+
+	public DataField(String name) {
+		this.name = name;
+	}
+
 	public String getName() {
 		return name;
 	}

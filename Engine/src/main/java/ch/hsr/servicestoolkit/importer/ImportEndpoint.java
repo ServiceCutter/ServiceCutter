@@ -3,10 +3,8 @@ package ch.hsr.servicestoolkit.importer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -28,6 +26,7 @@ import ch.hsr.servicestoolkit.importer.api.EntityModel;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionFactory;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
@@ -72,7 +71,7 @@ public class ImportEndpoint {
 		model.setName("imported " + new Date().toString());
 		Map<EntityModel, List<DataField>> fieldsByModel = new HashMap<>();
 
-		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.SAME_ENTITY);
+		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findOrCreateVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
 
 		for (EntityModel entityModel : domainModel.getEntities()) {
 			MonoCouplingInstance couplingInstance = sameEntityVariant.createInstance();
@@ -90,9 +89,9 @@ public class ImportEndpoint {
 			fieldsByModel.put(entityModel, couplingInstance.getDataFields());
 		}
 
-		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.AGGREGATION, false);
-		CouplingCriteriaVariant compositionVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.COMPOSITION, false);
-		CouplingCriteriaVariant inheritanceVariant = couplingCriterionFactory.findOrCreateVariant("Identity & Lifecycle", CouplingCriteriaVariant.INHERITANCE, false);
+		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.AGGREGATION);
+		CouplingCriteriaVariant compositionVariant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.COMPOSITION);
+		CouplingCriteriaVariant inheritanceVariant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.INHERITANCE);
 
 		for (EntityRelation relation : domainModel.getRelations()) {
 			DualCouplingInstance instance = null;
@@ -126,15 +125,13 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 		// TODO add support for read/write/mixed
-		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findOrCreateVariant("Business Transaction", "Mixed", true);
+		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.SHARED_FIELD_ACCESS);
 		for (BusinessTransaction transaction : transactions) {
-			MonoCouplingInstance instance = aggregationVariant.createInstance();
+			DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 			monoCouplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
-			Set<DataField> dataFields = new HashSet<>();
-			dataFields.addAll(loadDataFields(transaction.getFieldsRead()));
-			dataFields.addAll(loadDataFields(transaction.getFieldsWritten()));
-			instance.setDataFields(dataFields);
+			instance.setDataFields(loadDataFields(transaction.getFieldsRead()));
+			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten()));
 		}
 
 	}

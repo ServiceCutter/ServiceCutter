@@ -8,9 +8,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,7 +91,7 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
 
-		List<MonoCouplingInstance> instances = new ArrayList<>();
+		Set<MonoCouplingInstance> instances = new HashSet<>();
 		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field1", "field2", "field3"}));
 		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field4", "field5", "field6"}));
 		when(monoCouplingInstanceRepository.findByModel(model.getId())).thenReturn(instances);

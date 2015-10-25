@@ -1,8 +1,6 @@
 package ch.hsr.servicestoolkit.model;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -10,19 +8,20 @@ import javax.persistence.ManyToOne;
 @Entity
 public class CouplingCriteriaVariant {
 
+	public static final String AGGREGATION = "Aggregation";
+	public static final String COMPOSITION = "Composition";
+	public static final String INHERITANCE = "Inheritance";
+	public static final String SAME_ENTITY = "Same Entity";
+	public static final String SHARED_FIELD_ACCESS = "Shared Field Access";
+
 	@Id
 	@GeneratedValue
 	private Long id;
 	private boolean monoCoupling = true;
 	private String name;
-	@Enumerated(EnumType.STRING)
-	private CouplingType type;
+	private Integer weight;
 	@ManyToOne
 	private CouplingCriterion couplingCriterion;
-	public static final String AGGREGATION = "Aggregation";
-	public static final String COMPOSITION = "Composition";
-	public static final String INHERITANCE = "Inheritance";
-	public static final String SAME_ENTITY = "Same Entity";
 
 	public Long getId() {
 		return id;
@@ -38,14 +37,6 @@ public class CouplingCriteriaVariant {
 
 	public void setMonoCoupling(boolean monoCoupling) {
 		this.monoCoupling = monoCoupling;
-	}
-
-	public CouplingType getType() {
-		return type;
-	}
-
-	public void setType(CouplingType type) {
-		this.type = type;
 	}
 
 	public CouplingCriterion getCouplingCriterion() {
@@ -64,13 +55,17 @@ public class CouplingCriteriaVariant {
 		this.name = name;
 	}
 
-	public enum CouplingType {
-		PROXIMITY, DISTANCE
-	}
-
 	public MonoCouplingInstance createInstance() {
 		MonoCouplingInstance result = monoCoupling ? new MonoCouplingInstance() : new DualCouplingInstance();
 		result.setCouplingCriteriaVariant(this);
 		return result;
+	}
+
+	public Integer getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 }

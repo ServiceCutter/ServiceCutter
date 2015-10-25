@@ -3,7 +3,7 @@ package ch.hsr.servicestoolkit.repository;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,7 +45,20 @@ public class MonoCouplingInstanceRepositoryTest {
 		Long id = addModel(variant);
 		//
 		em.flush();
-		List<MonoCouplingInstance> list = monoCouplingInstanceRepository.findByModel(id);
+		Set<MonoCouplingInstance> list = monoCouplingInstanceRepository.findByModel(id);
+		assertThat(list, hasSize(1));
+	}
+
+	@Test
+	@Transactional
+	public void testFindByModelTESTdual() {
+		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
+		couplingCriteriaVariantRepository.save(variant);
+		addModel(variant);
+		Long id = addModel(variant);
+		//
+		em.flush();
+		Set<MonoCouplingInstance> list = monoCouplingInstanceRepository.findByModel(id);
 		assertThat(list, hasSize(1));
 	}
 

@@ -104,6 +104,10 @@
 			<artifactId>ejml</artifactId>
 			<version>0.25</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+		</dependency>
 	</dependencies>
 
 	<!-- Package as an executable jar -->

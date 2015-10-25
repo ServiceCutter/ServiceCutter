@@ -2,6 +2,7 @@ package ch.hsr.servicestoolkit.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
@@ -18,25 +19,15 @@ public class CouplingCriterionFactory {
 		this.couplingCriteriaVariantRepository = couplingCriteriaVariantRepository;
 	}
 
-	public CouplingCriteriaVariant findOrCreateVariant(String coupling, String variant, boolean monoCoupling) {
+	public CouplingCriteriaVariant findVariant(String coupling, String variant) {
 		CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(coupling);
-		if (couplingCriterion == null) {
-			couplingCriterion = new CouplingCriterion();
-			couplingCriterion.setName(coupling);
-			couplingCriterionRepository.save(couplingCriterion);
-		}
+		Assert.notNull(couplingCriterion);
 		CouplingCriteriaVariant result = couplingCriteriaVariantRepository.readByNameAndCouplingCriterion(variant, couplingCriterion);
-		if (result == null) {
-			result = new CouplingCriteriaVariant();
-			result.setName(variant);
-			result.setMonoCoupling(false);
-			result.setCouplingCriterion(couplingCriterion);
-			couplingCriteriaVariantRepository.save(result);
-		}
+		Assert.notNull(result);
 		return result;
 	}
 
 	public CouplingCriteriaVariant findOrCreateVariant(String coupling, String variant) {
-		return findOrCreateVariant(coupling, variant, true);
+		return findVariant(coupling, variant);
 	}
 }

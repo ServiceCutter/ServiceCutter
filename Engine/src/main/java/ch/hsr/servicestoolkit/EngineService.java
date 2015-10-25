@@ -1,5 +1,6 @@
 package ch.hsr.servicestoolkit;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,10 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
@@ -38,15 +42,17 @@ public class EngineService {
 	private ModelRepository modelRepository;
 	private DataFieldRepository dataRepository;
 	private CouplingCriterionRepository couplingCriterionRepository;
+	private CouplingCriteriaVariantRepository couplingCriteriaVariantRepository;
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
 	public EngineService(final ModelRepository modelRepository, final DataFieldRepository dataRepository, final CouplingCriterionRepository couplingCriterionRepository,
-			MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
+			MonoCouplingInstanceRepository monoCouplingInstanceRepository, CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
+		this.couplingCriteriaVariantRepository = couplingCriteriaVariantRepository;
 	}
 
 	@GET
@@ -76,10 +82,10 @@ public class EngineService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/models/{id}/couplingcriteria")
 	@Transactional
-	public Set<MonoCouplingInstance> getCouplingCriteria(@PathParam("id") final Long id) {
+	public Set<MonoCouplingInstance> getModelCoupling(@PathParam("id") final Long id) {
 		Set<MonoCouplingInstance> result = new HashSet<>();
 		Model model = modelRepository.findOne(id);
-		List<MonoCouplingInstance> instances = monoCouplingInstanceRepository.findByModel(model.getId());
+		Set<MonoCouplingInstance> instances = monoCouplingInstanceRepository.findByModel(model.getId());
 		result.addAll(instances);
 		for (MonoCouplingInstance monoCouplingInstance : instances) {
 			monoCouplingInstance.getDataFields().size(); // TODO find better
@@ -87,6 +93,62 @@ public class EngineService {
 		}
 		log.debug("return criteria for model {}: {}", model.getName(), result.toString());
 		return result;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/couplingcriteria")
+	@Transactional
+	public List<CouplingCriterionDTO> getCouplingCriteriaVariants() {
+		List<CouplingCriterionDTO> result = new ArrayList<>();
+		List<CouplingCriterion> list = Lists.newArrayList(couplingCriterionRepository.findAll());
+		for (CouplingCriterion couplingCriterion : list) {
+			result.add(new CouplingCriterionDTO(couplingCriterion, couplingCriteriaVariantRepository.readByCouplingCriterion(couplingCriterion)));
+		}
+		return result;
+	}
+
+	public class CouplingCriterionDTO {
+
+		private final Long id;
+		private final String name;
+		private final String description;
+		private final List<CouplingCriteriaVariant> variants;
+		private final String decompositionImpact;
+		private final CouplingType type;
+
+		public CouplingCriterionDTO(CouplingCriterion couplingCriterion, List<CouplingCriteriaVariant> variants) {
+			this.variants = variants;
+			this.name = couplingCriterion.getName();
+			this.id = couplingCriterion.getId();
+			this.description = couplingCriterion.getDescription();
+			decompositionImpact = couplingCriterion.getDecompositionImpact();
+			type = couplingCriterion.getType();
+		}
+
+		public Long getId() {
+			return id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public List<CouplingCriteriaVariant> getVariants() {
+			return variants;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public String getDecompositionImpact() {
+			return decompositionImpact;
+		}
+
+		public CouplingType getType() {
+			return type;
+		}
 	}
 
 	@PUT

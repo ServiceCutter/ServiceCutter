@@ -1,0 +1,50 @@
+<div ng-cloak>
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Coupling Browser</h1>
+			
+			<p>All Coupling Criterias are listed here.</p>
+			
+			<p><strong>Types:</strong>
+				<ul>
+					<li>DISTANCE - The service <em>should</em> not contain different variants.</li>
+					<li>PROXIMITY - The fields <em>should</em> be in the same service.</li>
+					<li>SEPARATION - The fields <em>must</em> be distributed amongst different services.</li>
+					<li>EXCLUSIVE - The fields <em>must</em> form a service. No fields are assigned to another service, no fields are added to this service.</li>
+				</ul>
+			</p>
+
+			
+			<div class="col-md-4">
+			
+				<tabset vertical="true" type="pills">
+					<tab ng-repeat="criterion in criteria" select="tabSwitched(criterion)" heading="{{criterion.name}}" ></tab>
+				</tabset>
+				
+			</div>
+			
+			<div class="col-md-8" ng-show="criterion">
+			
+			<h2>{{criterion.name}}</h2>
+			
+			<p>{{criterion.description}}</p>
+
+			<p><strong>Type: </strong>{{criterion.type}}</p>
+			
+			<h3>Decomposition Impact</h3>
+
+			<p>{{criterion.decompositionImpact}}</p>
+			
+			<h3>Variants</h3>
+			
+			<ul>
+				<li ng-repeat="variant in criterion.variants">{{variant.name}} 
+					[Field Groups: {{variant.monoCoupling ? 1 : 2}}<span ng-show="variant.weight">; Weight: {{variant.weight}}</span>]
+					</li>
+			</ul>
+
+			</div>
+			
+		</div>
+	</div>
+</div>

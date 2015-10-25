@@ -1,6 +1,8 @@
 package ch.hsr.servicestoolkit.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -9,10 +11,17 @@ import com.google.common.base.Objects;
 @Entity
 public class CouplingCriterion {
 
+	public static final String SEMANTIC_PROXIMITY = "Semantic Proximity";
+	public static final String IDENTITY_LIFECYCLE = "Identity & Lifecycle Commonality";
+
 	@Id
 	@GeneratedValue
 	private Long id;
 	private String name;
+	private String description;
+	private String decompositionImpact;
+	@Enumerated(EnumType.STRING)
+	private CouplingType type;
 
 	public Long getId() {
 		return id;
@@ -43,6 +52,30 @@ public class CouplingCriterion {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDecompositionImpact() {
+		return decompositionImpact;
+	}
+
+	public void setDecompositionImpact(String decompositionImpact) {
+		this.decompositionImpact = decompositionImpact;
+	}
+
+	public CouplingType getType() {
+		return type;
+	}
+
+	public void setType(CouplingType type) {
+		this.type = type;
 	}
 
 }

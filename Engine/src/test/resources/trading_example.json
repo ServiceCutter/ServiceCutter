@@ -1,0 +1,174 @@
+{
+  "entities": [
+    {
+      "name": "AccountOwner",
+      "attributes": [
+        {
+          "name": "address"
+        }
+      ]
+    },
+    {
+      "name": "NaturalPerson",
+      "attributes": [
+        {
+          "name": "name"
+        }
+      ]
+    },
+    {
+      "name": "Company",
+      "attributes": [
+        {
+          "name": "companyName"
+        }
+      ]
+    },
+    {
+      "name": "Account",
+      "attributes": [
+        {
+          "name": "number"
+        }
+      ]
+    },
+    {
+      "name": "Recommendation",
+      "attributes": [
+        {
+          "name": "description"
+        }
+      ]
+    },
+    {
+      "name": "PaymentInfo",
+      "attributes": [
+        {
+          "name": "cashAccount"
+        }
+      ]
+    },
+    {
+      "name": "Instruction",
+      "attributes": [
+        {
+          "name": "instructedTime"
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "attributes": [
+        {"name": "posted"},
+        {"name": "expires"},
+        {"name": "triggerPrice"},
+        {"name": "executed"},
+        {"name": "type"},
+        {"name": "amount"}
+      ]
+    },
+    {
+      "name": "Stock",
+      "attributes": [
+        {"name": "identifier"},
+        {"name": "stockName"}
+      ]
+    },
+    {
+      "name": "Position",
+      "attributes": [
+        {
+          "name": "balance"
+        }
+      ]
+    },
+    {
+      "name": "Price",
+      "attributes": [
+        {"name": "dateTime"},
+        {"name": "price"},
+        {"name": "currency"}
+      ]
+    },
+    {
+      "name": "News",
+      "attributes": [
+        {"name": "title"},
+        {"name": "text"},
+        {"name": "image"}
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "origin": "NaturalPerson",
+      "destination": "AccountOwner",
+      "type": "INHERITANCE"
+    },
+    {
+      "origin": "Company",
+      "destination": "AccountOwner",
+      "type": "INHERITANCE"
+    },
+    {
+      "origin": "AccountOwner",
+      "destination": "Account",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Recommendation",
+      "destination": "Account",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Account",
+      "destination": "Position",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "Recommendation",
+      "destination": "Stock",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Position",
+      "destination": "Stock",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "Stock",
+      "destination": "Price",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Stock",
+      "destination": "News",
+      "type": "AGGREGATION"
+    },
+    {
+      "origin": "Order",
+      "destination": "Stock",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "Order",
+      "destination": "Instruction",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "Instruction",
+      "destination": "PaymentInfo",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "PaymentInfo",
+      "destination": "Account",
+      "type": "COMPOSITION"
+    },
+    {
+      "origin": "Account",
+      "destination": "Order",
+      "type": "COMPOSITION"
+    }
+  ]
+}

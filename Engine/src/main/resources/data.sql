@@ -10,6 +10,8 @@ insert into coupling_criterion (id, name, type) values (9, 'Storage Analogy', 'D
 insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Analogy', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (11, 'Change Analogy', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (12, 'Predefined Service Constraint', 'EXCLUSIVE');
+insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'DISTANCE');
+insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'PROXIMITY');
 
 -- description
 update coupling_criterion set description = 'Data which belong to the same identity and therefore shares a common lifecycle.' where id = 1;
@@ -24,7 +26,8 @@ update coupling_criterion set description = 'Storage that is required to persist
 update coupling_criterion set description = 'Volume of data transferred on the network. This information is defined by how often an instance of a field is read or written, how many instances of the field exist and the size of the field.' where id = 10;
 update coupling_criterion set description = 'How often do Change Requests have to be implemented in this area.' where id = 11;
 update coupling_criterion set description = 'There might be different reasons why some parts forcefully needs to be modelled in the same service.' where id = 12;
-update coupling_criterion set description = '' where id = 13;
+update coupling_criterion set description = 'Some data can be defined as immutable, meaning that it will not be affected by any change after the time of creation.' where id = 13;
+update coupling_criterion set description = 'Data is usually governed, maintained or produced by a single person, a role or a department of a company.' where id = 14;
 
 -- decomposition impact
 update coupling_criterion set decomposition_impact = 'Model in same service.' where id = 1;
@@ -39,7 +42,8 @@ update coupling_criterion set decomposition_impact = 'Do not model requirements 
 update coupling_criterion set decomposition_impact = 'Model data which is regularly accessed within the same services to avoid network traffic' where id = 10;
 update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service' where id = 11;
 update coupling_criterion set decomposition_impact = 'Respect the constraints in the modelling algorithm.' where id = 12;
-update coupling_criterion set decomposition_impact = '' where id = 13;
+update coupling_criterion set decomposition_impact = 'Immutable data are well suited for published language and communication between services. So if data fields have high coupling but are immutable, they might still be splitted across services if this generates other advantages.' where id = 13;
+update coupling_criterion set decomposition_impact = 'Services should reflect the organization of a company.' where id = 13;
 
 
 -- 1
@@ -84,5 +88,10 @@ insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id,
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (29, 1, 11, 1, 'Never');
 -- 12
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (30, 1, 12, 'Predefined Service');
+-- 13
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (31, 1, 13, 'Mutable');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (32, 1, 13, 'Immutable');
+-- 14
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (33, 1, 14, 'Predefined Service');
 
 

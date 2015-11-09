@@ -6,6 +6,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 @Entity
@@ -76,6 +77,11 @@ public class CouplingCriterion {
 
 	public void setType(CouplingType type) {
 		this.type = type;
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this.getClass()).add("id", id).add("name", name).add("type", type).toString();
 	}
 
 }

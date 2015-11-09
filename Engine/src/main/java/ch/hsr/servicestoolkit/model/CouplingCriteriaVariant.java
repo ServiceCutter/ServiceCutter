@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.google.common.base.MoreObjects;
+
 @Entity
 public class CouplingCriteriaVariant {
 
@@ -67,5 +69,10 @@ public class CouplingCriteriaVariant {
 
 	public void setWeight(Integer weight) {
 		this.weight = weight;
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this.getClass()).add("id", id).add("name", name).add("weight", weight).toString();
 	}
 }

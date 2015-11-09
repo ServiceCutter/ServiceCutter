@@ -1,5 +1,7 @@
 package ch.hsr.servicestoolkit.score;
 
+import static ch.hsr.servicestoolkit.score.TestDataHelper.createCouplingInstance;
+import static ch.hsr.servicestoolkit.score.TestDataHelper.createVariant;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -120,35 +122,6 @@ public class CouplingCriterionScoringTestProximity {
 		// Inheritance / Bond-Stock - no match - 0*2
 		// result: (50+50+50+0) / (5+5+5+2)
 		assertThat(score, closeTo(8.82, 0.01));
-	}
-
-	private MonoCouplingInstance createCouplingInstance(CouplingCriteriaVariant variant, DataField... fields) {
-		MonoCouplingInstance result = new MonoCouplingInstance();
-		for (DataField dataField : fields) {
-			result.addDataField(dataField);
-		}
-		result.setCouplingCriteriaVariant(variant);
-		return result;
-	}
-
-	private DualCouplingInstance createCouplingInstance(CouplingCriteriaVariant variant, DataField[] fields, DataField[] otherFields) {
-		DualCouplingInstance result = new DualCouplingInstance();
-		for (DataField dataField : fields) {
-			result.addDataField(dataField);
-		}
-		for (DataField dataField : otherFields) {
-			result.addSecondDataField(dataField);
-		}
-		result.setCouplingCriteriaVariant(variant);
-		return result;
-	}
-
-	CouplingCriteriaVariant createVariant(CouplingCriterion criterion, int weight, String name) {
-		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
-		variant.setCouplingCriterion(criterion);
-		variant.setWeight(weight);
-		variant.setName(name);
-		return variant;
 	}
 
 }

@@ -86,7 +86,7 @@ public class MonoCouplingInstance {
 		this.name = name;
 	}
 
-	public boolean isSatisfiedBy(ServiceCut cut) {
+	public boolean fieldsAreInSameService(ServiceCut cut) {
 		// TYPE: proximity
 		for (Service service : cut.getServices()) {
 			for (DataField dataField : getFields()) {

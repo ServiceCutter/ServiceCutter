@@ -35,4 +35,12 @@ public class CouplingContext {
 		return c.getCouplingCriteriaVariant().getCouplingCriterion().equals(criterion);
 	}
 
+	public List<DataField> getDataFields() {
+		return dataFields;
+	}
+
+	public Model getModel() {
+		return model;
+	}
+
 }

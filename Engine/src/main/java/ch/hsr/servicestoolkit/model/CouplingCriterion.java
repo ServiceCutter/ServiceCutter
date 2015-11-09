@@ -14,6 +14,7 @@ public class CouplingCriterion {
 
 	public static final String SEMANTIC_PROXIMITY = "Semantic Proximity";
 	public static final String IDENTITY_LIFECYCLE = "Identity & Lifecycle Commonality";
+	public static final String VOLATILITY = "Volatility";
 
 	@Id
 	@GeneratedValue

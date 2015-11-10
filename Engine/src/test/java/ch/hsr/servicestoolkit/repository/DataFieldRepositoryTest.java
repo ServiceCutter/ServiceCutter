@@ -1,6 +1,9 @@
 package ch.hsr.servicestoolkit.repository;
 
-import org.junit.Assert;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,8 +54,8 @@ public class DataFieldRepositoryTest {
 
 	@Test
 	public void testFindByName() {
-		Assert.assertNotNull(dataRepo.findByNameAndModel(FIELD_1, model));
-		Assert.assertNotNull(dataRepo.findByNameAndModel(FIELD_2, model));
+		assertThat(dataRepo.findByNameAndModel(FIELD_1, model), notNullValue());
+		assertThat(dataRepo.findByNameAndModel(FIELD_2, model), nullValue());
 	}
 
 }

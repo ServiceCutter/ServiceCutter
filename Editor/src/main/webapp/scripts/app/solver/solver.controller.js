@@ -40,7 +40,8 @@ angular.module('editorApp')
         							'mclParams': {'inflation': $scope.inflationSlider,
         										  'power': $scope.powerSlider,
         										  'prune': $scope.pruneSlider,
-        										  'extraClusters': $scope.extraClusterSlider
+        										  'extraClusters': $scope.extraClusterSlider,
+        										  'numberOfClusters': $scope.numberSlider
         							}
         		};
         		$http.post('/api/engine/solver/' + modelId, solverConfig).
@@ -51,7 +52,7 @@ angular.module('editorApp')
 		    			var nodeId = 1;
 		    			var currentContextId = 0;
 		    			for (var x in data) {
-		    				contextNodes.add({id: nodeId, shape: 'square', color: '#93D276', label: 'Bounded Context'});
+		    				contextNodes.add({id: nodeId, shape: 'square', color: '#93D276', label: 'Service'});
 		    				currentContextId = nodeId;
 	    					nodeId++;
 		    				for (var y in data[x].dataFields) {
@@ -79,6 +80,8 @@ angular.module('editorApp')
 		$scope.inflationSlider = 2;
 		$scope.pruneSlider = 0.0;
 		$scope.extraClusterSlider = 0;
+		$scope.numberSlider = 3;
+
 
         $scope.availableModels = Model.all();
         

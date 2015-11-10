@@ -29,7 +29,7 @@ public class SolverEndpoint {
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
-	public SolverEndpoint(ModelRepository modelRepository, MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
+	public SolverEndpoint(final ModelRepository modelRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
 		this.modelRepository = modelRepository;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 	}
@@ -39,14 +39,16 @@ public class SolverEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{modelId}")
 	@Transactional
-	public Set<BoundedContext> solveModel(@PathParam("modelId") Long id, SolverConfiguration config) {
+	public Set<BoundedContext> solveModel(@PathParam("modelId") final Long id, final SolverConfiguration config) {
 		Model model = modelRepository.findOne(id);
 		if (model == null || config == null) {
 			return Collections.emptySet();
 		}
 
 		GephiSolver solver = new GephiSolver(model, config, monoCouplingInstanceRepository);
-		Set<BoundedContext> result = solver.solveWithMarkov();
+		// Set<BoundedContext> result = solver.solveWithMarkov();
+		Integer numberOfClusters = config.getValueForMCLAlgorithm("numberOfClusters").intValue();
+		Set<BoundedContext> result = solver.solveWithGirvanNewman(numberOfClusters);
 		log.info("model {} solved, found bounded contexts: {}", model.getName(), result.toString());
 		return result;
 	}

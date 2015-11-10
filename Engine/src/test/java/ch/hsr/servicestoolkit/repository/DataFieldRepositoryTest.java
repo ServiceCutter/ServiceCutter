@@ -51,8 +51,8 @@ public class DataFieldRepositoryTest {
 
 	@Test
 	public void testFindByName() {
-		Assert.assertNotNull(dataRepo.findByName(FIELD_1));
-		Assert.assertNotNull(dataRepo.findByName(FIELD_2));
+		Assert.assertNotNull(dataRepo.findByNameAndModel(FIELD_1, model));
+		Assert.assertNotNull(dataRepo.findByNameAndModel(FIELD_2, model));
 	}
 
 }

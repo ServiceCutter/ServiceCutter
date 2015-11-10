@@ -130,16 +130,16 @@ public class ImportEndpoint {
 			DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 			monoCouplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
-			instance.setDataFields(loadDataFields(transaction.getFieldsRead()));
-			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten()));
+			instance.setDataFields(loadDataFields(transaction.getFieldsRead(), model));
+			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten(), model));
 		}
 
 	}
 
-	List<DataField> loadDataFields(List<String> fields) {
+	List<DataField> loadDataFields(List<String> fields, Model model) {
 		List<DataField> dataFields = new ArrayList<>();
 		for (String fieldName : fields) {
-			DataField dataField = dataFieldRepository.findByName(fieldName);
+			DataField dataField = dataFieldRepository.findByNameAndModel(fieldName, model);
 			if (dataField != null) {
 				dataFields.add(dataField);
 			} else {

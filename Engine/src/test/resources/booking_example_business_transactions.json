@@ -2,7 +2,7 @@
 	{
 		"fieldsRead": [],
 		"fieldsWritten":["firstname","name","street","city","creditCard","accountNr"],
-		"name":"createCusomter",
+		"name":"createCustomer",
 		"frequency":0.2
 	},
 	{	"fieldsRead": ["price"],

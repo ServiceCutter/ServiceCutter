@@ -19,7 +19,7 @@ import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 
-public class CouplingCriterionScoringTestDistance {
+public class CouplingCriterionScoringDistanceTest {
 
 	private DataField fieldIsin;
 	private DataField fieldName;

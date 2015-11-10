@@ -20,7 +20,7 @@ import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 
-public class CouplingCriterionScoringTestProximity {
+public class CouplingCriterionScoringProximityTest {
 
 	private static final int WEIGHT_INHERITANCE = 2;
 	private static final int WEIGHT_ENTITY = 5;

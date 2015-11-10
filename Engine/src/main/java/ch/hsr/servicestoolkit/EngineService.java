@@ -88,8 +88,8 @@ public class EngineService {
 		Set<MonoCouplingInstance> instances = monoCouplingInstanceRepository.findByModel(model.getId());
 		result.addAll(instances);
 		for (MonoCouplingInstance monoCouplingInstance : instances) {
-			monoCouplingInstance.getDataFields().size(); // TODO find better
-															// solution
+			// TODO find better solution
+			monoCouplingInstance.getAllFields().size();
 		}
 		log.debug("return criteria for model {}: {}", model.getName(), result.toString());
 		return result;

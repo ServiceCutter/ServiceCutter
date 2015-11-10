@@ -33,9 +33,8 @@ angular.module('editorApp')
         	if(parseInt(modelId) > 0) {
         		var solverConfig = {'weights': {'Same Entity': $scope.sameEntitySlider,
         										'Composition':$scope.compositionSlider,
-        										'Mixed':$scope.writeSlider,
-        										'READ_WRITE_BUSINESS_TRANSACTION':$scope.readWriteSlider,
-        										'READ_BUSINESS_TRANSACTION':$scope.readSlider
+        										'Aggregation':$scope.aggregationSlider,
+        										'Shared Field Access':$scope.sharedFieldAccessSlider
         										},
         							'mclParams': {'inflation': $scope.inflationSlider,
         										  'power': $scope.powerSlider,
@@ -72,9 +71,8 @@ angular.module('editorApp')
         
 		$scope.sameEntitySlider = 0.2;
 		$scope.compositionSlider = 0.2;
-		$scope.writeSlider = 0.4;
-		$scope.readSlider = 0.1;
-		$scope.readWriteSlider = 0.2;
+		$scope.aggregationSlider = 0.2;
+		$scope.sharedFieldAccessSlider = 0.4;
 		
 		$scope.powerSlider = 1;
 		$scope.inflationSlider = 2;

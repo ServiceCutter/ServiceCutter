@@ -89,11 +89,11 @@ public class MonoCouplingInstance {
 	public boolean fieldsAreInSameService(ServiceCut cut) {
 		// TYPE: proximity
 		for (Service service : cut.getServices()) {
-			for (DataField dataField : getFields()) {
+			for (DataField dataField : getAllFields()) {
 				// if service contains any of the data fields
 				if (service.getDataFields().contains(dataField)) {
 					// then is has to contain ALL of them
-					if (service.getDataFields().containsAll(getFields())) {
+					if (service.getDataFields().containsAll(getAllFields())) {
 						return true;
 					} else {
 						return false;
@@ -104,7 +104,7 @@ public class MonoCouplingInstance {
 		return true;
 	}
 
-	protected List<DataField> getFields() {
+	public List<DataField> getAllFields() {
 		return dataFields;
 	}
 }

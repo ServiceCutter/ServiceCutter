@@ -150,11 +150,12 @@ public class GephiSolver {
 	private void buildEdges() {
 		for (MonoCouplingInstance instance : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
-			for (int i = 0; i < instance.getDataFields().size(); i++) {
-				for (int j = i + 1; j < instance.getDataFields().size(); j++) {
-					float weight = config.getWeightForCouplingCriterion(instance.getCouplingCriteriaVariant().getName()).floatValue();
-					Node nodeA = getNodeByDataField(instance.getDataFields().get(i));
-					Node nodeB = getNodeByDataField(instance.getDataFields().get(j));
+			List<DataField> dataFields = instance.getAllFields();
+			float weight = config.getWeightForCouplingCriterion(instance.getCouplingCriteriaVariant().getName()).floatValue();
+			for (int i = 0; i < dataFields.size(); i++) {
+				for (int j = i + 1; j < dataFields.size(); j++) {
+					Node nodeA = getNodeByDataField(dataFields.get(i));
+					Node nodeB = getNodeByDataField(dataFields.get(j));
 					Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
 					if (existingEdge != null && weight > 0) {
 						log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
@@ -170,15 +171,16 @@ public class GephiSolver {
 	}
 
 	private Node getNodeByDataField(final DataField dataField) {
-		return nodes.get(dataField.getName());
+		return nodes.get(dataField.getContextName());
 	}
 
 	private void buildNodes() {
 		// create nodes
 		for (DataField field : model.getDataFields()) {
-			Node node = graphModel.factory().newNode(field.getName());
+			String name = field.getContextName();
+			Node node = graphModel.factory().newNode(name);
 			undirectedGraph.addNode(node);
-			nodes.put(field.getName(), node);
+			nodes.put(name, node);
 		}
 	}
 

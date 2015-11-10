@@ -59,38 +59,38 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <association id="7">    
+  <generalization id="7">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <association id="8">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="8" name="dataFields">        
-        <position height="18" width="57" x="490" y="309"/>      
-      </attribute>      
-      <multiplicity id="9" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="10">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="11" name="couplingCriteriaVariant">        
+      <attribute id="9" name="couplingCriteriaVariant">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="12" minimum="0" maximum="1">        
+      <multiplicity id="10" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="4" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="13">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
-  <association id="14">    
+  <association id="11">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="15" name="dataFields">        
+      <attribute id="12" name="dataFields">        
         <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="13" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="14">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="15" name="dataFields">        
+        <position height="18" width="57" x="490" y="309"/>      
       </attribute>      
       <multiplicity id="16" minimum="0" maximum="2147483647">        
         <position height="0" width="0" x="0" y="0"/>      
@@ -100,27 +100,27 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="17">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="18" name="secondDataFields">        
-        <position height="18" width="94" x="660" y="314"/>      
-      </attribute>      
-      <multiplicity id="19" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="20">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="21" name="couplingCriterion">        
+      <attribute id="18" name="couplingCriterion">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="22" minimum="0" maximum="1">        
+      <multiplicity id="19" minimum="0" maximum="1">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="3" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="20">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="21" name="secondDataFields">        
+        <position height="18" width="94" x="660" y="314"/>      
+      </attribute>      
+      <multiplicity id="22" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 

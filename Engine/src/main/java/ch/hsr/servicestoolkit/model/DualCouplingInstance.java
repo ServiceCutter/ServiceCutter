@@ -34,9 +34,9 @@ public class DualCouplingInstance extends MonoCouplingInstance {
 	}
 
 	@Override
-	protected List<DataField> getFields() {
+	public List<DataField> getAllFields() {
 		List<DataField> result = new ArrayList<>();
-		result.addAll(super.getFields());
+		result.addAll(super.getAllFields());
 		result.addAll(secondDataFields);
 		return result;
 	}

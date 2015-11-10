@@ -49,7 +49,7 @@
 				<ul>
 					<li ng-repeat="coupling in model.coupling">{{coupling.couplingCriteriaVariant.couplingCriterion.name}} - <strong>{{coupling.couplingCriteriaVariant.name}}</strong> - {{coupling.name}}
 					<ul>
-						<li>{{ listFieldNames(coupling.dataFields) }}</li>
+						<li>{{ listFieldNames(coupling.allFields) }}</li>
 					</ul>
 					</li>
 				</ul>

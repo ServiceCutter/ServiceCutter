@@ -86,7 +86,7 @@ angular.module('editorApp')
         	resize: $scope.graphResize
         };
         
-        $scope.upload = function (file, url, statusField, reload) {
+        $scope.upload = function (file, url, statusField, fullReload) {
             if (file && !file.$error) {
             	$scope[statusField] = 'Uploading...';
 				Upload.upload({
@@ -95,9 +95,11 @@ angular.module('editorApp')
 					progress: function(e){}
 				}).success(function(data, status, headers, config) {
 					$scope[statusField] = 'Upload successful!';
-					if(reload){
+					if(fullReload){
 						$scope.availableModels = Model.all();
 						$scope.modelId = parseInt(data['id']);
+					} else {
+						$scope.loadCoupling($scope.modelId)
 					}
 				}).error(function (data, status, headers, config) {
 					$scope[statusField] = 'Upload failed! (' + data['error'] + ')';
@@ -110,13 +112,17 @@ angular.module('editorApp')
         	if($scope.modelId != 0) {
         		$scope.model = Model.get({id:$scope.modelId}, function(model) {
         			$scope.model.filteredDataFields = model.dataFields
-        		});
-        		Model.getCoupling({id:$scope.modelId}, function(coupling) {
-        			$scope.model['coupling'] = coupling;
-        			$scope.model['entities'] = coupling.filter(function(item) { return item.couplingCriteriaVariant.name == 'Same Entity' ;});
+        			$scope.loadCoupling($scope.modelId);
         		});
         	}
         };
+        
+        $scope.loadCoupling = function (id) {
+        	Model.getCoupling({id:id}, function(coupling) {
+        		$scope.model['coupling'] = coupling;
+        		$scope.model['entities'] = coupling.filter(function(item) { return item.couplingCriteriaVariant.name == 'Same Entity' ;});
+        	});
+        }
         
         $scope.listFieldNames = function (fields) {
         	return fields.map(function (o,i) {

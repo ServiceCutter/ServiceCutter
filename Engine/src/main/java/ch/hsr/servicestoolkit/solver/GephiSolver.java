@@ -94,7 +94,6 @@ public class GephiSolver {
 
 	public Set<BoundedContext> solveWithGirvanNewman(final int numberOfClusters) {
 		Log.debug("solve cluster with numberOfClusters = " + numberOfClusters);
-
 		GirvanNewmanClusterer clusterer = new GirvanNewmanClusterer();
 		clusterer.setPreferredNumberOfClusters(numberOfClusters);
 		clusterer.execute(graphModel);

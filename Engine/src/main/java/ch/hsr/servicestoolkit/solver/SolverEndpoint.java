@@ -49,7 +49,7 @@ public class SolverEndpoint {
 		// Set<BoundedContext> result = solver.solveWithMarkov();
 		Integer numberOfClusters = config.getValueForMCLAlgorithm("numberOfClusters").intValue();
 		Set<BoundedContext> result = solver.solveWithGirvanNewman(numberOfClusters);
-		log.info("model {} solved, found bounded contexts: {}", model.getName(), result.toString());
+		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.size(), result.toString());
 		return result;
 	}
 

@@ -48,7 +48,7 @@ public class GephiSolver {
 
 	private Logger log = LoggerFactory.getLogger(GephiSolver.class);
 
-	public GephiSolver(final Model model, final SolverConfiguration config, MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
+	public GephiSolver(final Model model, final SolverConfiguration config, final MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 		if (model == null || model.getDataFields().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
@@ -143,14 +143,14 @@ public class GephiSolver {
 		// }
 		// }
 		// }
-		return new HashSet<>(monoCouplingInstanceRepository.findByModel(model.getId()));
+		return new HashSet<>(monoCouplingInstanceRepository.findByModel(model));
 	}
 
 	private void buildEdges() {
 		for (MonoCouplingInstance instance : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
 			List<DataField> dataFields = instance.getAllFields();
-			float weight = config.getWeightForCouplingCriterion(instance.getCouplingCriteriaVariant().getName()).floatValue();
+			float weight = config.getWeightForCouplingCriterion(instance.getVariant().getName()).floatValue();
 			for (int i = 0; i < dataFields.size(); i++) {
 				for (int j = i + 1; j < dataFields.size(); j++) {
 					Node nodeA = getNodeByDataField(dataFields.get(i));

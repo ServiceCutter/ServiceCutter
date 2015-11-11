@@ -31,7 +31,7 @@ import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {SolverConfiguration.class})
+@ContextConfiguration(classes = { SolverConfiguration.class })
 public class GephiSolverTest {
 
 	private SolverConfiguration config;
@@ -92,9 +92,9 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field6"));
 
 		Set<MonoCouplingInstance> instances = new HashSet<>();
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field1", "field2", "field3"}));
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field4", "field5", "field6"}));
-		when(monoCouplingInstanceRepository.findByModel(model.getId())).thenReturn(instances);
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] { "field1", "field2", "field3" }));
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] { "field4", "field5", "field6" }));
+		when(monoCouplingInstanceRepository.findByModel(model)).thenReturn(instances);
 
 		GephiSolver solver = new GephiSolver(model, config, monoCouplingInstanceRepository);
 		Set<BoundedContext> result = solver.solveWithMarkov();
@@ -114,10 +114,10 @@ public class GephiSolverTest {
 		return instance;
 	}
 
-	void createVariant(final String variantName, MonoCouplingInstance instance) {
+	void createVariant(final String variantName, final MonoCouplingInstance instance) {
 		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
 		variant.setName(variantName);
-		instance.setCouplingCriteriaVariant(variant);
+		instance.setVariant(variant);
 	}
 
 	private DataField createDataField(final String field) {

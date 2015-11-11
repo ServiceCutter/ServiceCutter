@@ -36,7 +36,7 @@ public class DomainModelImportTest {
 
 	@Test
 	public void modelImport() throws IOException, URISyntaxException {
-		DomainModel input = IntegrationTestHelper.readDomainModelFromFile("test_domain_model.json");
+		DomainModel input = IntegrationTestHelper.readFromFile("test_domain_model.json", DomainModel.class);
 
 		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
 		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,
@@ -48,5 +48,4 @@ public class DomainModelImportTest {
 		assertNotNull(entity.getBody().get("id"));
 		assertTrue(((String) entity.getBody().get("message")).startsWith("model "));
 	}
-
 }

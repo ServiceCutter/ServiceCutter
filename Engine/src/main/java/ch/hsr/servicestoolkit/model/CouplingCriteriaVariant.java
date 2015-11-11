@@ -59,7 +59,7 @@ public class CouplingCriteriaVariant {
 
 	public MonoCouplingInstance createInstance() {
 		MonoCouplingInstance result = monoCoupling ? new MonoCouplingInstance() : new DualCouplingInstance();
-		result.setCouplingCriteriaVariant(this);
+		result.setVariant(this);
 		return result;
 	}
 

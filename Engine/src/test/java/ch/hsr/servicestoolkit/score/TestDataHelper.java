@@ -13,7 +13,7 @@ public class TestDataHelper {
 		for (DataField dataField : fields) {
 			result.addDataField(dataField);
 		}
-		result.setCouplingCriteriaVariant(variant);
+		result.setVariant(variant);
 		return result;
 	}
 
@@ -25,7 +25,7 @@ public class TestDataHelper {
 		for (DataField dataField : otherFields) {
 			result.addSecondDataField(dataField);
 		}
-		result.setCouplingCriteriaVariant(variant);
+		result.setVariant(variant);
 		return result;
 	}
 

@@ -48,8 +48,8 @@ public class EngineServiceRestTest {
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET, IntegrationTestHelper.createEmptyHttpRequest(),
-				Model.class);
+		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET,
+				IntegrationTestHelper.createEmptyHttpRequest(), Model.class);
 		assertEquals("testModel", assertResult.getBody().getName());
 	}
 
@@ -60,7 +60,7 @@ public class EngineServiceRestTest {
 		// test whether created model is visible
 		assertEquals(before + 1, countModels());
 	}
-	//
+	// TODO ??
 	// @Test
 	// public void addCriterionToExistingModel() {
 	// Long modelId = createModelOnApi();

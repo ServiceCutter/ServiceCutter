@@ -42,8 +42,8 @@ public class SolverEndpointTest {
 	@Test
 	public void testNonExstingModel() {
 
-		ResponseEntity<Set<BoundedContext>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/234", HttpMethod.POST, IntegrationTestHelper.createEmptyHttpRequest(),
-				new ParameterizedTypeReference<Set<BoundedContext>>() {
+		ResponseEntity<Set<BoundedContext>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/234", HttpMethod.POST,
+				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<Set<BoundedContext>>() {
 				});
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		assertTrue(entity.getBody().isEmpty());
@@ -53,7 +53,7 @@ public class SolverEndpointTest {
 	@Ignore
 	public void testExampleModelFromFile() throws UnsupportedEncodingException, URISyntaxException, IOException {
 
-		DomainModel model = IntegrationTestHelper.readDomainModelFromFile("test_domain_model.json");
+		DomainModel model = IntegrationTestHelper.readFromFile("test_domain_model.json", DomainModel.class);
 
 		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
 		ResponseEntity<Map<String, Object>> modelResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,

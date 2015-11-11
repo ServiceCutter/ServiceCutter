@@ -1,0 +1,19 @@
+[
+  {
+    "couplingCriterionName": "Resilience",
+    "variantName": "Low",
+    "fields": [
+      "Customer.firstname"
+    ]
+  },
+  {
+    "couplingCriterionName": "Resilience",
+    "variantName": "Critical",
+    "fields": [
+      "Article.articleName",
+      "Article.price",
+      "Article.serial",
+      "Customer.creditCard"
+    ]
+  }
+]

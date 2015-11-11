@@ -1,0 +1,20 @@
+[
+  {
+    "couplingCriterionName": "Resilience",
+    "variantName": "Low",
+    "fields": [
+      "News.title",
+      "News.text",
+      "News.image"
+    ]
+  },
+  {
+    "couplingCriterionName": "Resilience",
+    "variantName": "Critical",
+    "fields": [
+      "Price.dateTime",
+      "Price.price",
+      "Price.currency"
+    ]
+  }
+]

@@ -18,6 +18,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ch.hsr.servicestoolkit.model.service.Service;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 
@@ -31,19 +33,24 @@ public class MonoCouplingInstance {
 	@GeneratedValue
 	private Long id;
 	private String name;
+
+	@ManyToOne
+	@JsonIgnore
+	private Model model;
+
 	@ManyToMany
-	@JoinTable(name = "datafield_to_second_couplinginstance", joinColumns = {@JoinColumn(name = "datafield_id", referencedColumnName = "id")}, inverseJoinColumns = {
-			@JoinColumn(name = "coupling_id", referencedColumnName = "id")})
+	@JoinTable(name = "datafield_to_second_couplinginstance", joinColumns = { @JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
+			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
 	private List<DataField> dataFields = new ArrayList<>();
 	@ManyToOne
-	private CouplingCriteriaVariant couplingCriteriaVariant;
+	private CouplingCriteriaVariant variant;
 	private boolean singleInstancePerModel = false;
 
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
@@ -51,11 +58,11 @@ public class MonoCouplingInstance {
 		return Collections.unmodifiableList(dataFields);
 	}
 
-	public void addDataField(DataField dataField) {
+	public void addDataField(final DataField dataField) {
 		dataFields.add(dataField);
 	}
 
-	public void setDataFields(Collection<DataField> dataFields) {
+	public void setDataFields(final Collection<DataField> dataFields) {
 		this.dataFields.clear();
 		if (dataFields != null) {
 			this.dataFields.addAll(dataFields);
@@ -66,27 +73,27 @@ public class MonoCouplingInstance {
 		return singleInstancePerModel;
 	}
 
-	public void setSingleInstancePerModel(boolean singleInstancePerModel) {
+	public void setSingleInstancePerModel(final boolean singleInstancePerModel) {
 		this.singleInstancePerModel = singleInstancePerModel;
 	}
 
-	public CouplingCriteriaVariant getCouplingCriteriaVariant() {
-		return couplingCriteriaVariant;
+	public CouplingCriteriaVariant getVariant() {
+		return variant;
 	}
 
-	public void setCouplingCriteriaVariant(CouplingCriteriaVariant couplingCriteriaVariant) {
-		this.couplingCriteriaVariant = couplingCriteriaVariant;
+	public void setVariant(final CouplingCriteriaVariant variant) {
+		this.variant = variant;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public boolean fieldsAreInSameService(ServiceCut cut) {
+	public boolean fieldsAreInSameService(final ServiceCut cut) {
 		// TYPE: proximity
 		for (Service service : cut.getServices()) {
 			for (DataField dataField : getAllFields()) {
@@ -106,5 +113,9 @@ public class MonoCouplingInstance {
 
 	public List<DataField> getAllFields() {
 		return dataFields;
+	}
+
+	public void setModel(final Model model) {
+		this.model = model;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
+import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
 import ch.hsr.servicestoolkit.importer.api.EntityModel;
@@ -32,7 +34,6 @@ import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
@@ -43,16 +44,14 @@ public class ImportEndpoint {
 
 	private final Logger log = LoggerFactory.getLogger(ImportEndpoint.class);
 	private final ModelRepository modelRepository;
-	private final CouplingCriterionRepository couplingCriterionRepository;
 	private DataFieldRepository dataFieldRepository;
 	private CouplingCriterionFactory couplingCriterionFactory;
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
-	public ImportEndpoint(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository, final DataFieldRepository dataFieldRepository,
-			CouplingCriterionFactory couplingCriterionFactory, MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
+	public ImportEndpoint(final ModelRepository modelRepository, final DataFieldRepository dataFieldRepository, final CouplingCriterionFactory couplingCriterionFactory,
+			final MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
 		this.modelRepository = modelRepository;
-		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.dataFieldRepository = dataFieldRepository;
 		this.couplingCriterionFactory = couplingCriterionFactory;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
@@ -105,6 +104,7 @@ public class ImportEndpoint {
 			monoCouplingInstanceRepository.save(instance);
 			instance.setDataFields(fieldsByModel.get(relation.getOrigin()));
 			instance.setSecondDataFields(fieldsByModel.get(relation.getDestination()));
+			instance.setModel(model);
 			instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
 		}
 		// TODO: remove return value and set location header to URL of generated
@@ -130,16 +130,54 @@ public class ImportEndpoint {
 			DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 			monoCouplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
+			instance.setModel(model);
 			instance.setDataFields(loadDataFields(transaction.getFieldsRead(), model));
 			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten(), model));
 		}
-
 	}
 
-	List<DataField> loadDataFields(List<String> fields, Model model) {
+	@POST
+	@Path("/{modelId}/distanceVariants/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
+	public void importDistanceCriterionInstance(@PathParam("modelId") final Long modelId, final List<DistanceVariant> inputVariants) {
+		Model model = modelRepository.findOne(modelId);
+		if (model == null || inputVariants == null) {
+			throw new InvalidRestParam();
+		}
+		for (DistanceVariant inputVariant : inputVariants) {
+			CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
+			if (variant == null) {
+				log.error("variant {} not known! ignore", inputVariant);
+				continue;
+			}
+			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndNameAndVariant(model, inputVariant.getCouplingCriterionName(), variant);
+
+			if (instance == null || instance.isEmpty()) {
+				MonoCouplingInstance newInstance = variant.createInstance();
+				monoCouplingInstanceRepository.save(newInstance);
+				newInstance.setName(inputVariant.getCouplingCriterionName());
+				newInstance.setModel(model);
+				newInstance.setDataFields(loadDataFields(inputVariant.getFields(), model));
+			} else {
+				assert instance.size() == 1;
+				log.error("enhancing variants not yet implemented");
+				throw new InvalidRestParam();
+			}
+		}
+	}
+
+	List<DataField> loadDataFields(final List<String> fields, final Model model) {
 		List<DataField> dataFields = new ArrayList<>();
 		for (String fieldName : fields) {
-			DataField dataField = dataFieldRepository.findByNameAndModel(fieldName, model);
+			DataField dataField;
+			if (fieldName.contains(".")) {
+				String[] splittedName = fieldName.split("\\.");
+				dataField = dataFieldRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);
+			} else {
+				dataField = dataFieldRepository.findByNameAndModel(fieldName, model);
+			}
+
 			if (dataField != null) {
 				dataFields.add(dataField);
 			} else {

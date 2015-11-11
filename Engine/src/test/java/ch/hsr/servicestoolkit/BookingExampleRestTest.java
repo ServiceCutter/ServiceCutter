@@ -29,6 +29,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
+import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.solver.BoundedContext;
 
@@ -40,6 +41,7 @@ public class BookingExampleRestTest {
 
 	private static final String BOOKING_EXAMPLE_JSON = "booking_example.json";
 	private static final String BOOKING_EXAMPLE_BUSINESS_TRANSACTION = "booking_example_business_transactions.json";
+	private static final String BOOKING_EXAMPLE_DISTANCE_VARIANTS = "booking_example_distance_variants.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
@@ -50,9 +52,10 @@ public class BookingExampleRestTest {
 		Integer modelId = createModelOnApi();
 
 		loadBusinessTransactionOnModel(modelId);
+		loadDistanceVariantsOnModel(modelId);
 
 		// TODO re-enable
-		// solveModel(modelId);
+		solveModel(modelId);
 	}
 
 	private void solveModel(final Integer modelId) {
@@ -66,7 +69,7 @@ public class BookingExampleRestTest {
 	}
 
 	private void loadBusinessTransactionOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<BusinessTransaction> transactions = IntegrationTestHelper.readBusinessTransactionsFromFile(BOOKING_EXAMPLE_BUSINESS_TRANSACTION);
+		List<BusinessTransaction> transactions = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_BUSINESS_TRANSACTION, BusinessTransaction.class);
 
 		log.info("read business Transactions: {}", transactions);
 
@@ -80,8 +83,23 @@ public class BookingExampleRestTest {
 		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
 	}
 
+	private void loadDistanceVariantsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
+		List<DistanceVariant> variants = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_DISTANCE_VARIANTS, DistanceVariant.class);
+
+		log.info("read distance variants: {}", variants);
+
+		HttpEntity<List<DistanceVariant>> request = IntegrationTestHelper.createHttpRequestWithPostObj(variants);
+		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceVariants/";
+		log.info("store distance variants on {}", path);
+
+		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
+		});
+
+		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
+	}
+
 	private Integer createModelOnApi() throws URISyntaxException, UnsupportedEncodingException, IOException {
-		DomainModel input = IntegrationTestHelper.readDomainModelFromFile(BOOKING_EXAMPLE_JSON);
+		DomainModel input = IntegrationTestHelper.readFromFile(BOOKING_EXAMPLE_JSON, DomainModel.class);
 
 		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
 		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,

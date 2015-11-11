@@ -24,6 +24,9 @@ public class Model {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "model", fetch = FetchType.EAGER)
 	private List<DataField> dataFields = new ArrayList<>();
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "model")
+	private List<MonoCouplingInstance> couplingInstances = new ArrayList<>();
+
 	public List<DataField> getDataFields() {
 		return Collections.unmodifiableList(dataFields);
 	}
@@ -31,6 +34,11 @@ public class Model {
 	public void addDataField(final DataField dataField) {
 		dataFields.add(dataField);
 		dataField.setModel(this);
+	}
+
+	public void addCouplingInstance(final MonoCouplingInstance instance) {
+		couplingInstances.add(instance);
+		instance.setModel(this);
 	}
 
 	public Long getId() {

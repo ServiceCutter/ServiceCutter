@@ -8,4 +8,7 @@ import ch.hsr.servicestoolkit.model.Model;
 public interface DataFieldRepository extends CrudRepository<DataField, Long> {
 
 	DataField findByNameAndModel(String name, Model model);
+
+	DataField findByContextAndNameAndModel(final String context, final String name, Model model);
+
 }

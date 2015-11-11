@@ -16,29 +16,7 @@ import org.springframework.http.MediaType;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
-import ch.hsr.servicestoolkit.importer.api.DomainModel;
-
 public class IntegrationTestHelper {
-
-	public static DomainModel readDomainModelFromFile(final String file) throws URISyntaxException, UnsupportedEncodingException, IOException {
-		URL url = IntegrationTestHelper.class.getClassLoader().getResource(file);
-		Path resPath = java.nio.file.Paths.get(url.toURI());
-		String input = new String(java.nio.file.Files.readAllBytes(resPath), Charset.defaultCharset().name());
-		ObjectMapper mapper = new ObjectMapperContextResolver().getContext(null);
-		DomainModel domainModel = mapper.readValue(input, DomainModel.class);
-		return domainModel;
-	}
-
-	public static List<BusinessTransaction> readBusinessTransactionsFromFile(final String file) throws URISyntaxException, UnsupportedEncodingException, IOException {
-		URL url = IntegrationTestHelper.class.getClassLoader().getResource(file);
-		Path resPath = java.nio.file.Paths.get(url.toURI());
-		String input = new String(java.nio.file.Files.readAllBytes(resPath), Charset.defaultCharset().name());
-		ObjectMapper mapper = new ObjectMapperContextResolver().getContext(null);
-		List<BusinessTransaction> transactions = mapper.readValue(input, new TypeReference<List<BusinessTransaction>>() {
-		});
-		return transactions;
-	}
 
 	public static <T> HttpEntity<T> createHttpRequestWithPostObj(final T obj) {
 		HttpHeaders headers = new HttpHeaders();
@@ -51,6 +29,26 @@ public class IntegrationTestHelper {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		return new HttpEntity<Object>(headers);
+	}
+
+	public static <T> List<T> readListFromFile(final String filepath, final Class<T> type) throws URISyntaxException, UnsupportedEncodingException, IOException {
+		ObjectMapper mapper = new ObjectMapperContextResolver().getContext(null);
+		List<T> result = mapper.readValue(readFromFile(filepath), new TypeReference<List<T>>() {
+		});
+		return result;
+	}
+
+	public static <T> T readFromFile(final String filepath, final Class<T> type) throws URISyntaxException, UnsupportedEncodingException, IOException {
+		ObjectMapper mapper = new ObjectMapperContextResolver().getContext(null);
+		T result = mapper.readValue(readFromFile(filepath), type);
+		return result;
+	}
+
+	private static String readFromFile(final String filepath) throws URISyntaxException, UnsupportedEncodingException, IOException {
+		URL url = IntegrationTestHelper.class.getClassLoader().getResource(filepath);
+		Path resPath = java.nio.file.Paths.get(url.toURI());
+		String input = new String(java.nio.file.Files.readAllBytes(resPath), Charset.defaultCharset().name());
+		return input;
 	}
 
 }

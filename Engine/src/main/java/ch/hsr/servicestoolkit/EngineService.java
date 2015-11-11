@@ -47,7 +47,7 @@ public class EngineService {
 
 	@Autowired
 	public EngineService(final ModelRepository modelRepository, final DataFieldRepository dataRepository, final CouplingCriterionRepository couplingCriterionRepository,
-			MonoCouplingInstanceRepository monoCouplingInstanceRepository, CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
+			final MonoCouplingInstanceRepository monoCouplingInstanceRepository, final CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
 		this.modelRepository = modelRepository;
 		this.dataRepository = dataRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
@@ -85,7 +85,7 @@ public class EngineService {
 	public Set<MonoCouplingInstance> getModelCoupling(@PathParam("id") final Long id) {
 		Set<MonoCouplingInstance> result = new HashSet<>();
 		Model model = modelRepository.findOne(id);
-		Set<MonoCouplingInstance> instances = monoCouplingInstanceRepository.findByModel(model.getId());
+		Set<MonoCouplingInstance> instances = monoCouplingInstanceRepository.findByModel(model);
 		result.addAll(instances);
 		for (MonoCouplingInstance monoCouplingInstance : instances) {
 			// TODO find better solution
@@ -117,7 +117,7 @@ public class EngineService {
 		private final String decompositionImpact;
 		private final CouplingType type;
 
-		public CouplingCriterionDTO(CouplingCriterion couplingCriterion, List<CouplingCriteriaVariant> variants) {
+		public CouplingCriterionDTO(final CouplingCriterion couplingCriterion, final List<CouplingCriteriaVariant> variants) {
 			this.variants = variants;
 			this.name = couplingCriterion.getName();
 			this.id = couplingCriterion.getId();

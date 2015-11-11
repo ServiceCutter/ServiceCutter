@@ -53,7 +53,7 @@ public class CouplingCriterionScoring {
 		for (Service service : services) {
 			weightsPerService.put(service, new ArrayList<>());
 		}
-		// find min and max weight per service
+		// collect weights per service
 		for (Entry<CouplingCriteriaVariant, List<MonoCouplingInstance>> e : variantsMap.entrySet()) {
 			for (MonoCouplingInstance couplingInstance : e.getValue()) {
 				for (DataField dataField : couplingInstance.getDataFields()) {
@@ -68,12 +68,8 @@ public class CouplingCriterionScoring {
 			List<Integer> weights = weightsPerService.get(service);
 			double sum = weights.stream().collect(summingDouble(f -> f));
 			double mean = sum / weights.size();
-			double sumOfDeviation = weights.stream().map(v -> Math.abs(mean - v)).collect(summingDouble(f -> f));
-			// MinMax weights = weightsPerService.get(service);
-			// Integer min = weights.min;
-			// Integer max = weights.max;
-			// Integer diff = max - min;
-			double localScore = MAX_SCORE - (sumOfDeviation * 2) / weights.size();
+			double sumOfDeviations = weights.stream().map(v -> Math.abs(mean - v)).collect(summingDouble(f -> f));
+			double localScore = MAX_SCORE - (sumOfDeviations * 2) / weights.size();
 			totalScore += localScore;
 			logger.info("service [{}] was evaluated, adding score of {}.", service.getFieldNames(), localScore);
 		}

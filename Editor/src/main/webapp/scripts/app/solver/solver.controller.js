@@ -35,12 +35,15 @@ angular.module('editorApp')
         										'Composition':$scope.compositionSlider,
         										'Aggregation':$scope.aggregationSlider,
         										'Shared Field Access':$scope.sharedFieldAccessSlider
-        										},
-        							'mclParams': {'inflation': $scope.inflationSlider,
+        							},
+        							'algorithmParams': {'inflation': $scope.inflationSlider,
         										  'power': $scope.powerSlider,
         										  'prune': $scope.pruneSlider,
         										  'extraClusters': $scope.extraClusterSlider,
         										  'numberOfClusters': $scope.numberSlider
+        							},
+        							'priorities': {
+        										'Identiy': 1
         							}
         		};
         		$http.post('/api/engine/solver/' + modelId, solverConfig).

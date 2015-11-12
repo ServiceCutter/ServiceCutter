@@ -46,9 +46,9 @@ public class GephiSolverTest {
 		weights.put(SAME_ENTITY, 0.5d);
 		weights.put(COMPOSITION, 0.2d);
 		config.setWeights(weights);
-		config.getMclParams().put("inflation", 2d);
-		config.getMclParams().put("power", 1d);
-		config.getMclParams().put("prune", 0.0);
+		config.getAlgorithmParams().put("inflation", 2d);
+		config.getAlgorithmParams().put("power", 1d);
+		config.getAlgorithmParams().put("prune", 0.0);
 		monoCouplingInstanceRepository = mock(MonoCouplingInstanceRepository.class);
 	}
 

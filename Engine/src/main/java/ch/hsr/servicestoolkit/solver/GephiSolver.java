@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.gephi.clustering.api.Cluster;
 import org.gephi.clustering.spi.Clusterer;
@@ -30,6 +32,7 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -105,11 +108,11 @@ public class GephiSolver {
 
 		MCClusterer clusterer = new MCClusterer();
 		// the higher the more clusters?
-		clusterer.setInflation(config.getValueForMCLAlgorithm("inflation"));
-		clusterer.setExtraClusters(config.getValueForMCLAlgorithm("extraClusters") > 0);
+		clusterer.setInflation(config.getValueForAlgorithmParam("inflation"));
+		clusterer.setExtraClusters(config.getValueForAlgorithmParam("extraClusters") > 0);
 		clusterer.setSelfLoop(true); // must be true
-		clusterer.setPower(config.getValueForMCLAlgorithm("power"));
-		clusterer.setPrune(config.getValueForMCLAlgorithm("prune"));
+		clusterer.setPower(config.getValueForAlgorithmParam("power"));
+		clusterer.setPrune(config.getValueForAlgorithmParam("prune"));
 		clusterer.execute(graphModel);
 		return getClustererResult(clusterer);
 	}
@@ -133,40 +136,82 @@ public class GephiSolver {
 	}
 
 	private Set<MonoCouplingInstance> findCouplingCriteria() {
-		// Set<CouplingCriterion> couplingCriteria = new HashSet<>();
-		// TODO refactor model of field and criteria
-		// monoCouplingInstanceRepository.find
-		// for (DataField field : model.getDataFields()) {
-		// for (CouplingCriterion criterion : field.g()) {
-		// if (!couplingCriteria.contains(criterion)) {
-		// couplingCriteria.add(criterion);
-		// }
-		// }
-		// }
 		return new HashSet<>(monoCouplingInstanceRepository.findByModel(model));
 	}
 
+	private Map<String, List<MonoCouplingInstance>> getInstancesByCriterion(final List<MonoCouplingInstance> instances) {
+		Map<String, List<MonoCouplingInstance>> instancesByCriterion = new HashMap<>();
+		for (MonoCouplingInstance instance : instances) {
+			String ccName = instance.getVariant().getCouplingCriterion().getName();
+			if (instancesByCriterion.get(ccName) == null) {
+				instancesByCriterion.put(ccName, new ArrayList<MonoCouplingInstance>());
+			}
+			instancesByCriterion.get(ccName).add(instance);
+		}
+		return instancesByCriterion;
+	}
+
 	private void buildEdges() {
+		buildDistanceEdges();
 		for (MonoCouplingInstance instance : findCouplingCriteria()) {
 			// from every data field in the criterion to every other
 			List<DataField> dataFields = instance.getAllFields();
-			float weight = config.getWeightForCouplingCriterion(instance.getVariant().getName()).floatValue();
+			float weight = config.getWeightForVariant(instance.getVariant().getName()).floatValue();
 			for (int i = 0; i < dataFields.size(); i++) {
 				for (int j = i + 1; j < dataFields.size(); j++) {
-					Node nodeA = getNodeByDataField(dataFields.get(i));
-					Node nodeB = getNodeByDataField(dataFields.get(j));
-					Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
-					if (existingEdge != null && weight > 0) {
-						log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
-						existingEdge.setWeight(existingEdge.getWeight() + weight);
-					} else if (weight > 0) {
-						log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
-						Edge edge = graphModel.factory().newEdge(nodeA, nodeB, weight, false);
-						undirectedGraph.addEdge(edge);
+					if (weight > 0) {
+						addWeight(dataFields.get(i), dataFields.get(j), weight);
 					}
 				}
 			}
 		}
+	}
+
+	private void buildDistanceEdges() {
+		// get all instances of distance variants
+		List<MonoCouplingInstance> distanceCriteriaInstances = findCouplingCriteriaByType(CouplingType.DISTANCE);
+		// get all instances group by distance CC
+		for (Entry<String, List<MonoCouplingInstance>> instancesEntry : getInstancesByCriterion(distanceCriteriaInstances).entrySet()) {
+			// compare all variants with each other
+			List<MonoCouplingInstance> instances = instancesEntry.getValue();
+			Double priority = config.getPriorityForCouplingCriterion(instances.get(0).getVariant().getCouplingCriterion().getName());
+			for (int i = 0; i < instances.size() - 1; i++) {
+				for (int j = i + 1; j < instances.size(); j++) {
+					// for all fields in two different variants, calculate the
+					// distance
+					for (DataField fieldFromI : instances.get(i).getAllFields()) {
+						for (DataField fieldFromJ : instances.get(j).getAllFields()) {
+							int distance = Math.abs(instances.get(i).getVariant().getWeight() - instances.get(j).getVariant().getWeight());
+							if (distance != 0) {
+								addWeight(fieldFromI, fieldFromJ, -(distance * priority));
+							}
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private List<MonoCouplingInstance> findCouplingCriteriaByType(final CouplingType type) {
+		List<MonoCouplingInstance> distanceCriteriaInstances = findCouplingCriteria().stream().filter(instance -> instance.getVariant().getCouplingCriterion().equals(type))
+				.collect(Collectors.toList());
+		return distanceCriteriaInstances;
+	}
+
+	private void addWeight(final DataField first, final DataField second, final double weight) {
+		Node nodeA = getNodeByDataField(first);
+		Node nodeB = getNodeByDataField(second);
+		Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
+		if (existingEdge != null) {
+			log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
+			existingEdge.setWeight((float) (existingEdge.getWeight() + weight));
+		} else {
+			log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
+			Edge edge = graphModel.factory().newEdge(nodeA, nodeB, (float) weight, false);
+			undirectedGraph.addEdge(edge);
+		}
+
 	}
 
 	private Node getNodeByDataField(final DataField dataField) {

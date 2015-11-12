@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -23,8 +25,8 @@ import org.springframework.stereotype.Component;
 import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
+import ch.hsr.servicestoolkit.importer.api.Entity;
 import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
-import ch.hsr.servicestoolkit.importer.api.EntityModel;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
@@ -68,16 +70,15 @@ public class ImportEndpoint {
 		Model model = new Model();
 		modelRepository.save(model);
 		model.setName("imported " + new Date().toString());
-		Map<EntityModel, List<DataField>> fieldsByModel = new HashMap<>();
 
+		// entities
 		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findOrCreateVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
-
-		for (EntityModel entityModel : domainModel.getEntities()) {
+		for (Entry<String, List<EntityAttribute>> entity : findRealEntities(domainModel).entrySet()) {
 			MonoCouplingInstance couplingInstance = sameEntityVariant.createInstance();
 			monoCouplingInstanceRepository.save(couplingInstance);
-			String entityName = entityModel.getName();
+			String entityName = entity.getKey();
 			couplingInstance.setName(entityName);
-			for (EntityAttribute entityAttribute : entityModel.getAttributes()) {
+			for (EntityAttribute entityAttribute : entity.getValue()) {
 				DataField dataField = new DataField();
 				dataField.setName(entityAttribute.getName());
 				dataField.setContext(entityName);
@@ -85,27 +86,24 @@ public class ImportEndpoint {
 				dataFieldRepository.save(dataField);
 				couplingInstance.addDataField(dataField);
 			}
-			fieldsByModel.put(entityModel, couplingInstance.getDataFields());
 		}
 
+		// Aggregations
 		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.AGGREGATION);
-		CouplingCriteriaVariant compositionVariant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.COMPOSITION);
-		CouplingCriteriaVariant inheritanceVariant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.INHERITANCE);
-
 		for (EntityRelation relation : domainModel.getRelations()) {
-			DualCouplingInstance instance = null;
 			if (RelationType.AGGREGATION.equals(relation.getType())) {
-				instance = (DualCouplingInstance) aggregationVariant.createInstance();
-			} else if (RelationType.COMPOSITION.equals(relation.getType())) {
-				instance = (DualCouplingInstance) compositionVariant.createInstance();
-			} else {
-				instance = (DualCouplingInstance) inheritanceVariant.createInstance();
+				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
+
+				monoCouplingInstanceRepository.save(instance);
+				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
+						.collect(Collectors.toList());
+				List<DataField> destinationFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
+						.collect(Collectors.toList());
+				instance.setDataFields(originFields);
+				instance.setSecondDataFields(destinationFields);
+				instance.setModel(model);
+				instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
 			}
-			monoCouplingInstanceRepository.save(instance);
-			instance.setDataFields(fieldsByModel.get(relation.getOrigin()));
-			instance.setSecondDataFields(fieldsByModel.get(relation.getDestination()));
-			instance.setModel(model);
-			instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
 		}
 		// TODO: remove return value and set location header to URL of generated
 		// model
@@ -113,6 +111,27 @@ public class ImportEndpoint {
 		result.put("message", "model " + model.getId() + " has been created");
 		result.put("id", model.getId());
 		return result;
+	}
+
+	private Map<String, List<EntityAttribute>> findRealEntities(final DomainModel domainModel) {
+		Map<String, List<EntityAttribute>> realEntities = new HashMap<>();
+		for (Entity entity : domainModel.getEntities()) {
+			realEntities.put(entity.getName(), entity.getAttributes());
+		}
+
+		// Merge composition and inheritance UML-entities together to real
+		// entities
+		for (EntityRelation relation : domainModel.getRelations()) {
+			if (RelationType.COMPOSITION.equals(relation.getType())) {
+				realEntities.get(relation.getOrigin().getName()).addAll(relation.getDestination().getAttributes());
+				realEntities.remove(relation.getDestination().getName());
+			} else if (RelationType.INHERITANCE.equals(relation.getType())) {
+				realEntities.get(relation.getDestination().getName()).addAll(relation.getOrigin().getAttributes());
+				realEntities.remove(relation.getOrigin().getName());
+			}
+		}
+
+		return realEntities;
 	}
 
 	@POST
@@ -133,6 +152,25 @@ public class ImportEndpoint {
 			instance.setModel(model);
 			instance.setDataFields(loadDataFields(transaction.getFieldsRead(), model));
 			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten(), model));
+		}
+	}
+
+	@POST
+	@Path("/{modelId}/entities/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
+	public void importEntities(@PathParam("modelId") final Long modelId, final List<Entity> entities) {
+		Model model = modelRepository.findOne(modelId);
+		if (model == null) {
+			throw new InvalidRestParam();
+		}
+		CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
+		for (Entity entity : entities) {
+			MonoCouplingInstance instance = variant.createInstance();
+			monoCouplingInstanceRepository.save(instance);
+			instance.setName(entity.getName());
+			instance.setModel(model);
+			instance.setDataFields(loadDataFields(entity.getAttributes().stream().map(EntityAttribute::getName).collect(Collectors.toList()), model));
 		}
 	}
 

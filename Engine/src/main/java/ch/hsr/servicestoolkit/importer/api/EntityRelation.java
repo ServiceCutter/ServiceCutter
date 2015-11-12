@@ -1,33 +1,34 @@
 package ch.hsr.servicestoolkit.importer.api;
 
 public class EntityRelation {
-	private EntityModel origin;
-	private EntityModel destination;
+	private Entity origin;
+	private Entity destination;
 	private RelationType type;
 
 	// used by Jackson
-	public EntityRelation(){}
-	
-	public EntityRelation(EntityModel origin, EntityModel destination, RelationType type) {
+	public EntityRelation() {
+	}
+
+	public EntityRelation(final Entity origin, final Entity destination, final RelationType type) {
 		super();
 		this.origin = origin;
 		this.destination = destination;
 		this.type = type;
 	}
 
-	public EntityModel getDestination() {
+	public Entity getDestination() {
 		return destination;
 	}
-	
-	public EntityModel getOrigin() {
+
+	public Entity getOrigin() {
 		return origin;
 	}
-	
+
 	public RelationType getType() {
 		return type;
 	}
 
-	public static enum RelationType{
+	public static enum RelationType {
 		AGGREGATION, COMPOSITION, INHERITANCE
 	}
 }

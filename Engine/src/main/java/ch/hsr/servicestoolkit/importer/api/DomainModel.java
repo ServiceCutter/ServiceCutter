@@ -3,15 +3,15 @@ package ch.hsr.servicestoolkit.importer.api;
 import java.util.List;
 
 public class DomainModel {
-	List<EntityModel> entities;
+	List<Entity> entities;
 	List<EntityRelation> relations;
 	
 	public DomainModel(){}
 	
-	public List<EntityModel> getEntities() {
+	public List<Entity> getEntities() {
 		return entities;
 	}
-	public void setEntities(List<EntityModel> entities) {
+	public void setEntities(List<Entity> entities) {
 		this.entities = entities;
 	}
 	public List<EntityRelation> getRelations() {

@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="name")
-public class EntityModel {
+public class Entity {
 	private String name;
 	private List<EntityAttribute> attributes;
 
 	// used by Jackson
-	public EntityModel(){}
+	public Entity(){}
 	
-	public EntityModel(String name) {
+	public Entity(String name) {
 		super();
 		this.attributes = new ArrayList<EntityAttribute>();
 		this.name = name;

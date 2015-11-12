@@ -18,7 +18,7 @@ angular.module('editorApp', ['LocalStorageModule',
         });
 
         $rootScope.$on('$stateChangeSuccess',  function(event, toState, toParams, fromState, fromParams) {
-            var titleKey = 'Services Toolkit Editor' ;
+            var titleKey = 'Service Cutter' ;
 
             $rootScope.previousStateName = fromState.name;
             $rootScope.previousStateParams = fromParams;

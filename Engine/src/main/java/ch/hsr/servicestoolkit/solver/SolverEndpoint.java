@@ -47,7 +47,7 @@ public class SolverEndpoint {
 
 		GephiSolver solver = new GephiSolver(model, config, monoCouplingInstanceRepository);
 		// Set<BoundedContext> result = solver.solveWithMarkov();
-		Integer numberOfClusters = config.getValueForMCLAlgorithm("numberOfClusters").intValue();
+		Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
 		Set<BoundedContext> result = solver.solveWithGirvanNewman(numberOfClusters);
 		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.size(), result.toString());
 		return result;

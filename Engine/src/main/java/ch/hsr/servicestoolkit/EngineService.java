@@ -29,7 +29,6 @@ import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
-import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import jersey.repackaged.com.google.common.collect.Lists;
@@ -40,16 +39,14 @@ public class EngineService {
 
 	private Logger log = LoggerFactory.getLogger(EngineService.class);
 	private ModelRepository modelRepository;
-	private DataFieldRepository dataRepository;
 	private CouplingCriterionRepository couplingCriterionRepository;
 	private CouplingCriteriaVariantRepository couplingCriteriaVariantRepository;
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
-	public EngineService(final ModelRepository modelRepository, final DataFieldRepository dataRepository, final CouplingCriterionRepository couplingCriterionRepository,
+	public EngineService(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository,
 			final MonoCouplingInstanceRepository monoCouplingInstanceRepository, final CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
 		this.modelRepository = modelRepository;
-		this.dataRepository = dataRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 		this.couplingCriteriaVariantRepository = couplingCriteriaVariantRepository;

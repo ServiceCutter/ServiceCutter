@@ -29,6 +29,11 @@ public class FieldTuple {
 	}
 
 	@Override
+	public String toString() {
+		return fieldA.getName() + " - " + fieldB.getName();
+	}
+
+	@Override
 	public boolean equals(final Object obj) {
 		return getCompareString().equals(((FieldTuple) obj).getCompareString());
 	}

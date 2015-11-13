@@ -1,6 +1,7 @@
 package ch.hsr.servicestoolkit.score.relations;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,50 +17,26 @@ public class SemanticProximityCriterionScorerTest {
 
 	@Test
 	public void testNormalizationOrdering() {
-		SemanticProximityCriterionScorer sut = new SemanticProximityCriterionScorer();
-		Map<FieldTuple, Double> input = new HashMap<>();
 
-		Random rand = new Random();
-
-		input.put(new FieldTuple(createDataField("A"), createDataField("1")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("B"), createDataField("2")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("C"), createDataField("3")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("D"), createDataField("4")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("E"), createDataField("5")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("F"), createDataField("6")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("G"), createDataField("7")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("H"), createDataField("8")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("I"), createDataField("9")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("J"), createDataField("10")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("K"), createDataField("11")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("L"), createDataField("12")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("M"), createDataField("13")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("N"), createDataField("14")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("O"), createDataField("15")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("P"), createDataField("16")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("Q"), createDataField("17")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("R"), createDataField("18")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("S"), createDataField("19")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("T"), createDataField("20")), (double) rand.nextInt(100));
-		sut.normalizeResult(input);
-
-		assertEquals(2, input.values().stream().filter(d -> d >= 10d).count());
+		for (int i = 1; i <= 10; i++) {
+			testNumberOfMaxScores(i, 1);
+		}
+		for (int i = 11; i <= 100; i++) {
+			testNumberOfMaxScores(i, i / 10);
+		}
 
 	}
 
-	public void testNormalizationOrderingSmall() {
+	private void testNumberOfMaxScores(final int numberOfEdges, final long numberOfExpectedMaxScores) {
 		SemanticProximityCriterionScorer sut = new SemanticProximityCriterionScorer();
 		Map<FieldTuple, Double> input = new HashMap<>();
 
 		Random rand = new Random();
-
-		input.put(new FieldTuple(createDataField("A"), createDataField("1")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("B"), createDataField("2")), (double) rand.nextInt(100));
-		input.put(new FieldTuple(createDataField("C"), createDataField("3")), (double) rand.nextInt(100));
+		for (int i = 0; i < numberOfEdges; i++) {
+			input.put(new FieldTuple(createDataField("A"), createDataField(i + "")), (double) rand.nextInt(100));
+		}
 		sut.normalizeResult(input);
-
-		assertEquals(1, input.values().stream().filter(d -> d >= 10d).count());
-
+		assertThat(input.values().stream().filter(d -> d >= 10d).count(), greaterThanOrEqualTo(numberOfExpectedMaxScores));
 	}
 
 	private DataField createDataField(final String string) {

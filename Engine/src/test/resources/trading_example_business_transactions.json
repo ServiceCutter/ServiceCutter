@@ -1,0 +1,38 @@
+[
+	{
+		"fieldsRead": ["Account.number"],
+		"fieldsWritten":["Order.posted","Order.expires","Order.triggerPrice","Order.executed","Order.type","Order.amount"],
+		"name":"PostOrder",
+		"frequency":1
+	},
+	{	"fieldsRead": ["PaymentInfo.cashAccount"],
+		"fieldsWritten":["Instruction.instructedTime"],
+		"name":"InstructOrder",
+		"frequency":1
+	},
+	{	"fieldsRead": ["Stock.identifier", "Order.triggerPrice"],
+		"fieldsWritten":["Price.dateTime","Price.price","Price.currency"],
+		"name":"ImportPrice",
+		"frequency":1
+	},
+	{	"fieldsRead": ["Stock.identifier", "News.title", "News.text", "News.image"],
+		"fieldsWritten":[],
+		"name":"ReadNews",
+		"frequency":1
+	},
+	{	"fieldsRead": ["Account.number","Recommendation.description","Stock.identifier","Stock.stockName"],
+		"fieldsWritten":[],
+		"name":"View Recommendations",
+		"frequency":1
+	},
+	{	"fieldsRead": ["Account.number","Stock.identifier","Stock.stockName","Position.balance"],
+		"fieldsWritten":["Recommendation.description"],
+		"name":"SuggestRecommendations",
+		"frequency":1
+	},
+	{	"fieldsRead": ["AccountOwner.address","NaturalPerson.name","Company.companyName"],
+		"fieldsWritten":["Account.number"],
+		"name":"CreateAccountOwner",
+		"frequency":1
+	}
+]

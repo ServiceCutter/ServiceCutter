@@ -51,7 +51,7 @@ public class TradingExampleRestTest {
 	public void tradingExample() throws UnsupportedEncodingException, URISyntaxException, IOException {
 		Integer modelId = createModelOnApi();
 
-		// loadBusinessTransactionOnModel(modelId);
+		loadBusinessTransactionOnModel(modelId);
 		loadDistanceVariantsOnModel(modelId);
 
 		// TODO re-enable

@@ -85,6 +85,7 @@ public class ImportEndpoint {
 			monoCouplingInstanceRepository.save(couplingInstance);
 			String entityName = entity.getKey();
 			couplingInstance.setName(entityName);
+			couplingInstance.setModel(model);
 			for (EntityAttribute entityAttribute : entity.getValue()) {
 				DataField dataField = new DataField();
 				dataField.setName(entityAttribute.getName());
@@ -102,7 +103,8 @@ public class ImportEndpoint {
 				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 
 				monoCouplingInstanceRepository.save(instance);
-				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model)).collect(Collectors.toList());
+				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
+						.collect(Collectors.toList());
 				List<DataField> destinationFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
 						.collect(Collectors.toList());
 				instance.setDataFields(originFields);
@@ -155,7 +157,6 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		// TODO add support for read/write/mixed
 		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.SHARED_FIELD_ACCESS);
 		for (BusinessTransaction transaction : transactions) {
 			DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();

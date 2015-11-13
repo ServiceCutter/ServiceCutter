@@ -21,9 +21,9 @@ public class CouplingCriterionFactory {
 
 	public CouplingCriteriaVariant findVariant(String coupling, String variant) {
 		CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(coupling);
-		Assert.notNull(couplingCriterion);
+		Assert.notNull(couplingCriterion, "Coupling with name " + coupling + " not found!");
 		CouplingCriteriaVariant result = couplingCriteriaVariantRepository.readByNameAndCouplingCriterion(variant, couplingCriterion);
-		Assert.notNull(result);
+		Assert.notNull(result, "Variant with name " + variant + " not found!");
 		return result;
 	}
 

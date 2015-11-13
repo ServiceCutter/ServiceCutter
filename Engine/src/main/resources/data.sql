@@ -6,9 +6,9 @@ insert into coupling_criterion (id, name, type) values (5, 'Security Context Dis
 insert into coupling_criterion (id, name, type) values (6, 'Resilience', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (7, 'Volatility', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (8, 'Consistency', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (9, 'Storage Analogy', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Analogy', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (11, 'Change Analogy', 'DISTANCE');
+insert into coupling_criterion (id, name, type) values (9, 'Storage Similarity', 'DISTANCE');
+insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Similarity', 'DISTANCE');
+insert into coupling_criterion (id, name, type) values (11, 'Change Similarity', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (12, 'Predefined Service Constraint', 'EXCLUSIVE');
 insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'PROXIMITY');
@@ -71,27 +71,28 @@ insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id,
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (16, 1, 7, 1, 'Rarely');
 -- 8
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (17, 1, 8, 8, 'High');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (18, 1, 8, 2, 'Weak');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (18, 1, 8, 2, 'Eventually');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (19, 1, 8, 2, 'Weak');
 -- 9
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (19, 1, 9, 1, 'Small (KB)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (20, 1, 9, 2, 'Medium (MB)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (21, 1, 9, 4, 'Large (GB)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (22, 1, 9, 9, 'Huge (TB)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (20, 1, 9, 1, 'Small (KB)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (21, 1, 9, 2, 'Medium (MB)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (22, 1, 9, 4, 'Large (GB)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (23, 1, 9, 9, 'Huge (TB)');
 -- 10
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (23, 1, 10, 1, 'Low (1/d)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (24, 1, 10, 2, 'Medium (1/min)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (25, 1, 10, 4, 'High (1/s)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (26, 1, 10, 9, 'Huge (100/s)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (24, 1, 10, 1, 'Low (1/d)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (25, 1, 10, 2, 'Medium (1/min)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (26, 1, 10, 4, 'High (1/s)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (27, 1, 10, 9, 'Huge (100/s)');
 -- 11
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (27, 1, 11, 9, 'Often (1/month)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (28, 1, 11, 3, 'Rarely (1/year)');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (29, 1, 11, 1, 'Never');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (28, 1, 11, 9, 'Often (1/month)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (29, 1, 11, 3, 'Rarely (1/year)');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (30, 1, 11, 1, 'Never');
 -- 12
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (30, 1, 12, 'Predefined Service');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (31, 1, 12, 'Predefined Service');
 -- 13
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (31, 1, 13, 'Mutable');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (32, 1, 13, 'Immutable');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (32, 1, 13, 'Mutable');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (33, 1, 13, 'Immutable');
 -- 14
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (33, 1, 14, 'Predefined Service');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (34, 1, 14, 'Predefined Service');
 
 

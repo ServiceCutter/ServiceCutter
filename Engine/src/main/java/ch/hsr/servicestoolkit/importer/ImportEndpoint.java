@@ -71,6 +71,13 @@ public class ImportEndpoint {
 		modelRepository.save(model);
 		model.setName("imported " + new Date().toString());
 
+		Map<EntityAttribute, String> entityAttributes = new HashMap<>();
+		for (Entity entity : domainModel.getEntities()) {
+			for (EntityAttribute attribute : entity.getAttributes()) {
+				entityAttributes.put(attribute, entity.getName());
+			}
+
+		}
 		// entities
 		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findOrCreateVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
 		for (Entry<String, List<EntityAttribute>> entity : findRealEntities(domainModel).entrySet()) {
@@ -81,7 +88,7 @@ public class ImportEndpoint {
 			for (EntityAttribute entityAttribute : entity.getValue()) {
 				DataField dataField = new DataField();
 				dataField.setName(entityAttribute.getName());
-				dataField.setContext(entityName);
+				dataField.setContext(entityAttributes.get(entityAttribute));
 				model.addDataField(dataField);
 				dataFieldRepository.save(dataField);
 				couplingInstance.addDataField(dataField);
@@ -95,8 +102,7 @@ public class ImportEndpoint {
 				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 
 				monoCouplingInstanceRepository.save(instance);
-				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
-						.collect(Collectors.toList());
+				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model)).collect(Collectors.toList());
 				List<DataField> destinationFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
 						.collect(Collectors.toList());
 				instance.setDataFields(originFields);
@@ -121,9 +127,15 @@ public class ImportEndpoint {
 
 		// Merge composition and inheritance UML-entities together to real
 		// entities
+		// TODO support second grade compositions (A->B->C)
 		for (EntityRelation relation : domainModel.getRelations()) {
 			if (RelationType.COMPOSITION.equals(relation.getType())) {
-				realEntities.get(relation.getOrigin().getName()).addAll(relation.getDestination().getAttributes());
+				List<EntityAttribute> list = realEntities.get(relation.getOrigin().getName());
+				if (list != null) {
+					list.addAll(relation.getDestination().getAttributes());
+				} else {
+					log.error("ignore relation {}", relation);
+				}
 				realEntities.remove(relation.getDestination().getName());
 			} else if (RelationType.INHERITANCE.equals(relation.getType())) {
 				realEntities.get(relation.getDestination().getName()).addAll(relation.getOrigin().getAttributes());
@@ -199,7 +211,7 @@ public class ImportEndpoint {
 				newInstance.setDataFields(loadDataFields(inputVariant.getFields(), model));
 			} else {
 				assert instance.size() == 1;
-				log.error("enhancing variants not yet implemented");
+				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
 				throw new InvalidRestParam();
 			}
 		}

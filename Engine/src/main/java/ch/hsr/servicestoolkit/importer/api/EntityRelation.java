@@ -1,5 +1,7 @@
 package ch.hsr.servicestoolkit.importer.api;
 
+import com.google.common.base.MoreObjects;
+
 public class EntityRelation {
 	private Entity origin;
 	private Entity destination;
@@ -30,5 +32,10 @@ public class EntityRelation {
 
 	public static enum RelationType {
 		AGGREGATION, COMPOSITION, INHERITANCE
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this.getClass()).add("origin", origin).add("destination", destination).add("type", type).toString();
 	}
 }

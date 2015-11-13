@@ -150,8 +150,8 @@ public class GephiSolver {
 		for (Entry<String, Map<FieldTuple, Double>> entry : scoresByCriterion.entrySet()) {
 			for (Entry<FieldTuple, Double> entryByCC : entry.getValue().entrySet()) {
 				Double priorityForCC = config.getPriorityForCouplingCriterion(entry.getKey());
-				log.info("{}: add score {} with priority {} to fields {} and {}.", entry.getKey(), entryByCC.getValue(), priorityForCC, entryByCC.getKey().fieldA.getName(),
-						entryByCC.getKey().fieldB.getName());
+				log.info("{}: add score {} with priority {} to fields {} and {}.", entry.getKey(), entryByCC.getValue(), priorityForCC, entryByCC.getKey().fieldA.getContextName(),
+						entryByCC.getKey().fieldB.getContextName());
 				addWeight(entryByCC.getKey().fieldA, entryByCC.getKey().fieldB, entryByCC.getValue() * priorityForCC);
 			}
 		}

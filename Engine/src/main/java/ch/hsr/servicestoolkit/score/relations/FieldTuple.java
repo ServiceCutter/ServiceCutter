@@ -30,7 +30,7 @@ public class FieldTuple {
 
 	@Override
 	public String toString() {
-		return fieldA.getName() + " - " + fieldB.getName();
+		return fieldA.getContext() + " - " + fieldB.getContextName();
 	}
 
 	@Override

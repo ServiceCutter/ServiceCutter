@@ -74,6 +74,7 @@ public class GephiSolver {
 		graphModel = bootstrapGephi();
 		undirectedGraph = graphModel.getUndirectedGraph();
 
+		log.info("gephi solver created with config {}", config);
 		buildNodes();
 		buildEdges();
 

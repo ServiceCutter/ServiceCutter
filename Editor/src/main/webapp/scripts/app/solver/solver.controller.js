@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('SolverController', function ($scope, $http, Principal, VisDataSet, Model) {
+    .controller('SolverController', function ($scope, $http, Principal, VisDataSet, Model, Coupling, $timeout) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -43,9 +43,14 @@ angular.module('editorApp')
         										  'numberOfClusters': $scope.numberSlider
         							},
         							'priorities': {
-        										'Identiy': 1
         							}
         		};
+        		angular.forEach($scope.criteria, function(value, index){
+        			if ('undefined' !== typeof value.priority) {
+        				solverConfig.priorities[value.name] = parseFloat(value.priority)
+        			}
+        		})
+        		
         		$http.post('/api/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
 		    			$scope.boundedContexts = data;
@@ -71,6 +76,27 @@ angular.module('editorApp')
 	            });
         	}
         }
+        
+        $scope.criteria = Coupling.all(function(criteria) {
+        	$scope.criterion = criteria[0]; 
+        });
+        
+        $scope.priorityMetric = {
+        		XS : {value: 0.5, name: "XS"},
+        		S : {value: 1, name: "S"}, 
+        		M: {value: 3, name: "M"}, 
+        		L : {value: 5, name: "L"},
+        		XL : {value: 8, name: "XL"},
+        		XXL : {value: 13, name: "XXL"}
+        }
+        
+        $scope.init = function(){
+        	angular.forEach($scope.criteria, function(value, index){
+    			value.priority = 3 // todo refactor 
+    		})
+        }
+        // http://stackoverflow.com/questions/15458609/execute-function-on-page-load
+        $timeout($scope.init)
         
 		$scope.sameEntitySlider = 0.2;
 		$scope.compositionSlider = 0.2;

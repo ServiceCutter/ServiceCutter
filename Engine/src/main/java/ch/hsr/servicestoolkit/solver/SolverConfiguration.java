@@ -70,4 +70,9 @@ public class SolverConfiguration {
 		return algorithmParams.get(key);
 	}
 
+	@Override
+	public String toString() {
+		return "SolverConfiguration [weights=" + weights + ", algorithmParams=" + algorithmParams + ", priorities=" + priorities + ", log=" + log + "]";
+	}
+
 }

@@ -63,8 +63,9 @@
 				    	rz-slider-ceil="1">
 				    </rzslider>
 				</div>
-				<h3>MCL Algorithm Params:</h3>
+				<h3>Algorithm Params:</h3>
 				<div width="50%">
+				<!-- 
 					Power:<br />
 				    <rzslider rz-slider-model="powerSlider" 
 				    	rz-slider-step="0.2" 
@@ -97,6 +98,7 @@
 				    	rz-slider-floor="0" 
 				    	rz-slider-ceil="1">
 				    </rzslider>
+				    -->
 				    Number of Clusters (Girvan-Newman):<br />
 				    <rzslider rz-slider-model="numberSlider" 
 				    	rz-slider-step="1" 
@@ -106,6 +108,17 @@
 				    	rz-slider-ceil="10">
 				    </rzslider>
 				</div>
+				<h3>Coupling Criteria Priorities:</h3>
+				<div width="50%">
+				<div ng-repeat="criterion in criteria">
+					 <form name="myForm">
+					    <label for="{{criterion.name}}">{{criterion.name}}: </label>
+					    <select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority"  ng-change="solve()">
+				    	  	<option ng-selected="criterion.priority == metric.value" ng-repeat="metric in priorityMetric" value="{{metric.value}}">{{metric.name}}</option>
+					    </select>
+					  </form>
+				</div>
+				
 			</div>
 		</div>
 	</div>

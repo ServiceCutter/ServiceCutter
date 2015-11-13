@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score;
+package ch.hsr.servicestoolkit.score.cuts;
 
 import static java.util.stream.Collectors.summingDouble;
 
@@ -22,7 +22,7 @@ import ch.hsr.servicestoolkit.model.service.ServiceCut;
 
 public class CouplingCriterionScoring {
 
-	private static final double MAX_SCORE = 10;
+	public static final double MAX_SCORE = 10;
 	private final Logger logger = LoggerFactory.getLogger(CouplingCriterionScoring.class);
 
 	/**
@@ -31,7 +31,7 @@ public class CouplingCriterionScoring {
 	 * 
 	 * @return a double value between 0 (lowest) and 10 (highest).
 	 */
-	public double calculateScore(ServiceCut cut, CouplingCriterion criterion, CouplingContext context) {
+	public double calculateScore(final ServiceCut cut, final CouplingCriterion criterion, final CouplingContext context) {
 		logger.info("calculating score for {}", criterion);
 		// TODO validate that the service cut contains all fields!
 		Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap = context.getCouplingInstances(criterion);
@@ -46,7 +46,7 @@ public class CouplingCriterionScoring {
 		return result;
 	}
 
-	private double calculateDistance(ServiceCut cut, Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap) {
+	private double calculateDistance(final ServiceCut cut, final Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap) {
 		Collection<Service> services = cut.getServices();
 		// init
 		Map<Service, List<Integer>> weightsPerService = new HashMap<>();
@@ -76,7 +76,7 @@ public class CouplingCriterionScoring {
 		return totalScore / services.size();
 	}
 
-	private double calculateProximity(ServiceCut cut, Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap) {
+	private double calculateProximity(final ServiceCut cut, final Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap) {
 		double result;
 		double totalScore = 0;
 		double totalWeight = 0;

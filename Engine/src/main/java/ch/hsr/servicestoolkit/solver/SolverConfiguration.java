@@ -56,8 +56,8 @@ public class SolverConfiguration {
 
 	public Double getPriorityForCouplingCriterion(final String criterionType) {
 		if (!priorities.containsKey(criterionType)) {
-			log.error("no weight defined for variant: " + criterionType + ". Use 1");
-			return 0d;
+			log.error("no priority defined for couplingCriterion: " + criterionType + ". Use 1");
+			return 1d;
 		}
 		return priorities.get(criterionType);
 	}

@@ -25,7 +25,7 @@ public class DataField {
 	public DataField() {
 	}
 
-	public DataField(String name) {
+	public DataField(final String name) {
 		this.name = name;
 	}
 
@@ -67,7 +67,7 @@ public class DataField {
 		return model;
 	}
 
-	public void setModel(Model model) {
+	public void setModel(final Model model) {
 		this.model = model;
 	}
 

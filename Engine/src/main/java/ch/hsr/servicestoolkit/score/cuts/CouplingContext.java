@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score;
+package ch.hsr.servicestoolkit.score.cuts;
 
 import java.util.Collection;
 import java.util.List;

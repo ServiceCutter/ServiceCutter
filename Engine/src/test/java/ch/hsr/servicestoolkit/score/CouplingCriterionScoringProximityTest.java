@@ -19,6 +19,8 @@ import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
+import ch.hsr.servicestoolkit.score.cuts.CouplingContext;
+import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class CouplingCriterionScoringProximityTest {
 

@@ -32,11 +32,16 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.score.relations.DistanceCriterionScorer;
+import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.LifecycleCriterionScorer;
+import ch.hsr.servicestoolkit.score.relations.SemanticProximityCriterionScorer;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
@@ -61,7 +66,7 @@ public class GephiSolver {
 		}
 		this.model = model;
 		this.config = config;
-		if (findCouplingCriteria().isEmpty()) {
+		if (findCouplingInstances().isEmpty()) {
 			throw new InvalidParameterException("model needs at least 1 coupling criterion in order for gephi clusterer to work");
 		}
 		nodes = new HashMap<>();
@@ -135,68 +140,43 @@ public class GephiSolver {
 
 	}
 
-	private Set<MonoCouplingInstance> findCouplingCriteria() {
-		return new HashSet<>(monoCouplingInstanceRepository.findByModel(model));
-	}
-
-	private Map<String, List<MonoCouplingInstance>> getInstancesByCriterion(final List<MonoCouplingInstance> instances) {
-		Map<String, List<MonoCouplingInstance>> instancesByCriterion = new HashMap<>();
-		for (MonoCouplingInstance instance : instances) {
-			String ccName = instance.getVariant().getCouplingCriterion().getName();
-			if (instancesByCriterion.get(ccName) == null) {
-				instancesByCriterion.put(ccName, new ArrayList<MonoCouplingInstance>());
-			}
-			instancesByCriterion.get(ccName).add(instance);
-		}
-		return instancesByCriterion;
-	}
-
 	private void buildEdges() {
-		buildDistanceEdges();
-		for (MonoCouplingInstance instance : findCouplingCriteria()) {
-			// from every data field in the criterion to every other
-			List<DataField> dataFields = instance.getAllFields();
-			float weight = config.getWeightForVariant(instance.getVariant().getName()).floatValue();
-			for (int i = 0; i < dataFields.size(); i++) {
-				for (int j = i + 1; j < dataFields.size(); j++) {
-					if (weight > 0) {
-						addWeight(dataFields.get(i), dataFields.get(j), weight);
-					}
-				}
+		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new DistanceCriterionScorer().getScores(findCouplingInstancesByType(CouplingType.DISTANCE));
+		Map<FieldTuple, Double> lifecycleScores = new LifecycleCriterionScorer().getScores(findCouplingInstancesByCriterion(CouplingCriterion.IDENTITY_LIFECYCLE));
+		Map<FieldTuple, Double> semanticProximityScores = new SemanticProximityCriterionScorer().getScores(findCouplingInstancesByCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
+		scoresByCriterion.put(CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores);
+		scoresByCriterion.put(CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores);
+
+		for (Entry<String, Map<FieldTuple, Double>> entry : scoresByCriterion.entrySet()) {
+			for (Entry<FieldTuple, Double> entryByCC : entry.getValue().entrySet()) {
+				Double priorityForCC = config.getPriorityForCouplingCriterion(entry.getKey());
+				log.info("{}: add score {} with priority {} to fields {} and {}.", entry.getKey(), entryByCC.getValue(), priorityForCC, entryByCC.getKey().fieldA.getName(),
+						entryByCC.getKey().fieldB.getName());
+				addWeight(entryByCC.getKey().fieldA, entryByCC.getKey().fieldB, entryByCC.getValue() * priorityForCC);
+			}
+		}
+
+		deleteNegativeEdges();
+	}
+
+	private void deleteNegativeEdges() {
+		for (Edge edge : undirectedGraph.getEdges()) {
+			if (edge.getWeight() <= 0) {
+				undirectedGraph.removeEdge(edge);
 			}
 		}
 	}
 
-	private void buildDistanceEdges() {
-		// get all instances of distance variants
-		List<MonoCouplingInstance> distanceCriteriaInstances = findCouplingCriteriaByType(CouplingType.DISTANCE);
-		// get all instances group by distance CC
-		for (Entry<String, List<MonoCouplingInstance>> instancesEntry : getInstancesByCriterion(distanceCriteriaInstances).entrySet()) {
-			// compare all variants with each other
-			List<MonoCouplingInstance> instances = instancesEntry.getValue();
-			Double priority = config.getPriorityForCouplingCriterion(instances.get(0).getVariant().getCouplingCriterion().getName());
-			for (int i = 0; i < instances.size() - 1; i++) {
-				for (int j = i + 1; j < instances.size(); j++) {
-					// for all fields in two different variants, calculate the
-					// distance
-					for (DataField fieldFromI : instances.get(i).getAllFields()) {
-						for (DataField fieldFromJ : instances.get(j).getAllFields()) {
-							int distance = Math.abs(instances.get(i).getVariant().getWeight() - instances.get(j).getVariant().getWeight());
-							if (distance != 0) {
-								addWeight(fieldFromI, fieldFromJ, -(distance * priority));
-							}
-
-						}
-					}
-				}
-			}
-		}
+	private List<MonoCouplingInstance> findCouplingInstancesByType(final CouplingType type) {
+		return findCouplingInstances().stream().filter(instance -> type.equals(instance.getVariant().getCouplingCriterion().getType())).collect(Collectors.toList());
 	}
 
-	private List<MonoCouplingInstance> findCouplingCriteriaByType(final CouplingType type) {
-		List<MonoCouplingInstance> distanceCriteriaInstances = findCouplingCriteria().stream().filter(instance -> type.equals(instance.getVariant().getCouplingCriterion()))
-				.collect(Collectors.toList());
-		return distanceCriteriaInstances;
+	private List<MonoCouplingInstance> findCouplingInstancesByCriterion(final String criterion) {
+		return findCouplingInstances().stream().filter(instance -> criterion.equals(instance.getVariant().getCouplingCriterion().getName())).collect(Collectors.toList());
+	}
+
+	private Set<MonoCouplingInstance> findCouplingInstances() {
+		return new HashSet<>(monoCouplingInstanceRepository.findByModel(model));
 	}
 
 	private void addWeight(final DataField first, final DataField second, final double weight) {

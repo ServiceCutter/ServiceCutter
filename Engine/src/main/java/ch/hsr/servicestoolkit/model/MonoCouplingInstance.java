@@ -116,6 +116,7 @@ public class MonoCouplingInstance {
 	}
 
 	public void setModel(final Model model) {
+
 		this.model = model;
 	}
 }

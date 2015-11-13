@@ -83,18 +83,34 @@ public class GephiSolver {
 	}
 
 	private void saveAsPdf() {
+
+		PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
+		PreviewModel previewModel = previewController.getModel();
+
 		// Preview
-		PreviewModel previewModel = Lookup.getDefault().lookup(PreviewController.class).getModel();
 		previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
+		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.TRANSLUCENT);
 		previewModel.getProperties().putValue(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
+		previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
+
 		previewModel.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.GRAY));
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
-		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT, previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(20));
+		previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.01f));
+		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT, previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(50f));
+
+		previewController.refreshPreview();
+
+		// OpenOrdLayout layout = new OpenOrdLayout(new OpenOrdLayoutBuilder());
+		// layout.setGraphModel(graphModel);
+		// layout.resetPropertiesValues();
+		//
+		// layout.initAlgo();
+		// layout.goAlgo();
+		// layout.endAlgo();
 
 		// Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
 		try {
-			ec.exportFile(new File("debug_graph.pdf"));
+			ec.exportFile(new File("debug_graph.gexf"));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			return;
@@ -158,13 +174,23 @@ public class GephiSolver {
 		}
 
 		deleteNegativeEdges();
+
+		log.info("final edges: ");
+		for (Edge edge : undirectedGraph.getEdges()) {
+			log.info("{}-{}: {}", edge.getSource().getNodeData().getLabel(), edge.getTarget().getNodeData().getLabel(), edge.getWeight());
+		}
 	}
 
 	private void deleteNegativeEdges() {
+		List<Edge> edgesToRemvoe = new ArrayList<>();
+
 		for (Edge edge : undirectedGraph.getEdges()) {
 			if (edge.getWeight() <= 0) {
-				undirectedGraph.removeEdge(edge);
+				edgesToRemvoe.add(edge);
 			}
+		}
+		for (Edge edge : edgesToRemvoe) {
+			undirectedGraph.removeEdge(edge);
 		}
 	}
 
@@ -187,10 +213,12 @@ public class GephiSolver {
 		if (existingEdge != null) {
 			log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
 			existingEdge.setWeight((float) (existingEdge.getWeight() + weight));
+			existingEdge.getEdgeData().setLabel(existingEdge.getWeight() + "");
 		} else {
 			log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
 			Edge edge = graphModel.factory().newEdge(nodeA, nodeB, (float) weight, false);
 			undirectedGraph.addEdge(edge);
+			edge.getEdgeData().setLabel(edge.getWeight() + "");
 		}
 
 	}
@@ -204,6 +232,7 @@ public class GephiSolver {
 		for (DataField field : model.getDataFields()) {
 			String name = field.getContextName();
 			Node node = graphModel.factory().newNode(name);
+			node.getNodeData().setLabel(name);
 			undirectedGraph.addNode(node);
 			nodes.put(name, node);
 		}

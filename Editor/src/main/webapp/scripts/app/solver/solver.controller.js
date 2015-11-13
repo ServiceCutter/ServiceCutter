@@ -82,6 +82,7 @@ angular.module('editorApp')
         });
         
         $scope.priorityMetric = {
+        		IGNORE : {value: 0, name: "IGNORE"},
         		XS : {value: 0.5, name: "XS"},
         		S : {value: 1, name: "S"}, 
         		M: {value: 3, name: "M"}, 

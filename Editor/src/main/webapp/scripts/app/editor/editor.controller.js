@@ -24,6 +24,10 @@ angular.module('editorApp')
         	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/transactions', 'transactionStatus', false);
         });
         
+        $scope.$watch('distancesFile', function () {
+        	$scope.upload($scope.distancesFile, 'model/'+ $scope.modelId+'/distanceVariants', 'distanceStatus', false);
+        });
+        
         $scope.$watch('modelId', function () {
         	$scope.showModel();
         });
@@ -48,7 +52,7 @@ angular.module('editorApp')
     			
     			angular.forEach($scope.model['coupling'], function(relation) {
     				var relationStyle = null;
-    				if(relationStyle = relationTypes[relation.couplingCriteriaVariant.name]) {
+    				if(relationStyle = relationTypes[relation.variant.name]) {
     					var names = relation.name.split('.');
     					var from = names[0];
     					var to = names[1];
@@ -120,7 +124,7 @@ angular.module('editorApp')
         $scope.loadCoupling = function (id) {
         	Model.getCoupling({id:id}, function(coupling) {
         		$scope.model['coupling'] = coupling;
-        		$scope.model['entities'] = coupling.filter(function(item) { return item.couplingCriteriaVariant.name == 'Same Entity' ;});
+        		$scope.model['entities'] = coupling.filter(function(item) { return item.variant.name == 'Same Entity' ;});
         	});
         }
         

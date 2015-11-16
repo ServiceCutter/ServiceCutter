@@ -79,4 +79,25 @@ public class EditorResource {
 		return result;
 	}
 
+	@RequestMapping(value = "/model/{modelId}/distanceVariants", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity<Void> uploadDistanceVariants(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
+		ResponseEntity<Void> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		try {
+			String theString = IOUtils.toString(file.getInputStream());
+			log.debug("modelId:{}", modelId);
+			log.debug("file content:{}", theString);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
+			String path = engineUrl + "/engine/import/" + modelId + "/distanceVariants/";
+			log.debug("post distance variants on {}", path);
+			ResponseEntity<Void> responseEntity = rest.exchange(path, HttpMethod.POST, requestEntity, Void.class);
+			result = new ResponseEntity<Void>(responseEntity.getStatusCode());
+		} catch (IOException e) {
+			log.error("", e);
+		}
+		return result;
+	}
+
 }

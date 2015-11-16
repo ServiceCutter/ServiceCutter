@@ -47,7 +47,7 @@
 				<h3>Coupling</h3>
 				
 				<ul>
-					<li ng-repeat="coupling in model.coupling">{{coupling.couplingCriteriaVariant.couplingCriterion.name}} - <strong>{{coupling.couplingCriteriaVariant.name}}</strong> - {{coupling.name}}
+					<li ng-repeat="coupling in model.coupling">{{coupling.variant.couplingCriterion.name}} - <strong>{{coupling.variant.name}}</strong> - {{coupling.name}}
 					<ul>
 						<li>{{ listFieldNames(coupling.allFields) }}</li>
 					</ul>
@@ -59,6 +59,13 @@
 					<div class="btn btn-default" ngf-select ng-model="transactionsFile" ngf-multiple="false">Upload user stories</div>
 
 					<span>{{transactionStatus}}</span>
+					</p>
+	            </form>
+	         	<form class="form-inline">
+					<p>Upload distance criteria for model #{{modelId}}:
+					<div class="btn btn-default" ngf-select ng-model="distancesFile" ngf-multiple="false">Upload distance criteria</div>
+
+					<span>{{distanceStatus}}</span>
 					</p>
 	            </form>
             </div>

@@ -93,6 +93,7 @@ public class ImportEndpoint {
 				model.addDataField(dataField);
 				dataFieldRepository.save(dataField);
 				couplingInstance.addDataField(dataField);
+				log.info("Import data field {}", dataField.getContextName());
 			}
 		}
 
@@ -105,12 +106,14 @@ public class ImportEndpoint {
 				monoCouplingInstanceRepository.save(instance);
 				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
 						.collect(Collectors.toList());
-				List<DataField> destinationFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
+				List<DataField> destinationFields = relation.getDestination().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
 						.collect(Collectors.toList());
 				instance.setDataFields(originFields);
 				instance.setSecondDataFields(destinationFields);
 				instance.setModel(model);
 				instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
+
+				log.info("Import aggregation on {} and {}", instance.getDataFields(), instance.getSecondDataFields());
 			}
 		}
 		// TODO: remove return value and set location header to URL of generated
@@ -165,6 +168,8 @@ public class ImportEndpoint {
 			instance.setModel(model);
 			instance.setDataFields(loadDataFields(transaction.getFieldsRead(), model));
 			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten(), model));
+			log.info("Import business transactions {} with frequency {}, fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getFrequency(),
+					transaction.getFieldsWritten(), transaction.getFieldsRead());
 		}
 	}
 
@@ -210,6 +215,7 @@ public class ImportEndpoint {
 				newInstance.setName(inputVariant.getCouplingCriterionName());
 				newInstance.setModel(model);
 				newInstance.setDataFields(loadDataFields(inputVariant.getFields(), model));
+				log.info("Import distance variant {} with fields {}", inputVariant.getCouplingCriterionName(), newInstance.getAllFields());
 			} else {
 				assert instance.size() == 1;
 				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());

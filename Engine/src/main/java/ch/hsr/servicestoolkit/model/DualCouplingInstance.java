@@ -14,19 +14,29 @@ import javax.persistence.ManyToMany;
 @DiscriminatorValue(value = "2")
 public class DualCouplingInstance extends MonoCouplingInstance {
 	@ManyToMany
-	@JoinTable(name = "datafield_to_second_couplinginstance", joinColumns = {@JoinColumn(name = "datafield_id", referencedColumnName = "id")}, inverseJoinColumns = {
-			@JoinColumn(name = "coupling_id", referencedColumnName = "id")})
+	@JoinTable(name = "datafield_to_second_couplinginstance", joinColumns = { @JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
+			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
 	private List<DataField> secondDataFields = new ArrayList<>();
+	private Double frequency; // TODO: refactor, only used for semantic
+								// proximity use cases
 
 	public List<DataField> getSecondDataFields() {
 		return Collections.unmodifiableList(secondDataFields);
 	}
 
-	public void addSecondDataField(DataField secondDataField) {
+	public void addSecondDataField(final DataField secondDataField) {
 		secondDataFields.add(secondDataField);
 	}
 
-	public void setSecondDataFields(List<DataField> secondDataFields) {
+	public void setFrequency(final double frequency) {
+		this.frequency = frequency;
+	}
+
+	public Double getFrequency() {
+		return frequency;
+	}
+
+	public void setSecondDataFields(final List<DataField> secondDataFields) {
 		this.secondDataFields.clear();
 		if (secondDataFields != null) {
 			this.secondDataFields.addAll(secondDataFields);

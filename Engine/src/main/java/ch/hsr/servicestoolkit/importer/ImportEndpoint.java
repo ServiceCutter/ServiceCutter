@@ -166,6 +166,7 @@ public class ImportEndpoint {
 			monoCouplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
 			instance.setModel(model);
+			instance.setFrequency(transaction.getFrequency());
 			instance.setDataFields(loadDataFields(transaction.getFieldsRead(), model));
 			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten(), model));
 			log.info("Import business transactions {} with frequency {}, fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getFrequency(),

@@ -24,12 +24,15 @@ public class SemanticProximityCriterionScorer {
 	public Map<FieldTuple, Double> getScores(final List<MonoCouplingInstance> proximityInstances) {
 		for (MonoCouplingInstance fieldAccessInstance : proximityInstances) {
 			DualCouplingInstance fieldAccessInstanceDual = (DualCouplingInstance) fieldAccessInstance;
-			// TODO: Frequency
+			Double frequency = fieldAccessInstanceDual.getFrequency();
+			if (frequency == null) {
+				frequency = 1d;
+			}
 			List<DataField> fieldsWritten = fieldAccessInstanceDual.getSecondDataFields();
 			List<DataField> fieldsRead = fieldAccessInstanceDual.getDataFields();
-			addScoreForWriteAccess(fieldsWritten);
-			addScoreForReadAccess(fieldsRead);
-			addScoreForMixedAccess(fieldsWritten, fieldsRead);
+			addScoreForWriteAccess(fieldsWritten, frequency);
+			addScoreForReadAccess(fieldsRead, frequency);
+			addScoreForMixedAccess(fieldsWritten, fieldsRead, frequency);
 		}
 
 		List<MonoCouplingInstance> aggregationInstances = proximityInstances.stream()
@@ -69,27 +72,29 @@ public class SemanticProximityCriterionScorer {
 
 	/**
 	 * Fields read and written in same uc
+	 * 
+	 * @param frequency
 	 */
-	private void addScoreForMixedAccess(final List<DataField> fieldsWritten, final List<DataField> fieldsRead) {
+	private void addScoreForMixedAccess(final List<DataField> fieldsWritten, final List<DataField> fieldsRead, final Double frequency) {
 		for (int i = 0; i < fieldsRead.size(); i++) {
 			for (int j = 0; j < fieldsWritten.size(); j++) {
-				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_MIXED);
+				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_MIXED * frequency);
 			}
 		}
 	}
 
-	private void addScoreForReadAccess(final List<DataField> fieldsRead) {
+	private void addScoreForReadAccess(final List<DataField> fieldsRead, final Double frequency) {
 		for (int i = 0; i < fieldsRead.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsRead.size(); j++) {
-				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_READ);
+				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_READ * frequency);
 			}
 		}
 	}
 
-	private void addScoreForWriteAccess(final List<DataField> fieldsWritten) {
+	private void addScoreForWriteAccess(final List<DataField> fieldsWritten, final Double frequency) {
 		for (int i = 0; i < fieldsWritten.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsWritten.size(); j++) {
-				addToResult(fieldsWritten.get(i), fieldsWritten.get(j), SCORE_WRITE);
+				addToResult(fieldsWritten.get(i), fieldsWritten.get(j), SCORE_WRITE * frequency);
 			}
 		}
 	}

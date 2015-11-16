@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.score.relations.Scorer;
 
 @Component
 @Path("/engine/solver")
@@ -45,7 +46,7 @@ public class SolverEndpoint {
 			return Collections.emptySet();
 		}
 
-		GephiSolver solver = new GephiSolver(model, config, monoCouplingInstanceRepository);
+		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config);
 		// Set<BoundedContext> result = solver.solveWithMarkov();
 		Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
 		Set<BoundedContext> result = solver.solveWithGirvanNewman(numberOfClusters);

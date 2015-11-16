@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.gephi.clustering.api.Cluster;
 import org.gephi.clustering.spi.Clusterer;
@@ -32,16 +31,11 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
-import ch.hsr.servicestoolkit.score.relations.DistanceCriterionScorer;
 import ch.hsr.servicestoolkit.score.relations.FieldTuple;
-import ch.hsr.servicestoolkit.score.relations.LifecycleCriterionScorer;
-import ch.hsr.servicestoolkit.score.relations.SemanticProximityCriterionScorer;
+import ch.hsr.servicestoolkit.score.relations.Score;
+import ch.hsr.servicestoolkit.score.relations.Scorer;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
@@ -52,12 +46,13 @@ public class GephiSolver {
 	private SolverConfiguration config;
 	private UndirectedGraph undirectedGraph;
 	private GraphModel graphModel;
-	private final MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	private Logger log = LoggerFactory.getLogger(GephiSolver.class);
+	private Scorer scorer;
 
-	public GephiSolver(final Model model, final SolverConfiguration config, final MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
-		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
+	public GephiSolver(final Model model, final Scorer scorer, final SolverConfiguration config) {
+		this.scorer = scorer;
+		this.config = config;
 		if (model == null || model.getDataFields().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
 		}
@@ -65,10 +60,7 @@ public class GephiSolver {
 			throw new InvalidParameterException("config should not be null");
 		}
 		this.model = model;
-		this.config = config;
-		if (findCouplingInstances().isEmpty()) {
-			throw new InvalidParameterException("model needs at least 1 coupling criterion in order for gephi clusterer to work");
-		}
+
 		nodes = new HashMap<>();
 
 		graphModel = bootstrapGephi();
@@ -158,19 +150,15 @@ public class GephiSolver {
 	}
 
 	private void buildEdges() {
-		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new DistanceCriterionScorer().getScores(findCouplingInstancesByType(CouplingType.DISTANCE));
-		Map<FieldTuple, Double> lifecycleScores = new LifecycleCriterionScorer().getScores(findCouplingInstancesByCriterion(CouplingCriterion.IDENTITY_LIFECYCLE));
-		Map<FieldTuple, Double> semanticProximityScores = new SemanticProximityCriterionScorer().getScores(findCouplingInstancesByCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
-		scoresByCriterion.put(CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores);
-		scoresByCriterion.put(CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores);
-
-		for (Entry<String, Map<FieldTuple, Double>> entry : scoresByCriterion.entrySet()) {
-			for (Entry<FieldTuple, Double> entryByCC : entry.getValue().entrySet()) {
-				Double priorityForCC = config.getPriorityForCouplingCriterion(entry.getKey());
-				log.info("{}: add score {} with priority {} to fields {} and {}.", entry.getKey(), entryByCC.getValue(), priorityForCC, entryByCC.getKey().fieldA.getContextName(),
-						entryByCC.getKey().fieldB.getContextName());
-				addWeight(entryByCC.getKey().fieldA, entryByCC.getKey().fieldB, entryByCC.getValue() * priorityForCC);
+		for (Entry<FieldTuple, Map<String, Score>> entry : scorer.getScores(model, config).entrySet()) {
+			addWeight(entry.getKey().fieldA, entry.getKey().fieldB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
+			// Logging
+			log.info("Score for field tuple {}", entry.getKey());
+			for (Entry<String, Score> criteriaScores : entry.getValue().entrySet()) {
+				log.info("{}: {} with priority {} results in {}", criteriaScores.getKey(), criteriaScores.getValue().getScore(), criteriaScores.getValue().getPriority(),
+						criteriaScores.getValue().getPrioritizedScore());
 			}
+			log.info("---------------------------------------------------");
 		}
 
 		deleteNegativeEdges();
@@ -192,18 +180,6 @@ public class GephiSolver {
 		for (Edge edge : edgesToRemvoe) {
 			undirectedGraph.removeEdge(edge);
 		}
-	}
-
-	private List<MonoCouplingInstance> findCouplingInstancesByType(final CouplingType type) {
-		return findCouplingInstances().stream().filter(instance -> type.equals(instance.getVariant().getCouplingCriterion().getType())).collect(Collectors.toList());
-	}
-
-	private List<MonoCouplingInstance> findCouplingInstancesByCriterion(final String criterion) {
-		return findCouplingInstances().stream().filter(instance -> criterion.equals(instance.getVariant().getCouplingCriterion().getName())).collect(Collectors.toList());
-	}
-
-	private Set<MonoCouplingInstance> findCouplingInstances() {
-		return new HashSet<>(monoCouplingInstanceRepository.findByModel(model));
 	}
 
 	private void addWeight(final DataField first, final DataField second, final double weight) {

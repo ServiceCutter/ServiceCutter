@@ -71,4 +71,9 @@ public class DataField {
 		this.model = model;
 	}
 
+	@Override
+	public String toString() {
+		return getContextName();
+	}
+
 }

@@ -6,15 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 
 public class DistanceCriterionScorer {
-
-	private Logger log = LoggerFactory.getLogger(DistanceCriterionScorer.class);
 
 	public Map<String, Map<FieldTuple, Double>> getScores(final List<MonoCouplingInstance> distanceCriteriaInstances) {
 		Map<String, Map<FieldTuple, Double>> result = new HashMap<>();

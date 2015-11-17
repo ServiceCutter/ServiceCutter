@@ -16,10 +16,10 @@ public class DistanceCriterionScorer {
 
 		// get all instances group by distance CC
 		for (Entry<String, List<MonoCouplingInstance>> instancesEntry : getInstancesByCriterion(distanceCriteriaInstances).entrySet()) {
+			String criterionName = instancesEntry.getKey();
 			Map<FieldTuple, Double> resultPerCC = new HashMap<>();
 			// compare all variants with each other
 			List<MonoCouplingInstance> variants = instancesEntry.getValue();
-			String criterionName = variants.get(0).getVariant().getCouplingCriterion().getName();
 			for (int i = 0; i < variants.size() - 1; i++) {
 				for (int j = i + 1; j < variants.size(); j++) {
 					// for all fields in two different variants, calculate the
@@ -42,7 +42,9 @@ public class DistanceCriterionScorer {
 		return result;
 	}
 
-	private Map<String, List<MonoCouplingInstance>> getInstancesByCriterion(final List<MonoCouplingInstance> instances) {
+	// TODO: refactor to a place where it can be better used by multiple scorers
+	static Map<String, List<MonoCouplingInstance>> getInstancesByCriterion(final List<MonoCouplingInstance> instances) {
+		// TODO: use stream api
 		Map<String, List<MonoCouplingInstance>> instancesByCriterion = new HashMap<>();
 		for (MonoCouplingInstance instance : instances) {
 			String ccName = instance.getVariant().getCouplingCriterion().getName();

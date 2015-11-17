@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import ch.hsr.servicestoolkit.importer.InvalidRestParam;
 import ch.hsr.servicestoolkit.model.Model;
@@ -50,6 +51,8 @@ public class SolverEndpoint {
 		Scorer scorer = new Scorer(monoCouplingInstanceRepository);
 		Solver solver = null;
 		String algorithm = config.getAlgorithm();
+		StopWatch sw = new StopWatch();
+		sw.start();
 		if ("leung".equals(algorithm)) {
 			solver = new GraphStreamSolver(model, scorer, config);
 		} else if (GephiSolver.MODE_GIERVAN_NEWMAN.equals(algorithm)) {
@@ -64,7 +67,12 @@ public class SolverEndpoint {
 			log.error("algorith {} not found, supported values: ", algorithm, "leung, giervan, markov");
 			throw new InvalidRestParam();
 		}
+		sw.stop();
+		log.info("Created graph in {}ms", sw.getLastTaskTimeMillis());
+		sw.start();
 		Set<BoundedContext> result = solver.solve();
+		sw.stop();
+		log.info("Found clusters in {}ms", sw.getLastTaskTimeMillis());
 		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.size(), result.toString());
 		return result;
 	}

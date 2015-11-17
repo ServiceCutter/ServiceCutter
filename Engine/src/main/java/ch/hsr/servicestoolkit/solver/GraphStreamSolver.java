@@ -27,6 +27,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	private final Logger log = LoggerFactory.getLogger(GraphStreamSolver.class);
 	protected double m = 0.1;
 	protected double delta = 0.05;
+	private int iterations = 1;
 
 	public GraphStreamSolver(final Model model, final Scorer scorer, final SolverConfiguration config) {
 		super(model, scorer, config);
@@ -41,6 +42,10 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 			log.info("parameter 'delta' is {}", delta);
 			this.delta = delta;
 		}
+		Double iterations = config.getAlgorithmParams().get("iterations");
+		if (iterations != null) {
+			this.iterations = iterations.intValue();
+		}
 		buildNodes();
 		buildEdges();
 	}
@@ -49,8 +54,11 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	public Set<BoundedContext> solve() {
 		Leung algorithm = new Leung(graph, null, WEIGHT);
 		algorithm.setParameters(m, delta);
-		algorithm.compute();
-
+		log.info("Using parameters m={} and delta={}", m, delta);
+		for (int i = 0; i < iterations; i++) {
+			algorithm.compute();
+		}
+		log.info("Solved with {} iterations ", iterations);
 		Map<String, List<String>> families = new HashMap<>();
 		for (Node node : graph) {
 			String family = node.getAttribute("ui.class");

@@ -7,22 +7,11 @@
 			"Stock.stockName",
 			"Price.dateTime",
 			"Price.price",
-			"Price.currency"
+			"Price.currency",
+			"News.title",
+			"News.text",
+			"News.image"
 		]
-		
-	},
-	{
-		"couplingCriterionName":"Security Criticality",
-		"variantName":"Medium",
-		"fields":[
-			"Order.posted",
-			"Order.expires",
-			"Order.triggerPrice",
-			"Order.executed",
-			"Order.type",
-			"Order.amount"
-		]
-		
 	},
 	{
 		"couplingCriterionName":"Security Criticality",
@@ -46,26 +35,12 @@
 	},
 	{
 		"couplingCriterionName":"Volatility",
-		"variantName":"Regularly",
-		"fields":[
-			"Order.posted",
-			"Order.expires",
-			"Order.triggerPrice",
-			"Order.executed",
-			"Order.type",
-			"Order.amount",
-			"Stock.identifier",
-			"Stock.stockName"
-		]
-		
-	},
-	{
-		"couplingCriterionName":"Volatility",
 		"variantName":"Rarely",
 		"fields":[
 			"AccountOwner.address",
 			"NaturalPerson.name",
-			"Company.companyName"
+			"Company.companyName",
+			"Account.number"
 		]
 		
 	},
@@ -79,25 +54,9 @@
 			"Order.executed",
 			"Order.type",
 			"Order.amount",
-			"Instruction.instructedTime"
-		]
-		
-	},
-	{
-		"couplingCriterionName":"Consistency",
-		"variantName":"Eventually",
-		"fields":[
-			"Price.dateTime",
-			"Price.price",
-			"Price.currency"
-		]
-		
-	},
-	{
-		"couplingCriterionName":"Consistency",
-		"variantName":"Weak",
-		"fields":[
-			"Recommendation.description"
+			"Instruction.instructedTime",
+			"Position.balance",
+			"Stock.identifier"
 		]
 		
 	},
@@ -110,15 +69,6 @@
 		
 	},
 	{
-		"couplingCriterionName":"Storage Similarity",
-		"variantName":"Medium (MB)",
-		"fields":[
-			"Stock.identifier",
-			"Stock.stockName"
-		]
-		
-	},
-	{
 		"couplingCriterionName":"Change Similarity",
 		"variantName":"Often (1/month)",
 		"fields":[
@@ -127,21 +77,13 @@
 		
 	},
 	{
-		"couplingCriterionName":"Change Similarity",
-		"variantName":"Rarely (1/year)",
+		"couplingCriterionName":"Resilience",
+		"variantName":"Low",
 		"fields":[
-			"Stock.identifier",
-			"Stock.stockName"
+			"News.title",
+			"News.text",
+			"News.image",
+			"Recommendation.description"
 		]
-		
-	},
-	{
-		"couplingCriterionName":"Change Similarity",
-		"variantName":"Never",
-		"fields":[
-			"Account.number"
-		]
-		
 	}
-	
 ]

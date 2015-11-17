@@ -22,6 +22,7 @@ public class CouplingCriteriaVariant {
 	private boolean monoCoupling = true;
 	private String name;
 	private Integer weight;
+	private boolean isDefault = false;
 	@ManyToOne
 	private CouplingCriterion couplingCriterion;
 
@@ -29,7 +30,7 @@ public class CouplingCriteriaVariant {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
@@ -37,15 +38,23 @@ public class CouplingCriteriaVariant {
 		return monoCoupling;
 	}
 
-	public void setMonoCoupling(boolean monoCoupling) {
+	public boolean isDefault() {
+		return isDefault;
+	}
+
+	public void setMonoCoupling(final boolean monoCoupling) {
 		this.monoCoupling = monoCoupling;
+	}
+
+	public void setDefault(final boolean isDefault) {
+		this.isDefault = isDefault;
 	}
 
 	public CouplingCriterion getCouplingCriterion() {
 		return couplingCriterion;
 	}
 
-	public void setCouplingCriterion(CouplingCriterion couplingCriterion) {
+	public void setCouplingCriterion(final CouplingCriterion couplingCriterion) {
 		this.couplingCriterion = couplingCriterion;
 	}
 
@@ -53,7 +62,7 @@ public class CouplingCriteriaVariant {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -67,7 +76,7 @@ public class CouplingCriteriaVariant {
 		return weight;
 	}
 
-	public void setWeight(Integer weight) {
+	public void setWeight(final Integer weight) {
 		this.weight = weight;
 	}
 

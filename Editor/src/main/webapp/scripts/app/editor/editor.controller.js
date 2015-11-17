@@ -23,6 +23,10 @@ angular.module('editorApp')
         $scope.$watch('transactionsFile', function () {
         	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/transactions', 'transactionStatus', false);
         });
+
+        $scope.$watch('separationCriteriaFile', function () {
+        	$scope.upload($scope.separationCriteriaFile, 'model/'+ $scope.modelId+'/separationCriteria', 'separationStatus', false);
+        });
         
         $scope.$watch('distancesFile', function () {
         	$scope.upload($scope.distancesFile, 'model/'+ $scope.modelId+'/distanceVariants', 'distanceStatus', false);
@@ -134,6 +138,10 @@ angular.module('editorApp')
         	}).join(', ');
         }
         
+        
+        $scope.transactionStatus = 'No upload yet.';
+        $scope.separationStatus = 'No upload yet.';
+        $scope.distanceStatus = 'No upload yet.';
         $scope.status = 'No upload yet.';
         $scope.modelId = 0;
         $scope.model = null;

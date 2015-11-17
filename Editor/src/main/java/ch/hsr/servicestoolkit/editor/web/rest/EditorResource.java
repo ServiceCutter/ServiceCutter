@@ -61,27 +61,22 @@ public class EditorResource {
 	@RequestMapping(value = "/model/{modelId}/transactions", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<Void> uploadBusinessTransactionFile(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
-		ResponseEntity<Void> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		try {
-			String theString = IOUtils.toString(file.getInputStream());
-			log.debug("modelId:{}", modelId);
-			log.debug("file content:{}", theString);
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
-			String path = engineUrl + "/engine/import/" + modelId + "/businessTransactions/";
-			log.debug("post transactions on {}", path);
-			ResponseEntity<Void> responseEntity = rest.exchange(path, HttpMethod.POST, requestEntity, Void.class);
-			result = new ResponseEntity<Void>(responseEntity.getStatusCode());
-		} catch (IOException e) {
-			log.error("", e);
-		}
-		return result;
+		return uploadCriteriaFile(file, modelId, "businessTransactions");
 	}
 
 	@RequestMapping(value = "/model/{modelId}/distanceVariants", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<Void> uploadDistanceVariants(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
+		return uploadCriteriaFile(file, modelId, "distanceVariants");
+	}
+
+	@RequestMapping(value = "/model/{modelId}/separationCriteria", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity<Void> uploadSeparationCriteria(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
+		return uploadCriteriaFile(file, modelId, "separationCriteria");
+	}
+
+	private ResponseEntity<Void> uploadCriteriaFile(final MultipartFile file, final String modelId, final String pathEnding) {
 		ResponseEntity<Void> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		try {
 			String theString = IOUtils.toString(file.getInputStream());
@@ -90,8 +85,8 @@ public class EditorResource {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
-			String path = engineUrl + "/engine/import/" + modelId + "/distanceVariants/";
-			log.debug("post distance variants on {}", path);
+			String path = engineUrl + "/engine/import/" + modelId + "/" + pathEnding + "/";
+			log.debug("post on {}", path);
 			ResponseEntity<Void> responseEntity = rest.exchange(path, HttpMethod.POST, requestEntity, Void.class);
 			result = new ResponseEntity<Void>(responseEntity.getStatusCode());
 		} catch (IOException e) {

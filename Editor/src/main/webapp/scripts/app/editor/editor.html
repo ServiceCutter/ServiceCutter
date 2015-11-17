@@ -64,8 +64,13 @@
 	         	<form class="form-inline">
 					<p>Upload distance criteria for model #{{modelId}}:
 					<div class="btn btn-default" ngf-select ng-model="distancesFile" ngf-multiple="false">Upload distance criteria</div>
-
 					<span>{{distanceStatus}}</span>
+					</p>
+	            </form>
+	         	<form class="form-inline">
+					<p>Upload separation criteria for model #{{modelId}}:
+					<div class="btn btn-default" ngf-select ng-model="separationCriteriaFile" ngf-multiple="false">Upload separation criteria</div>
+					<span>{{separationStatus}}</span>
 					</p>
 	            </form>
             </div>

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 
 public class SeparationCriterionScorer {
@@ -24,15 +25,14 @@ public class SeparationCriterionScorer {
 			// TODO: we assume there is only one variant for separation
 			// criteria, we should refactor the variants model to be used only
 			// for distance criteria
-			if (instancesEntry.getValue().size() != 0) {
+			if (instancesEntry.getValue().size() != 1) {
 				throw new InvalidParameterException("exactly 1 variant expected for SEPARATION criterion " + criterionName + " but was " + instancesEntry.getValue().size());
 			}
 
-			MonoCouplingInstance relevantVariant = instancesEntry.getValue().get(0);
-			List<DataField> allFields = relevantVariant.getAllFields();
-			for (int i = 0; i < allFields.size() - 1; i++) {
-				for (int j = i + 1; j < allFields.size(); j++) {
-					resultPerCC.put(new FieldTuple(allFields.get(i), allFields.get(j)), SEPARATION_PENALTY);
+			DualCouplingInstance relevantVariant = (DualCouplingInstance) instancesEntry.getValue().get(0);
+			for (DataField fieldA : relevantVariant.getDataFields()) {
+				for (DataField fieldB : relevantVariant.getSecondDataFields()) {
+					resultPerCC.put(new FieldTuple(fieldA, fieldB), SEPARATION_PENALTY);
 				}
 			}
 			result.put(criterionName, resultPerCC);

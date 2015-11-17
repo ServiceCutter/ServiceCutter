@@ -14,7 +14,7 @@ import javax.persistence.ManyToMany;
 @DiscriminatorValue(value = "2")
 public class DualCouplingInstance extends MonoCouplingInstance {
 	@ManyToMany
-	@JoinTable(name = "datafield_to_second_couplinginstance", joinColumns = { @JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
+	@JoinTable(name = "datafield_to_couplinginstance", joinColumns = { @JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
 			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
 	private List<DataField> secondDataFields = new ArrayList<>();
 	private Double frequency; // TODO: refactor, only used for semantic

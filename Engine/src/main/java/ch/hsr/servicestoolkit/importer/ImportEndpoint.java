@@ -244,6 +244,7 @@ public class ImportEndpoint {
 
 			if (instance == null || instance.isEmpty()) {
 				DualCouplingInstance newInstance = (DualCouplingInstance) variant.createInstance();
+
 				monoCouplingInstanceRepository.save(newInstance);
 				newInstance.setName(inputCriterion.getCouplingCriterionName());
 				newInstance.setModel(model);

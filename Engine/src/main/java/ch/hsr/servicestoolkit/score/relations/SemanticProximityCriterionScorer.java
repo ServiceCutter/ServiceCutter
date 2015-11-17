@@ -79,9 +79,9 @@ public class SemanticProximityCriterionScorer {
 	 * @param frequency
 	 */
 	private void addScoreForMixedAccess(final List<DataField> fieldsWritten, final List<DataField> fieldsRead, final Double frequency) {
-		for (int i = 0; i < fieldsRead.size(); i++) {
-			for (int j = 0; j < fieldsWritten.size(); j++) {
-				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_MIXED * frequency);
+		for (DataField fieldWritten : fieldsWritten) {
+			for (DataField fieldRead : fieldsRead) {
+				addToResult(fieldRead, fieldWritten, SCORE_MIXED * frequency);
 			}
 		}
 	}

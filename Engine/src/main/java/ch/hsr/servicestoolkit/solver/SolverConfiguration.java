@@ -8,12 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.MoreObjects;
+
 @Component
 public class SolverConfiguration {
 
 	private Map<String, Double> weights = new HashMap<>();
 	private Map<String, Double> algorithmParams = new HashMap<>();
 	private Map<String, Double> priorities = new HashMap<>();
+	private String algorithm;
 
 	private Logger log = LoggerFactory.getLogger(SolverConfiguration.class);
 
@@ -70,9 +73,17 @@ public class SolverConfiguration {
 		return algorithmParams.get(key);
 	}
 
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
+
+	public String getAlgorithm() {
+		return algorithm;
+	}
+
 	@Override
 	public String toString() {
-		return "SolverConfiguration [weights=" + weights + ", algorithmParams=" + algorithmParams + ", priorities=" + priorities + ", log=" + log + "]";
+		return MoreObjects.toStringHelper(getClass()).add("algorithm", algorithm).add("weights", weights).add("algorithmParams", algorithmParams).add("priorities", priorities).toString();
 	}
 
 }

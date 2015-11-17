@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.gephi.clustering.api.Cluster;
@@ -33,33 +32,34 @@ import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.FieldTuple;
-import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
-public class GephiSolver {
+public class GephiSolver extends AbstractSolver<Node, Edge> {
 
-	private Model model;
+	public static final String MODE_GIERVAN_NEWMAN = "giervan";
+	public static final String MODE_MARKOV = "markov";
 	private Map<String, Node> nodes;
 	private SolverConfiguration config;
 	private UndirectedGraph undirectedGraph;
 	private GraphModel graphModel;
 
 	private Logger log = LoggerFactory.getLogger(GephiSolver.class);
-	private Scorer scorer;
+	private String mode;
+	private Integer numberOfClusters;
 
-	public GephiSolver(final Model model, final Scorer scorer, final SolverConfiguration config) {
-		this.scorer = scorer;
+	public GephiSolver(final Model model, final Scorer scorer, final SolverConfiguration config, String mode, Integer numberOfClusters) {
+		super(model, scorer, config);
 		this.config = config;
+		this.mode = mode;
+		this.numberOfClusters = numberOfClusters;
 		if (model == null || model.getDataFields().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
 		}
 		if (config == null) {
 			throw new InvalidParameterException("config should not be null");
 		}
-		this.model = model;
 
 		nodes = new HashMap<>();
 
@@ -70,6 +70,10 @@ public class GephiSolver {
 		buildNodes();
 		buildEdges();
 
+		log.info("final edges: ");
+		for (Edge edge : undirectedGraph.getEdges()) {
+			log.info("{}-{}: {}", edge.getSource().getNodeData().getLabel(), edge.getTarget().getNodeData().getLabel(), edge.getWeight());
+		}
 		saveAsPdf();
 
 	}
@@ -109,7 +113,15 @@ public class GephiSolver {
 		}
 	}
 
-	public Set<BoundedContext> solveWithGirvanNewman(final int numberOfClusters) {
+	@Override
+	public Set<BoundedContext> solve() {
+		if (MODE_GIERVAN_NEWMAN.equals(mode)) {
+			return solveWithGirvanNewman(numberOfClusters);
+		}
+		return solveWithMarkov();
+	}
+
+	Set<BoundedContext> solveWithGirvanNewman(final int numberOfClusters) {
 		Log.debug("solve cluster with numberOfClusters = " + numberOfClusters);
 		GirvanNewmanClusterer clusterer = new GirvanNewmanClusterer();
 		clusterer.setPreferredNumberOfClusters(numberOfClusters);
@@ -117,7 +129,7 @@ public class GephiSolver {
 		return getClustererResult(clusterer);
 	}
 
-	public Set<BoundedContext> solveWithMarkov() {
+	Set<BoundedContext> solveWithMarkov() {
 		Log.debug("solve cluster with MCL");
 
 		MCClusterer clusterer = new MCClusterer();
@@ -149,69 +161,50 @@ public class GephiSolver {
 
 	}
 
-	private void buildEdges() {
-		for (Entry<FieldTuple, Map<String, Score>> entry : scorer.getScores(model, config).entrySet()) {
-			addWeight(entry.getKey().fieldA, entry.getKey().fieldB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
-			// Logging
-			log.info("Score for field tuple {}", entry.getKey());
-			for (Entry<String, Score> criteriaScores : entry.getValue().entrySet()) {
-				log.info("{}: {} with priority {} results in {}", criteriaScores.getKey(), criteriaScores.getValue().getScore(), criteriaScores.getValue().getPriority(),
-						criteriaScores.getValue().getPrioritizedScore());
-			}
-			log.info("---------------------------------------------------");
-		}
-
-		deleteNegativeEdges();
-
-		log.info("final edges: ");
-		for (Edge edge : undirectedGraph.getEdges()) {
-			log.info("{}-{}: {}", edge.getSource().getNodeData().getLabel(), edge.getTarget().getNodeData().getLabel(), edge.getWeight());
-		}
+	@Override
+	protected Iterable<Edge> getEdges() {
+		return undirectedGraph.getEdges();
 	}
 
-	private void deleteNegativeEdges() {
-		List<Edge> edgesToRemvoe = new ArrayList<>();
-
-		for (Edge edge : undirectedGraph.getEdges()) {
-			if (edge.getWeight() <= 0) {
-				edgesToRemvoe.add(edge);
-			}
-		}
-		for (Edge edge : edgesToRemvoe) {
-			undirectedGraph.removeEdge(edge);
-		}
+	@Override
+	protected Edge getEdge(DataField first, DataField second) {
+		return undirectedGraph.getEdge(getNode(first), getNode(second));
 	}
 
-	private void addWeight(final DataField first, final DataField second, final double weight) {
-		Node nodeA = getNodeByDataField(first);
-		Node nodeB = getNodeByDataField(second);
-		Edge existingEdge = undirectedGraph.getEdge(nodeA, nodeB);
-		if (existingEdge != null) {
-			log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
-			existingEdge.setWeight((float) (existingEdge.getWeight() + weight));
-			existingEdge.getEdgeData().setLabel(existingEdge.getWeight() + "");
-		} else {
-			log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
-			Edge edge = graphModel.factory().newEdge(nodeA, nodeB, (float) weight, false);
-			undirectedGraph.addEdge(edge);
-			edge.getEdgeData().setLabel(edge.getWeight() + "");
-		}
-
+	@Override
+	protected void removeEdge(Edge edge) {
+		undirectedGraph.removeEdge(edge);
 	}
 
-	private Node getNodeByDataField(final DataField dataField) {
-		return nodes.get(dataField.getContextName());
+	@Override
+	protected void createEdgeAndSetWeight(DataField first, DataField second, double weight) {
+		Edge edge = graphModel.factory().newEdge(getNode(first), getNode(second), (float) weight, false);
+		undirectedGraph.addEdge(edge);
+		edge.getEdgeData().setLabel(edge.getWeight() + "");
 	}
 
-	private void buildNodes() {
-		// create nodes
-		for (DataField field : model.getDataFields()) {
-			String name = field.getContextName();
-			Node node = graphModel.factory().newNode(name);
-			node.getNodeData().setLabel(name);
-			undirectedGraph.addNode(node);
-			nodes.put(name, node);
-		}
+	@Override
+	protected double getWeight(Edge edge) {
+		return edge.getWeight();
+	}
+
+	@Override
+	protected void setWeight(Edge edge, final double weight) {
+		edge.setWeight((float) (edge.getWeight() + weight));
+		edge.getEdgeData().setLabel(edge.getWeight() + "");
+	}
+
+	@Override
+	protected Node getNode(String name) {
+		return nodes.get(name);
+	}
+
+	@Override
+	protected void createNode(String name) {
+		Node node = graphModel.factory().newNode(name);
+		node.getNodeData().setLabel(name);
+		undirectedGraph.addNode(node);
+		nodes.put(name, node);
 	}
 
 	private GraphModel bootstrapGephi() {

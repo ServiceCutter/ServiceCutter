@@ -7,6 +7,9 @@ angular.module('editorApp')
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
         
+        $scope.availableAlgorithms = ['leung','giervan','markov'];
+        $scope.algorithm = 'giervan';
+        
         $scope.graphOptions = {
 			autoResize: true,
 			height: '100%',
@@ -40,10 +43,13 @@ angular.module('editorApp')
         										  'power': $scope.powerSlider,
         										  'prune': $scope.pruneSlider,
         										  'extraClusters': $scope.extraClusterSlider,
-        										  'numberOfClusters': $scope.numberSlider
+        										  'numberOfClusters': $scope.numberSlider,
+        										  'leungM': $scope.leungM,
+        										  'leungDelta': $scope.leungDelta
         							},
         							'priorities': {
-        							}
+        							},
+        							'algorithm': $scope.algorithm
         		};
         		angular.forEach($scope.criteria, function(value, index){
         			if ('undefined' !== typeof value.priority) {
@@ -109,6 +115,9 @@ angular.module('editorApp')
 		$scope.pruneSlider = 0.0;
 		$scope.extraClusterSlider = 0;
 		$scope.numberSlider = 3;
+		
+		$scope.leungM = 0.1;
+		$scope.leungDelta = 0.05;
 
 
         $scope.availableModels = Model.all();

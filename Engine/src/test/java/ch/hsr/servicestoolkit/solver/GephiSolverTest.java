@@ -34,7 +34,7 @@ import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { SolverConfiguration.class })
+@ContextConfiguration(classes = {SolverConfiguration.class})
 public class GephiSolverTest {
 
 	private SolverConfiguration config;
@@ -57,7 +57,7 @@ public class GephiSolverTest {
 
 	@Test(expected = InvalidParameterException.class)
 	public void testEmptyModel() {
-		new GephiSolver(new Model(), new Scorer(monoCouplingInstanceRepository), config);
+		new GephiSolver(new Model(), new Scorer(monoCouplingInstanceRepository), config, GephiSolver.MODE_GIERVAN_NEWMAN, 3);
 	}
 
 	@Ignore
@@ -70,7 +70,7 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field4"));
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
-		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config);
+		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config, GephiSolver.MODE_MARKOV, null);
 		Set<BoundedContext> result1 = solver.solveWithMarkov();
 		assertEquals(3, result1.size());
 		for (BoundedContext context : result1) {
@@ -96,11 +96,11 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field6"));
 
 		Set<MonoCouplingInstance> instances = new HashSet<>();
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] { "field1", "field2", "field3" }));
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] { "field4", "field5", "field6" }));
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field1", "field2", "field3"}));
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field4", "field5", "field6"}));
 		when(monoCouplingInstanceRepository.findByModel(model)).thenReturn(instances);
 
-		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config);
+		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config, GephiSolver.MODE_MARKOV, null);
 		Set<BoundedContext> result = solver.solveWithMarkov();
 
 		assertEquals(2, result.size());

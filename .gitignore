@@ -12,3 +12,6 @@
 hs_err_pid*
 
 debug_graph.pdf
+debug_graph.gexf
+Engine/graph.png
+Engine/graph.xml

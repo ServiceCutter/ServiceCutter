@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ch.hsr.servicestoolkit.importer.InvalidRestParam;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
@@ -46,10 +47,24 @@ public class SolverEndpoint {
 			return Collections.emptySet();
 		}
 
-		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config);
-		// Set<BoundedContext> result = solver.solveWithMarkov();
-		Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
-		Set<BoundedContext> result = solver.solveWithGirvanNewman(numberOfClusters);
+		Scorer scorer = new Scorer(monoCouplingInstanceRepository);
+		Solver solver = null;
+		String algorithm = config.getAlgorithm();
+		if ("leung".equals(algorithm)) {
+			solver = new GraphStreamSolver(model, scorer, config);
+		} else if (GephiSolver.MODE_GIERVAN_NEWMAN.equals(algorithm)) {
+			String mode = GephiSolver.MODE_GIERVAN_NEWMAN;
+			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
+			solver = new GephiSolver(model, scorer, config, mode, numberOfClusters);
+		} else if (GephiSolver.MODE_MARKOV.equals(algorithm)) {
+			String mode = GephiSolver.MODE_MARKOV;
+			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
+			solver = new GephiSolver(model, scorer, config, mode, numberOfClusters);
+		} else {
+			log.error("algorith {} not found, supported values: ", algorithm, "leung, giervan, markov");
+			throw new InvalidRestParam();
+		}
+		Set<BoundedContext> result = solver.solve();
 		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.size(), result.toString());
 		return result;
 	}

@@ -29,6 +29,7 @@ import ch.hsr.servicestoolkit.importer.api.Entity;
 import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
+import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionFactory;
@@ -218,8 +219,40 @@ public class ImportEndpoint {
 				newInstance.setDataFields(loadDataFields(inputVariant.getFields(), model));
 				log.info("Import distance variant {} with fields {}", inputVariant.getCouplingCriterionName(), newInstance.getAllFields());
 			} else {
-				assert instance.size() == 1;
 				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
+				throw new InvalidRestParam();
+			}
+		}
+	}
+
+	@POST
+	@Path("/{modelId}/separationCriteria/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
+	public void importSeparationCriterionInstance(@PathParam("modelId") final Long modelId, final List<SeparationCriterion> criteria) {
+		Model model = modelRepository.findOne(modelId);
+		if (model == null || criteria == null) {
+			throw new InvalidRestParam();
+		}
+		for (SeparationCriterion inputCriterion : criteria) {
+			CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(inputCriterion.getCouplingCriterionName(), inputCriterion.getVariantName());
+			if (variant == null) {
+				log.error("variant {} not known! ignore", inputCriterion);
+				continue;
+			}
+			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndNameAndVariant(model, inputCriterion.getCouplingCriterionName(), variant);
+
+			if (instance == null || instance.isEmpty()) {
+				DualCouplingInstance newInstance = (DualCouplingInstance) variant.createInstance();
+				monoCouplingInstanceRepository.save(newInstance);
+				newInstance.setName(inputCriterion.getCouplingCriterionName());
+				newInstance.setModel(model);
+				newInstance.setDataFields(loadDataFields(inputCriterion.getGroupAFields(), model));
+				newInstance.setSecondDataFields(loadDataFields(inputCriterion.getGroupBFields(), model));
+				log.info("Import separation constraint {} on fields {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getDataFields(),
+						newInstance.getSecondDataFields());
+			} else {
+				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputCriterion.getCouplingCriterionName(), inputCriterion.getVariantName());
 				throw new InvalidRestParam();
 			}
 		}

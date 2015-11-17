@@ -1,0 +1,14 @@
+[
+  {
+    "couplingCriterionName": "Security Constraint",
+    "variantName": "Separation Constraint",
+    "groupAFields": [
+      "AccountOwner.address",
+      "NaturalPerson.name",
+      "Company.companyName"
+    ],
+    "groupBFields": [
+      "Account.number"
+    ]
+  }
+]

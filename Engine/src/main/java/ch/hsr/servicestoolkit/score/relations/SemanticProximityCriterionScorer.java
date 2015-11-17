@@ -61,6 +61,9 @@ public class SemanticProximityCriterionScorer {
 	void normalizeResult(final Map<FieldTuple, Double> result) {
 		// scores in reversed order
 		List<Double> scores = result.values().stream().sorted((d1, d2) -> Double.compare(d2, d1)).collect(Collectors.toList());
+		if (scores.isEmpty()) {
+			return;
+		}
 		int tenPercent = Math.max(1, (int) (scores.size() * 0.1d));
 		double referenceValue = scores.get(tenPercent - 1);
 		double divisor = referenceValue / CouplingCriterionScoring.MAX_SCORE;

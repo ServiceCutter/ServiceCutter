@@ -48,13 +48,11 @@ update coupling_criterion set decomposition_impact = 'Services should reflect th
 
 -- 1
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (1, 1, 1, 'Same Entity');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (2, 0, 1, 'Composition');
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (3, 0, 1, 'Inheritance');
 -- 2
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (4, 0, 2, 'Aggregation');
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (5, 0, 2, 'Shared Field Access');
 -- 3
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (6, 1, 3, 'Separation Contraint');
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name) values (6, 0, 3, 'Separation Constraint');
 -- 4
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (7, 1, 4, 9, 'High');
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name) values (8, 1, 4, 3, 'Medium');

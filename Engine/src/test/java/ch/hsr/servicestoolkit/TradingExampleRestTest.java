@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
+import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.solver.BoundedContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -42,6 +43,7 @@ public class TradingExampleRestTest {
 	private static final String TRADING_EXAMPLE_JSON = "trading_example.json";
 	private static final String TRADING_EXAMPLE_BUSINESS_TRANSACTION = "trading_example_business_transactions.json";
 	private static final String TRADING_EXAMPLE_DISTANCE_VARIANTS = "trading_example_distance.json";
+	private static final String TRADING_EXAMPLE_SEPARATION_CRITERIA = "trading_example_separation.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
@@ -53,8 +55,8 @@ public class TradingExampleRestTest {
 
 		loadBusinessTransactionOnModel(modelId);
 		loadDistanceVariantsOnModel(modelId);
+		loadSeparationCriteriaOnModel(modelId);
 
-		// TODO re-enable
 		solveModel(modelId);
 	}
 
@@ -91,6 +93,21 @@ public class TradingExampleRestTest {
 		HttpEntity<List<DistanceVariant>> request = IntegrationTestHelper.createHttpRequestWithPostObj(variants);
 		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceVariants/";
 		log.info("store distance variants on {}", path);
+
+		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
+		});
+
+		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
+	}
+
+	private void loadSeparationCriteriaOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
+		List<SeparationCriterion> criteria = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_SEPARATION_CRITERIA, SeparationCriterion.class);
+
+		log.info("read separation criteria: {}", criteria);
+
+		HttpEntity<List<SeparationCriterion>> request = IntegrationTestHelper.createHttpRequestWithPostObj(criteria);
+		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/separationCriteria/";
+		log.info("store seperation criteria on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
 		});

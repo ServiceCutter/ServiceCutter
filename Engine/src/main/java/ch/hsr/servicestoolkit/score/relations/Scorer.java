@@ -3,10 +3,8 @@ package ch.hsr.servicestoolkit.score.relations;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 
@@ -53,17 +50,19 @@ public class Scorer {
 	}
 
 	private void addScoresForProximityCriteria(final Model model, final SolverConfiguration config, final Map<FieldTuple, Map<String, Score>> result) {
-		Map<FieldTuple, Double> lifecycleScores = new LifecycleCriterionScorer().getScores(findCouplingInstancesByCriterion(CouplingCriterion.IDENTITY_LIFECYCLE, model));
+		Map<FieldTuple, Double> lifecycleScores = new LifecycleCriterionScorer()
+				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.IDENTITY_LIFECYCLE));
 		addScoresByCriterionToResult(result, CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores, config.getPriorityForCouplingCriterion(CouplingCriterion.IDENTITY_LIFECYCLE));
 
 		Map<FieldTuple, Double> semanticProximityScores = new SemanticProximityCriterionScorer()
-				.getScores(findCouplingInstancesByCriterion(CouplingCriterion.SEMANTIC_PROXIMITY, model));
+				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SEMANTIC_PROXIMITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores,
 				config.getPriorityForCouplingCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
 	}
 
 	private void addScoresForDistanceCriteria(final Model model, final SolverConfiguration config, final Map<FieldTuple, Map<String, Score>> result) {
-		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new DistanceCriterionScorer().getScores(findCouplingInstancesByCouplingType(CouplingType.DISTANCE, model));
+		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new DistanceCriterionScorer()
+				.getScores(monoCouplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.DISTANCE));
 		for (Entry<String, Map<FieldTuple, Double>> distanceScores : scoresByCriterion.entrySet()) {
 			addScoresByCriterionToResult(result, distanceScores.getKey(), distanceScores.getValue(), config.getPriorityForCouplingCriterion(distanceScores.getKey()));
 		}
@@ -71,7 +70,8 @@ public class Scorer {
 
 	// TODO refactor: maybe introduce common interface for scorers
 	private void addScoresForSeparationCriteria(final Model model, final SolverConfiguration config, final Map<FieldTuple, Map<String, Score>> result) {
-		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new SeparationCriterionScorer().getScores(findCouplingInstancesByCouplingType(CouplingType.SEPARATION, model));
+		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new SeparationCriterionScorer()
+				.getScores(monoCouplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.SEPARATION));
 		for (Entry<String, Map<FieldTuple, Double>> separationScores : scoresByCriterion.entrySet()) {
 			addScoresByCriterionToResult(result, separationScores.getKey(), separationScores.getValue(), config.getPriorityForCouplingCriterion(separationScores.getKey()));
 		}
@@ -95,16 +95,6 @@ public class Scorer {
 			result.put(fields, new HashMap<>());
 		}
 		result.get(fields).put(criterionName, new Score(score, priority));
-	}
-
-	private List<MonoCouplingInstance> findCouplingInstancesByCouplingType(final CouplingType type, final Model model) {
-		return new HashSet<>(monoCouplingInstancesRepo.findByModel(model)).stream().filter(instance -> type.equals(instance.getVariant().getCouplingCriterion().getType()))
-				.collect(Collectors.toList());
-	}
-
-	private List<MonoCouplingInstance> findCouplingInstancesByCriterion(final String criterion, final Model model) {
-		return new HashSet<>(monoCouplingInstancesRepo.findByModel(model)).stream().filter(instance -> criterion.equals(instance.getVariant().getCouplingCriterion().getName()))
-				.collect(Collectors.toList());
 	}
 
 }

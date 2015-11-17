@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
 
 @Entity
 public class DataField {
@@ -74,6 +75,21 @@ public class DataField {
 	@Override
 	public String toString() {
 		return getContextName();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (obj instanceof DataField) {
+			DataField other = (DataField) obj;
+			return this == other || Objects.equal(id, other.id);
+		} else {
+			return false;
+		}
 	}
 
 }

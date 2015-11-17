@@ -3,6 +3,7 @@ package ch.hsr.servicestoolkit.score.relations;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
@@ -21,8 +22,8 @@ public class SemanticProximityCriterionScorer {
 	private static final int SCORE_MIXED = 3;
 	private static final int SCORE_AGGREGATION = 1;
 
-	public Map<FieldTuple, Double> getScores(final List<MonoCouplingInstance> proximityInstances) {
-		for (MonoCouplingInstance fieldAccessInstance : proximityInstances) {
+	public Map<FieldTuple, Double> getScores(final Set<MonoCouplingInstance> instances) {
+		for (MonoCouplingInstance fieldAccessInstance : instances) {
 			DualCouplingInstance fieldAccessInstanceDual = (DualCouplingInstance) fieldAccessInstance;
 			Double frequency = fieldAccessInstanceDual.getFrequency();
 			if (frequency == null) {
@@ -35,8 +36,8 @@ public class SemanticProximityCriterionScorer {
 			addScoreForMixedAccess(fieldsWritten, fieldsRead, frequency);
 		}
 
-		List<MonoCouplingInstance> aggregationInstances = proximityInstances.stream()
-				.filter(instance -> instance.getVariant().getName().equals(CouplingCriteriaVariant.AGGREGATION)).collect(Collectors.toList());
+		List<MonoCouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.getVariant().getName().equals(CouplingCriteriaVariant.AGGREGATION))
+				.collect(Collectors.toList());
 		for (MonoCouplingInstance aggregationInstance : aggregationInstances) {
 			DualCouplingInstance aggregationInstanceDual = (DualCouplingInstance) aggregationInstance;
 			for (DataField fieldA : aggregationInstanceDual.getAllFields()) {

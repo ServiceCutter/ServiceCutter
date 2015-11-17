@@ -1,6 +1,5 @@
 package ch.hsr.servicestoolkit.score.relations;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +10,11 @@ import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 
 public class DistanceCriterionScorer {
 
-	public Map<String, Map<FieldTuple, Double>> getScores(final List<MonoCouplingInstance> distanceCriteriaInstances) {
+	public Map<String, Map<FieldTuple, Double>> getScores(final Map<String, List<MonoCouplingInstance>> instancesByCriterion) {
 		Map<String, Map<FieldTuple, Double>> result = new HashMap<>();
 
 		// get all instances group by distance CC
-		for (Entry<String, List<MonoCouplingInstance>> instancesEntry : getInstancesByCriterion(distanceCriteriaInstances).entrySet()) {
+		for (Entry<String, List<MonoCouplingInstance>> instancesEntry : instancesByCriterion.entrySet()) {
 			String criterionName = instancesEntry.getKey();
 			Map<FieldTuple, Double> resultPerCC = new HashMap<>();
 			// compare all variants with each other
@@ -40,20 +39,6 @@ public class DistanceCriterionScorer {
 			result.put(criterionName, resultPerCC);
 		}
 		return result;
-	}
-
-	// TODO: refactor to a place where it can be better used by multiple scorers
-	static Map<String, List<MonoCouplingInstance>> getInstancesByCriterion(final List<MonoCouplingInstance> instances) {
-		// TODO: use stream api
-		Map<String, List<MonoCouplingInstance>> instancesByCriterion = new HashMap<>();
-		for (MonoCouplingInstance instance : instances) {
-			String ccName = instance.getVariant().getCouplingCriterion().getName();
-			if (instancesByCriterion.get(ccName) == null) {
-				instancesByCriterion.put(ccName, new ArrayList<MonoCouplingInstance>());
-			}
-			instancesByCriterion.get(ccName).add(instance);
-		}
-		return instancesByCriterion;
 	}
 
 }

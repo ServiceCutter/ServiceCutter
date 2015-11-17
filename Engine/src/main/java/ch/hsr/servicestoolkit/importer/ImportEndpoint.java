@@ -50,14 +50,17 @@ public class ImportEndpoint {
 	private DataFieldRepository dataFieldRepository;
 	private CouplingCriterionFactory couplingCriterionFactory;
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
+	private ModelCompleter modelCompleter;
 
 	@Autowired
 	public ImportEndpoint(final ModelRepository modelRepository, final DataFieldRepository dataFieldRepository, final CouplingCriterionFactory couplingCriterionFactory,
-			final MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
+			final MonoCouplingInstanceRepository monoCouplingInstanceRepository, final ModelCompleter modelCompleter) {
 		this.modelRepository = modelRepository;
 		this.dataFieldRepository = dataFieldRepository;
 		this.couplingCriterionFactory = couplingCriterionFactory;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
+		this.modelCompleter = modelCompleter;
+
 	}
 
 	@POST
@@ -105,6 +108,7 @@ public class ImportEndpoint {
 				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 
 				monoCouplingInstanceRepository.save(instance);
+				// TODO: use context name
 				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
 						.collect(Collectors.toList());
 				List<DataField> destinationFields = relation.getDestination().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
@@ -209,7 +213,7 @@ public class ImportEndpoint {
 				log.error("variant {} not known! ignore", inputVariant);
 				continue;
 			}
-			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndNameAndVariant(model, inputVariant.getCouplingCriterionName(), variant);
+			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndVariant(model, variant);
 
 			if (instance == null || instance.isEmpty()) {
 				MonoCouplingInstance newInstance = variant.createInstance();
@@ -223,6 +227,7 @@ public class ImportEndpoint {
 				throw new InvalidRestParam();
 			}
 		}
+		modelCompleter.completeModelWithDefaultsForDistance(model);
 	}
 
 	@POST
@@ -240,7 +245,7 @@ public class ImportEndpoint {
 				log.error("variant {} not known! ignore", inputCriterion);
 				continue;
 			}
-			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndNameAndVariant(model, inputCriterion.getCouplingCriterionName(), variant);
+			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndVariant(model, variant);
 
 			if (instance == null || instance.isEmpty()) {
 				DualCouplingInstance newInstance = (DualCouplingInstance) variant.createInstance();

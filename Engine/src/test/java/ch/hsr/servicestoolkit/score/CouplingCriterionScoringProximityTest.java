@@ -42,19 +42,21 @@ public class CouplingCriterionScoringProximityTest {
 	private MonoCouplingInstance entityPrice;
 	private MonoCouplingInstance entityBond;
 	private DualCouplingInstance inheritanceBondStock;
+	private Long id;
 
 	/**
 	 * Stock (ISIN, Name), Bond (Issuer, Yield), Price (Datetime, Amount)
 	 */
 	@Before
 	public void setup() {
+		id = 0l;
 		// fields & model
-		fieldIsin = new DataField("ISIN");
-		fieldName = new DataField("Name");
-		fieldDatetime = new DataField("Datetime");
-		fieldAmount = new DataField("Amount");
-		fieldIssuer = new DataField("Issuer");
-		fieldYield = new DataField("Yield");
+		fieldIsin = createDataField("ISIN");
+		fieldName = createDataField("Name");
+		fieldDatetime = createDataField("Datetime");
+		fieldAmount = createDataField("Amount");
+		fieldIssuer = createDataField("Issuer");
+		fieldYield = createDataField("Yield");
 		model = new Model();
 		model.addDataField(fieldIsin);
 		model.addDataField(fieldName);
@@ -72,10 +74,16 @@ public class CouplingCriterionScoringProximityTest {
 		entityStock = createCouplingInstance(sameEntity, fieldIsin, fieldName);
 		entityPrice = createCouplingInstance(sameEntity, fieldDatetime, fieldAmount);
 		entityBond = createCouplingInstance(sameEntity, fieldIssuer, fieldYield);
-		inheritanceBondStock = createCouplingInstance(inheritance, new DataField[] {fieldIsin, fieldName}, new DataField[] {fieldIssuer, fieldYield});
+		inheritanceBondStock = createCouplingInstance(inheritance, new DataField[] { fieldIsin, fieldName }, new DataField[] { fieldIssuer, fieldYield });
 		// context
 		couplingContext = new CouplingContext(model, Arrays.asList(entityStock, entityPrice, entityBond, inheritanceBondStock));
 
+	}
+
+	private DataField createDataField(final String name) {
+		DataField dataField = new DataField(name);
+		dataField.setId(id++);
+		return dataField;
 	}
 
 	@Test

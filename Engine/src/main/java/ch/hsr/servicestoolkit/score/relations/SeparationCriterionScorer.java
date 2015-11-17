@@ -14,11 +14,11 @@ public class SeparationCriterionScorer {
 
 	private static final double SEPARATION_PENALTY = -10d;
 
-	public Map<String, Map<FieldTuple, Double>> getScores(final List<MonoCouplingInstance> separationCriteriaInstances) {
+	public Map<String, Map<FieldTuple, Double>> getScores(final Map<String, List<MonoCouplingInstance>> instancesByCriterion) {
 		Map<String, Map<FieldTuple, Double>> result = new HashMap<>();
 
 		// get all instances group by separation CC
-		for (Entry<String, List<MonoCouplingInstance>> instancesEntry : DistanceCriterionScorer.getInstancesByCriterion(separationCriteriaInstances).entrySet()) {
+		for (Entry<String, List<MonoCouplingInstance>> instancesEntry : instancesByCriterion.entrySet()) {
 			Map<FieldTuple, Double> resultPerCC = new HashMap<>();
 			String criterionName = instancesEntry.getKey();
 

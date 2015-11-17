@@ -13,4 +13,6 @@ public interface CouplingCriteriaVariantRepository extends CrudRepository<Coupli
 
 	public List<CouplingCriteriaVariant> readByCouplingCriterion(CouplingCriterion couplingCriterion);
 
+	public CouplingCriteriaVariant readByCouplingCriterionAndIsDefault(CouplingCriterion criterion, boolean isDefault);
+
 }

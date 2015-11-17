@@ -39,6 +39,7 @@ public class CouplingCriterionScoringDistanceTest {
 	private MonoCouplingInstance rarelyCoupling;
 	private MonoCouplingInstance oftenCoupling;
 	private MonoCouplingInstance regularlyCoupling;
+	private Long id;
 
 	/**
 	 * Stock (ISIN, Name), Bond (Issuer, Yield), Price (Datetime, Amount)
@@ -46,12 +47,13 @@ public class CouplingCriterionScoringDistanceTest {
 	@Before
 	public void setup() {
 		// fields & model
-		fieldIsin = new DataField("ISIN");
-		fieldName = new DataField("Name");
-		fieldDatetime = new DataField("Datetime");
-		fieldAmount = new DataField("Amount");
-		fieldIssuer = new DataField("Issuer");
-		fieldYield = new DataField("Yield");
+		id = 0l;
+		fieldIsin = createDataField("ISIN");
+		fieldName = createDataField("Name");
+		fieldDatetime = createDataField("Datetime");
+		fieldAmount = createDataField("Amount");
+		fieldIssuer = createDataField("Issuer");
+		fieldYield = createDataField("Yield");
 		model = new Model();
 		model.addDataField(fieldIsin);
 		model.addDataField(fieldName);
@@ -72,6 +74,12 @@ public class CouplingCriterionScoringDistanceTest {
 		oftenCoupling = createCouplingInstance(often, fieldDatetime, fieldAmount); // 1
 		// context
 		couplingContext = new CouplingContext(model, Arrays.asList(rarelyCoupling, regularlyCoupling, oftenCoupling));
+	}
+
+	private DataField createDataField(final String name) {
+		DataField field = new DataField(name);
+		field.setId(id++);
+		return field;
 	}
 
 	@Test
@@ -101,5 +109,4 @@ public class CouplingCriterionScoringDistanceTest {
 		score = couplingCriterionScoring.calculateScore(averageCut, volatility, couplingContext);
 		assertThat(score, is(8.0));
 	}
-
 }

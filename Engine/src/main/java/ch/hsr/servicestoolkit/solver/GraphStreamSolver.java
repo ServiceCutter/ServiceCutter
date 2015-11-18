@@ -17,7 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.Scorer;
+import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.Score;
 
 public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 
@@ -29,8 +30,8 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	protected double delta = 0.05;
 	private int iterations = 1;
 
-	public GraphStreamSolver(final Model model, final Scorer scorer, final SolverConfiguration config) {
-		super(model, scorer, config);
+	public GraphStreamSolver(final Model model, final Map<FieldTuple, Map<String, Score>> scores, final SolverConfiguration config) {
+		super(model, scores);
 		graph = new SingleGraph("Service Cutter Graph");
 		Double m = config.getAlgorithmParams().get("leungM");
 		if (m != null) {
@@ -51,7 +52,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	public Set<Service> solve() {
+	public SolverResult solve() {
 		Leung algorithm = new Leung(graph, null, WEIGHT);
 		algorithm.setParameters(m, delta);
 		log.info("Using parameters m={} and delta={}", m, delta);
@@ -73,11 +74,12 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 		}
 
 		char idGenerator = 'A';
-		Set<Service> result = new HashSet<>();
+		Set<Service> services = new HashSet<>();
 		for (List<String> service : families.values()) {
-			result.add(new Service(service, idGenerator++));
+			services.add(new Service(service, idGenerator++));
 		}
-		return result;
+		final SolverResult solverResult = new SolverResult(services);
+		return solverResult;
 	}
 
 	@Override

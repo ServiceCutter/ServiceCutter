@@ -1,13 +1,19 @@
 package ch.hsr.servicestoolkit.solver;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import ch.hsr.servicestoolkit.solver.analyzer.ServiceRelation;
 
 public class SolverResult {
 
 	private Set<Service> services;
+	private List<ServiceRelation> relations;
+	private Map<String, List<String>> useCaseResponsibility;
 
-	// Jackson
 	public SolverResult() {
+		// Jackson
 	}
 
 	public SolverResult(final Set<Service> services) {
@@ -16,5 +22,21 @@ public class SolverResult {
 
 	public Set<Service> getServices() {
 		return services;
+	}
+
+	public void setUseCaseResponsibility(final Map<String, List<String>> responsibilities) {
+		this.useCaseResponsibility = responsibilities;
+	}
+
+	public Map<String, List<String>> getUseCaseResponsibility() {
+		return useCaseResponsibility;
+	}
+
+	public List<ServiceRelation> getRelations() {
+		return relations;
+	}
+
+	public void setRelations(final List<ServiceRelation> relations) {
+		this.relations = relations;
 	}
 }

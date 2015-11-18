@@ -26,6 +26,21 @@
 					</div>
 	
 				</div>
+				            
+				<div ng-show="selectedServiceName">
+					<h2>Service #{{selectedServiceName}}</h2>
+					<p>Responsible for Use Cases:</p>
+					<ul>
+						<li ng-repeat="useCase in selectedServiceUseCases">{{useCase}}</li>
+					</ul>
+					<p><b>Relationships:</b></p>
+					<div ng-repeat="relation in selectedServiceRelations">
+						<p>Published Language between {{relation.name}}</p>
+						<ul>
+							<li ng-repeat="field in relation.fields">{{field}}</li>
+						</ul>
+					</div>
+				</div>
 			</div>
 			<div class="col-md-4">
 				<h3>Coupling Criteria Params:</h3>

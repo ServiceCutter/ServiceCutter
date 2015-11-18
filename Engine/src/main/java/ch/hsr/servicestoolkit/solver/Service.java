@@ -10,7 +10,6 @@ public class Service {
 	String name;
 
 	public Service(final List<String> dataFields, final char id) {
-		super();
 		this.dataFields = dataFields;
 		this.name = "Service " + id;
 	}
@@ -29,7 +28,7 @@ public class Service {
 
 	@Override
 	public String toString() {
-		return "BoundedContext [dataFields=" + dataFields + "]";
+		return "Service [dataFields=" + dataFields + "]";
 	}
 
 	@Override
@@ -46,5 +45,4 @@ public class Service {
 			return false;
 		}
 	}
-
 }

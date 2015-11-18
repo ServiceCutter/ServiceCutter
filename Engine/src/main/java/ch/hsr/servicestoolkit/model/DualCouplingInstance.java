@@ -51,4 +51,9 @@ public class DualCouplingInstance extends MonoCouplingInstance {
 		return result;
 	}
 
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 }

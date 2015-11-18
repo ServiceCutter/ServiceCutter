@@ -1,7 +1,7 @@
 package ch.hsr.servicestoolkit.solver;
 
 import java.util.Collections;
-import java.util.Set;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -21,7 +21,10 @@ import ch.hsr.servicestoolkit.importer.InvalidRestParam;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
+import ch.hsr.servicestoolkit.solver.analyzer.ServiceCutAnalyzer;
 
 @Component
 @Path("/engine/solver")
@@ -30,11 +33,13 @@ public class SolverEndpoint {
 	private final Logger log = LoggerFactory.getLogger(SolverEndpoint.class);
 	private final ModelRepository modelRepository;
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
+	private ServiceCutAnalyzer analyzer;
 
 	@Autowired
-	public SolverEndpoint(final ModelRepository modelRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository) {
+	public SolverEndpoint(final ModelRepository modelRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository, final ServiceCutAnalyzer analyzer) {
 		this.modelRepository = modelRepository;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
+		this.analyzer = analyzer;
 	}
 
 	@POST
@@ -53,16 +58,18 @@ public class SolverEndpoint {
 		String algorithm = config.getAlgorithm();
 		StopWatch sw = new StopWatch();
 		sw.start();
+
+		Map<FieldTuple, Map<String, Score>> scores = scorer.getScores(model, config);
 		if ("leung".equals(algorithm)) {
-			solver = new GraphStreamSolver(model, scorer, config);
+			solver = new GraphStreamSolver(model, scores, config);
 		} else if (GephiSolver.MODE_GIRVAN_NEWMAN.equals(algorithm)) {
 			String mode = GephiSolver.MODE_GIRVAN_NEWMAN;
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
-			solver = new GephiSolver(model, scorer, config, mode, numberOfClusters);
+			solver = new GephiSolver(model, scores, mode, numberOfClusters);
 		} else if (GephiSolver.MODE_MARKOV.equals(algorithm)) {
 			String mode = GephiSolver.MODE_MARKOV;
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
-			solver = new GephiSolver(model, scorer, config, mode, numberOfClusters);
+			solver = new GephiSolver(model, scores, mode, numberOfClusters);
 		} else {
 			log.error("algorith {} not found, supported values: ", algorithm, "leung, giervan, markov");
 			throw new InvalidRestParam();
@@ -70,12 +77,12 @@ public class SolverEndpoint {
 		sw.stop();
 		log.info("Created graph in {}ms", sw.getLastTaskTimeMillis());
 		sw.start();
-		Set<Service> services = solver.solve();
+		SolverResult result = solver.solve();
 		sw.stop();
 		log.info("Found clusters in {}ms", sw.getLastTaskTimeMillis());
-		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), services.size(), services.toString());
-
-		return new SolverResult(services);
+		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.getServices().size(), result.toString());
+		analyzer.analyseResult(result, scores, model);
+		return result;
 	}
 
 }

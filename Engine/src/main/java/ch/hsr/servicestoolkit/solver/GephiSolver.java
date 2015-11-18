@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.Scorer;
+import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.Score;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
@@ -41,7 +42,6 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
 	public static final String MODE_MARKOV = "MCL";
 	private Map<String, Node> nodes;
-	private SolverConfiguration config;
 	private UndirectedGraph undirectedGraph;
 	private GraphModel graphModel;
 
@@ -50,16 +50,12 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	private Integer numberOfClusters;
 	private char serviceIdGenerator = 'A';
 
-	public GephiSolver(final Model model, final Scorer scorer, final SolverConfiguration config, final String mode, final Integer numberOfClusters) {
-		super(model, scorer, config);
-		this.config = config;
+	public GephiSolver(final Model model, final Map<FieldTuple, Map<String, Score>> scores, final String mode, final Integer numberOfClusters) {
+		super(model, scores);
 		this.mode = mode;
 		this.numberOfClusters = numberOfClusters;
 		if (model == null || model.getDataFields().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
-		}
-		if (config == null) {
-			throw new InvalidParameterException("config should not be null");
 		}
 
 		nodes = new HashMap<>();
@@ -67,7 +63,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 		graphModel = bootstrapGephi();
 		undirectedGraph = graphModel.getUndirectedGraph();
 
-		log.info("gephi solver created with config {}", config);
+		log.info("gephi solver created");
 		buildNodes();
 		buildEdges();
 
@@ -115,33 +111,35 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	public Set<Service> solve() {
+	public SolverResult solve() {
 		if (MODE_GIRVAN_NEWMAN.equals(mode)) {
 			return solveWithGirvanNewman(numberOfClusters);
 		}
 		return solveWithMarkov();
 	}
 
-	Set<Service> solveWithGirvanNewman(final int numberOfClusters) {
+	SolverResult solveWithGirvanNewman(final int numberOfClusters) {
 		Log.debug("solve cluster with numberOfClusters = " + numberOfClusters);
 		GirvanNewmanClusterer clusterer = new GirvanNewmanClusterer();
 		clusterer.setPreferredNumberOfClusters(numberOfClusters);
 		clusterer.execute(graphModel);
-		return getClustererResult(clusterer);
+		SolverResult solverResult = new SolverResult(getClustererResult(clusterer));
+		return solverResult;
 	}
 
-	Set<Service> solveWithMarkov() {
+	SolverResult solveWithMarkov() {
 		Log.debug("solve cluster with MCL");
 
 		MCClusterer clusterer = new MCClusterer();
 		// the higher the more clusters?
-		clusterer.setInflation(config.getValueForAlgorithmParam("inflation"));
-		clusterer.setExtraClusters(config.getValueForAlgorithmParam("extraClusters") > 0);
+		clusterer.setInflation(3);
+		clusterer.setExtraClusters(true);
 		clusterer.setSelfLoop(true); // must be true
-		clusterer.setPower(config.getValueForAlgorithmParam("power"));
-		clusterer.setPrune(config.getValueForAlgorithmParam("prune"));
+		clusterer.setPower(2);
 		clusterer.execute(graphModel);
-		return getClustererResult(clusterer);
+		Set<Service> clustererResult = getClustererResult(clusterer);
+		SolverResult solverResult = new SolverResult(clustererResult);
+		return solverResult;
 	}
 
 	// Returns a HashSet as the algorithms return redundant clusters

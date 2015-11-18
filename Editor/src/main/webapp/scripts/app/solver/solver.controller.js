@@ -19,10 +19,43 @@ angular.module('editorApp')
         $scope.graphResize = function(param) {
         	this.fit(); // Zooms out so all nodes fit on the canvas.
         };
-
-        $scope.graphEvents = {
-        	resize: $scope.graphResize
+        
+        
+        $scope.updateSelection = function(param) {
+        	$scope.$apply(function() {
+        		$scope.selectedServiceName = (function () { return; })();
+        		$scope.selectedServiceUseCases = (function () { return; })();
+        		$scope.selectedServiceRelations = (function () { return; })();
+        	});
+        	if(param.nodes.length > 0) {
+        		var nodeId = param.nodes[0];
+        		var listOfUseCases = $scope.result.useCaseResponsibility[nodeId];
+        		if(typeof listOfUseCases != 'undefined' && listOfUseCases.length > 0){
+        			$scope.$apply(function() { $scope.selectedServiceName = nodeId;});
+        			$scope.$apply(function() { $scope.selectedServiceUseCases = listOfUseCases;});
+        		}
+        		var selectedServiceRelations = [];
+        		var relations = $scope.result.relations;
+        		for(var relation in relations){
+					if(relations[relation].serviceA == nodeId || relations[relation].serviceB == nodeId){
+						var r = {};
+						r['name'] = relations[relation].serviceA + ' - ' +  relations[relation].serviceB
+						r['fields'] = relations[relation].sharedFields;
+						selectedServiceRelations.push(r);
+					}
+        		}
+        		$scope.$apply(function() { $scope.selectedServiceRelations = selectedServiceRelations;});
+    		}
         };
+        
+        $scope.graphEvents = {
+            	selectNode: $scope.updateSelection,
+            	deselectNode: $scope.updateSelection,
+            	deselectEdge: $scope.updateSelection,
+            	selectEdge: $scope.updateSelection,
+            	resize: $scope.graphResize
+        };
+        
         
         $scope.$watch('modelId', function () {
         	$scope.solve();
@@ -60,21 +93,24 @@ angular.module('editorApp')
         		
         		$http.post('/api/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
+		        		$scope.result = data;
 		    			var serviceNodes = new VisDataSet([]);
 		    			var serviceEdges = new VisDataSet([]);
 		    			var nodeId = 1;
-		    			var currentServiceId = 0;
 		    			var services = data.services;
+		    			// services
 		    			for (var x in services) {
-		    				serviceNodes.add({id: nodeId, shape: 'square', color: '#93D276', label: services[x].name});
-		    				currentServiceId = nodeId;
-	    					nodeId++;
+		    				serviceNodes.add({id: services[x].name, shape: 'square', color: '#93D276', label: services[x].name});
 		    				for (var y in services[x].dataFields) {
 		    					var field = services[x].dataFields[y];
 		    					serviceNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: field});
-		    					serviceEdges.add({from: currentServiceId, to: nodeId});
+		    					serviceEdges.add({from: services[x].name, to: nodeId});
 		    					nodeId++;
 		    				}
+		    			}
+		    			// service relations
+		    			for(var relation in data.relations){
+		    					serviceEdges.add({from: data.relations[relation].serviceA, to: data.relations[relation].serviceB, color:'#B0DF9B', label: data.relations[relation].score});
 		    			}
 		    	        $scope.graphData = {
 	    	            	'nodes': serviceNodes,
@@ -83,6 +119,7 @@ angular.module('editorApp')
 	            });
         	}
         }
+        
         
         $scope.criteria = Coupling.all(function(criteria) {
         	$scope.criterion = criteria[0]; 

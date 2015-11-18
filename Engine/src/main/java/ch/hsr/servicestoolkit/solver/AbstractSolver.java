@@ -12,19 +12,16 @@ import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.score.relations.FieldTuple;
 import ch.hsr.servicestoolkit.score.relations.Score;
-import ch.hsr.servicestoolkit.score.relations.Scorer;
 
 public abstract class AbstractSolver<N, E> implements Solver {
 
 	private Model model;
-	private Scorer scorer;
 	private final Logger log = LoggerFactory.getLogger(AbstractSolver.class);
-	private SolverConfiguration config;
+	private Map<FieldTuple, Map<String, Score>> scores;
 
-	public AbstractSolver(final Model model, final Scorer scorer, final SolverConfiguration config) {
+	public AbstractSolver(final Model model, final Map<FieldTuple, Map<String, Score>> scores) {
 		this.model = model;
-		this.scorer = scorer;
-		this.config = config;
+		this.scores = scores;
 		log.info("Created solver of type {}", getClass());
 	}
 
@@ -56,7 +53,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 	}
 
 	protected void buildEdges() {
-		for (Entry<FieldTuple, Map<String, Score>> entry : scorer.getScores(model, config).entrySet()) {
+		for (Entry<FieldTuple, Map<String, Score>> entry : scores.entrySet()) {
 			setWeight(entry.getKey().fieldA, entry.getKey().fieldB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
 			// Logging
 			log.info("Score for field tuple {}", entry.getKey());
@@ -68,7 +65,6 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		}
 
 		deleteNegativeEdges();
-
 	}
 
 	protected String createNodeIdentifier(final DataField field) {
@@ -103,4 +99,5 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		}
 
 	}
+
 }

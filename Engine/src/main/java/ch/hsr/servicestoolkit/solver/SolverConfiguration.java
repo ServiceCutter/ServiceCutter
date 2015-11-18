@@ -16,7 +16,7 @@ public class SolverConfiguration {
 	private Map<String, Double> weights = new HashMap<>();
 	private Map<String, Double> algorithmParams = new HashMap<>();
 	private Map<String, Double> priorities = new HashMap<>();
-	private String algorithm;
+	private String algorithm = "Girvan-Newman"; // TODO Refactor
 
 	private Logger log = LoggerFactory.getLogger(SolverConfiguration.class);
 
@@ -67,13 +67,13 @@ public class SolverConfiguration {
 
 	public Double getValueForAlgorithmParam(final String key) {
 		if (!algorithmParams.containsKey(key)) {
-			log.error("no value defined for algorithm param: " + key + ". Use 0");
-			return 0d;
+			log.error("no value defined for algorithm param: " + key + ". Use 1");
+			return 1d;
 		}
 		return algorithmParams.get(key);
 	}
 
-	public void setAlgorithm(String algorithm) {
+	public void setAlgorithm(final String algorithm) {
 		this.algorithm = algorithm;
 	}
 
@@ -83,7 +83,8 @@ public class SolverConfiguration {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(getClass()).add("algorithm", algorithm).add("weights", weights).add("algorithmParams", algorithmParams).add("priorities", priorities).toString();
+		return MoreObjects.toStringHelper(getClass()).add("algorithm", algorithm).add("weights", weights).add("algorithmParams", algorithmParams).add("priorities", priorities)
+				.toString();
 	}
 
 }

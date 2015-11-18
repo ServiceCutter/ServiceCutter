@@ -31,6 +31,7 @@ import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
+import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 import ch.hsr.servicestoolkit.solver.SolverResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,8 +61,10 @@ public class TradingExampleRestTest {
 	}
 
 	private void solveModel(final Integer modelId) {
-		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST,
-				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<SolverResult>() {
+		SolverConfiguration config = new SolverConfiguration();
+		HttpEntity<SolverConfiguration> request = IntegrationTestHelper.createHttpRequestWithPostObj(config);
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST, request,
+				new ParameterizedTypeReference<SolverResult>() {
 				});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());

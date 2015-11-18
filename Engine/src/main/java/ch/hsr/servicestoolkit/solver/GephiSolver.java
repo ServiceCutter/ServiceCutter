@@ -48,6 +48,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	private Logger log = LoggerFactory.getLogger(GephiSolver.class);
 	private String mode;
 	private Integer numberOfClusters;
+	private char serviceIdGenerator = 'A';
 
 	public GephiSolver(final Model model, final Scorer scorer, final SolverConfiguration config, final String mode, final Integer numberOfClusters) {
 		super(model, scorer, config);
@@ -152,7 +153,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 				for (Node node : cluster.getNodes()) {
 					dataFields.add(node.toString());
 				}
-				BoundedContext boundedContext = new BoundedContext(dataFields);
+				BoundedContext boundedContext = new BoundedContext(dataFields, serviceIdGenerator++);
 				result.add(boundedContext);
 				log.debug("BoundedContext found: {}, {}", boundedContext.getDataFields().toString(), boundedContext.hashCode());
 			}

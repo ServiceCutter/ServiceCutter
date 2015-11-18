@@ -66,7 +66,7 @@ angular.module('editorApp')
 		    			var nodeId = 1;
 		    			var currentContextId = 0;
 		    			for (var x in data) {
-		    				contextNodes.add({id: nodeId, shape: 'square', color: '#93D276', label: 'Service'});
+		    				contextNodes.add({id: nodeId, shape: 'square', color: '#93D276', label: data[x].name});
 		    				currentContextId = nodeId;
 	    					nodeId++;
 		    				for (var y in data[x].dataFields) {

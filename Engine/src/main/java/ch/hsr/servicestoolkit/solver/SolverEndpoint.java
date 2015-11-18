@@ -74,6 +74,7 @@ public class SolverEndpoint {
 		sw.stop();
 		log.info("Found clusters in {}ms", sw.getLastTaskTimeMillis());
 		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.size(), result.toString());
+
 		return result;
 	}
 

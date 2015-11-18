@@ -3,10 +3,10 @@ package ch.hsr.servicestoolkit.solver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.graphstream.algorithm.community.Leung;
 import org.graphstream.graph.Edge;
@@ -71,38 +71,44 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 		} catch (IOException e) {
 			log.error("error while writing file", e);
 		}
-		return families.values().stream().map(fields -> new BoundedContext(fields)).collect(Collectors.toSet());
+
+		char idGenerator = 'A';
+		Set<BoundedContext> result = new HashSet<>();
+		for (List<String> service : families.values()) {
+			result.add(new BoundedContext(service, idGenerator++));
+		}
+		return result;
 	}
 
 	@Override
-	protected void createNode(String name) {
+	protected void createNode(final String name) {
 		graph.addNode(name);
 	}
 
 	@Override
-	protected Node getNode(String name) {
+	protected Node getNode(final String name) {
 		return graph.getNode(name);
 	}
 
 	@Override
-	protected void createEdgeAndSetWeight(DataField first, DataField second, double weight) {
+	protected void createEdgeAndSetWeight(final DataField first, final DataField second, final double weight) {
 		String firstName = createNodeIdentifier(first);
 		String secondName = createNodeIdentifier(second);
 		Edge edge = graph.addEdge(createEdgeIdentifier(firstName, secondName), firstName, secondName);
 		setWeight(edge, weight);
 	}
 
-	String createEdgeIdentifier(String firstName, String secondName) {
+	String createEdgeIdentifier(final String firstName, final String secondName) {
 		return firstName + "-" + secondName;
 	}
 
 	@Override
-	protected void removeEdge(Edge edge) {
+	protected void removeEdge(final Edge edge) {
 		graph.removeEdge(edge);
 	}
 
 	@Override
-	protected Edge getEdge(DataField first, DataField second) {
+	protected Edge getEdge(final DataField first, final DataField second) {
 		String firstName = createNodeIdentifier(first);
 		String secondName = createNodeIdentifier(second);
 		return graph.getEdge(createEdgeIdentifier(firstName, secondName));
@@ -115,13 +121,13 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	protected double getWeight(Edge edge) {
+	protected double getWeight(final Edge edge) {
 		Double weight = edge.getAttribute(WEIGHT);
 		return weight != null ? weight : 0;
 	}
 
 	@Override
-	protected void setWeight(Edge edge, double weight) {
+	protected void setWeight(final Edge edge, final double weight) {
 		edge.setAttribute(WEIGHT, weight);
 	}
 

@@ -221,7 +221,7 @@ public class ImportEndpoint {
 				newInstance.setName(inputVariant.getCouplingCriterionName());
 				newInstance.setModel(model);
 				newInstance.setDataFields(loadDataFields(inputVariant.getFields(), model));
-				log.info("Import distance variant {} with fields {}", inputVariant.getCouplingCriterionName(), newInstance.getAllFields());
+				log.info("Import distance variant {}-{} with fields {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName(), newInstance.getAllFields());
 			} else {
 				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
 				throw new InvalidRestParam();

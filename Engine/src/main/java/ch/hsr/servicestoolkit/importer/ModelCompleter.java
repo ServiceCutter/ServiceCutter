@@ -63,6 +63,9 @@ public class ModelCompleter {
 					instance = instances.iterator().next();
 				} else if (instances.size() == 0) {
 					instance = defaultVariant.createInstance();
+					instance.setModel(model);
+					instance.setName(defaultVariant.getName());
+					couplingInstanceRepository.save(instance);
 				} else {
 					throw new RuntimeException("only one instance per variant expected for distance criterion");
 				}
@@ -70,7 +73,6 @@ public class ModelCompleter {
 					instance.addDataField(field);
 				}
 				log.info("Complete model with instance of variant {} of criterion {} and fields {}", defaultVariant.getName(), criterion.getKey(), missingFields);
-				couplingInstanceRepository.save(instance);
 			}
 
 		}

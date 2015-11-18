@@ -71,15 +71,15 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
 		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config, GephiSolver.MODE_MARKOV, null);
-		Set<BoundedContext> result1 = solver.solveWithMarkov();
+		Set<Service> result1 = solver.solveWithMarkov();
 		assertEquals(3, result1.size());
-		for (BoundedContext context : result1) {
+		for (Service context : result1) {
 			assertEquals(2, context.getDataFields().size());
 		}
 
-		Set<BoundedContext> result2 = solver.solveWithMarkov();
+		Set<Service> result2 = solver.solveWithMarkov();
 		assertEquals(2, result2.size());
-		for (BoundedContext context : result2) {
+		for (Service context : result2) {
 			assertEquals(3, context.getDataFields().size());
 		}
 	}
@@ -101,10 +101,10 @@ public class GephiSolverTest {
 		when(monoCouplingInstanceRepository.findByModel(model)).thenReturn(instances);
 
 		GephiSolver solver = new GephiSolver(model, new Scorer(monoCouplingInstanceRepository), config, GephiSolver.MODE_MARKOV, null);
-		Set<BoundedContext> result = solver.solveWithMarkov();
+		Set<Service> result = solver.solveWithMarkov();
 
 		assertEquals(2, result.size());
-		for (BoundedContext context : result) {
+		for (Service context : result) {
 			assertEquals(3, context.getDataFields().size());
 		}
 	}

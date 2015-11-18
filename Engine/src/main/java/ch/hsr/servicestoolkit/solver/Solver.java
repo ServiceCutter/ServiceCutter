@@ -4,6 +4,6 @@ import java.util.Set;
 
 public interface Solver {
 
-	Set<BoundedContext> solve();
+	Set<Service> solve();
 
 }

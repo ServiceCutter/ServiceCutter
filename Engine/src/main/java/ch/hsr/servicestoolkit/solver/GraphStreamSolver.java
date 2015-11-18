@@ -51,7 +51,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	public Set<BoundedContext> solve() {
+	public Set<Service> solve() {
 		Leung algorithm = new Leung(graph, null, WEIGHT);
 		algorithm.setParameters(m, delta);
 		log.info("Using parameters m={} and delta={}", m, delta);
@@ -73,9 +73,9 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 		}
 
 		char idGenerator = 'A';
-		Set<BoundedContext> result = new HashSet<>();
+		Set<Service> result = new HashSet<>();
 		for (List<String> service : families.values()) {
-			result.add(new BoundedContext(service, idGenerator++));
+			result.add(new Service(service, idGenerator++));
 		}
 		return result;
 	}

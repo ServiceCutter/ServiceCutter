@@ -42,11 +42,11 @@ public class SolverEndpointTest {
 	@Test
 	public void testNonExstingModel() {
 
-		ResponseEntity<Set<BoundedContext>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/234", HttpMethod.POST,
-				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<Set<BoundedContext>>() {
+		ResponseEntity<SolverResult> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/234", HttpMethod.POST,
+				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<SolverResult>() {
 				});
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
-		assertTrue(entity.getBody().isEmpty());
+		assertTrue(entity.getBody().getServices().isEmpty());
 	}
 
 	@Test
@@ -61,8 +61,8 @@ public class SolverEndpointTest {
 				});
 
 		Integer modelId = (Integer) modelResponse.getBody().get("id");
-		ResponseEntity<Set<BoundedContext>> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST,
-				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<Set<BoundedContext>>() {
+		ResponseEntity<Set<Service>> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST,
+				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<Set<Service>>() {
 				});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());

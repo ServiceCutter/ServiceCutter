@@ -42,10 +42,10 @@ public class SolverEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{modelId}")
 	@Transactional
-	public Set<BoundedContext> solveModel(@PathParam("modelId") final Long id, final SolverConfiguration config) {
+	public SolverResult solveModel(@PathParam("modelId") final Long id, final SolverConfiguration config) {
 		Model model = modelRepository.findOne(id);
 		if (model == null || config == null) {
-			return Collections.emptySet();
+			return new SolverResult(Collections.emptySet());
 		}
 
 		Scorer scorer = new Scorer(monoCouplingInstanceRepository);
@@ -70,12 +70,12 @@ public class SolverEndpoint {
 		sw.stop();
 		log.info("Created graph in {}ms", sw.getLastTaskTimeMillis());
 		sw.start();
-		Set<BoundedContext> result = solver.solve();
+		Set<Service> services = solver.solve();
 		sw.stop();
 		log.info("Found clusters in {}ms", sw.getLastTaskTimeMillis());
-		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.size(), result.toString());
+		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), services.size(), services.toString());
 
-		return result;
+		return new SolverResult(services);
 	}
 
 }

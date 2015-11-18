@@ -60,25 +60,25 @@ angular.module('editorApp')
         		
         		$http.post('/api/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
-		    			$scope.boundedContexts = data;
-		    			var contextNodes = new VisDataSet([]);
-		    			var contextEdges = new VisDataSet([]);
+		    			var serviceNodes = new VisDataSet([]);
+		    			var serviceEdges = new VisDataSet([]);
 		    			var nodeId = 1;
-		    			var currentContextId = 0;
-		    			for (var x in data) {
-		    				contextNodes.add({id: nodeId, shape: 'square', color: '#93D276', label: data[x].name});
-		    				currentContextId = nodeId;
+		    			var currentServiceId = 0;
+		    			var services = data.services;
+		    			for (var x in services) {
+		    				serviceNodes.add({id: nodeId, shape: 'square', color: '#93D276', label: services[x].name});
+		    				currentServiceId = nodeId;
 	    					nodeId++;
-		    				for (var y in data[x].dataFields) {
-		    					var field = data[x].dataFields[y];
-		    					contextNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: field});
-		    					contextEdges.add({from: currentContextId, to: nodeId});
+		    				for (var y in services[x].dataFields) {
+		    					var field = services[x].dataFields[y];
+		    					serviceNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: field});
+		    					serviceEdges.add({from: currentServiceId, to: nodeId});
 		    					nodeId++;
 		    				}
 		    			}
 		    	        $scope.graphData = {
-	    	            	'nodes': contextNodes,
-	    	            	'edges': contextEdges
+	    	            	'nodes': serviceNodes,
+	    	            	'edges': serviceEdges
 	    	            };
 	            });
         	}

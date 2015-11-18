@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +31,7 @@ import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
-import ch.hsr.servicestoolkit.solver.BoundedContext;
+import ch.hsr.servicestoolkit.solver.SolverResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -61,13 +60,13 @@ public class TradingExampleRestTest {
 	}
 
 	private void solveModel(final Integer modelId) {
-		ResponseEntity<Set<BoundedContext>> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST,
-				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<Set<BoundedContext>>() {
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST,
+				IntegrationTestHelper.createEmptyHttpRequest(), new ParameterizedTypeReference<SolverResult>() {
 				});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
 
-		log.info("found services {}", solverResponse.getBody());
+		log.info("found services {}", solverResponse.getBody().getServices());
 	}
 
 	private void loadBusinessTransactionOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {

@@ -4,18 +4,18 @@ import java.util.List;
 
 import com.google.common.base.Objects;
 
-public class BoundedContext {
+public class Service {
 
 	List<String> dataFields;
 	String name;
 
-	public BoundedContext(final List<String> dataFields, final char id) {
+	public Service(final List<String> dataFields, final char id) {
 		super();
 		this.dataFields = dataFields;
 		this.name = "Service " + id;
 	}
 
-	public BoundedContext() {
+	public Service() {
 		// needed for Jackson
 	}
 
@@ -39,8 +39,8 @@ public class BoundedContext {
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (obj instanceof BoundedContext) {
-			BoundedContext other = (BoundedContext) obj;
+		if (obj instanceof Service) {
+			Service other = (Service) obj;
 			return this == other || Objects.equal(name, other.name);
 		} else {
 			return false;

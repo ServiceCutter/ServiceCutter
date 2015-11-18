@@ -115,14 +115,14 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	public Set<BoundedContext> solve() {
+	public Set<Service> solve() {
 		if (MODE_GIRVAN_NEWMAN.equals(mode)) {
 			return solveWithGirvanNewman(numberOfClusters);
 		}
 		return solveWithMarkov();
 	}
 
-	Set<BoundedContext> solveWithGirvanNewman(final int numberOfClusters) {
+	Set<Service> solveWithGirvanNewman(final int numberOfClusters) {
 		Log.debug("solve cluster with numberOfClusters = " + numberOfClusters);
 		GirvanNewmanClusterer clusterer = new GirvanNewmanClusterer();
 		clusterer.setPreferredNumberOfClusters(numberOfClusters);
@@ -130,7 +130,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 		return getClustererResult(clusterer);
 	}
 
-	Set<BoundedContext> solveWithMarkov() {
+	Set<Service> solveWithMarkov() {
 		Log.debug("solve cluster with MCL");
 
 		MCClusterer clusterer = new MCClusterer();
@@ -145,15 +145,15 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	// Returns a HashSet as the algorithms return redundant clusters
-	private Set<BoundedContext> getClustererResult(final Clusterer clusterer) {
-		Set<BoundedContext> result = new HashSet<>();
+	private Set<Service> getClustererResult(final Clusterer clusterer) {
+		Set<Service> result = new HashSet<>();
 		if (clusterer.getClusters() != null) {
 			for (Cluster cluster : clusterer.getClusters()) {
 				List<String> dataFields = new ArrayList<>();
 				for (Node node : cluster.getNodes()) {
 					dataFields.add(node.toString());
 				}
-				BoundedContext boundedContext = new BoundedContext(dataFields, serviceIdGenerator++);
+				Service boundedContext = new Service(dataFields, serviceIdGenerator++);
 				result.add(boundedContext);
 				log.debug("BoundedContext found: {}, {}", boundedContext.getDataFields().toString(), boundedContext.hashCode());
 			}

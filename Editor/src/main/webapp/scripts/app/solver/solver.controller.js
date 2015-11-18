@@ -108,6 +108,7 @@ angular.module('editorApp')
     		})
         }
         // http://stackoverflow.com/questions/15458609/execute-function-on-page-load
+        //TODO: doesn't work well, look for another solution
         $timeout($scope.init)
         
 		$scope.sameEntitySlider = 0.2;

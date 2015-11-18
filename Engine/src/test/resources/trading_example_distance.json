@@ -46,17 +46,11 @@
 	},
 	{
 		"couplingCriterionName":"Consistency",
-		"variantName":"High",
+		"variantName":"Eventually",
 		"fields":[
-			"Order.posted",
-			"Order.expires",
-			"Order.triggerPrice",
-			"Order.executed",
-			"Order.type",
-			"Order.amount",
-			"Instruction.instructedTime",
-			"Position.balance",
-			"Stock.identifier"
+			"Price.dateTime",
+			"Price.price",
+			"Price.currency"
 		]
 		
 	},

@@ -1,7 +1,7 @@
 [
 	{
 		"couplingCriterionName":"Security Criticality",
-		"variantName":"Low",
+		"variantName":"Public",
 		"fields":[
 			"Stock.identifier",
 			"Stock.stockName",
@@ -15,7 +15,7 @@
 	},
 	{
 		"couplingCriterionName":"Security Criticality",
-		"variantName":"High",
+		"variantName":"Critical",
 		"fields":[
 			"AccountOwner.address",
 			"NaturalPerson.name",
@@ -62,7 +62,7 @@
 	},
 	{
 		"couplingCriterionName":"Storage Similarity",
-		"variantName":"Large (GB)",
+		"variantName":"Huge",
 		"fields":[
 			"News.image"
 		]
@@ -70,7 +70,7 @@
 	},
 	{
 		"couplingCriterionName":"Change Similarity",
-		"variantName":"Often (1/month)",
+		"variantName":"Often",
 		"fields":[
 			"Recommendation.description"
 		]

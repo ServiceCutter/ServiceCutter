@@ -55,8 +55,8 @@ public class SolverEndpoint {
 		sw.start();
 		if ("leung".equals(algorithm)) {
 			solver = new GraphStreamSolver(model, scorer, config);
-		} else if (GephiSolver.MODE_GIERVAN_NEWMAN.equals(algorithm)) {
-			String mode = GephiSolver.MODE_GIERVAN_NEWMAN;
+		} else if (GephiSolver.MODE_GIRVAN_NEWMAN.equals(algorithm)) {
+			String mode = GephiSolver.MODE_GIRVAN_NEWMAN;
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
 			solver = new GephiSolver(model, scorer, config, mode, numberOfClusters);
 		} else if (GephiSolver.MODE_MARKOV.equals(algorithm)) {

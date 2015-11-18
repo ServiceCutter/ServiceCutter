@@ -7,8 +7,8 @@ angular.module('editorApp')
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
         
-        $scope.availableAlgorithms = ['leung','giervan','markov'];
-        $scope.algorithm = 'giervan';
+        $scope.availableAlgorithms = ['leung','Girvan-Newman','MCL'];
+        $scope.algorithm = 'Girvan-Newman';
         
         $scope.graphOptions = {
 			autoResize: true,
@@ -100,7 +100,11 @@ angular.module('editorApp')
         
         $scope.init = function(){
         	angular.forEach($scope.criteria, function(value, index){
-    			value.priority = 3 // todo refactor 
+        		if(value.type == "PROXIMITY"){
+        			value.priority = 3 // todo refactor
+        		}else{
+        			value.priority = 0.5 
+        		}
     		})
         }
         // http://stackoverflow.com/questions/15458609/execute-function-on-page-load

@@ -57,7 +57,7 @@ public class GephiSolverTest {
 
 	@Test(expected = InvalidParameterException.class)
 	public void testEmptyModel() {
-		new GephiSolver(new Model(), new Scorer(monoCouplingInstanceRepository), config, GephiSolver.MODE_GIERVAN_NEWMAN, 3);
+		new GephiSolver(new Model(), new Scorer(monoCouplingInstanceRepository), config, GephiSolver.MODE_GIRVAN_NEWMAN, 3);
 	}
 
 	@Ignore

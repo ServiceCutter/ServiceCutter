@@ -38,8 +38,8 @@ import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
 public class GephiSolver extends AbstractSolver<Node, Edge> {
 
-	public static final String MODE_GIERVAN_NEWMAN = "giervan";
-	public static final String MODE_MARKOV = "markov";
+	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
+	public static final String MODE_MARKOV = "MCL";
 	private Map<String, Node> nodes;
 	private SolverConfiguration config;
 	private UndirectedGraph undirectedGraph;
@@ -49,7 +49,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	private String mode;
 	private Integer numberOfClusters;
 
-	public GephiSolver(final Model model, final Scorer scorer, final SolverConfiguration config, String mode, Integer numberOfClusters) {
+	public GephiSolver(final Model model, final Scorer scorer, final SolverConfiguration config, final String mode, final Integer numberOfClusters) {
 		super(model, scorer, config);
 		this.config = config;
 		this.mode = mode;
@@ -115,7 +115,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 
 	@Override
 	public Set<BoundedContext> solve() {
-		if (MODE_GIERVAN_NEWMAN.equals(mode)) {
+		if (MODE_GIRVAN_NEWMAN.equals(mode)) {
 			return solveWithGirvanNewman(numberOfClusters);
 		}
 		return solveWithMarkov();
@@ -167,40 +167,40 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	protected Edge getEdge(DataField first, DataField second) {
+	protected Edge getEdge(final DataField first, final DataField second) {
 		return undirectedGraph.getEdge(getNode(first), getNode(second));
 	}
 
 	@Override
-	protected void removeEdge(Edge edge) {
+	protected void removeEdge(final Edge edge) {
 		undirectedGraph.removeEdge(edge);
 	}
 
 	@Override
-	protected void createEdgeAndSetWeight(DataField first, DataField second, double weight) {
+	protected void createEdgeAndSetWeight(final DataField first, final DataField second, final double weight) {
 		Edge edge = graphModel.factory().newEdge(getNode(first), getNode(second), (float) weight, false);
 		undirectedGraph.addEdge(edge);
 		edge.getEdgeData().setLabel(edge.getWeight() + "");
 	}
 
 	@Override
-	protected double getWeight(Edge edge) {
+	protected double getWeight(final Edge edge) {
 		return edge.getWeight();
 	}
 
 	@Override
-	protected void setWeight(Edge edge, final double weight) {
-		edge.setWeight((float) (edge.getWeight() + weight));
+	protected void setWeight(final Edge edge, final double weight) {
+		edge.setWeight((float) weight);
 		edge.getEdgeData().setLabel(edge.getWeight() + "");
 	}
 
 	@Override
-	protected Node getNode(String name) {
+	protected Node getNode(final String name) {
 		return nodes.get(name);
 	}
 
 	@Override
-	protected void createNode(String name) {
+	protected void createNode(final String name) {
 		Node node = graphModel.factory().newNode(name);
 		node.getNodeData().setLabel(name);
 		undirectedGraph.addNode(node);

@@ -28,7 +28,7 @@
 				</div>
 				            
 				<div ng-show="selectedServiceName">
-					<h2>Service #{{selectedServiceName}}</h2>
+					<h2>{{selectedServiceName}}</h2>
 					<p>Responsible for Use Cases:</p>
 					<ul>
 						<li ng-repeat="useCase in selectedServiceUseCases">{{useCase}}</li>
@@ -43,80 +43,31 @@
 				</div>
 			</div>
 			<div class="col-md-4">
-				<h3>Coupling Criteria Params:</h3>
-				<div>
-					Same Entity:<br />
-				    <rzslider rz-slider-model="sameEntitySlider" 
-				    	rz-slider-step="0.05" 
-				    	rz-slider-precision="2" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="1">
-				    </rzslider>
-				    Composition:<br />
-				    <rzslider rz-slider-model="compositionSlider" 
-				    	rz-slider-step="0.05" 
-				    	rz-slider-precision="2" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="1">
-				    </rzslider>
-				    Aggregation:<br />
-				    <rzslider rz-slider-model="aggregationSlider" 
-				    	rz-slider-step="0.05" 
-				    	rz-slider-precision="2" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="1">
-				    </rzslider>
-				    Shared Field Access:<br />
-				    <rzslider rz-slider-model="sharedFieldAccessSlider" 
-				    	rz-slider-step="0.05" 
-				    	rz-slider-precision="2" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="1">
-				    </rzslider>
+				<h3>Coupling Criteria Priorities:</h3>
+				<div ng-repeat="criterion in criteria">
+					 <form name="myForm">
+					    <label for="{{criterion.name}}">{{criterion.name}}: </label>
+					    <select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority"  ng-change="solve()">
+				    	  	<option ng-selected="criterion.priority == metric.value" ng-repeat="metric in priorityMetric" value="{{metric.value}}">{{metric.name}}</option>
+					    </select>
+					  </form>
 				</div>
+				
 				<h3>Algorithm:</h3>
 				<select class="form-control" ng-model="algorithm" ng-options="a for a in availableAlgorithms" ng-change="solve()"></select>
 				
+				<h3>Visualization:</h3>				
+				Show Service Relations:<br />
+				<rzslider rz-slider-model="relations" 
+					rz-slider-step="1" 
+					rz-slider-precision="0" 
+					rz-slider-on-end="solve()" 
+					rz-slider-floor="0" 
+					rz-slider-ceil="1">
+				</rzslider>
+				
 				<h3>Algorithm Params:</h3>
 				<div width="50%">
-				<!-- 
-					Power:<br />
-				    <rzslider rz-slider-model="powerSlider" 
-				    	rz-slider-step="0.2" 
-				    	rz-slider-precision="1" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="10">
-				    </rzslider>
-				    Inflation:<br />
-				    <rzslider rz-slider-model="inflationSlider" 
-				    	rz-slider-step="0.2" 
-				    	rz-slider-precision="1" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="10">
-				    </rzslider>
-				    Prune:<br />
-				    <rzslider rz-slider-model="pruneSlider" 
-				    	rz-slider-step="0.1" 
-				    	rz-slider-precision="1" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="2">
-				    </rzslider>
-				    Extra Clusters:<br />
-				    <rzslider rz-slider-model="extraClusterSlider" 
-				    	rz-slider-step="1" 
-				    	rz-slider-precision="0" 
-				    	rz-slider-on-end="solve()" 
-				    	rz-slider-floor="0" 
-				    	rz-slider-ceil="1">
-				    </rzslider>
-				    -->
 				    Number of Clusters (Girvan-Newman):<br />
 				    <rzslider rz-slider-model="numberSlider" 
 				    	rz-slider-step="1" 
@@ -149,18 +100,7 @@
 				    	rz-slider-floor="1" 
 				    	rz-slider-ceil="20">
 				    </rzslider>
-				</div>
-				<h3>Coupling Criteria Priorities:</h3>
-				<div width="50%">
-				<div ng-repeat="criterion in criteria">
-					 <form name="myForm">
-					    <label for="{{criterion.name}}">{{criterion.name}}: </label>
-					    <select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority"  ng-change="solve()">
-				    	  	<option ng-selected="criterion.priority == metric.value" ng-repeat="metric in priorityMetric" value="{{metric.value}}">{{metric.name}}</option>
-					    </select>
-					  </form>
-				</div>
-				
+				</div>				
 			</div>
 		</div>
 	</div>

@@ -109,7 +109,7 @@ angular.module('editorApp')
 		    				}
 		    			}
 		    			// service relations
-		    			if($scope.relations == 1){
+		    			if($scope.showRelations){
 			    			for(var relation in data.relations){
 			    					serviceEdges.add({from: data.relations[relation].serviceA, to: data.relations[relation].serviceB, color:'#B0DF9B', label: data.relations[relation].score});
 			    			}
@@ -160,7 +160,7 @@ angular.module('editorApp')
 		$scope.pruneSlider = 0.0;
 		$scope.extraClusterSlider = 0;
 		$scope.numberSlider = 3;
-		$scope.relations = 0;
+		$scope.showRelations = false;
 		
 		$scope.leungM = 0.1;
 		$scope.leungDelta = 0.05;

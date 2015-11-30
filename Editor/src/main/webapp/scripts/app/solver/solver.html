@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<h1>Services Toolkit Solver</h1>
-			<div class="col-md-8">
+			<div class="col-md-7">
 				<form class="form-inline">
 					<div class="form-group">
 						<select id="modelId" class="form-control" ng-model="modelId"
@@ -42,29 +42,38 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4">
-				<h3>Coupling Criteria Priorities:</h3>
-				<div ng-repeat="criterion in criteria">
-					 <form name="myForm">
-					    <label for="{{criterion.name}}">{{criterion.name}}: </label>
-					    <select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority"  ng-change="solve()">
-				    	  	<option ng-selected="criterion.priority == metric.value" ng-repeat="metric in priorityMetric" value="{{metric.value}}">{{metric.name}}</option>
-					    </select>
-					  </form>
-				</div>
+			<div class="col-md-5">
+			<!-- this structure is a bit complicated as bootstrap requires:
+				"Content should be placed within columns, and only columns may be immediate children of rows."
+			 -->
+				<div class="row"><h3>Coupling Criteria Priorities:</h3></div>
+				<div class="row"><form class="form-inline" name="myForm">
+					<div ng-repeat="criterion in criteria" class="form-group form-group-sm col-md-12">
+						<div class="row" style="margin-bottom: 10px">
+							<div class="col-md-8">
+								<label for="{{criterion.name}}">{{criterion.name}}</label>
+							</div>
+							<div class="col-md-4">
+								<select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority"  
+									ng-change="solve()" class="form-control">
+								  	<option ng-selected="criterion.priority == metric.value" ng-repeat="metric in priorityMetric" value="{{metric.value}}">{{metric.name}}</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form></div>
 				
 				<h3>Algorithm:</h3>
 				<select class="form-control" ng-model="algorithm" ng-options="a for a in availableAlgorithms" ng-change="solve()"></select>
 				
-				<h3>Visualization:</h3>				
-				Show Service Relations:<br />
-				<rzslider rz-slider-model="relations" 
-					rz-slider-step="1" 
-					rz-slider-precision="0" 
-					rz-slider-on-end="solve()" 
-					rz-slider-floor="0" 
-					rz-slider-ceil="1">
-				</rzslider>
+				<h3>Visualization:</h3>
+				<form class="form-inline" name="myVizForm">	
+				<div class="form-group form-group-sm">			
+					<label for="show-relations">Show Service Relations</label> <br />
+					<toggle-switch ng-model="showRelations" id="show-relations"
+						ng-click="solve()"></toggle-switch>
+				</div>
+				</form>
 				
 				<h3>Algorithm Params:</h3>
 				<div width="50%">

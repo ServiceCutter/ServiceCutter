@@ -41,6 +41,8 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 
 	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
 	public static final String MODE_MARKOV = "MCL";
+	public static final String MODE_LEUNG = "Leung";
+	public static final String[] MODES = new String[] {MODE_GIRVAN_NEWMAN, MODE_MARKOV, MODE_LEUNG};
 	private Map<String, Node> nodes;
 	private UndirectedGraph undirectedGraph;
 	private GraphModel graphModel;

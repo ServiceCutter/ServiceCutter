@@ -7,7 +7,7 @@ angular.module('editorApp')
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
         
-        $scope.availableAlgorithms = ['leung','Girvan-Newman','MCL'];
+        $scope.availableAlgorithms = ['Leung','Girvan-Newman','MCL'];
         $scope.algorithm = 'Girvan-Newman';
         
         $scope.graphOptions = {

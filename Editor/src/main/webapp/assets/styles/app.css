@@ -22,3 +22,6 @@
     color: #777;
     font-weight: bold;
 }
+span.inline-help {
+	text-decoration: underline;
+}

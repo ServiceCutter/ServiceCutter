@@ -60,7 +60,7 @@ public class SolverEndpoint {
 		sw.start();
 
 		Map<FieldTuple, Map<String, Score>> scores = scorer.getScores(model, config);
-		if ("leung".equals(algorithm)) {
+		if (GephiSolver.MODE_LEUNG.equals(algorithm)) {
 			solver = new GraphStreamSolver(model, scores, config);
 		} else if (GephiSolver.MODE_GIRVAN_NEWMAN.equals(algorithm)) {
 			String mode = GephiSolver.MODE_GIRVAN_NEWMAN;
@@ -71,7 +71,7 @@ public class SolverEndpoint {
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
 			solver = new GephiSolver(model, scores, mode, numberOfClusters);
 		} else {
-			log.error("algorith {} not found, supported values: ", algorithm, "leung, giervan, markov");
+			log.error("algorith {} not found, supported values: {}", algorithm, GephiSolver.MODES);
 			throw new InvalidRestParam();
 		}
 		sw.stop();

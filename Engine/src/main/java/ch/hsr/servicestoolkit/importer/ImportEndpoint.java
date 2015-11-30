@@ -83,7 +83,7 @@ public class ImportEndpoint {
 
 		}
 		// entities
-		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findOrCreateVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
+		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
 		for (Entry<String, List<EntityAttribute>> entity : findRealEntities(domainModel).entrySet()) {
 			MonoCouplingInstance couplingInstance = sameEntityVariant.createInstance();
 			monoCouplingInstanceRepository.save(couplingInstance);

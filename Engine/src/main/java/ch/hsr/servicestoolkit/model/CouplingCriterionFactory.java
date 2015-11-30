@@ -26,8 +26,4 @@ public class CouplingCriterionFactory {
 		Assert.notNull(result, "Variant with name " + variant + " not found!");
 		return result;
 	}
-
-	public CouplingCriteriaVariant findOrCreateVariant(String coupling, String variant) {
-		return findVariant(coupling, variant);
-	}
 }

@@ -14,8 +14,8 @@ public class SeparationCriterionScorer implements CriterionScorer {
 
 	private static final double SEPARATION_PENALTY = -10d;
 
-	public Map<String, Map<FieldTuple, Double>> getScores(final Map<String, Set<MonoCouplingInstance>> instancesByCriterion) {
-		Map<String, Map<FieldTuple, Double>> result = new HashMap<>();
+	public Map<String, Map<FieldPair, Double>> getScores(final Map<String, Set<MonoCouplingInstance>> instancesByCriterion) {
+		Map<String, Map<FieldPair, Double>> result = new HashMap<>();
 
 		// get all instances group by separation CC
 		for (Entry<String, Set<MonoCouplingInstance>> instancesEntry : instancesByCriterion.entrySet()) {
@@ -25,8 +25,8 @@ public class SeparationCriterionScorer implements CriterionScorer {
 	}
 
 	@Override
-	public Map<FieldTuple, Double> getScores(final Set<MonoCouplingInstance> instances) {
-		Map<FieldTuple, Double> resultPerCC = new HashMap<>();
+	public Map<FieldPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
+		Map<FieldPair, Double> resultPerCC = new HashMap<>();
 
 		// TODO: we assume there is only one variant for separation
 		// criteria, we should refactor the variants model to be used only
@@ -38,7 +38,7 @@ public class SeparationCriterionScorer implements CriterionScorer {
 		DualCouplingInstance relevantVariant = (DualCouplingInstance) instances.iterator().next();
 		for (DataField fieldA : relevantVariant.getDataFields()) {
 			for (DataField fieldB : relevantVariant.getSecondDataFields()) {
-				resultPerCC.put(new FieldTuple(fieldA, fieldB), SEPARATION_PENALTY);
+				resultPerCC.put(new FieldPair(fieldA, fieldB), SEPARATION_PENALTY);
 			}
 		}
 		return resultPerCC;

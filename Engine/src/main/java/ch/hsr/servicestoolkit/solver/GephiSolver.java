@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.FieldPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
@@ -52,7 +52,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	private Integer numberOfClusters;
 	private char serviceIdGenerator = 'A';
 
-	public GephiSolver(final Model model, final Map<FieldTuple, Map<String, Score>> scores, final String mode, final Integer numberOfClusters) {
+	public GephiSolver(final Model model, final Map<FieldPair, Map<String, Score>> scores, final String mode, final Integer numberOfClusters) {
 		super(model, scores);
 		this.mode = mode;
 		this.numberOfClusters = numberOfClusters;

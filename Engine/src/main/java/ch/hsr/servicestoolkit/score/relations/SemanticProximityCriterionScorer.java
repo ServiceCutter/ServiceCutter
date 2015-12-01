@@ -13,7 +13,7 @@ import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {
-	Map<FieldTuple, Double> result = new HashMap<>();
+	Map<FieldPair, Double> result = new HashMap<>();
 	// TODO: make configurable in UI
 	private static final int SCORE_WRITE = 10;
 	private static final int SCORE_READ = 3;
@@ -23,7 +23,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	private static final int SCORE_AGGREGATION = 1;
 
 	@Override
-	public Map<FieldTuple, Double> getScores(final Set<MonoCouplingInstance> instances) {
+	public Map<FieldPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
 		for (MonoCouplingInstance fieldAccessInstance : instances) {
 			DualCouplingInstance fieldAccessInstanceDual = (DualCouplingInstance) fieldAccessInstance;
 			Double frequency = fieldAccessInstanceDual.getFrequency();
@@ -60,7 +60,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	 * between 0 and 10
 	 */
 
-	void normalizeResult(final Map<FieldTuple, Double> result) {
+	void normalizeResult(final Map<FieldPair, Double> result) {
 		// scores in reversed order
 		List<Double> scores = result.values().stream().sorted((d1, d2) -> Double.compare(d2, d1)).collect(Collectors.toList());
 		if (scores.isEmpty()) {
@@ -69,7 +69,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 		int tenPercent = Math.max(1, (int) (scores.size() * 0.1d));
 		double referenceValue = scores.get(tenPercent - 1);
 		double divisor = referenceValue / CouplingCriterionScoring.MAX_SCORE;
-		for (FieldTuple key : result.keySet()) {
+		for (FieldPair key : result.keySet()) {
 			double newScore = Math.min(CouplingCriterionScoring.MAX_SCORE, result.get(key) / divisor);
 			result.put(key, newScore);
 		}
@@ -105,7 +105,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	}
 
 	private void addToResult(final DataField fieldA, final DataField fieldB, final double score) {
-		FieldTuple fieldTuple = new FieldTuple(fieldA, fieldB);
+		FieldPair fieldTuple = new FieldPair(fieldA, fieldB);
 		if (result.get(fieldTuple) == null) {
 			result.put(fieldTuple, score);
 		} else {

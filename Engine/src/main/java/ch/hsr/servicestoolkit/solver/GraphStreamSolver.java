@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.FieldPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
 public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
@@ -30,7 +30,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	protected double delta = 0.05;
 	private int iterations = 1;
 
-	public GraphStreamSolver(final Model model, final Map<FieldTuple, Map<String, Score>> scores, final SolverConfiguration config) {
+	public GraphStreamSolver(final Model model, final Map<FieldPair, Map<String, Score>> scores, final SolverConfiguration config) {
 		super(model, scores);
 		graph = new SingleGraph("Service Cutter Graph");
 		Double m = config.getAlgorithmParams().get("leungM");

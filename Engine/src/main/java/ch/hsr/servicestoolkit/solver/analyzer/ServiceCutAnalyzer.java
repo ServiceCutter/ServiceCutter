@@ -25,7 +25,7 @@ import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
-import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.FieldPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.solver.Service;
 import ch.hsr.servicestoolkit.solver.SolverResult;
@@ -62,7 +62,7 @@ public class ServiceCutAnalyzer {
 
 	}
 
-	public void analyseResult(final SolverResult solverResult, final Map<FieldTuple, Map<String, Score>> scores, final Model model) {
+	public void analyseResult(final SolverResult solverResult, final Map<FieldPair, Map<String, Score>> scores, final Model model) {
 		// use case responsibility
 		final Map<Service, List<DualCouplingInstance>> useCaseResponsibilites = getUseCaseResponsibilites(solverResult.getServices(), model);
 		solverResult.setUseCaseResponsibility(transformResponsibilityMap(useCaseResponsibilites));
@@ -148,11 +148,11 @@ public class ServiceCutAnalyzer {
 		return responsibleService;
 	}
 
-	private Double getProximityScoreFor(final Service serviceA, final Service serviceB, final Map<FieldTuple, Map<String, Score>> scores, final Model model) {
+	private Double getProximityScoreFor(final Service serviceA, final Service serviceB, final Map<FieldPair, Map<String, Score>> scores, final Model model) {
 		Double score = 0d;
 		for (String fieldA : serviceA.getDataFields()) {
 			for (String fieldB : serviceB.getDataFields()) {
-				FieldTuple fieldTuple = new FieldTuple(findDataField(fieldA, model), findDataField(fieldB, model));
+				FieldPair fieldTuple = new FieldPair(findDataField(fieldA, model), findDataField(fieldB, model));
 				final Map<String, Score> scoresByTuple = scores.get(fieldTuple);
 				if (scoresByTuple == null) {
 					continue;

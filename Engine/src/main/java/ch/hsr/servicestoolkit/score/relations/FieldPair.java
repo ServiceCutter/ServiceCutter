@@ -2,11 +2,11 @@ package ch.hsr.servicestoolkit.score.relations;
 
 import ch.hsr.servicestoolkit.model.DataField;
 
-public class FieldTuple {
+public class FieldPair {
 	public final DataField fieldA;
 	public final DataField fieldB;
 
-	public FieldTuple(final DataField fieldA, final DataField fieldB) {
+	public FieldPair(final DataField fieldA, final DataField fieldB) {
 		this.fieldA = fieldA;
 		this.fieldB = fieldB;
 	}
@@ -35,7 +35,7 @@ public class FieldTuple {
 
 	@Override
 	public boolean equals(final Object obj) {
-		return getCompareString().equals(((FieldTuple) obj).getCompareString());
+		return getCompareString().equals(((FieldPair) obj).getCompareString());
 	}
 
 }

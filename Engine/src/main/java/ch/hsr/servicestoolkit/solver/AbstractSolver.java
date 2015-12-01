@@ -10,16 +10,16 @@ import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.FieldPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
 public abstract class AbstractSolver<N, E> implements Solver {
 
 	private Model model;
 	private final Logger log = LoggerFactory.getLogger(AbstractSolver.class);
-	private Map<FieldTuple, Map<String, Score>> scores;
+	private Map<FieldPair, Map<String, Score>> scores;
 
-	public AbstractSolver(final Model model, final Map<FieldTuple, Map<String, Score>> scores) {
+	public AbstractSolver(final Model model, final Map<FieldPair, Map<String, Score>> scores) {
 		this.model = model;
 		this.scores = scores;
 		log.info("Created solver of type {}", getClass());
@@ -53,7 +53,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 	}
 
 	protected void buildEdges() {
-		for (Entry<FieldTuple, Map<String, Score>> entry : scores.entrySet()) {
+		for (Entry<FieldPair, Map<String, Score>> entry : scores.entrySet()) {
 			setWeight(entry.getKey().fieldA, entry.getKey().fieldB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
 			// Logging
 			log.info("Score for field tuple {}", entry.getKey());

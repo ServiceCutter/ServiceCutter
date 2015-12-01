@@ -24,9 +24,9 @@ public class Scorer {
 		this.monoCouplingInstancesRepo = repo;
 	}
 
-	public Map<FieldTuple, Map<String, Score>> updateConfig(final Map<FieldTuple, Map<String, Score>> scores, final SolverConfiguration config) {
-		Map<FieldTuple, Map<String, Score>> result = new HashMap<>();
-		for (Entry<FieldTuple, Map<String, Score>> scoresByFieldTuple : scores.entrySet()) {
+	public Map<FieldPair, Map<String, Score>> updateConfig(final Map<FieldPair, Map<String, Score>> scores, final SolverConfiguration config) {
+		Map<FieldPair, Map<String, Score>> result = new HashMap<>();
+		for (Entry<FieldPair, Map<String, Score>> scoresByFieldTuple : scores.entrySet()) {
 			result.put(scoresByFieldTuple.getKey(), new HashMap<>());
 			for (Entry<String, Score> scoreByCriterion : scoresByFieldTuple.getValue().entrySet()) {
 				result.get(scoresByFieldTuple.getKey()).put(scoreByCriterion.getKey(),
@@ -36,11 +36,11 @@ public class Scorer {
 		return result;
 	}
 
-	public Map<FieldTuple, Map<String, Score>> getScores(final Model model, final SolverConfiguration config) {
+	public Map<FieldPair, Map<String, Score>> getScores(final Model model, final SolverConfiguration config) {
 		if (new HashSet<>(monoCouplingInstancesRepo.findByModel(model)).isEmpty()) {
 			throw new InvalidParameterException("model needs at least 1 coupling criterion in order for gephi clusterer to work");
 		}
-		Map<FieldTuple, Map<String, Score>> result = new HashMap<>();
+		Map<FieldPair, Map<String, Score>> result = new HashMap<>();
 
 		addScoresForDistanceCriteria(model, config, result);
 		addScoresForSeparationCriteria(model, config, result);
@@ -49,42 +49,42 @@ public class Scorer {
 
 	}
 
-	private void addScoresForProximityCriteria(final Model model, final SolverConfiguration config, final Map<FieldTuple, Map<String, Score>> result) {
-		Map<FieldTuple, Double> lifecycleScores = new LifecycleCriterionScorer()
+	private void addScoresForProximityCriteria(final Model model, final SolverConfiguration config, final Map<FieldPair, Map<String, Score>> result) {
+		Map<FieldPair, Double> lifecycleScores = new LifecycleCriterionScorer()
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.IDENTITY_LIFECYCLE));
 		addScoresByCriterionToResult(result, CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores, config.getPriorityForCouplingCriterion(CouplingCriterion.IDENTITY_LIFECYCLE));
 
-		Map<FieldTuple, Double> semanticProximityScores = new SemanticProximityCriterionScorer()
+		Map<FieldPair, Double> semanticProximityScores = new SemanticProximityCriterionScorer()
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SEMANTIC_PROXIMITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores,
 				config.getPriorityForCouplingCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
 	}
 
-	private void addScoresForDistanceCriteria(final Model model, final SolverConfiguration config, final Map<FieldTuple, Map<String, Score>> result) {
-		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new DistanceCriterionScorer()
+	private void addScoresForDistanceCriteria(final Model model, final SolverConfiguration config, final Map<FieldPair, Map<String, Score>> result) {
+		Map<String, Map<FieldPair, Double>> scoresByCriterion = new DistanceCriterionScorer()
 				.getScores(monoCouplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.DISTANCE));
-		for (Entry<String, Map<FieldTuple, Double>> distanceScores : scoresByCriterion.entrySet()) {
+		for (Entry<String, Map<FieldPair, Double>> distanceScores : scoresByCriterion.entrySet()) {
 			addScoresByCriterionToResult(result, distanceScores.getKey(), distanceScores.getValue(), config.getPriorityForCouplingCriterion(distanceScores.getKey()));
 		}
 	}
 
 	// TODO refactor: maybe introduce common interface for scorers
-	private void addScoresForSeparationCriteria(final Model model, final SolverConfiguration config, final Map<FieldTuple, Map<String, Score>> result) {
-		Map<String, Map<FieldTuple, Double>> scoresByCriterion = new SeparationCriterionScorer()
+	private void addScoresForSeparationCriteria(final Model model, final SolverConfiguration config, final Map<FieldPair, Map<String, Score>> result) {
+		Map<String, Map<FieldPair, Double>> scoresByCriterion = new SeparationCriterionScorer()
 				.getScores(monoCouplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.SEPARATION));
-		for (Entry<String, Map<FieldTuple, Double>> separationScores : scoresByCriterion.entrySet()) {
+		for (Entry<String, Map<FieldPair, Double>> separationScores : scoresByCriterion.entrySet()) {
 			addScoresByCriterionToResult(result, separationScores.getKey(), separationScores.getValue(), config.getPriorityForCouplingCriterion(separationScores.getKey()));
 		}
 	}
 
-	private void addScoresByCriterionToResult(final Map<FieldTuple, Map<String, Score>> result, final String couplingCriterionName, final Map<FieldTuple, Double> scores,
+	private void addScoresByCriterionToResult(final Map<FieldPair, Map<String, Score>> result, final String couplingCriterionName, final Map<FieldPair, Double> scores,
 			final Double priority) {
-		for (Entry<FieldTuple, Double> fieldScore : scores.entrySet()) {
+		for (Entry<FieldPair, Double> fieldScore : scores.entrySet()) {
 			addScoresToResult(result, fieldScore.getKey(), couplingCriterionName, fieldScore.getValue(), priority);
 		}
 	}
 
-	private void addScoresToResult(final Map<FieldTuple, Map<String, Score>> result, final FieldTuple fields, final String criterionName, final double score,
+	private void addScoresToResult(final Map<FieldPair, Map<String, Score>> result, final FieldPair fields, final String criterionName, final double score,
 			final double priority) {
 		if (fields.fieldA.getId().equals(fields.fieldB.getId())) {
 			log.warn("score on same field ignored. Field: {}, Score: {}, Criterion: {}", fields.fieldA, score, criterionName);

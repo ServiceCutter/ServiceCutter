@@ -31,7 +31,7 @@ import ch.hsr.servicestoolkit.model.DataField;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
-import ch.hsr.servicestoolkit.score.relations.FieldTuple;
+import ch.hsr.servicestoolkit.score.relations.FieldPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
 
@@ -61,7 +61,7 @@ public class GephiSolverTest {
 	public void testEmptyModel() {
 		final Scorer scorer = new Scorer(monoCouplingInstanceRepository);
 		final Model model = new Model();
-		final Map<FieldTuple, Map<String, Score>> scores = scorer.getScores(model, config);
+		final Map<FieldPair, Map<String, Score>> scores = scorer.getScores(model, config);
 		new GephiSolver(model, scores, GephiSolver.MODE_GIRVAN_NEWMAN, 3);
 	}
 
@@ -76,7 +76,7 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
 		final Scorer scorer = new Scorer(monoCouplingInstanceRepository);
-		Map<FieldTuple, Map<String, Score>> scores = scorer.getScores(model, config);
+		Map<FieldPair, Map<String, Score>> scores = scorer.getScores(model, config);
 		GephiSolver solver = new GephiSolver(model, scores, GephiSolver.MODE_MARKOV, null);
 		SolverResult result1 = solver.solveWithMarkov();
 		assertEquals(3, result1.getServices().size());
@@ -108,7 +108,7 @@ public class GephiSolverTest {
 		when(monoCouplingInstanceRepository.findByModel(model)).thenReturn(instances);
 
 		final Scorer scorer = new Scorer(monoCouplingInstanceRepository);
-		Map<FieldTuple, Map<String, Score>> scores = scorer.getScores(model, config);
+		Map<FieldPair, Map<String, Score>> scores = scorer.getScores(model, config);
 		GephiSolver solver = new GephiSolver(model, scores, GephiSolver.MODE_MARKOV, null);
 		SolverResult result = solver.solveWithMarkov();
 

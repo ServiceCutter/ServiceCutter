@@ -7,17 +7,8 @@ angular.module('editorApp')
             $scope.isAuthenticated = Principal.isAuthenticated; 
         });
         
-        $scope.graphOptions = {
-			autoResize: true,
-			height: '100%',
-			width: '100%',
-			interaction: { multiselect: true },
-			nodes: { shadow: { enabled: true, size: 5 } },
-			edges: { shadow: { enabled: true, size: 5 } }
-		};
         $scope.$watch('file', function () {
         	$scope.upload($scope.file, 'model', 'status', true);
-        	$scope.transactionStatus = '';
         });
         
         $scope.$watch('transactionsFile', function () {
@@ -35,64 +26,6 @@ angular.module('editorApp')
         $scope.$watch('modelId', function () {
         	$scope.showModel();
         });
-        
-        $scope.$watch("model['entities']", function () {
-        	if ($scope.model != null && $scope.model.entities != null) {
-    			var contextNodes = new VisDataSet([]);
-    			var contextEdges = new VisDataSet([]);
-    			var nodeId = 1;
-    			var entitiesById = {};
-    			$scope.modelsById = {};
-    			angular.forEach($scope.model.entities, function(entity) {
-    				contextNodes.add({id: nodeId, label: entity.name});
-    				entitiesById[entity.name] = nodeId;
-    				$scope.modelsById[nodeId] = entity.name;
-    				nodeId++;
-    			});
-    			var relationTypes = {
-    					'Composition': {arrows: 'middle', width: 1},
-    					'Aggregation': {arrows: 'middle', dashes: true, width: 1},
-    					'Inheritance': {arrows: 'to', width: 1}};
-    			
-    			angular.forEach($scope.model['coupling'], function(relation) {
-    				var relationStyle = null;
-    				if(relationStyle = relationTypes[relation.variant.name]) {
-    					var names = relation.name.split('.');
-    					var from = names[0];
-    					var to = names[1];
-    					var edge = jQuery.extend({from: entitiesById[from], to: entitiesById[to], },relationStyle);
-    					contextEdges.add(edge);
-    				}
-    			});
-    	        $scope.graphData = {
-	            	'nodes': contextNodes,
-	            	'edges': contextEdges
-	            };
-        	}
-        });
-
-        $scope.selectNode = function(param) {
-        	if(param.nodes.length > 0) {
-        		var selectedNodes = param.nodes.map(function(node) { return $scope.modelsById[parseInt(node)]; });
-        		$scope.$apply(function() {
-        			$scope.model.filteredDataFields = $scope.model.dataFields.filter(function(field) {return selectedNodes.indexOf(field.context) >= 0;});
-        		});
-        	} else {
-        		$scope.$apply(function() {
-        			$scope.model.filteredDataFields = $scope.model.dataFields;
-        		});
-        	}
-        };
-        
-        $scope.graphResize = function(param) {
-        	this.fit(); // Zooms out so all nodes fit on the canvas.
-        };
-
-        $scope.graphEvents = {
-        	selectNode: $scope.selectNode,
-        	deselectNode: $scope.selectNode,
-        	resize: $scope.graphResize
-        };
         
         $scope.upload = function (file, url, statusField, fullReload) {
             if (file && !file.$error) {
@@ -119,7 +52,6 @@ angular.module('editorApp')
         $scope.showModel = function () {
         	if($scope.modelId != 0) {
         		$scope.model = Model.get({id:$scope.modelId}, function(model) {
-        			$scope.model.filteredDataFields = model.dataFields
         			$scope.loadCoupling($scope.modelId);
         		});
         	}
@@ -128,7 +60,6 @@ angular.module('editorApp')
         $scope.loadCoupling = function (id) {
         	Model.getCoupling({id:id}, function(coupling) {
         		$scope.model['coupling'] = coupling;
-        		$scope.model['entities'] = coupling.filter(function(item) { return item.variant.name == 'Same Entity' ;});
         	});
         }
         

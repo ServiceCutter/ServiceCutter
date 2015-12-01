@@ -17,27 +17,15 @@
             </form>
             
 			<div ng-show="modelId">
-
-	            <div class="graph-container" ngsf-fullscreen>
-	            	<vis-network data="graphData" options="graphOptions" events="graphEvents"></vis-network>
-		            <button class="btn btn-default" ngsf-toggle-fullscreen><span class="glyphicon glyphicon-resize-full"></span></button>
-	            </div> 
 			
-			</div>
-	            
-        </div>
-        <div class="col-md-4">
-            
-			<div ng-show="modelId">
-
 				<h2>Model #{{modelId}}</h2>
-				
+			
 				<p>Name: <strong>{{model.name}}</strong></p>
 				
 				<p>Data Fields:</p>
 				
 				<ul>
-					<li ng-repeat="dataField in model.filteredDataFields">#{{dataField.id}} - {{dataField.contextName}}</li>
+					<li ng-repeat="dataField in model.dataFields">#{{dataField.id}} - {{dataField.contextName}}</li>
 				</ul>
 			
 			</div>
@@ -54,26 +42,28 @@
 					</li>
 				</ul>
 			
-				 <form class="form-inline">
-					<p>Upload use cases for model #{{modelId}}:
-					<div class="btn btn-default" ngf-select ng-model="transactionsFile" ngf-multiple="false">Upload use cases</div>
-
-					<span>{{transactionStatus}}</span>
-					</p>
-	            </form>
-	         	<form class="form-inline">
-					<p>Upload distance criteria for model #{{modelId}}:
-					<div class="btn btn-default" ngf-select ng-model="distancesFile" ngf-multiple="false">Upload distance criteria</div>
-					<span>{{distanceStatus}}</span>
-					</p>
-	            </form>
-	         	<form class="form-inline">
-					<p>Upload separation criteria for model #{{modelId}}:
-					<div class="btn btn-default" ngf-select ng-model="separationCriteriaFile" ngf-multiple="false">Upload separation criteria</div>
-					<span>{{separationStatus}}</span>
-					</p>
-	            </form>
             </div>
+            
+        </div>
+        <div class="col-md-4" ng-show="modelId">
+        
+        	<h3>Enhance model #{{modelId}}</h3>
+			
+			 <form class="form-inline">
+				<div class="btn btn-default" ngf-select ng-model="transactionsFile" ngf-multiple="false">Upload use cases</div>
+				<span>{{transactionStatus}}</span>
+				</p>
+            </form>
+         	<form class="form-inline">
+				<div class="btn btn-default" ngf-select ng-model="distancesFile" ngf-multiple="false">Upload distance criteria</div>
+				<span>{{distanceStatus}}</span>
+				</p>
+            </form>
+         	<form class="form-inline">
+				<div class="btn btn-default" ngf-select ng-model="separationCriteriaFile" ngf-multiple="false">Upload separation criteria</div>
+				<span>{{separationStatus}}</span>
+				</p>
+            </form>
 
         </div>
     </div>

@@ -45,12 +45,13 @@ public class Scorer {
 		addScoresForCharacteristicsCriteria(model, config, result);
 		addScoresForSeparationCriteria(model, config, result);
 		addScoresForProximityCriteria(model, config, result);
+		// TODO: add ChoesiveGroupCriteriaScorer
 		return result;
 
 	}
 
 	private void addScoresForProximityCriteria(final Model model, final SolverConfiguration config, final Map<EntityPair, Map<String, Score>> result) {
-		Map<EntityPair, Double> lifecycleScores = new LifecycleCriterionScorer()
+		Map<EntityPair, Double> lifecycleScores = new CohesiveGroupCriteriaScorer()
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.IDENTITY_LIFECYCLE));
 		addScoresByCriterionToResult(result, CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores, config.getPriorityForCouplingCriterion(CouplingCriterion.IDENTITY_LIFECYCLE));
 

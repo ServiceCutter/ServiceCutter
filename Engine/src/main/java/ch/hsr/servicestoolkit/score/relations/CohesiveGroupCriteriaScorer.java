@@ -7,7 +7,7 @@ import java.util.Set;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
-public class LifecycleCriterionScorer implements CriterionScorer {
+public class CohesiveGroupCriteriaScorer implements CriterionScorer {
 
 	@Override
 	public Map<EntityPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
@@ -21,4 +21,5 @@ public class LifecycleCriterionScorer implements CriterionScorer {
 		}
 		return result;
 	}
+
 }

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.service.Service;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
@@ -56,7 +56,7 @@ public class CouplingCriterionScoring {
 		// collect weights per service
 		for (Entry<CouplingCriteriaVariant, List<MonoCouplingInstance>> e : variantsMap.entrySet()) {
 			for (MonoCouplingInstance couplingInstance : e.getValue()) {
-				for (DataField dataField : couplingInstance.getDataFields()) {
+				for (NanoEntity dataField : couplingInstance.getDataFields()) {
 					Service service = cut.getService(dataField);
 					weightsPerService.get(service).add(e.getKey().getWeight());
 				}

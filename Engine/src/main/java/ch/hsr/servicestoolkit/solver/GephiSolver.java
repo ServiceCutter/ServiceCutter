@@ -30,9 +30,9 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.FieldPair;
+import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
 import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
@@ -52,7 +52,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	private Integer numberOfClusters;
 	private char serviceIdGenerator = 'A';
 
-	public GephiSolver(final Model model, final Map<FieldPair, Map<String, Score>> scores, final String mode, final Integer numberOfClusters) {
+	public GephiSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final String mode, final Integer numberOfClusters) {
 		super(model, scores);
 		this.mode = mode;
 		this.numberOfClusters = numberOfClusters;
@@ -168,7 +168,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	protected Edge getEdge(final DataField first, final DataField second) {
+	protected Edge getEdge(final NanoEntity first, final NanoEntity second) {
 		return undirectedGraph.getEdge(getNode(first), getNode(second));
 	}
 
@@ -178,7 +178,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	protected void createEdgeAndSetWeight(final DataField first, final DataField second, final double weight) {
+	protected void createEdgeAndSetWeight(final NanoEntity first, final NanoEntity second, final double weight) {
 		Edge edge = graphModel.factory().newEdge(getNode(first), getNode(second), (float) weight, false);
 		undirectedGraph.addEdge(edge);
 		edge.getEdgeData().setLabel(edge.getWeight() + "");

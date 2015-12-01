@@ -15,9 +15,9 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.FieldPair;
+import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
 public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
@@ -30,7 +30,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	protected double delta = 0.05;
 	private int iterations = 1;
 
-	public GraphStreamSolver(final Model model, final Map<FieldPair, Map<String, Score>> scores, final SolverConfiguration config) {
+	public GraphStreamSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final SolverConfiguration config) {
 		super(model, scores);
 		graph = new SingleGraph("Service Cutter Graph");
 		Double m = config.getAlgorithmParams().get("leungM");
@@ -93,7 +93,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	protected void createEdgeAndSetWeight(final DataField first, final DataField second, final double weight) {
+	protected void createEdgeAndSetWeight(final NanoEntity first, final NanoEntity second, final double weight) {
 		String firstName = createNodeIdentifier(first);
 		String secondName = createNodeIdentifier(second);
 		Edge edge = graph.addEdge(createEdgeIdentifier(firstName, secondName), firstName, secondName);
@@ -110,7 +110,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	}
 
 	@Override
-	protected Edge getEdge(final DataField first, final DataField second) {
+	protected Edge getEdge(final NanoEntity first, final NanoEntity second) {
 		String firstName = createNodeIdentifier(first);
 		String secondName = createNodeIdentifier(second);
 		return graph.getEdge(createEdgeIdentifier(firstName, secondName));

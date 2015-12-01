@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
 
@@ -110,9 +110,9 @@ public class EngineServiceRestTest {
 	private Model createModel() {
 		Model model = new Model();
 		model.setName("firstModel");
-		DataField field1 = new DataField();
+		NanoEntity field1 = new NanoEntity();
 		field1.setName("firstField");
-		DataField field2 = new DataField();
+		NanoEntity field2 = new NanoEntity();
 		field2.setName("secondField");
 		model.addDataField(field1);
 		model.addDataField(field2);

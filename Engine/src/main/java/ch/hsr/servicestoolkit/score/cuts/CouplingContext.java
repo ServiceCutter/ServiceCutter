@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 
@@ -18,7 +18,7 @@ import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 public class CouplingContext {
 
 	private Model model;
-	private List<DataField> dataFields;
+	private List<NanoEntity> dataFields;
 	private Collection<MonoCouplingInstance> couplingInstances;
 
 	public CouplingContext(Model model, Collection<MonoCouplingInstance> couplingInstances) {
@@ -35,7 +35,7 @@ public class CouplingContext {
 		return c.getVariant().getCouplingCriterion().equals(criterion);
 	}
 
-	public List<DataField> getDataFields() {
+	public List<NanoEntity> getDataFields() {
 		return dataFields;
 	}
 

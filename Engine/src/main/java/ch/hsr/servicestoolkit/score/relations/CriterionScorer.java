@@ -7,5 +7,5 @@ import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 
 public interface CriterionScorer {
 
-	public Map<FieldPair, Double> getScores(final Set<MonoCouplingInstance> instances);
+	public Map<EntityPair, Double> getScores(final Set<MonoCouplingInstance> instances);
 }

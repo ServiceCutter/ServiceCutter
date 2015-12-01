@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicestoolkit.EngineServiceAppication;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -74,9 +74,9 @@ public class MonoCouplingInstanceRepositoryTest {
 		Model model = new Model();
 		modelRepository.save(model);
 
-		DataField dataField1 = createDataField(model, "field1");
-		DataField dataField2 = createDataField(model, "field2");
-		DataField dataField3 = createDataField(model, "field3");
+		NanoEntity dataField1 = createDataField(model, "field1");
+		NanoEntity dataField2 = createDataField(model, "field2");
+		NanoEntity dataField3 = createDataField(model, "field3");
 
 		DualCouplingInstance dualInstance = (DualCouplingInstance) variant.createInstance();
 		monoCouplingInstanceRepository.save(dualInstance);
@@ -97,8 +97,8 @@ public class MonoCouplingInstanceRepositoryTest {
 
 	}
 
-	private DataField createDataField(final Model model, final String name) {
-		DataField dataField = new DataField(name);
+	private NanoEntity createDataField(final Model model, final String name) {
+		NanoEntity dataField = new NanoEntity(name);
 		dataFieldRepository.save(dataField);
 		dataField.setModel(model);
 		model.addDataField(dataField);

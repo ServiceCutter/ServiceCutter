@@ -21,7 +21,7 @@ import ch.hsr.servicestoolkit.importer.InvalidRestParam;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
-import ch.hsr.servicestoolkit.score.relations.FieldPair;
+import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
 import ch.hsr.servicestoolkit.solver.analyzer.ServiceCutAnalyzer;
@@ -59,7 +59,7 @@ public class SolverEndpoint {
 		StopWatch sw = new StopWatch();
 		sw.start();
 
-		Map<FieldPair, Map<String, Score>> scores = scorer.getScores(model, config);
+		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
 		if (GephiSolver.MODE_LEUNG.equals(algorithm)) {
 			solver = new GraphStreamSolver(model, scores, config);
 		} else if (GephiSolver.MODE_GIRVAN_NEWMAN.equals(algorithm)) {

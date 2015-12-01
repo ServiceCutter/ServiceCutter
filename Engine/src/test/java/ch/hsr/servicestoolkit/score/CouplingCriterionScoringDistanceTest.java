@@ -14,7 +14,7 @@ import org.junit.Test;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
@@ -23,12 +23,12 @@ import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class CouplingCriterionScoringDistanceTest {
 
-	private DataField fieldIsin;
-	private DataField fieldName;
-	private DataField fieldDatetime;
-	private DataField fieldAmount;
-	private DataField fieldIssuer;
-	private DataField fieldYield;
+	private NanoEntity fieldIsin;
+	private NanoEntity fieldName;
+	private NanoEntity fieldDatetime;
+	private NanoEntity fieldAmount;
+	private NanoEntity fieldIssuer;
+	private NanoEntity fieldYield;
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion volatility;
@@ -76,8 +76,8 @@ public class CouplingCriterionScoringDistanceTest {
 		couplingContext = new CouplingContext(model, Arrays.asList(rarelyCoupling, regularlyCoupling, oftenCoupling));
 	}
 
-	private DataField createDataField(final String name) {
-		DataField field = new DataField(name);
+	private NanoEntity createDataField(final String name) {
+		NanoEntity field = new NanoEntity(name);
 		field.setId(id++);
 		return field;
 	}

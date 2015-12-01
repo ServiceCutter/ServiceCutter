@@ -2,27 +2,27 @@ package ch.hsr.servicestoolkit.score;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 
 public class TestDataHelper {
 
-	public static MonoCouplingInstance createCouplingInstance(CouplingCriteriaVariant variant, DataField... fields) {
+	public static MonoCouplingInstance createCouplingInstance(CouplingCriteriaVariant variant, NanoEntity... fields) {
 		MonoCouplingInstance result = new MonoCouplingInstance();
-		for (DataField dataField : fields) {
+		for (NanoEntity dataField : fields) {
 			result.addDataField(dataField);
 		}
 		result.setVariant(variant);
 		return result;
 	}
 
-	public static DualCouplingInstance createCouplingInstance(CouplingCriteriaVariant variant, DataField[] fields, DataField[] otherFields) {
+	public static DualCouplingInstance createCouplingInstance(CouplingCriteriaVariant variant, NanoEntity[] fields, NanoEntity[] otherFields) {
 		DualCouplingInstance result = new DualCouplingInstance();
-		for (DataField dataField : fields) {
+		for (NanoEntity dataField : fields) {
 			result.addDataField(dataField);
 		}
-		for (DataField dataField : otherFields) {
+		for (NanoEntity dataField : otherFields) {
 			result.addSecondDataField(dataField);
 		}
 		result.setVariant(variant);

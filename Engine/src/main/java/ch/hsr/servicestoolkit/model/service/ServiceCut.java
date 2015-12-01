@@ -6,19 +6,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 
 public class ServiceCut {
 
 	private Collection<Service> services = new ArrayList<>();
-	private Map<DataField, Service> serviceCache = new HashMap<>();
+	private Map<NanoEntity, Service> serviceCache = new HashMap<>();
 
 	public void addService(Service service) {
 		services.add(service);
 		addToCache(service);
 	}
 
-	public void addService(DataField... dataFields) {
+	public void addService(NanoEntity... dataFields) {
 		addService(new Service(dataFields));
 	}
 
@@ -34,12 +34,12 @@ public class ServiceCut {
 		return Collections.unmodifiableCollection(services);
 	}
 
-	public Service getService(DataField dataField) {
+	public Service getService(NanoEntity dataField) {
 		return serviceCache.get(dataField);
 	}
 
 	private void addToCache(Service service) {
-		for (DataField field : service.getDataFields()) {
+		for (NanoEntity field : service.getDataFields()) {
 			serviceCache.put(field, service);
 		}
 	}

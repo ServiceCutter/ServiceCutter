@@ -8,18 +8,18 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.score.relations.FieldPair;
+import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
 public abstract class AbstractSolver<N, E> implements Solver {
 
 	private Model model;
 	private final Logger log = LoggerFactory.getLogger(AbstractSolver.class);
-	private Map<FieldPair, Map<String, Score>> scores;
+	private Map<EntityPair, Map<String, Score>> scores;
 
-	public AbstractSolver(final Model model, final Map<FieldPair, Map<String, Score>> scores) {
+	public AbstractSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores) {
 		this.model = model;
 		this.scores = scores;
 		log.info("Created solver of type {}", getClass());
@@ -27,17 +27,17 @@ public abstract class AbstractSolver<N, E> implements Solver {
 
 	protected abstract void createNode(String name);
 
-	protected N getNode(final DataField dataField) {
+	protected N getNode(final NanoEntity dataField) {
 		return getNode(createNodeIdentifier(dataField));
 	}
 
 	protected abstract N getNode(String name);
 
-	protected abstract void createEdgeAndSetWeight(DataField first, DataField second, double weight);
+	protected abstract void createEdgeAndSetWeight(NanoEntity first, NanoEntity second, double weight);
 
 	protected abstract void removeEdge(E edge);
 
-	protected abstract E getEdge(final DataField first, final DataField second);
+	protected abstract E getEdge(final NanoEntity first, final NanoEntity second);
 
 	protected abstract Iterable<E> getEdges();
 
@@ -47,14 +47,14 @@ public abstract class AbstractSolver<N, E> implements Solver {
 
 	protected void buildNodes() {
 		// create nodes
-		for (DataField field : model.getDataFields()) {
+		for (NanoEntity field : model.getDataFields()) {
 			createNode(createNodeIdentifier(field));
 		}
 	}
 
 	protected void buildEdges() {
-		for (Entry<FieldPair, Map<String, Score>> entry : scores.entrySet()) {
-			setWeight(entry.getKey().fieldA, entry.getKey().fieldB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
+		for (Entry<EntityPair, Map<String, Score>> entry : scores.entrySet()) {
+			setWeight(entry.getKey().nanoentityA, entry.getKey().nanoentityB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
 			// Logging
 			log.info("Score for field tuple {}", entry.getKey());
 			for (Entry<String, Score> criteriaScores : entry.getValue().entrySet()) {
@@ -67,7 +67,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		deleteNegativeEdges();
 	}
 
-	protected String createNodeIdentifier(final DataField field) {
+	protected String createNodeIdentifier(final NanoEntity field) {
 		return field.getContextName();
 	}
 
@@ -86,7 +86,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		}
 	}
 
-	protected void setWeight(final DataField first, final DataField second, final double weight) {
+	protected void setWeight(final NanoEntity first, final NanoEntity second, final double weight) {
 		N nodeA = getNode(first);
 		N nodeB = getNode(second);
 		E existingEdge = getEdge(first, second);

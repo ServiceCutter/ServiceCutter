@@ -33,7 +33,7 @@ import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionFactory;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -91,7 +91,7 @@ public class ImportEndpoint {
 			couplingInstance.setName(entityName);
 			couplingInstance.setModel(model);
 			for (EntityAttribute entityAttribute : entity.getValue()) {
-				DataField dataField = new DataField();
+				NanoEntity dataField = new NanoEntity();
 				dataField.setName(entityAttribute.getName());
 				dataField.setContext(entityAttributes.get(entityAttribute));
 				model.addDataField(dataField);
@@ -109,9 +109,9 @@ public class ImportEndpoint {
 
 				monoCouplingInstanceRepository.save(instance);
 				// TODO: use context name
-				List<DataField> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
+				List<NanoEntity> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
 						.collect(Collectors.toList());
-				List<DataField> destinationFields = relation.getDestination().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
+				List<NanoEntity> destinationFields = relation.getDestination().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
 						.collect(Collectors.toList());
 				instance.setDataFields(originFields);
 				instance.setSecondDataFields(destinationFields);
@@ -264,10 +264,10 @@ public class ImportEndpoint {
 		}
 	}
 
-	List<DataField> loadDataFields(final List<String> fields, final Model model) {
-		List<DataField> dataFields = new ArrayList<>();
+	List<NanoEntity> loadDataFields(final List<String> fields, final Model model) {
+		List<NanoEntity> dataFields = new ArrayList<>();
 		for (String fieldName : fields) {
-			DataField dataField;
+			NanoEntity dataField;
 			if (fieldName.contains(".")) {
 				String[] splittedName = fieldName.split("\\.");
 				dataField = dataFieldRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);

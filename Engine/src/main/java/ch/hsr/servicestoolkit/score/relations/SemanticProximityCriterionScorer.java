@@ -7,13 +7,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {
-	Map<FieldPair, Double> result = new HashMap<>();
+	Map<EntityPair, Double> result = new HashMap<>();
 	// TODO: make configurable in UI
 	private static final int SCORE_WRITE = 10;
 	private static final int SCORE_READ = 3;
@@ -23,15 +23,15 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	private static final int SCORE_AGGREGATION = 1;
 
 	@Override
-	public Map<FieldPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
+	public Map<EntityPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
 		for (MonoCouplingInstance fieldAccessInstance : instances) {
 			DualCouplingInstance fieldAccessInstanceDual = (DualCouplingInstance) fieldAccessInstance;
 			Double frequency = fieldAccessInstanceDual.getFrequency();
 			if (frequency == null) {
 				frequency = 1d;
 			}
-			List<DataField> fieldsWritten = fieldAccessInstanceDual.getSecondDataFields();
-			List<DataField> fieldsRead = fieldAccessInstanceDual.getDataFields();
+			List<NanoEntity> fieldsWritten = fieldAccessInstanceDual.getSecondDataFields();
+			List<NanoEntity> fieldsRead = fieldAccessInstanceDual.getDataFields();
 			addScoreForWriteAccess(fieldsWritten, frequency);
 			addScoreForReadAccess(fieldsRead, frequency);
 			addScoreForMixedAccess(fieldsWritten, fieldsRead, frequency);
@@ -41,8 +41,8 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 				.collect(Collectors.toList());
 		for (MonoCouplingInstance aggregationInstance : aggregationInstances) {
 			DualCouplingInstance aggregationInstanceDual = (DualCouplingInstance) aggregationInstance;
-			for (DataField fieldA : aggregationInstanceDual.getAllFields()) {
-				for (DataField fieldB : aggregationInstanceDual.getSecondDataFields()) {
+			for (NanoEntity fieldA : aggregationInstanceDual.getAllFields()) {
+				for (NanoEntity fieldB : aggregationInstanceDual.getSecondDataFields()) {
 					addToResult(fieldA, fieldB, SCORE_AGGREGATION);
 				}
 
@@ -60,7 +60,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	 * between 0 and 10
 	 */
 
-	void normalizeResult(final Map<FieldPair, Double> result) {
+	void normalizeResult(final Map<EntityPair, Double> result) {
 		// scores in reversed order
 		List<Double> scores = result.values().stream().sorted((d1, d2) -> Double.compare(d2, d1)).collect(Collectors.toList());
 		if (scores.isEmpty()) {
@@ -69,7 +69,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 		int tenPercent = Math.max(1, (int) (scores.size() * 0.1d));
 		double referenceValue = scores.get(tenPercent - 1);
 		double divisor = referenceValue / CouplingCriterionScoring.MAX_SCORE;
-		for (FieldPair key : result.keySet()) {
+		for (EntityPair key : result.keySet()) {
 			double newScore = Math.min(CouplingCriterionScoring.MAX_SCORE, result.get(key) / divisor);
 			result.put(key, newScore);
 		}
@@ -80,15 +80,15 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	 * 
 	 * @param frequency
 	 */
-	private void addScoreForMixedAccess(final List<DataField> fieldsWritten, final List<DataField> fieldsRead, final Double frequency) {
-		for (DataField fieldWritten : fieldsWritten) {
-			for (DataField fieldRead : fieldsRead) {
+	private void addScoreForMixedAccess(final List<NanoEntity> fieldsWritten, final List<NanoEntity> fieldsRead, final Double frequency) {
+		for (NanoEntity fieldWritten : fieldsWritten) {
+			for (NanoEntity fieldRead : fieldsRead) {
 				addToResult(fieldRead, fieldWritten, SCORE_MIXED * frequency);
 			}
 		}
 	}
 
-	private void addScoreForReadAccess(final List<DataField> fieldsRead, final Double frequency) {
+	private void addScoreForReadAccess(final List<NanoEntity> fieldsRead, final Double frequency) {
 		for (int i = 0; i < fieldsRead.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsRead.size(); j++) {
 				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_READ * frequency);
@@ -96,7 +96,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 		}
 	}
 
-	private void addScoreForWriteAccess(final List<DataField> fieldsWritten, final Double frequency) {
+	private void addScoreForWriteAccess(final List<NanoEntity> fieldsWritten, final Double frequency) {
 		for (int i = 0; i < fieldsWritten.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsWritten.size(); j++) {
 				addToResult(fieldsWritten.get(i), fieldsWritten.get(j), SCORE_WRITE * frequency);
@@ -104,8 +104,8 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 		}
 	}
 
-	private void addToResult(final DataField fieldA, final DataField fieldB, final double score) {
-		FieldPair fieldTuple = new FieldPair(fieldA, fieldB);
+	private void addToResult(final NanoEntity fieldA, final NanoEntity fieldB, final double score) {
+		EntityPair fieldTuple = new EntityPair(fieldA, fieldB);
 		if (result.get(fieldTuple) == null) {
 			result.put(fieldTuple, score);
 		} else {

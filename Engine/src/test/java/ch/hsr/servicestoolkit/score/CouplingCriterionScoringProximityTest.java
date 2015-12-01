@@ -14,7 +14,7 @@ import org.junit.Test;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -26,12 +26,12 @@ public class CouplingCriterionScoringProximityTest {
 
 	private static final int WEIGHT_INHERITANCE = 2;
 	private static final int WEIGHT_ENTITY = 5;
-	private DataField fieldIsin;
-	private DataField fieldName;
-	private DataField fieldDatetime;
-	private DataField fieldAmount;
-	private DataField fieldIssuer;
-	private DataField fieldYield;
+	private NanoEntity fieldIsin;
+	private NanoEntity fieldName;
+	private NanoEntity fieldDatetime;
+	private NanoEntity fieldAmount;
+	private NanoEntity fieldIssuer;
+	private NanoEntity fieldYield;
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion identityAndLifecycle;
@@ -74,14 +74,14 @@ public class CouplingCriterionScoringProximityTest {
 		entityStock = createCouplingInstance(sameEntity, fieldIsin, fieldName);
 		entityPrice = createCouplingInstance(sameEntity, fieldDatetime, fieldAmount);
 		entityBond = createCouplingInstance(sameEntity, fieldIssuer, fieldYield);
-		inheritanceBondStock = createCouplingInstance(inheritance, new DataField[] { fieldIsin, fieldName }, new DataField[] { fieldIssuer, fieldYield });
+		inheritanceBondStock = createCouplingInstance(inheritance, new NanoEntity[] { fieldIsin, fieldName }, new NanoEntity[] { fieldIssuer, fieldYield });
 		// context
 		couplingContext = new CouplingContext(model, Arrays.asList(entityStock, entityPrice, entityBond, inheritanceBondStock));
 
 	}
 
-	private DataField createDataField(final String name) {
-		DataField dataField = new DataField(name);
+	private NanoEntity createDataField(final String name) {
+		NanoEntity dataField = new NanoEntity(name);
 		dataField.setId(id++);
 		return dataField;
 	}

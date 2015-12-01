@@ -22,16 +22,16 @@ public class Model {
 	private String name;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "model", fetch = FetchType.EAGER)
-	private List<DataField> dataFields = new ArrayList<>();
+	private List<NanoEntity> dataFields = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "model")
 	private List<MonoCouplingInstance> couplingInstances = new ArrayList<>();
 
-	public List<DataField> getDataFields() {
+	public List<NanoEntity> getDataFields() {
 		return Collections.unmodifiableList(dataFields);
 	}
 
-	public void addDataField(final DataField dataField) {
+	public void addDataField(final NanoEntity dataField) {
 		dataFields.add(dataField);
 		dataField.setModel(this);
 	}

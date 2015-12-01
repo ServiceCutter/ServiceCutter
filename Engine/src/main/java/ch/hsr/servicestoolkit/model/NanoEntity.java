@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 
 @Entity
-public class DataField {
+public class NanoEntity {
 
 	@Id
 	@GeneratedValue
@@ -23,10 +23,10 @@ public class DataField {
 	@JsonIgnore
 	private Model model;
 
-	public DataField() {
+	public NanoEntity() {
 	}
 
-	public DataField(final String name) {
+	public NanoEntity(final String name) {
 		this.name = name;
 	}
 
@@ -84,8 +84,8 @@ public class DataField {
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (obj instanceof DataField) {
-			DataField other = (DataField) obj;
+		if (obj instanceof NanoEntity) {
+			NanoEntity other = (NanoEntity) obj;
 			return this == other || Objects.equal(id, other.id);
 		} else {
 			return false;

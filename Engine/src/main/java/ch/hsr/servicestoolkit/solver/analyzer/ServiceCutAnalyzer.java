@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.DataField;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -25,7 +25,7 @@ import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
-import ch.hsr.servicestoolkit.score.relations.FieldPair;
+import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.solver.Service;
 import ch.hsr.servicestoolkit.solver.SolverResult;
@@ -50,8 +50,8 @@ public class ServiceCutAnalyzer {
 
 	}
 
-	private DataField findDataField(final String fieldName, final Model model) {
-		DataField dataField;
+	private NanoEntity findDataField(final String fieldName, final Model model) {
+		NanoEntity dataField;
 		if (fieldName.contains(".")) {
 			String[] splittedName = fieldName.split("\\.");
 			dataField = dataFieldRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);
@@ -62,7 +62,7 @@ public class ServiceCutAnalyzer {
 
 	}
 
-	public void analyseResult(final SolverResult solverResult, final Map<FieldPair, Map<String, Score>> scores, final Model model) {
+	public void analyseResult(final SolverResult solverResult, final Map<EntityPair, Map<String, Score>> scores, final Model model) {
 		// use case responsibility
 		final Map<Service, List<DualCouplingInstance>> useCaseResponsibilites = getUseCaseResponsibilites(solverResult.getServices(), model);
 		solverResult.setUseCaseResponsibility(transformResponsibilityMap(useCaseResponsibilites));
@@ -148,11 +148,11 @@ public class ServiceCutAnalyzer {
 		return responsibleService;
 	}
 
-	private Double getProximityScoreFor(final Service serviceA, final Service serviceB, final Map<FieldPair, Map<String, Score>> scores, final Model model) {
+	private Double getProximityScoreFor(final Service serviceA, final Service serviceB, final Map<EntityPair, Map<String, Score>> scores, final Model model) {
 		Double score = 0d;
 		for (String fieldA : serviceA.getDataFields()) {
 			for (String fieldB : serviceB.getDataFields()) {
-				FieldPair fieldTuple = new FieldPair(findDataField(fieldA, model), findDataField(fieldB, model));
+				EntityPair fieldTuple = new EntityPair(findDataField(fieldA, model), findDataField(fieldB, model));
 				final Map<String, Score> scoresByTuple = scores.get(fieldTuple);
 				if (scoresByTuple == null) {
 					continue;

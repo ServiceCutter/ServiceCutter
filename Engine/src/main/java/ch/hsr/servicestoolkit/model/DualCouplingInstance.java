@@ -16,15 +16,15 @@ public class DualCouplingInstance extends MonoCouplingInstance {
 	@ManyToMany
 	@JoinTable(name = "datafield_to_couplinginstance", joinColumns = { @JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
 			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
-	private List<DataField> secondDataFields = new ArrayList<>();
+	private List<NanoEntity> secondDataFields = new ArrayList<>();
 	private Double frequency; // TODO: refactor, only used for semantic
 								// proximity use cases
 
-	public List<DataField> getSecondDataFields() {
+	public List<NanoEntity> getSecondDataFields() {
 		return Collections.unmodifiableList(secondDataFields);
 	}
 
-	public void addSecondDataField(final DataField secondDataField) {
+	public void addSecondDataField(final NanoEntity secondDataField) {
 		secondDataFields.add(secondDataField);
 	}
 
@@ -36,7 +36,7 @@ public class DualCouplingInstance extends MonoCouplingInstance {
 		return frequency;
 	}
 
-	public void setSecondDataFields(final List<DataField> secondDataFields) {
+	public void setSecondDataFields(final List<NanoEntity> secondDataFields) {
 		this.secondDataFields.clear();
 		if (secondDataFields != null) {
 			this.secondDataFields.addAll(secondDataFields);
@@ -44,8 +44,8 @@ public class DualCouplingInstance extends MonoCouplingInstance {
 	}
 
 	@Override
-	public List<DataField> getAllFields() {
-		List<DataField> result = new ArrayList<>();
+	public List<NanoEntity> getAllFields() {
+		List<NanoEntity> result = new ArrayList<>();
 		result.addAll(super.getAllFields());
 		result.addAll(secondDataFields);
 		return result;

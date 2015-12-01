@@ -41,7 +41,7 @@ public class MonoCouplingInstance {
 	@ManyToMany
 	@JoinTable(name = "datafield_to_second_couplinginstance", joinColumns = { @JoinColumn(name = "datafield_id", referencedColumnName = "id") }, inverseJoinColumns = {
 			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
-	private List<DataField> dataFields = new ArrayList<>();
+	private List<NanoEntity> dataFields = new ArrayList<>();
 	@ManyToOne
 	private CouplingCriteriaVariant variant;
 	private boolean singleInstancePerModel = false;
@@ -54,15 +54,15 @@ public class MonoCouplingInstance {
 		this.id = id;
 	}
 
-	public List<DataField> getDataFields() {
+	public List<NanoEntity> getDataFields() {
 		return Collections.unmodifiableList(dataFields);
 	}
 
-	public void addDataField(final DataField dataField) {
+	public void addDataField(final NanoEntity dataField) {
 		dataFields.add(dataField);
 	}
 
-	public void setDataFields(final Collection<DataField> dataFields) {
+	public void setDataFields(final Collection<NanoEntity> dataFields) {
 		this.dataFields.clear();
 		if (dataFields != null) {
 			this.dataFields.addAll(dataFields);
@@ -96,7 +96,7 @@ public class MonoCouplingInstance {
 	public boolean fieldsAreInSameService(final ServiceCut cut) {
 		// TYPE: proximity
 		for (Service service : cut.getServices()) {
-			for (DataField dataField : getAllFields()) {
+			for (NanoEntity dataField : getAllFields()) {
 				// if service contains any of the data fields
 				if (service.getDataFields().contains(dataField)) {
 					// then is has to contain ALL of them
@@ -111,7 +111,7 @@ public class MonoCouplingInstance {
 		return true;
 	}
 
-	public List<DataField> getAllFields() {
+	public List<NanoEntity> getAllFields() {
 		return dataFields;
 	}
 

@@ -124,7 +124,13 @@ angular.module('editorApp')
         
         
         $scope.criteria = Coupling.all(function(criteria) {
-        	$scope.criterion = criteria[0]; 
+        	angular.forEach(criteria, function(value, index){
+        		if (value.type == "PROXIMITY"){
+        			value.priority = 3 // todo refactor, move to server?
+        		} else{
+        			value.priority = 0.5 
+        		}
+        	})
         });
         
         $scope.priorityMetric = {
@@ -136,19 +142,6 @@ angular.module('editorApp')
         		XL : {value: 8, name: "XL"},
         		XXL : {value: 13, name: "XXL"}
         }
-        
-        $scope.init = function(){
-        	angular.forEach($scope.criteria, function(value, index){
-        		if(value.type == "PROXIMITY"){
-        			value.priority = 3 // todo refactor
-        		}else{
-        			value.priority = 0.5 
-        		}
-    		})
-        }
-        // http://stackoverflow.com/questions/15458609/execute-function-on-page-load
-        //TODO: doesn't work well, look for another solution
-        $timeout($scope.init)
         
 		$scope.sameEntitySlider = 0.2;
 		$scope.compositionSlider = 0.2;

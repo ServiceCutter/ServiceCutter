@@ -12,7 +12,7 @@ import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
-public class SemanticProximityCriterionScorer {
+public class SemanticProximityCriterionScorer implements CriterionScorer {
 	Map<FieldTuple, Double> result = new HashMap<>();
 	// TODO: make configurable in UI
 	private static final int SCORE_WRITE = 10;
@@ -22,6 +22,7 @@ public class SemanticProximityCriterionScorer {
 	private static final int SCORE_MIXED = 3;
 	private static final int SCORE_AGGREGATION = 1;
 
+	@Override
 	public Map<FieldTuple, Double> getScores(final Set<MonoCouplingInstance> instances) {
 		for (MonoCouplingInstance fieldAccessInstance : instances) {
 			DualCouplingInstance fieldAccessInstanceDual = (DualCouplingInstance) fieldAccessInstance;

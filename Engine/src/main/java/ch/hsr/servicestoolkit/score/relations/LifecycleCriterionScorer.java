@@ -7,8 +7,9 @@ import java.util.Set;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
-public class LifecycleCriterionScorer {
+public class LifecycleCriterionScorer implements CriterionScorer {
 
+	@Override
 	public Map<FieldTuple, Double> getScores(final Set<MonoCouplingInstance> instances) {
 		Map<FieldTuple, Double> result = new HashMap<>();
 		for (MonoCouplingInstance instance : instances) {

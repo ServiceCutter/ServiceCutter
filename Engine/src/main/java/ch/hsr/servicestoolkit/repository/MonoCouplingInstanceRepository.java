@@ -1,8 +1,7 @@
 package ch.hsr.servicestoolkit.repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,23 +19,23 @@ public interface MonoCouplingInstanceRepository extends CrudRepository<MonoCoupl
 
 	Set<MonoCouplingInstance> findByModelAndVariant(Model model, CouplingCriteriaVariant variant);
 
-	default Map<String, List<MonoCouplingInstance>> findByModelGroupedByCriterion(final Model model) {
+	default Map<String, Set<MonoCouplingInstance>> findByModelGroupedByCriterion(final Model model) {
 		return groupByCriterion(findByModel(model));
 	}
 
-	default Map<String, List<MonoCouplingInstance>> groupByCriterion(final Set<MonoCouplingInstance> instances) {
-		Map<String, List<MonoCouplingInstance>> instancesByCriterion = new HashMap<>();
+	default Map<String, Set<MonoCouplingInstance>> groupByCriterion(final Set<MonoCouplingInstance> instances) {
+		Map<String, Set<MonoCouplingInstance>> instancesByCriterion = new HashMap<>();
 		for (MonoCouplingInstance instance : instances) {
 			String ccName = instance.getVariant().getCouplingCriterion().getName();
 			if (instancesByCriterion.get(ccName) == null) {
-				instancesByCriterion.put(ccName, new ArrayList<MonoCouplingInstance>());
+				instancesByCriterion.put(ccName, new HashSet<MonoCouplingInstance>());
 			}
 			instancesByCriterion.get(ccName).add(instance);
 		}
 		return instancesByCriterion;
 	}
 
-	default Map<String, List<MonoCouplingInstance>> findByModelGroupedByCriterionFilteredByCriterionType(final Model model, final CouplingType type) {
+	default Map<String, Set<MonoCouplingInstance>> findByModelGroupedByCriterionFilteredByCriterionType(final Model model, final CouplingType type) {
 		return groupByCriterion(findByModel(model).stream().filter(instance -> type.equals(instance.getVariant().getCouplingCriterion().getType())).collect(Collectors.toSet()));
 	}
 

@@ -1,6 +1,5 @@
 package ch.hsr.servicestoolkit.importer;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -46,11 +45,10 @@ public class ModelCompleter {
 	 */
 	public void completeModelWithDefaultsForDistance(final Model model) {
 		Set<DataField> allFieldsInModel = dataFieldRepository.findByModel(model);
-		Map<String, List<MonoCouplingInstance>> instancesByCriterion = couplingInstanceRepository.findByModelGroupedByCriterionFilteredByCriterionType(model,
-				CouplingType.DISTANCE);
+		Map<String, Set<MonoCouplingInstance>> instancesByCriterion = couplingInstanceRepository.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.DISTANCE);
 
 		// For every criterion
-		for (Entry<String, List<MonoCouplingInstance>> criterion : instancesByCriterion.entrySet()) {
+		for (Entry<String, Set<MonoCouplingInstance>> criterion : instancesByCriterion.entrySet()) {
 			Set<DataField> definedFields = criterion.getValue().stream().flatMap(instance -> instance.getAllFields().stream()).collect(Collectors.toSet());
 			// find missing fields which need to have an instance
 			Set<DataField> missingFields = allFieldsInModel.stream().filter(field -> !definedFields.contains(field)).collect(Collectors.toSet());

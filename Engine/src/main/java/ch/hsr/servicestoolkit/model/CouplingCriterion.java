@@ -15,6 +15,7 @@ public class CouplingCriterion {
 	public static final String SEMANTIC_PROXIMITY = "Semantic Proximity";
 	public static final String IDENTITY_LIFECYCLE = "Identity & Lifecycle Commonality";
 	public static final String VOLATILITY = "Volatility";
+	public static final String RESPONSIBILITY = "Responsibility";
 
 	@Id
 	@GeneratedValue
@@ -29,7 +30,7 @@ public class CouplingCriterion {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
@@ -39,7 +40,7 @@ public class CouplingCriterion {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof CouplingCriterion) {
 			CouplingCriterion other = (CouplingCriterion) obj;
 			return this == other || Objects.equal(id, other.id);
@@ -52,7 +53,7 @@ public class CouplingCriterion {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -60,7 +61,7 @@ public class CouplingCriterion {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
@@ -68,7 +69,7 @@ public class CouplingCriterion {
 		return decompositionImpact;
 	}
 
-	public void setDecompositionImpact(String decompositionImpact) {
+	public void setDecompositionImpact(final String decompositionImpact) {
 		this.decompositionImpact = decompositionImpact;
 	}
 
@@ -76,7 +77,7 @@ public class CouplingCriterion {
 		return type;
 	}
 
-	public void setType(CouplingType type) {
+	public void setType(final CouplingType type) {
 		this.type = type;
 	}
 

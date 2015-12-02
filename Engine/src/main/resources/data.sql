@@ -90,6 +90,6 @@ insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id,
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (32, 1, 13, 'Mutable', 0);
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (33, 1, 13, 'Immutable', 0);
 -- 14
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (34, 1, 14, 'Responsible Group', 0);
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (34, 1, 14, 'Responsibility Area', 0);
 
 

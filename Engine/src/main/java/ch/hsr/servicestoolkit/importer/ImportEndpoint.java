@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
+import ch.hsr.servicestoolkit.importer.api.CohesiveGroup;
+import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
@@ -294,6 +296,35 @@ public class ImportEndpoint {
 		}
 	}
 
+	@POST
+	@Path("/{modelId}/cohesiveGroups/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
+	public void importCohesiveGroups(@PathParam("modelId") final Long modelId, final List<CohesiveGroups> listOfGroups) {
+		Model model = modelRepository.findOne(modelId);
+		if (model == null || listOfGroups == null) {
+			throw new InvalidRestParam();
+		}
+
+		for (CohesiveGroups groups : listOfGroups) {
+			CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(groups.getCouplingCriterionName(), groups.getVariantName());
+			if (variant == null) {
+				log.error("variant {} not known! ignore", groups.getVariantName());
+				continue;
+			}
+
+			for (CohesiveGroup cohesiveGroup : groups.getCohesiveGroups()) {
+				MonoCouplingInstance instance = variant.createInstance();
+
+				monoCouplingInstanceRepository.save(instance);
+				instance.setName(groups.getCouplingCriterionName());
+				instance.setModel(model);
+				instance.setDataFields(loadDataFields(cohesiveGroup.getNanoEntities(), model));
+				log.info("Import cohesive group {} on fields {} ", cohesiveGroup.getName(), instance.getDataFields());
+			}
+		}
+	}
+
 	List<NanoEntity> loadDataFields(final List<String> fields, final Model model) {
 		List<NanoEntity> dataFields = new ArrayList<>();
 		for (String fieldName : fields) {
@@ -308,7 +339,7 @@ public class ImportEndpoint {
 			if (dataField != null) {
 				dataFields.add(dataField);
 			} else {
-				log.warn("Ignoring field with name {}", fieldName);
+				log.warn("	 field with name {}", fieldName);
 			}
 		}
 		return dataFields;

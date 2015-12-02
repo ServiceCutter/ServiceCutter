@@ -45,7 +45,6 @@ public class Scorer {
 		addScoresForCharacteristicsCriteria(model, config, result);
 		addScoresForSeparationCriteria(model, config, result);
 		addScoresForProximityCriteria(model, config, result);
-		// TODO: add ChoesiveGroupCriteriaScorer
 		return result;
 
 	}
@@ -59,6 +58,10 @@ public class Scorer {
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SEMANTIC_PROXIMITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores,
 				config.getPriorityForCouplingCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
+
+		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriteriaScorer()
+				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
+		addScoresByCriterionToResult(result, CouplingCriterion.RESPONSIBILITY, responsibilityScores, config.getPriorityForCouplingCriterion(CouplingCriterion.RESPONSIBILITY));
 	}
 
 	private void addScoresForCharacteristicsCriteria(final Model model, final SolverConfiguration config, final Map<EntityPair, Map<String, Score>> result) {

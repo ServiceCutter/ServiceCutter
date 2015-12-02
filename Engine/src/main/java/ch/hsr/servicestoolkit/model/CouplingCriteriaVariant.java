@@ -15,6 +15,7 @@ public class CouplingCriteriaVariant {
 	public static final String INHERITANCE = "Inheritance";
 	public static final String SAME_ENTITY = "Same Entity";
 	public static final String SHARED_FIELD_ACCESS = "Shared Field Access";
+	public static final String RESPONSIBILITY_AREA = "Responsibility Area";
 
 	@Id
 	@GeneratedValue

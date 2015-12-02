@@ -70,6 +70,12 @@ public class EditorResource {
 		return uploadCriteriaFile(file, modelId, "distanceVariants");
 	}
 
+	@RequestMapping(value = "/model/{modelId}/cohesiveGroups", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@Timed
+	public ResponseEntity<Void> uploadCohesiveGroups(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
+		return uploadCriteriaFile(file, modelId, "cohesiveGroups");
+	}
+
 	@RequestMapping(value = "/model/{modelId}/separationCriteria", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<Void> uploadSeparationCriteria(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {

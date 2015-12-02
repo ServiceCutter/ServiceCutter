@@ -19,8 +19,12 @@ angular.module('editorApp')
         	$scope.upload($scope.separationCriteriaFile, 'model/'+ $scope.modelId+'/separationCriteria', 'separationStatus', false);
         });
         
-        $scope.$watch('distancesFile', function () {
-        	$scope.upload($scope.distancesFile, 'model/'+ $scope.modelId+'/distanceVariants', 'distanceStatus', false);
+        $scope.$watch('cohesiveGroupsFile', function () {
+        	$scope.upload($scope.cohesiveGroupsFile, 'model/'+ $scope.modelId+'/cohesiveGroups', 'cohesiveGroupsStatus', false);
+        });
+        
+        $scope.$watch('characteristicsFile', function () {
+        	$scope.upload($scope.characteristicsFile, 'model/'+ $scope.modelId+'/distanceVariants', 'characteristicsStatus', false);
         });
         
         $scope.$watch('modelId', function () {
@@ -72,7 +76,8 @@ angular.module('editorApp')
         
         $scope.transactionStatus = 'No upload yet.';
         $scope.separationStatus = 'No upload yet.';
-        $scope.distanceStatus = 'No upload yet.';
+        $scope.cohesiveGroupsStatus = 'No upload yet.';
+        $scope.characteristicsStatus = 'No upload yet.';
         $scope.status = 'No upload yet.';
         $scope.modelId = 0;
         $scope.model = null;

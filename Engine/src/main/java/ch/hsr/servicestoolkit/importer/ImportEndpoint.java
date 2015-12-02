@@ -33,10 +33,10 @@ import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionFactory;
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
@@ -108,11 +108,10 @@ public class ImportEndpoint {
 				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 
 				monoCouplingInstanceRepository.save(instance);
-				// TODO: use context name
-				List<NanoEntity> originFields = relation.getOrigin().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
-						.collect(Collectors.toList());
-				List<NanoEntity> destinationFields = relation.getDestination().getAttributes().stream().map(attr -> dataFieldRepository.findByNameAndModel(attr.getName(), model))
-						.collect(Collectors.toList());
+				List<NanoEntity> originFields = relation.getOrigin().getAttributes().stream()
+						.map(attr -> dataFieldRepository.findByContextAndNameAndModel(relation.getOrigin().getName(), attr.getName(), model)).collect(Collectors.toList());
+				List<NanoEntity> destinationFields = relation.getDestination().getAttributes().stream()
+						.map(attr -> dataFieldRepository.findByContextAndNameAndModel(relation.getDestination().getName(), attr.getName(), model)).collect(Collectors.toList());
 				instance.setDataFields(originFields);
 				instance.setSecondDataFields(destinationFields);
 				instance.setModel(model);

@@ -49,7 +49,7 @@
 	},
 	{
 		"fieldsRead": ["Voyage.voyageNumber", "Cargo.trackingId"],
-		"fieldsWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus", "Delivery.calculatedAt"],
+		"fieldsWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"],
 		"name":"handleCargoEvent",
 		"frequency":2
 	}

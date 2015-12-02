@@ -1,0 +1,54 @@
+	[
+	  {
+		"cohesiveGroups": [
+		  {
+			"nanoEntities": [
+			  "Cargo.trackingId",
+			  "RouteSpecification.origin",
+			  "RouteSpecification.destination",
+			  "RouteSpecification.arrivalDeadline",
+			  "Itinerary.itineraryNumber",
+			  "Leg.loadLocation",
+			  "Leg.unloadLocation",
+			  "Leg.loadTime",
+			  "Leg.unloadTime",
+			  "Delivery.estimatedArrivalTime",
+			  "Delivery.routingStatus"
+			],
+			"name": "cargoPlaner"
+		  },
+		  {
+			"nanoEntities": [
+			  "HandlingEvent.type",
+			  "HandlingEvent.completionTime",
+			  "HandlingEvent.registrationTime",
+			  "HandlingEvent.location",
+			  "Delivery.transportStatus",
+			  "Delivery.misdirected",
+			  "Delivery.estimatedArrivalTime",
+			  "Delivery.isUnloadedAtDestination"
+			],
+			"name": "cargoTracker"
+		  },
+		  {
+			"nanoEntities": [
+			  "Voyage.voyageNumber",
+			  "CarrierMovement.departureLocation",
+			  "CarrierMovement.arrivalLocation",
+			  "CarrierMovement.departureTime",
+			  "CarrierMovement.arrivalTime"
+			],
+			"name": "voyageManager"
+		  },
+		  {
+			"nanoEntities": [
+			  "Location.name",
+			  "Location.unLocode"
+			],
+			"name": "admin"
+		  }
+		],
+		"couplingCriterionName": "Responsibility",
+		"variantName": "Responsibility Area"
+	  }
+	]

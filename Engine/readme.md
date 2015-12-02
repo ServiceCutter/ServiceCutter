@@ -10,16 +10,10 @@ get the engine state:
 curl -i -H "Accept: application/json" http://localhost:8080/engine
 ```
 
-start a new process:
+import a domain model:
 
 ```
-curl -i -H "Content-Type: application/json" -X PUT http://localhost:8080/engine -d '["foo", "bar"]'
-```
-
-import a test file:
-
-```
-curl -i -H "Content-Type: application/json" -X PUT http://localhost:8080/engine/import -d @test_domain_model.json
+curl -i -H "Content-Type: application/json" -X PUT http://localhost:8080/engine/import -d @domain_model.json
 ```
 
 # WS docs

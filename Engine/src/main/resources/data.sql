@@ -13,6 +13,7 @@ insert into coupling_criterion (id, name, type) values (12, 'Predefined Service 
 insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'PROXIMITY');
 
+
 -- description
 update coupling_criterion set description = 'Data which belong to the same identity and therefore shares a common lifecycle.' where id = 1;
 update coupling_criterion set description = 'A field A is semantically close to field B. Semantic proximity originates from coherent field updates (e.g. in a transaction / common use case) or aggregations in UML class diagram.' where id = 2;
@@ -89,6 +90,6 @@ insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id,
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (32, 1, 13, 'Mutable', 0);
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (33, 1, 13, 'Immutable', 0);
 -- 14
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (34, 1, 14, 'Predefined Service', 0);
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (34, 1, 14, 'Responsible Group', 0);
 
 

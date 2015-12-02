@@ -1,0 +1,31 @@
+[
+	{
+		"couplingCriterionName":"Volatility",
+		"variantName":"Often",
+		"fields":[
+			"HandlingEvent.type",
+			"HandlingEvent.completionTime",
+			"HandlingEvent.registrationTime",
+			"HandlingEvent.location",
+			"Delivery.transportStatus"
+			
+		]
+		
+	},
+	{
+		"couplingCriterionName":"Volatility",
+		"variantName":"Rarely",
+		"fields":[
+			"Location.unLocode",
+			"Location.name"
+		]
+	},
+	{
+		"couplingCriterionName":"Change Similarity",
+		"variantName":"Rarely",
+		"fields":[
+			"Location.unLocode",
+			"Location.name"
+		]
+	}
+]

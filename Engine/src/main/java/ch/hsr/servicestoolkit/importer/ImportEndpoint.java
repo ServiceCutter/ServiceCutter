@@ -90,6 +90,7 @@ public class ImportEndpoint {
 			String entityName = entity.getKey();
 			couplingInstance.setName(entityName);
 			couplingInstance.setModel(model);
+			log.info("store entity with attributes {}", entity.getValue());
 			for (EntityAttribute entityAttribute : entity.getValue()) {
 				NanoEntity dataField = new NanoEntity();
 				dataField.setName(entityAttribute.getName());
@@ -133,26 +134,56 @@ public class ImportEndpoint {
 		for (Entity entity : domainModel.getEntities()) {
 			realEntities.put(entity.getName(), entity.getAttributes());
 		}
+		List<EntityRelation> currentRelations = new ArrayList<>(domainModel.getRelations());
 
 		// Merge composition and inheritance UML-entities together to real
 		// entities
-		// TODO support second grade compositions (A->B->C)
-		for (EntityRelation relation : domainModel.getRelations()) {
-			if (RelationType.COMPOSITION.equals(relation.getType())) {
-				List<EntityAttribute> list = realEntities.get(relation.getOrigin().getName());
-				if (list != null) {
-					list.addAll(relation.getDestination().getAttributes());
-				} else {
-					log.error("ignore relation {}", relation);
+		// TODO throw error if Composition/inheritance relations contain cycles!
+		List<EntityRelation> relationsToEdgeEntities = getRelationsToEdgeEntities(currentRelations, domainModel.getEntities());
+		while (!relationsToEdgeEntities.isEmpty()) {
+			log.info("Entity reduction iteration, reduce relations {}", relationsToEdgeEntities);
+			for (EntityRelation relation : relationsToEdgeEntities) {
+				if (RelationType.COMPOSITION.equals(relation.getType())) {
+					List<EntityAttribute> list = realEntities.get(relation.getOrigin().getName());
+					if (list != null) {
+						list.addAll(relation.getDestination().getAttributes());
+					} else {
+						log.error("ignore relation {}", relation);
+					}
+					realEntities.remove(relation.getDestination().getName());
+				} else if (RelationType.INHERITANCE.equals(relation.getType())) {
+					realEntities.get(relation.getDestination().getName()).addAll(relation.getOrigin().getAttributes());
+					realEntities.remove(relation.getOrigin().getName());
 				}
-				realEntities.remove(relation.getDestination().getName());
-			} else if (RelationType.INHERITANCE.equals(relation.getType())) {
-				realEntities.get(relation.getDestination().getName()).addAll(relation.getOrigin().getAttributes());
-				realEntities.remove(relation.getOrigin().getName());
+
+				currentRelations.remove(relation);
+				relationsToEdgeEntities = getRelationsToEdgeEntities(currentRelations, domainModel.getEntities());
 			}
 		}
 
 		return realEntities;
+	}
+
+	// returns a list of relations where the destination has no outgoing
+	// COMPOSITION or INHERITANCE relations
+	private List<EntityRelation> getRelationsToEdgeEntities(final List<EntityRelation> currentRelations, final List<Entity> inputEntites) {
+
+		// get all entites that will have no other entities merged into them
+		List<Entity> reducableEntities = inputEntites.stream()
+				.filter(entity -> currentRelations.stream()
+						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
+								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+						.collect(Collectors.toList()).isEmpty())
+				.collect(Collectors.toList());
+
+		// get all relations that will merge the reducableEntities into another
+		// entity
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
+				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList());
+
+		return relationsToEdgeEntities;
 	}
 
 	@POST

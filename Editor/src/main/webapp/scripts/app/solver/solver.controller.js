@@ -125,10 +125,10 @@ angular.module('editorApp')
         
         $scope.criteria = Coupling.all(function(criteria) {
         	angular.forEach(criteria, function(value, index){
-        		if (value.type == "PROXIMITY"){
+        		if (value.type == "COHESIVENESS" || value.type == "CONSTRAINTS"){
         			value.priority = 3 // todo refactor, move to server?
         		} else{
-        			value.priority = 0.5 
+        			value.priority = 0.5
         		}
         	})
         });

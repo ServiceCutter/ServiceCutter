@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroup;
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
@@ -32,6 +31,7 @@ import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
+import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionFactory;
@@ -192,22 +192,20 @@ public class ImportEndpoint {
 	@Path("/{modelId}/businessTransactions/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importBusinessTransaction(@PathParam("modelId") final Long modelId, final List<BusinessTransaction> transactions) {
+	public void importBusinessTransaction(@PathParam("modelId") final Long modelId, final List<UseCase> transactions) {
 		Model model = modelRepository.findOne(modelId);
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
 		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.SHARED_FIELD_ACCESS);
-		for (BusinessTransaction transaction : transactions) {
+		for (UseCase transaction : transactions) {
 			DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 			monoCouplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
 			instance.setModel(model);
-			instance.setFrequency(transaction.getFrequency());
 			instance.setDataFields(loadDataFields(transaction.getFieldsRead(), model));
 			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten(), model));
-			log.info("Import business transactions {} with frequency {}, fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getFrequency(),
-					transaction.getFieldsWritten(), transaction.getFieldsRead());
+			log.info("Import business transactions {} with fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getFieldsWritten(), transaction.getFieldsRead());
 		}
 	}
 

@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {
@@ -26,15 +26,11 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	public Map<EntityPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
 		for (MonoCouplingInstance fieldAccessInstance : instances) {
 			DualCouplingInstance fieldAccessInstanceDual = (DualCouplingInstance) fieldAccessInstance;
-			Double frequency = fieldAccessInstanceDual.getFrequency();
-			if (frequency == null) {
-				frequency = 1d;
-			}
 			List<NanoEntity> fieldsWritten = fieldAccessInstanceDual.getSecondDataFields();
 			List<NanoEntity> fieldsRead = fieldAccessInstanceDual.getDataFields();
-			addScoreForWriteAccess(fieldsWritten, frequency);
-			addScoreForReadAccess(fieldsRead, frequency);
-			addScoreForMixedAccess(fieldsWritten, fieldsRead, frequency);
+			addScoreForWriteAccess(fieldsWritten);
+			addScoreForReadAccess(fieldsRead);
+			addScoreForMixedAccess(fieldsWritten, fieldsRead);
 		}
 
 		List<MonoCouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.getVariant().getName().equals(CouplingCriteriaVariant.AGGREGATION))
@@ -80,26 +76,26 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	 * 
 	 * @param frequency
 	 */
-	private void addScoreForMixedAccess(final List<NanoEntity> fieldsWritten, final List<NanoEntity> fieldsRead, final Double frequency) {
+	private void addScoreForMixedAccess(final List<NanoEntity> fieldsWritten, final List<NanoEntity> fieldsRead) {
 		for (NanoEntity fieldWritten : fieldsWritten) {
 			for (NanoEntity fieldRead : fieldsRead) {
-				addToResult(fieldRead, fieldWritten, SCORE_MIXED * frequency);
+				addToResult(fieldRead, fieldWritten, SCORE_MIXED);
 			}
 		}
 	}
 
-	private void addScoreForReadAccess(final List<NanoEntity> fieldsRead, final Double frequency) {
+	private void addScoreForReadAccess(final List<NanoEntity> fieldsRead) {
 		for (int i = 0; i < fieldsRead.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsRead.size(); j++) {
-				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_READ * frequency);
+				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_READ);
 			}
 		}
 	}
 
-	private void addScoreForWriteAccess(final List<NanoEntity> fieldsWritten, final Double frequency) {
+	private void addScoreForWriteAccess(final List<NanoEntity> fieldsWritten) {
 		for (int i = 0; i < fieldsWritten.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsWritten.size(); j++) {
-				addToResult(fieldsWritten.get(i), fieldsWritten.get(j), SCORE_WRITE * frequency);
+				addToResult(fieldsWritten.get(i), fieldsWritten.get(j), SCORE_WRITE);
 			}
 		}
 	}

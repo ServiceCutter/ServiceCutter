@@ -27,10 +27,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
+import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 import ch.hsr.servicestoolkit.solver.SolverResult;
 
@@ -43,7 +43,7 @@ public class DDDSampleRestTest {
 	private static final String DDD_EXAMPLE_FILE = "ddd_example.json";
 	private static final String DDD_USE_CASES_FILE = "ddd_use_cases.json";
 	private static final String DDD_CHARACTERISTICS_FILE = "ddd_characteristics.json";
-	private static final String DDD_RESPONSIBILITES_FILE = "ddd_responsibilites.json";
+	private static final String DDD_RESPONSIBILITES_FILE = "ddd_cohesive_groups_responsibility.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
@@ -73,11 +73,11 @@ public class DDDSampleRestTest {
 	}
 
 	private void loadBusinessTransactionOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<BusinessTransaction> transactions = IntegrationTestHelper.readListFromFile(DDD_USE_CASES_FILE, BusinessTransaction.class);
+		List<UseCase> transactions = IntegrationTestHelper.readListFromFile(DDD_USE_CASES_FILE, UseCase.class);
 
 		log.info("read Use Casess: {}", transactions);
 
-		HttpEntity<List<BusinessTransaction>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
+		HttpEntity<List<UseCase>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
 		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/businessTransactions/";
 		log.info("store business transactions on {}", path);
 

@@ -2,52 +2,42 @@
 	{
 		"fieldsRead": ["Account.number", "Stock.identifier", "Stock.stockName"],
 		"fieldsWritten":["Order.posted","Order.expires","Order.triggerPrice","Order.executed","Order.type","Order.amount"],
-		"name":"PostOrder",
-		"frequency":1
+		"name":"PostOrder"
 	},
 	{	"fieldsRead": ["PaymentInfo.cashAccount"],
 		"fieldsWritten":["Instruction.instructedTime", "Order.executed", "Position.balance"],
-		"name":"InstructOrder",
-		"frequency":1
+		"name":"InstructOrder"
 	},
 	{	"fieldsRead": ["Order.triggerPrice", "Stock.identifier"],
 		"fieldsWritten":["Price.dateTime","Price.price","Price.currency"],
-		"name":"ImportPrice",
-		"frequency":1
+		"name":"ImportPrice"
 	},
 	{	"fieldsRead": ["Stock.identifier", "News.title", "News.text", "News.image"],
 		"fieldsWritten":[],
-		"name":"ReadNews",
-		"frequency":1
+		"name":"ReadNews"
 	},
 	{	"fieldsRead": ["Stock.identifier"],
 		"fieldsWritten":["News.title", "News.text", "News.image"],
-		"name":"ImportNews",
-		"frequency":1
+		"name":"ImportNews"
 	},
 	{	"fieldsRead": ["Account.number","Recommendation.description","Stock.identifier","Stock.stockName"],
 		"fieldsWritten":[],
-		"name":"View Recommendations",
-		"frequency":1
+		"name":"View Recommendations"
 	},
 	{	"fieldsRead": ["Account.number","Stock.identifier","Stock.stockName","Position.balance"],
 		"fieldsWritten":["Recommendation.description"],
-		"name":"SuggestRecommendations",
-		"frequency":1
+		"name":"SuggestRecommendations"
 	},
 	{	"fieldsRead": ["AccountOwner.address","NaturalPerson.name","Company.companyName"],
 		"fieldsWritten":["Account.number"],
-		"name":"CreateAccount",
-		"frequency":1
+		"name":"CreateAccount"
 	},
 	{	"fieldsRead": [],
 		"fieldsWritten":["AccountOwner.address","NaturalPerson.name","Company.companyName"],
-		"name":"CreateAccountOwner",
-		"frequency":1
+		"name":"CreateAccountOwner"
 	},
 	{	"fieldsRead": ["Account.number","Position.balance","Stock.identifier", "Stock.stockName", "Order.triggerPrice", "Order.amount", "Order.posted", "Order.expires", "Order.executed", "Order.type"],
 		"fieldsWritten":[],
-		"name":"viewPortfolio",
-		"frequency":1
+		"name":"viewPortfolio"
 	}
 ]

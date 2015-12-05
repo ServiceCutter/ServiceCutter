@@ -2,56 +2,47 @@
 	{
 		"fieldsRead": ["Cargo.trackingId", "HandlingEvent.type", "HandlingEvent.location", "HandlingEvent.completionTime", "Delivery.transportStatus", "Delivery.estimatedArrivalTime", "Delivery.misdirected", "Voyage.voyageNumber", "RouteSpecification.destination"],
 		"fieldsWritten":[],
-		"name":"ViewTracking",
-		"frequency":1
+		"name":"ViewTracking"
 	},
 	{
 		"fieldsRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.arrivalDeadline", "Delivery.routingStatus", "Itinerary.itineraryNumber"],
 		"fieldsWritten":[],
-		"name":"ViewCargos",
-		"frequency":1
+		"name":"ViewCargos"
 	},
 	{
 		"fieldsRead": ["Location.unLocode"],
 		"fieldsWritten":["Cargo.trackingId", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "RouteSpecification.destination"],
-		"name":"BookCargo",
-		"frequency":1
+		"name":"BookCargo"
 	},
 	{
 		"fieldsRead": ["Cargo.trackingId", "RouteSpecification.destination"],
 		"fieldsWritten":["RouteSpecification.destination"],
-		"name":"ChangeCargoDestination",
-		"frequency":1
+		"name":"ChangeCargoDestination"
 	},
 	{
 		"fieldsRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "Location.unLocode", "Voyage.voyageNumber", "CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
 		"fieldsWritten":["Itinerary.itineraryNumber", "Leg.loadLocation", "Leg.unloadLocation", "Leg.loadTime", "Leg.unloadTime"],
-		"name":"RouteCargo",
-		"frequency":1
+		"name":"RouteCargo"
 	},
 	{
 		"fieldsRead": [],
 		"fieldsWritten":["Location.unLocode", "Location.name"],
-		"name":"Create Location",
-		"frequency":1
+		"name":"Create Location"
 	},
 	{
 		"fieldsRead": [],
 		"fieldsWritten":["Voyage.voyageNumber"],
-		"name":"Create Voyage",
-		"frequency":1
+		"name":"Create Voyage"
 	},
 	{
 		"fieldsRead": ["Voyage.voyageNumber"],
 		"fieldsWritten":["CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
-		"name":"AddCarrierMovement",
-		"frequency":1
+		"name":"AddCarrierMovement"
 	},
 	{
 		"fieldsRead": ["Voyage.voyageNumber", "Cargo.trackingId"],
 		"fieldsWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"],
-		"name":"handleCargoEvent",
-		"frequency":1
+		"name":"handleCargoEvent"
 	}
 	
 	

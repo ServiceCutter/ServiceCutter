@@ -27,9 +27,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
+import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 import ch.hsr.servicestoolkit.solver.SolverResult;
 
@@ -39,9 +39,9 @@ import ch.hsr.servicestoolkit.solver.SolverResult;
 @WebAppConfiguration
 public class BookingExampleRestTest {
 
-	private static final String BOOKING_EXAMPLE_JSON = "booking_example.json";
-	private static final String BOOKING_EXAMPLE_BUSINESS_TRANSACTION = "booking_example_business_transactions.json";
-	private static final String BOOKING_EXAMPLE_DISTANCE_VARIANTS = "booking_example_distance_variants.json";
+	private static final String BOOKING_EXAMPLE_FILE = "booking_example.json";
+	private static final String BOOKING_EXAMPLE_USE_CASES_FILE = "booking_example_use_cases.json";
+	private static final String BOOKING_EXAMPLE_CHARACTERISTICS_FILE = "booking_characteristics.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
@@ -70,11 +70,11 @@ public class BookingExampleRestTest {
 	}
 
 	private void loadBusinessTransactionOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<BusinessTransaction> transactions = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_BUSINESS_TRANSACTION, BusinessTransaction.class);
+		List<UseCase> transactions = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_USE_CASES_FILE, UseCase.class);
 
 		log.info("read business Transactions: {}", transactions);
 
-		HttpEntity<List<BusinessTransaction>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
+		HttpEntity<List<UseCase>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
 		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/businessTransactions/";
 		log.info("store business transactions on {}", path);
 
@@ -85,7 +85,7 @@ public class BookingExampleRestTest {
 	}
 
 	private void loadDistanceVariantsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<DistanceVariant> variants = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_DISTANCE_VARIANTS, DistanceVariant.class);
+		List<DistanceVariant> variants = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_CHARACTERISTICS_FILE, DistanceVariant.class);
 
 		log.info("read distance variants: {}", variants);
 
@@ -100,7 +100,7 @@ public class BookingExampleRestTest {
 	}
 
 	private Integer createModelOnApi() throws URISyntaxException, UnsupportedEncodingException, IOException {
-		DomainModel input = IntegrationTestHelper.readFromFile(BOOKING_EXAMPLE_JSON, DomainModel.class);
+		DomainModel input = IntegrationTestHelper.readFromFile(BOOKING_EXAMPLE_FILE, DomainModel.class);
 
 		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
 		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,

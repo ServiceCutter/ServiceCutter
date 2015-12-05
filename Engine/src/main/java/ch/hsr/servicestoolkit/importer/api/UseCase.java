@@ -1,30 +1,20 @@
 package ch.hsr.servicestoolkit.importer.api;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusinessTransaction {
+public class UseCase {
 
 	private List<String> fieldsRead = new ArrayList<>();
 	private List<String> fieldsWritten = new ArrayList<>();
 	private String name;
-	private double frequency;
 
-	public BusinessTransaction() {
+	public UseCase() {
 	}
 
-	public BusinessTransaction(final String name, final double frequency) {
+	public UseCase(final String name) {
 		super();
-		this.frequency = frequency;
-		if (frequency > 1 || frequency < 0) {
-			throw new InvalidParameterException("frequency must be between 0 and 1!");
-		}
 		this.name = name;
-	}
-
-	public double getFrequency() {
-		return frequency;
 	}
 
 	public String getName() {
@@ -55,7 +45,7 @@ public class BusinessTransaction {
 
 	@Override
 	public String toString() {
-		return "BusinessTransaction [fieldsRead=" + fieldsRead + ", fieldsWritten=" + fieldsWritten + ", name=" + name + ", frequency=" + frequency + "]";
+		return "BusinessTransaction [fieldsRead=" + fieldsRead + ", fieldsWritten=" + fieldsWritten + ", name=" + name + "]";
 	}
 
 }

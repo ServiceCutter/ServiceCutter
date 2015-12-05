@@ -27,10 +27,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.importer.api.BusinessTransaction;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
+import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 import ch.hsr.servicestoolkit.solver.SolverResult;
 
@@ -41,9 +41,9 @@ import ch.hsr.servicestoolkit.solver.SolverResult;
 public class TradingExampleRestTest {
 
 	private static final String TRADING_EXAMPLE_JSON = "trading_example.json";
-	private static final String TRADING_EXAMPLE_BUSINESS_TRANSACTION = "trading_example_business_transactions.json";
-	private static final String TRADING_EXAMPLE_DISTANCE_VARIANTS = "trading_example_distance.json";
-	private static final String TRADING_EXAMPLE_SEPARATION_CRITERIA = "trading_example_separation.json";
+	private static final String TRADING_EXAMPLE_BUSINESS_TRANSACTION = "trading_use_cases.json";
+	private static final String TRADING_EXAMPLE_DISTANCE_VARIANTS = "trading_characteristics.json";
+	private static final String TRADING_EXAMPLE_SEPARATION_CRITERIA = "trading_constraints_security.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
@@ -73,11 +73,11 @@ public class TradingExampleRestTest {
 	}
 
 	private void loadBusinessTransactionOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<BusinessTransaction> transactions = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_BUSINESS_TRANSACTION, BusinessTransaction.class);
+		List<UseCase> transactions = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_BUSINESS_TRANSACTION, UseCase.class);
 
 		log.info("read business Transactions: {}", transactions);
 
-		HttpEntity<List<BusinessTransaction>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
+		HttpEntity<List<UseCase>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
 		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/businessTransactions/";
 		log.info("store business transactions on {}", path);
 

@@ -16,6 +16,7 @@ public class CouplingCriterion {
 	public static final String IDENTITY_LIFECYCLE = "Identity & Lifecycle Commonality";
 	public static final String VOLATILITY = "Volatility";
 	public static final String RESPONSIBILITY = "Responsibility";
+	public static final String SECURITY_CONSTRAINT = "Security Constraint";
 
 	@Id
 	@GeneratedValue

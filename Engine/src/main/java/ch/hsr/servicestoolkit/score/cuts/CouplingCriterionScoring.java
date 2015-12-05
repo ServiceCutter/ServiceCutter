@@ -15,11 +15,12 @@ import org.slf4j.LoggerFactory;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.service.Service;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 
+@Deprecated
 public class CouplingCriterionScoring {
 
 	public static final double MAX_SCORE = 10;
@@ -36,9 +37,9 @@ public class CouplingCriterionScoring {
 		// TODO validate that the service cut contains all fields!
 		Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap = context.getCouplingInstances(criterion);
 		double result = 0;
-		if (CouplingType.PROXIMITY.equals(criterion.getType())) {
+		if (CouplingType.COHESIVENESS.equals(criterion.getType())) {
 			result = calculateProximity(cut, variantsMap);
-		} else if (CouplingType.DISTANCE.equals(criterion.getType())) {
+		} else if (CouplingType.COMPATIBILITY.equals(criterion.getType())) {
 			result = calculateDistance(cut, variantsMap);
 		} else {
 			throw new IllegalStateException("Unknown coupling type " + criterion.getType());

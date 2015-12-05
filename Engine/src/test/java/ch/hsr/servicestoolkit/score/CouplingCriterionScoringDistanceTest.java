@@ -63,7 +63,7 @@ public class CouplingCriterionScoringDistanceTest {
 		model.addDataField(fieldYield);
 		// coupling
 		volatility = new CouplingCriterion();
-		volatility.setType(CouplingType.DISTANCE);
+		volatility.setType(CouplingType.COMPATIBILITY);
 		volatility.setName(CouplingCriterion.VOLATILITY);
 		often = createVariant(volatility, 1, "Often");
 		regularly = createVariant(volatility, 5, "Regularly");

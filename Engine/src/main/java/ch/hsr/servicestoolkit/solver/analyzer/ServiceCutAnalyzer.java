@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
@@ -66,8 +66,8 @@ public class ServiceCutAnalyzer {
 		// use case responsibility
 		final Map<Service, List<DualCouplingInstance>> useCaseResponsibilites = getUseCaseResponsibilites(solverResult.getServices(), model);
 		solverResult.setUseCaseResponsibility(transformResponsibilityMap(useCaseResponsibilites));
-		for (Entry<Service, List<DualCouplingInstance>> responsibility : useCaseResponsibilites.entrySet()) {
-			log.info("attach use cases {} to service {}", responsibility.getValue().toString(), responsibility.getKey().getName());
+		for (Entry<String, List<String>> responsibility : solverResult.getUseCaseResponsibility().entrySet()) {
+			log.info("attach use cases {} to service {}", responsibility.getValue().toString(), responsibility.getKey());
 		}
 
 		// relation scores and shared Data Fields
@@ -111,7 +111,9 @@ public class ServiceCutAnalyzer {
 	private Map<String, List<String>> transformResponsibilityMap(final Map<Service, List<DualCouplingInstance>> useCaseResponsibilites) {
 		Map<String, List<String>> result = new HashMap<>();
 		for (Entry<Service, List<DualCouplingInstance>> responsibility : useCaseResponsibilites.entrySet()) {
-			result.put(responsibility.getKey().getName(), responsibility.getValue().stream().map(instance -> instance.getName()).collect(Collectors.toList()));
+			if (responsibility.getKey() != null) {
+				result.put(responsibility.getKey().getName(), responsibility.getValue().stream().map(instance -> instance.getName()).collect(Collectors.toList()));
+			}
 		}
 		return result;
 	}

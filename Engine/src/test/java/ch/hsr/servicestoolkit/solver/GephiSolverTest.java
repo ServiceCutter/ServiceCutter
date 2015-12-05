@@ -132,7 +132,7 @@ public class GephiSolverTest {
 		variant.setName(variantName);
 		CouplingCriterion couplingCriterion = new CouplingCriterion();
 		couplingCriterion.setId(idGenerator.getAndIncrement());
-		couplingCriterion.setType(CouplingType.DISTANCE);
+		couplingCriterion.setType(CouplingType.COMPATIBILITY);
 		couplingCriterion.setName("criterionName");
 		variant.setCouplingCriterion(couplingCriterion);
 		variant.setWeight(6);

@@ -1,19 +1,19 @@
-insert into coupling_criterion (id, name, type) values (1, 'Identity & Lifecycle Commonality', 'PROXIMITY');
-insert into coupling_criterion (id, name, type) values (2, 'Semantic Proximity', 'PROXIMITY');
-insert into coupling_criterion (id, name, type) values (3, 'Security Constraint', 'SEPARATION');
-insert into coupling_criterion (id, name, type) values (4, 'Security Criticality', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (5, 'Security Context Distinction', 'PROXIMITY');
-insert into coupling_criterion (id, name, type) values (6, 'Resilience', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (7, 'Volatility', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (8, 'Consistency', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (9, 'Storage Similarity', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Similarity', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (11, 'Change Similarity', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (12, 'Predefined Service Constraint', 'EXCLUSIVE');
-insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'DISTANCE');
-insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'PROXIMITY');
-insert into coupling_criterion (id, name, type) values (15, 'Latency', 'PROXIMITY');
-insert into coupling_criterion (id, name, type) values (16, 'Consistency Constraint', 'SEPARATION');
+insert into coupling_criterion (id, name, type) values (1, 'Identity & Lifecycle Commonality', 'COHESIVENESS');
+insert into coupling_criterion (id, name, type) values (2, 'Semantic Proximity', 'COHESIVENESS');
+insert into coupling_criterion (id, name, type) values (3, 'Security Constraint', 'CONSTRAINTS');
+insert into coupling_criterion (id, name, type) values (4, 'Security Criticality', 'COMPATIBILITY');
+insert into coupling_criterion (id, name, type) values (5, 'Security Context Distinction', 'COHESIVENESS');
+insert into coupling_criterion (id, name, type) values (6, 'Resilience', 'COMPATIBILITY');
+insert into coupling_criterion (id, name, type) values (7, 'Volatility', 'COMPATIBILITY');
+insert into coupling_criterion (id, name, type) values (8, 'Consistency', 'COMPATIBILITY');
+insert into coupling_criterion (id, name, type) values (9, 'Storage Similarity', 'COMPATIBILITY');
+insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Similarity', 'COMMUNICATION');
+insert into coupling_criterion (id, name, type) values (11, 'Change Similarity', 'COMPATIBILITY');
+insert into coupling_criterion (id, name, type) values (12, 'Predefined Service Constraint', 'CONSTRAINTS');
+insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'COMMUNICATION');
+insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'COHESIVENESS');
+insert into coupling_criterion (id, name, type) values (15, 'Latency', 'COHESIVENESS');
+insert into coupling_criterion (id, name, type) values (16, 'Consistency Constraint', 'CONSTRAINTS');
 
 
 -- description

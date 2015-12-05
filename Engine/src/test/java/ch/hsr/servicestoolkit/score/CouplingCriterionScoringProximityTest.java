@@ -14,10 +14,10 @@ import org.junit.Test;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 import ch.hsr.servicestoolkit.score.cuts.CouplingContext;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
@@ -66,7 +66,7 @@ public class CouplingCriterionScoringProximityTest {
 		model.addDataField(fieldYield);
 		// coupling
 		identityAndLifecycle = new CouplingCriterion();
-		identityAndLifecycle.setType(CouplingType.PROXIMITY);
+		identityAndLifecycle.setType(CouplingType.COHESIVENESS);
 		identityAndLifecycle.setName(CouplingCriterion.IDENTITY_LIFECYCLE);
 		sameEntity = createVariant(identityAndLifecycle, WEIGHT_ENTITY, "Same Entity");
 		inheritance = createVariant(identityAndLifecycle, WEIGHT_INHERITANCE, "Inheritance");

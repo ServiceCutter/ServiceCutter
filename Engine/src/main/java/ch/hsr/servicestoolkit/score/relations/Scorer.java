@@ -66,19 +66,17 @@ public class Scorer {
 
 	private void addScoresForCharacteristicsCriteria(final Model model, final SolverConfiguration config, final Map<EntityPair, Map<String, Score>> result) {
 		Map<String, Map<EntityPair, Double>> scoresByCriterion = new CharacteristicsCriteriaScorer()
-				.getScores(monoCouplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.DISTANCE));
+				.getScores(monoCouplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.COMPATIBILITY));
 		for (Entry<String, Map<EntityPair, Double>> distanceScores : scoresByCriterion.entrySet()) {
 			addScoresByCriterionToResult(result, distanceScores.getKey(), distanceScores.getValue(), config.getPriorityForCouplingCriterion(distanceScores.getKey()));
 		}
 	}
 
-	// TODO refactor: maybe introduce common interface for scorers
 	private void addScoresForSeparationCriteria(final Model model, final SolverConfiguration config, final Map<EntityPair, Map<String, Score>> result) {
-		Map<String, Map<EntityPair, Double>> scoresByCriterion = new SeparationCriteriaScorer()
-				.getScores(monoCouplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.SEPARATION));
-		for (Entry<String, Map<EntityPair, Double>> separationScores : scoresByCriterion.entrySet()) {
-			addScoresByCriterionToResult(result, separationScores.getKey(), separationScores.getValue(), config.getPriorityForCouplingCriterion(separationScores.getKey()));
-		}
+		Map<EntityPair, Double> scoresByCriterion = new SeparationCriteriaScorer()
+				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SECURITY_CONSTRAINT));
+		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONSTRAINT, scoresByCriterion,
+				config.getPriorityForCouplingCriterion(CouplingCriterion.SECURITY_CONSTRAINT));
 	}
 
 	private void addScoresByCriterionToResult(final Map<EntityPair, Map<String, Score>> result, final String couplingCriterionName, final Map<EntityPair, Double> scores,

@@ -45,7 +45,7 @@ public class ModelCompleter {
 	 */
 	public void completeModelWithDefaultsForDistance(final Model model) {
 		Set<NanoEntity> allFieldsInModel = dataFieldRepository.findByModel(model);
-		Map<String, Set<MonoCouplingInstance>> instancesByCriterion = couplingInstanceRepository.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.DISTANCE);
+		Map<String, Set<MonoCouplingInstance>> instancesByCriterion = couplingInstanceRepository.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.COMPATIBILITY);
 
 		// For every criterion
 		for (Entry<String, Set<MonoCouplingInstance>> criterion : instancesByCriterion.entrySet()) {

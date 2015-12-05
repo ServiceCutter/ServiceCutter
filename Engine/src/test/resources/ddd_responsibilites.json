@@ -25,7 +25,6 @@
 			  "HandlingEvent.location",
 			  "Delivery.transportStatus",
 			  "Delivery.misdirected",
-			  "Delivery.estimatedArrivalTime",
 			  "Delivery.isUnloadedAtDestination"
 			],
 			"name": "cargoTracker"

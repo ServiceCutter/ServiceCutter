@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CohesiveGroup {
 
-	private List<String> nanoEntities;
+	private List<String> nanoentities;
 	private String name;
 
 	// Jackson
@@ -12,14 +12,14 @@ public class CohesiveGroup {
 
 	}
 
-	public CohesiveGroup(final List<String> nanoEntities, final String name) {
+	public CohesiveGroup(final List<String> nanoentities, final String name) {
 		super();
-		this.nanoEntities = nanoEntities;
+		this.nanoentities = nanoentities;
 		this.name = name;
 	}
 
-	public List<String> getNanoEntities() {
-		return nanoEntities;
+	public List<String> getNanoentities() {
+		return nanoentities;
 	}
 
 	public String getName() {

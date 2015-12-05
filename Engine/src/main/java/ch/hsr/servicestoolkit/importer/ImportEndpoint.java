@@ -27,7 +27,7 @@ import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
-import ch.hsr.servicestoolkit.importer.api.EntityAttribute;
+import ch.hsr.servicestoolkit.importer.api.NanoEntityInput;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
@@ -77,23 +77,23 @@ public class ImportEndpoint {
 		modelRepository.save(model);
 		model.setName("imported " + new Date().toString());
 
-		Map<EntityAttribute, String> entityAttributes = new HashMap<>();
+		Map<NanoEntityInput, String> entityAttributes = new HashMap<>();
 		for (Entity entity : domainModel.getEntities()) {
-			for (EntityAttribute attribute : entity.getAttributes()) {
+			for (NanoEntityInput attribute : entity.getNanoentities()) {
 				entityAttributes.put(attribute, entity.getName());
 			}
 
 		}
 		// entities
 		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
-		for (Entry<String, List<EntityAttribute>> entity : findRealEntities(domainModel).entrySet()) {
+		for (Entry<String, List<NanoEntityInput>> entity : findRealEntities(domainModel).entrySet()) {
 			MonoCouplingInstance couplingInstance = sameEntityVariant.createInstance();
 			monoCouplingInstanceRepository.save(couplingInstance);
 			String entityName = entity.getKey();
 			couplingInstance.setName(entityName);
 			couplingInstance.setModel(model);
 			log.info("store entity with attributes {}", entity.getValue());
-			for (EntityAttribute entityAttribute : entity.getValue()) {
+			for (NanoEntityInput entityAttribute : entity.getValue()) {
 				NanoEntity dataField = new NanoEntity();
 				dataField.setName(entityAttribute.getName());
 				dataField.setContext(entityAttributes.get(entityAttribute));
@@ -111,9 +111,9 @@ public class ImportEndpoint {
 				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 
 				monoCouplingInstanceRepository.save(instance);
-				List<NanoEntity> originFields = relation.getOrigin().getAttributes().stream()
+				List<NanoEntity> originFields = relation.getOrigin().getNanoentities().stream()
 						.map(attr -> dataFieldRepository.findByContextAndNameAndModel(relation.getOrigin().getName(), attr.getName(), model)).collect(Collectors.toList());
-				List<NanoEntity> destinationFields = relation.getDestination().getAttributes().stream()
+				List<NanoEntity> destinationFields = relation.getDestination().getNanoentities().stream()
 						.map(attr -> dataFieldRepository.findByContextAndNameAndModel(relation.getDestination().getName(), attr.getName(), model)).collect(Collectors.toList());
 				instance.setDataFields(originFields);
 				instance.setSecondDataFields(destinationFields);
@@ -131,10 +131,10 @@ public class ImportEndpoint {
 		return result;
 	}
 
-	private Map<String, List<EntityAttribute>> findRealEntities(final DomainModel domainModel) {
-		Map<String, List<EntityAttribute>> realEntities = new HashMap<>();
+	private Map<String, List<NanoEntityInput>> findRealEntities(final DomainModel domainModel) {
+		Map<String, List<NanoEntityInput>> realEntities = new HashMap<>();
 		for (Entity entity : domainModel.getEntities()) {
-			realEntities.put(entity.getName(), entity.getAttributes());
+			realEntities.put(entity.getName(), entity.getNanoentities());
 		}
 		List<EntityRelation> currentRelations = new ArrayList<>(domainModel.getRelations());
 
@@ -146,15 +146,15 @@ public class ImportEndpoint {
 			log.info("Entity reduction iteration, reduce relations {}", relationsToEdgeEntities);
 			for (EntityRelation relation : relationsToEdgeEntities) {
 				if (RelationType.COMPOSITION.equals(relation.getType())) {
-					List<EntityAttribute> list = realEntities.get(relation.getOrigin().getName());
+					List<NanoEntityInput> list = realEntities.get(relation.getOrigin().getName());
 					if (list != null) {
-						list.addAll(relation.getDestination().getAttributes());
+						list.addAll(relation.getDestination().getNanoentities());
 					} else {
 						log.error("ignore relation {}", relation);
 					}
 					realEntities.remove(relation.getDestination().getName());
 				} else if (RelationType.INHERITANCE.equals(relation.getType())) {
-					realEntities.get(relation.getDestination().getName()).addAll(relation.getOrigin().getAttributes());
+					realEntities.get(relation.getDestination().getName()).addAll(relation.getOrigin().getNanoentities());
 					realEntities.remove(relation.getOrigin().getName());
 				}
 
@@ -203,9 +203,9 @@ public class ImportEndpoint {
 			monoCouplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
 			instance.setModel(model);
-			instance.setDataFields(loadDataFields(transaction.getFieldsRead(), model));
-			instance.setSecondDataFields(loadDataFields(transaction.getFieldsWritten(), model));
-			log.info("Import business transactions {} with fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getFieldsWritten(), transaction.getFieldsRead());
+			instance.setDataFields(loadDataFields(transaction.getNanoentitiesRead(), model));
+			instance.setSecondDataFields(loadDataFields(transaction.getNanoentitiesWritten(), model));
+			log.info("Import business transactions {} with fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getNanoentitiesWritten(), transaction.getNanoentitiesRead());
 		}
 	}
 
@@ -224,7 +224,7 @@ public class ImportEndpoint {
 			monoCouplingInstanceRepository.save(instance);
 			instance.setName(entity.getName());
 			instance.setModel(model);
-			instance.setDataFields(loadDataFields(entity.getAttributes().stream().map(EntityAttribute::getName).collect(Collectors.toList()), model));
+			instance.setDataFields(loadDataFields(entity.getNanoentities().stream().map(NanoEntityInput::getName).collect(Collectors.toList()), model));
 		}
 	}
 
@@ -250,7 +250,7 @@ public class ImportEndpoint {
 				monoCouplingInstanceRepository.save(newInstance);
 				newInstance.setName(inputVariant.getCouplingCriterionName());
 				newInstance.setModel(model);
-				newInstance.setDataFields(loadDataFields(inputVariant.getFields(), model));
+				newInstance.setDataFields(loadDataFields(inputVariant.getNanoentities(), model));
 				log.info("Import distance variant {}-{} with fields {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName(), newInstance.getAllFields());
 			} else {
 				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
@@ -283,8 +283,8 @@ public class ImportEndpoint {
 				monoCouplingInstanceRepository.save(newInstance);
 				newInstance.setName(inputCriterion.getCouplingCriterionName());
 				newInstance.setModel(model);
-				newInstance.setDataFields(loadDataFields(inputCriterion.getGroupAFields(), model));
-				newInstance.setSecondDataFields(loadDataFields(inputCriterion.getGroupBFields(), model));
+				newInstance.setDataFields(loadDataFields(inputCriterion.getGroupAnanoentities(), model));
+				newInstance.setSecondDataFields(loadDataFields(inputCriterion.getGroupBnanoentities(), model));
 				log.info("Import separation constraint {} on fields {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getDataFields(),
 						newInstance.getSecondDataFields());
 			} else {
@@ -317,7 +317,7 @@ public class ImportEndpoint {
 				monoCouplingInstanceRepository.save(instance);
 				instance.setName(groups.getCouplingCriterionName());
 				instance.setModel(model);
-				instance.setDataFields(loadDataFields(cohesiveGroup.getNanoEntities(), model));
+				instance.setDataFields(loadDataFields(cohesiveGroup.getNanoentities(), model));
 				log.info("Import cohesive group {} on fields {} ", cohesiveGroup.getName(), instance.getDataFields());
 			}
 		}

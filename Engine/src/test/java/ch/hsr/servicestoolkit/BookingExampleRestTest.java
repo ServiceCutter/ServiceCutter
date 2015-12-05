@@ -87,11 +87,11 @@ public class BookingExampleRestTest {
 	private void loadDistanceVariantsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
 		List<DistanceVariant> variants = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_CHARACTERISTICS_FILE, DistanceVariant.class);
 
-		log.info("read distance variants: {}", variants);
+		log.info("read characteristics: {}", variants);
 
 		HttpEntity<List<DistanceVariant>> request = IntegrationTestHelper.createHttpRequestWithPostObj(variants);
 		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceVariants/";
-		log.info("store distance variants on {}", path);
+		log.info("store characteristics on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
 		});

@@ -1,23 +1,23 @@
 [
 	{
-		"fieldsRead": [],
-		"fieldsWritten":["Customer.firstname","Customer.name","Customer.street","Customer.city","Customer.creditCard","Customer.accountNr"],
+		"nanoentitiesRead": [],
+		"nanoentitiesWritten":["Customer.firstname","Customer.name","Customer.street","Customer.city","Customer.creditCard","Customer.accountNr"],
 		"name":"createCustomer"
 	},
-	{	"fieldsRead": ["Article.price"],
-		"fieldsWritten":["Booking.bookingDate","Booking.paymentDate","Booking.totalPrice","Booking.bookingState"],
+	{	"nanoentitiesRead": ["Article.price"],
+		"nanoentitiesWritten":["Booking.bookingDate","Booking.paymentDate","Booking.totalPrice","Booking.bookingState"],
 		"name":"createBooking"
 	},
-	{	"fieldsRead": [],
-		"fieldsWritten":["Article.articleName", "Article.price", "Article.serial"],
+	{	"nanoentitiesRead": [],
+		"nanoentitiesWritten":["Article.articleName", "Article.price", "Article.serial"],
 		"name":"createArticle"
 	},
-	{	"fieldsRead": ["Article.articleName", "Article.price", "Article.serial"],
-		"fieldsWritten":[],
+	{	"nanoentitiesRead": ["Article.articleName", "Article.price", "Article.serial"],
+		"nanoentitiesWritten":[],
 		"name":"searchArticles"
 	},
-	{	"fieldsRead": ["Customer.creditCard"],
-		"fieldsWritten":["Booking.paymentDate", "Booking.bookingState"],
+	{	"nanoentitiesRead": ["Customer.creditCard"],
+		"nanoentitiesWritten":["Booking.paymentDate", "Booking.bookingState"],
 		"name":"payBooking"
 	}
 ]

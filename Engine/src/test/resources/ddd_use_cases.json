@@ -1,47 +1,47 @@
 [
 	{
-		"fieldsRead": ["Cargo.trackingId", "HandlingEvent.type", "HandlingEvent.location", "HandlingEvent.completionTime", "Delivery.transportStatus", "Delivery.estimatedArrivalTime", "Delivery.misdirected", "Voyage.voyageNumber", "RouteSpecification.destination"],
-		"fieldsWritten":[],
+		"nanoentitiesRead": ["Cargo.trackingId", "HandlingEvent.type", "HandlingEvent.location", "HandlingEvent.completionTime", "Delivery.transportStatus", "Delivery.estimatedArrivalTime", "Delivery.misdirected", "Voyage.voyageNumber", "RouteSpecification.destination"],
+		"nanoentitiesWritten":[],
 		"name":"ViewTracking"
 	},
 	{
-		"fieldsRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.arrivalDeadline", "Delivery.routingStatus", "Itinerary.itineraryNumber"],
-		"fieldsWritten":[],
+		"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.arrivalDeadline", "Delivery.routingStatus", "Itinerary.itineraryNumber"],
+		"nanoentitiesWritten":[],
 		"name":"ViewCargos"
 	},
 	{
-		"fieldsRead": ["Location.unLocode"],
-		"fieldsWritten":["Cargo.trackingId", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "RouteSpecification.destination"],
+		"nanoentitiesRead": ["Location.unLocode"],
+		"nanoentitiesWritten":["Cargo.trackingId", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "RouteSpecification.destination"],
 		"name":"BookCargo"
 	},
 	{
-		"fieldsRead": ["Cargo.trackingId", "RouteSpecification.destination"],
-		"fieldsWritten":["RouteSpecification.destination"],
+		"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination"],
+		"nanoentitiesWritten":["RouteSpecification.destination"],
 		"name":"ChangeCargoDestination"
 	},
 	{
-		"fieldsRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "Location.unLocode", "Voyage.voyageNumber", "CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
-		"fieldsWritten":["Itinerary.itineraryNumber", "Leg.loadLocation", "Leg.unloadLocation", "Leg.loadTime", "Leg.unloadTime"],
+		"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "Location.unLocode", "Voyage.voyageNumber", "CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
+		"nanoentitiesWritten":["Itinerary.itineraryNumber", "Leg.loadLocation", "Leg.unloadLocation", "Leg.loadTime", "Leg.unloadTime"],
 		"name":"RouteCargo"
 	},
 	{
-		"fieldsRead": [],
-		"fieldsWritten":["Location.unLocode", "Location.name"],
+		"nanoentitiesRead": [],
+		"nanoentitiesWritten":["Location.unLocode", "Location.name"],
 		"name":"Create Location"
 	},
 	{
-		"fieldsRead": [],
-		"fieldsWritten":["Voyage.voyageNumber"],
+		"nanoentitiesRead": [],
+		"nanoentitiesWritten":["Voyage.voyageNumber"],
 		"name":"Create Voyage"
 	},
 	{
-		"fieldsRead": ["Voyage.voyageNumber"],
-		"fieldsWritten":["CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
+		"nanoentitiesRead": ["Voyage.voyageNumber"],
+		"nanoentitiesWritten":["CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
 		"name":"AddCarrierMovement"
 	},
 	{
-		"fieldsRead": ["Voyage.voyageNumber", "Cargo.trackingId"],
-		"fieldsWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"],
+		"nanoentitiesRead": ["Voyage.voyageNumber", "Cargo.trackingId"],
+		"nanoentitiesWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"],
 		"name":"handleCargoEvent"
 	}
 	

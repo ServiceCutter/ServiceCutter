@@ -1,15 +1,15 @@
 [
   {
     "couplingCriterionName": "Resilience",
-    "variantName": "Low",
-    "fields": [
+    "characteristic": "Low",
+    "nanoentities": [
       "Customer.firstname"
     ]
   },
   {
     "couplingCriterionName": "Resilience",
-    "variantName": "Critical",
-    "fields": [
+    "characteristic": "Critical",
+    "nanoentities": [
       "Article.articleName",
       "Article.price",
       "Article.serial",

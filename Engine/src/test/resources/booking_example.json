@@ -2,7 +2,7 @@
   "entities": [
     {
       "name": "Customer",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "firstname"
         },
@@ -25,7 +25,7 @@
     },
     {
       "name": "Booking",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "bookingDate"
         },
@@ -42,7 +42,7 @@
     },
     {
       "name": "Article",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "articleName"
         },

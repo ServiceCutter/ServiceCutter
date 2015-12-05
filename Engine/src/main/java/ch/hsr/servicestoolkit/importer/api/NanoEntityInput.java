@@ -1,14 +1,14 @@
 package ch.hsr.servicestoolkit.importer.api;
 
 //@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="name")
-public class EntityAttribute {
+public class NanoEntityInput {
 	private String name;
 
 	// used by Jackson
-	public EntityAttribute() {
+	public NanoEntityInput() {
 	}
 
-	public EntityAttribute(final String name) {
+	public NanoEntityInput(final String name) {
 		super();
 		this.name = name;
 	}

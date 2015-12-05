@@ -4,26 +4,26 @@ import java.util.List;
 
 public class DistanceVariant {
 
-	private List<String> fields;
+	private List<String> nanoentities;
 	private String couplingCriterionName;
-	private String variantName;
+	private String characteristic;
 
-	public DistanceVariant(final String variantName, final String couplingCriterionName, final List<String> dataFields) {
+	public DistanceVariant(final String characteristic, final String couplingCriterionName, final List<String> nanoentities) {
 		super();
-		this.variantName = variantName;
+		this.characteristic = characteristic;
 		this.couplingCriterionName = couplingCriterionName;
-		this.fields = dataFields;
+		this.nanoentities = nanoentities;
 	}
 
 	public DistanceVariant() {
 	}
 
-	public List<String> getFields() {
-		return fields;
+	public List<String> getNanoentities() {
+		return nanoentities;
 	}
 
 	public String getVariantName() {
-		return variantName;
+		return characteristic;
 	}
 
 	public String getCouplingCriterionName() {

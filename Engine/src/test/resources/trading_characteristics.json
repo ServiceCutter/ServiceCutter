@@ -1,8 +1,8 @@
 [
 	{
 		"couplingCriterionName":"Security Criticality",
-		"variantName":"Public",
-		"fields":[
+		"characteristic":"Public",
+		"nanoentities":[
 			"Stock.identifier",
 			"Stock.stockName",
 			"Price.dateTime",
@@ -15,8 +15,8 @@
 	},
 	{
 		"couplingCriterionName":"Security Criticality",
-		"variantName":"Critical",
-		"fields":[
+		"characteristic":"Critical",
+		"nanoentities":[
 			"AccountOwner.address",
 			"NaturalPerson.name",
 			"Company.companyName"
@@ -25,8 +25,8 @@
 	},
 	{
 		"couplingCriterionName":"Volatility",
-		"variantName":"Often",
-		"fields":[
+		"characteristic":"Often",
+		"nanoentities":[
 			"Price.dateTime",
 			"Price.price",
 			"Price.currency"
@@ -35,8 +35,8 @@
 	},
 	{
 		"couplingCriterionName":"Volatility",
-		"variantName":"Rarely",
-		"fields":[
+		"characteristic":"Rarely",
+		"nanoentities":[
 			"AccountOwner.address",
 			"NaturalPerson.name",
 			"Company.companyName",
@@ -46,8 +46,8 @@
 	},
 	{
 		"couplingCriterionName":"Consistency",
-		"variantName":"Eventually",
-		"fields":[
+		"characteristic":"Eventually",
+		"nanoentities":[
 			"Price.dateTime",
 			"Price.price",
 			"Price.currency"
@@ -56,24 +56,24 @@
 	},
 	{
 		"couplingCriterionName":"Storage Similarity",
-		"variantName":"Huge",
-		"fields":[
+		"characteristic":"Huge",
+		"nanoentities":[
 			"News.image"
 		]
 		
 	},
 	{
 		"couplingCriterionName":"Change Similarity",
-		"variantName":"Often",
-		"fields":[
+		"characteristic":"Often",
+		"nanoentities":[
 			"Recommendation.description"
 		]
 		
 	},
 	{
 		"couplingCriterionName":"Resilience",
-		"variantName":"Low",
-		"fields":[
+		"characteristic":"Low",
+		"nanoentities":[
 			"News.title",
 			"News.text",
 			"News.image",

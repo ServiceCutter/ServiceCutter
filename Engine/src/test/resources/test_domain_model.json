@@ -2,7 +2,7 @@
   "entities": [
     {
       "name": "Reservation",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "reserviertAm"
         },
@@ -13,7 +13,7 @@
     },
     {
       "name": "Kunde",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "name"
         },
@@ -24,7 +24,7 @@
     },
     {
       "name": "VideoTitel",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "titel"
         },
@@ -35,7 +35,7 @@
     },
     {
       "name": "Ausleihposition",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "zurueckAm"
         },
@@ -46,7 +46,7 @@
     },
     {
       "name": "Ausleihe",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "ausgeliehenAm"
         },
@@ -57,7 +57,7 @@
     },
     {
       "name": "Bezahlung",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "erstelltAm"
         }
@@ -65,7 +65,7 @@
     },
     {
       "name": "Kreditkartenzahlung",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "kartenID"
         },
@@ -79,7 +79,7 @@
     },
     {
       "name": "DVD",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "einkaufsDatum"
         },
@@ -90,7 +90,7 @@
     },
     {
       "name": "Barzahlung",
-      "attributes": [
+      "nanoentities": [
         {
           "name": "rueckgeld"
         }

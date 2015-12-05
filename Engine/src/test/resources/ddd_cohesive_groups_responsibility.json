@@ -2,7 +2,7 @@
 	  {
 		"cohesiveGroups": [
 		  {
-			"nanoEntities": [
+			"nanoentities": [
 			  "Cargo.trackingId",
 			  "RouteSpecification.origin",
 			  "RouteSpecification.destination",
@@ -18,7 +18,7 @@
 			"name": "cargoPlaner"
 		  },
 		  {
-			"nanoEntities": [
+			"nanoentities": [
 			  "HandlingEvent.type",
 			  "HandlingEvent.completionTime",
 			  "HandlingEvent.registrationTime",
@@ -30,7 +30,7 @@
 			"name": "cargoTracker"
 		  },
 		  {
-			"nanoEntities": [
+			"nanoentities": [
 			  "Voyage.voyageNumber",
 			  "CarrierMovement.departureLocation",
 			  "CarrierMovement.arrivalLocation",
@@ -40,7 +40,7 @@
 			"name": "voyageManager"
 		  },
 		  {
-			"nanoEntities": [
+			"nanoentities": [
 			  "Location.name",
 			  "Location.unLocode"
 			],

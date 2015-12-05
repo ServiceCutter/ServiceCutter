@@ -1,8 +1,8 @@
 [
 	{
 		"couplingCriterionName":"Volatility",
-		"variantName":"Often",
-		"fields":[
+		"characteristic":"Often",
+		"nanoentities":[
 			"HandlingEvent.type",
 			"HandlingEvent.completionTime",
 			"HandlingEvent.registrationTime",
@@ -14,16 +14,16 @@
 	},
 	{
 		"couplingCriterionName":"Volatility",
-		"variantName":"Rarely",
-		"fields":[
+		"characteristic":"Rarely",
+		"nanoentities":[
 			"Location.unLocode",
 			"Location.name"
 		]
 	},
 	{
 		"couplingCriterionName":"Change Similarity",
-		"variantName":"Rarely",
-		"fields":[
+		"characteristic":"Rarely",
+		"nanoentities":[
 			"Location.unLocode",
 			"Location.name"
 		]

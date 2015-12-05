@@ -2,7 +2,7 @@
    "entities":[
       {
          "name":"AccountOwner",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"address"
             }
@@ -10,7 +10,7 @@
       },
       {
          "name":"NaturalPerson",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"name"
             }
@@ -18,7 +18,7 @@
       },
       {
          "name":"Company",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"companyName"
             }
@@ -26,7 +26,7 @@
       },
       {
          "name":"Account",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"number"
             }
@@ -34,7 +34,7 @@
       },
       {
          "name":"Recommendation",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"description"
             }
@@ -42,7 +42,7 @@
       },
       {
          "name":"PaymentInfo",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"cashAccount"
             }
@@ -50,7 +50,7 @@
       },
       {
          "name":"Instruction",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"instructedTime"
             }
@@ -58,7 +58,7 @@
       },
       {
          "name":"Order",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"posted"
             },
@@ -81,7 +81,7 @@
       },
       {
          "name":"Stock",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"identifier"
             },
@@ -92,7 +92,7 @@
       },
       {
          "name":"Position",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"balance"
             }
@@ -100,7 +100,7 @@
       },
       {
          "name":"Price",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"dateTime"
             },
@@ -114,7 +114,7 @@
       },
       {
          "name":"News",
-         "attributes":[
+         "nanoentities":[
             {
                "name":"title"
             },

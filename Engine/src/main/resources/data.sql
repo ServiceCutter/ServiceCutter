@@ -12,6 +12,8 @@ insert into coupling_criterion (id, name, type) values (11, 'Change Similarity',
 insert into coupling_criterion (id, name, type) values (12, 'Predefined Service Constraint', 'EXCLUSIVE');
 insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'DISTANCE');
 insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'PROXIMITY');
+insert into coupling_criterion (id, name, type) values (15, 'Latency', 'PROXIMITY');
+insert into coupling_criterion (id, name, type) values (16, 'Consistency Constraint', 'SEPARATION');
 
 
 -- description

@@ -20,7 +20,6 @@ import org.springframework.util.StopWatch;
 import ch.hsr.servicestoolkit.importer.InvalidRestParam;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
-import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
@@ -32,13 +31,13 @@ public class SolverEndpoint {
 
 	private final Logger log = LoggerFactory.getLogger(SolverEndpoint.class);
 	private final ModelRepository modelRepository;
-	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 	private ServiceCutAnalyzer analyzer;
+	private Scorer scorer;
 
 	@Autowired
-	public SolverEndpoint(final ModelRepository modelRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository, final ServiceCutAnalyzer analyzer) {
+	public SolverEndpoint(final ModelRepository modelRepository, final Scorer scorer, final ServiceCutAnalyzer analyzer) {
 		this.modelRepository = modelRepository;
-		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
+		this.scorer = scorer;
 		this.analyzer = analyzer;
 	}
 
@@ -53,7 +52,6 @@ public class SolverEndpoint {
 			return new SolverResult(Collections.emptySet());
 		}
 
-		Scorer scorer = new Scorer(monoCouplingInstanceRepository);
 		Solver solver = null;
 		String algorithm = config.getAlgorithm();
 		StopWatch sw = new StopWatch();

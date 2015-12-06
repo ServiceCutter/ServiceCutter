@@ -8,6 +8,8 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
@@ -15,11 +17,13 @@ import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 
+@Component
 public class Scorer {
 	private final MonoCouplingInstanceRepository monoCouplingInstancesRepo;
 
 	private Logger log = LoggerFactory.getLogger(Scorer.class);
 
+	@Autowired
 	public Scorer(final MonoCouplingInstanceRepository repo) {
 		this.monoCouplingInstancesRepo = repo;
 	}

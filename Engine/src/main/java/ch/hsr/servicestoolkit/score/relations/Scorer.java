@@ -72,7 +72,7 @@ public class Scorer {
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores,
 				config.getPriorityForCouplingCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
 
-		Map<EntityPair, Double> responsibilityScores = new ExclusiveGroupCriteriaScorer(PENALTY_RESPONSIBILITY, MAX_SCORE, nanoentityRepo.findAll())
+		Map<EntityPair, Double> responsibilityScores = new ExclusiveGroupCriteriaScorer(PENALTY_RESPONSIBILITY, MAX_SCORE, nanoentityRepo.findByModel(model))
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.RESPONSIBILITY, responsibilityScores, config.getPriorityForCouplingCriterion(CouplingCriterion.RESPONSIBILITY));
 	}

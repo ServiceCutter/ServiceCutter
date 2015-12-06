@@ -24,8 +24,6 @@ public class Scorer {
 
 	public static final double MAX_SCORE = 10d;
 	public static final double MIN_SCORE = -10d;
-	public static final double PENALTY_RESPONSIBILITY = -5d;
-	public static final double PENALTY_PREDEFINED_SERVICE = MIN_SCORE;
 
 	private Logger log = LoggerFactory.getLogger(Scorer.class);
 
@@ -72,7 +70,7 @@ public class Scorer {
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores,
 				config.getPriorityForCouplingCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
 
-		Map<EntityPair, Double> responsibilityScores = new ExclusiveGroupCriteriaScorer(PENALTY_RESPONSIBILITY, MAX_SCORE, nanoentityRepo.findByModel(model))
+		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriteriaScorer()
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.RESPONSIBILITY, responsibilityScores, config.getPriorityForCouplingCriterion(CouplingCriterion.RESPONSIBILITY));
 	}
@@ -90,7 +88,7 @@ public class Scorer {
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SECURITY_CONSTRAINT));
 		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONSTRAINT, securityScores, config.getPriorityForCouplingCriterion(CouplingCriterion.SECURITY_CONSTRAINT));
 
-		Map<EntityPair, Double> predefinedServiceScores = new ExclusiveGroupCriteriaScorer(PENALTY_PREDEFINED_SERVICE, MAX_SCORE, nanoentityRepo.findAll())
+		Map<EntityPair, Double> predefinedServiceScores = new ExclusiveGroupCriteriaScorer(MIN_SCORE, MAX_SCORE, nanoentityRepo.findAll())
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.PREDEFINED_SERVICE));
 		addScoresByCriterionToResult(result, CouplingCriterion.PREDEFINED_SERVICE, predefinedServiceScores,
 				config.getPriorityForCouplingCriterion(CouplingCriterion.PREDEFINED_SERVICE));

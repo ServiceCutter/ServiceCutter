@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 
@@ -21,11 +22,19 @@ import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 public class Scorer {
 	private final MonoCouplingInstanceRepository monoCouplingInstancesRepo;
 
+	public static final double MAX_SCORE = 10d;
+	public static final double MIN_SCORE = -10d;
+	public static final double PENALTY_RESPONSIBILITY = -5d;
+	public static final double PENALTY_PREDEFINED_SERVICE = MIN_SCORE;
+
 	private Logger log = LoggerFactory.getLogger(Scorer.class);
 
+	private DataFieldRepository nanoentityRepo;
+
 	@Autowired
-	public Scorer(final MonoCouplingInstanceRepository repo) {
+	public Scorer(final MonoCouplingInstanceRepository repo, final DataFieldRepository nanoentityRepo) {
 		this.monoCouplingInstancesRepo = repo;
+		this.nanoentityRepo = nanoentityRepo;
 	}
 
 	public Map<EntityPair, Map<String, Score>> updateConfig(final Map<EntityPair, Map<String, Score>> scores, final SolverConfiguration config) {
@@ -47,7 +56,7 @@ public class Scorer {
 		Map<EntityPair, Map<String, Score>> result = new HashMap<>();
 
 		addScoresForCharacteristicsCriteria(model, config, result);
-		addScoresForSeparationCriteria(model, config, result);
+		addScoresForConstraintsCriteria(model, config, result);
 		addScoresForProximityCriteria(model, config, result);
 		return result;
 
@@ -63,7 +72,7 @@ public class Scorer {
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores,
 				config.getPriorityForCouplingCriterion(CouplingCriterion.SEMANTIC_PROXIMITY));
 
-		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriteriaScorer()
+		Map<EntityPair, Double> responsibilityScores = new ExclusiveGroupCriteriaScorer(PENALTY_RESPONSIBILITY, MAX_SCORE, nanoentityRepo.findAll())
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.RESPONSIBILITY, responsibilityScores, config.getPriorityForCouplingCriterion(CouplingCriterion.RESPONSIBILITY));
 	}
@@ -76,11 +85,15 @@ public class Scorer {
 		}
 	}
 
-	private void addScoresForSeparationCriteria(final Model model, final SolverConfiguration config, final Map<EntityPair, Map<String, Score>> result) {
-		Map<EntityPair, Double> scoresByCriterion = new SeparationCriteriaScorer()
+	private void addScoresForConstraintsCriteria(final Model model, final SolverConfiguration config, final Map<EntityPair, Map<String, Score>> result) {
+		Map<EntityPair, Double> securityScores = new SeparationCriteriaScorer()
 				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SECURITY_CONSTRAINT));
-		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONSTRAINT, scoresByCriterion,
-				config.getPriorityForCouplingCriterion(CouplingCriterion.SECURITY_CONSTRAINT));
+		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONSTRAINT, securityScores, config.getPriorityForCouplingCriterion(CouplingCriterion.SECURITY_CONSTRAINT));
+
+		Map<EntityPair, Double> predefinedServiceScores = new ExclusiveGroupCriteriaScorer(PENALTY_PREDEFINED_SERVICE, MAX_SCORE, nanoentityRepo.findAll())
+				.getScores(monoCouplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.PREDEFINED_SERVICE));
+		addScoresByCriterionToResult(result, CouplingCriterion.PREDEFINED_SERVICE, predefinedServiceScores,
+				config.getPriorityForCouplingCriterion(CouplingCriterion.PREDEFINED_SERVICE));
 	}
 
 	private void addScoresByCriterionToResult(final Map<EntityPair, Map<String, Score>> result, final String couplingCriterionName, final Map<EntityPair, Double> scores,

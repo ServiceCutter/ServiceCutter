@@ -10,7 +10,6 @@ import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.NanoEntity;
-import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {
 	Map<EntityPair, Double> result = new HashMap<>();
@@ -64,9 +63,9 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 		}
 		int tenPercent = Math.max(1, (int) (scores.size() * 0.1d));
 		double referenceValue = scores.get(tenPercent - 1);
-		double divisor = referenceValue / CouplingCriterionScoring.MAX_SCORE;
+		double divisor = referenceValue / Scorer.MAX_SCORE;
 		for (EntityPair key : result.keySet()) {
-			double newScore = Math.min(CouplingCriterionScoring.MAX_SCORE, result.get(key) / divisor);
+			double newScore = Math.min(Scorer.MAX_SCORE, result.get(key) / divisor);
 			result.put(key, newScore);
 		}
 	}

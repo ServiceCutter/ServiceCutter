@@ -27,9 +27,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
@@ -42,6 +43,7 @@ public class GephiSolverTest {
 	private SolverConfiguration config;
 	private AtomicLong idGenerator = new AtomicLong(10);
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
+	private DataFieldRepository nanoentityRepository;
 
 	@Before
 	public void setup() {
@@ -55,11 +57,12 @@ public class GephiSolverTest {
 		config.getAlgorithmParams().put("power", 1d);
 		config.getAlgorithmParams().put("prune", 0.0);
 		monoCouplingInstanceRepository = mock(MonoCouplingInstanceRepository.class);
+		nanoentityRepository = mock(DataFieldRepository.class);
 	}
 
 	@Test(expected = InvalidParameterException.class)
 	public void testEmptyModel() {
-		final Scorer scorer = new Scorer(monoCouplingInstanceRepository);
+		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
 		final Model model = new Model();
 		final Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
 		new GephiSolver(model, scores, GephiSolver.MODE_GIRVAN_NEWMAN, 3);
@@ -75,7 +78,7 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field4"));
 		model.addDataField(createDataField("field5"));
 		model.addDataField(createDataField("field6"));
-		final Scorer scorer = new Scorer(monoCouplingInstanceRepository);
+		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
 		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
 		GephiSolver solver = new GephiSolver(model, scores, GephiSolver.MODE_MARKOV, null);
 		SolverResult result1 = solver.solveWithMarkov();
@@ -107,7 +110,7 @@ public class GephiSolverTest {
 		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] { "field4", "field5", "field6" }));
 		when(monoCouplingInstanceRepository.findByModel(model)).thenReturn(instances);
 
-		final Scorer scorer = new Scorer(monoCouplingInstanceRepository);
+		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
 		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
 		GephiSolver solver = new GephiSolver(model, scores, GephiSolver.MODE_MARKOV, null);
 		SolverResult result = solver.solveWithMarkov();

@@ -17,6 +17,7 @@ public class CouplingCriterion {
 	public static final String VOLATILITY = "Volatility";
 	public static final String RESPONSIBILITY = "Responsibility";
 	public static final String SECURITY_CONSTRAINT = "Security Constraint";
+	public static final String PREDEFINED_SERVICE = "Predefined Service Constraint";
 
 	@Id
 	@GeneratedValue

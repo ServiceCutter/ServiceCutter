@@ -7,10 +7,10 @@ insert into coupling_criterion (id, name, type) values (6, 'Resilience', 'COMPAT
 insert into coupling_criterion (id, name, type) values (7, 'Volatility', 'COMPATIBILITY');
 insert into coupling_criterion (id, name, type) values (8, 'Consistency', 'COMPATIBILITY');
 insert into coupling_criterion (id, name, type) values (9, 'Storage Similarity', 'COMPATIBILITY');
-insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Similarity', 'COMMUNICATION');
+--insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Similarity', 'COMMUNICATION');
 insert into coupling_criterion (id, name, type) values (11, 'Change Similarity', 'COMPATIBILITY');
 insert into coupling_criterion (id, name, type) values (12, 'Predefined Service Constraint', 'CONSTRAINTS');
-insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'COMMUNICATION');
+--insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'COMMUNICATION');
 insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'COHESIVENESS');
 insert into coupling_criterion (id, name, type) values (15, 'Latency', 'COHESIVENESS');
 insert into coupling_criterion (id, name, type) values (16, 'Consistency Constraint', 'CONSTRAINTS');
@@ -26,10 +26,10 @@ update coupling_criterion set description = 'Data has varying availability const
 update coupling_criterion set description = 'Some data is hardly updated. Some data is updated very often.' where id = 7;
 update coupling_criterion set description = 'Some data loses its value if not kept consistent together while other data is more tolerant to inconsistencies.' where id = 8;
 update coupling_criterion set description = 'Storage that is required to persist all instances of a data field.' where id = 9;
-update coupling_criterion set description = 'Volume of data transferred on the network. This information is defined by how often an instance of a field is read or written, how many instances of the field exist and the size of the field.' where id = 10;
+--update coupling_criterion set description = 'Volume of data transferred on the network. This information is defined by how often an instance of a field is read or written, how many instances of the field exist and the size of the field.' where id = 10;
 update coupling_criterion set description = 'How often do Change Requests have to be implemented in this area.' where id = 11;
 update coupling_criterion set description = 'There might be different reasons why some parts forcefully needs to be modelled in the same service.' where id = 12;
-update coupling_criterion set description = 'Some data can be defined as immutable, meaning that it will not be affected by any change after the time of creation.' where id = 13;
+--update coupling_criterion set description = 'Some data can be defined as immutable, meaning that it will not be affected by any change after the time of creation.' where id = 13;
 update coupling_criterion set description = 'Data is usually governed, maintained or produced by a single person, a role or a department of a company.' where id = 14;
 
 -- decomposition impact
@@ -42,10 +42,10 @@ update coupling_criterion set decomposition_impact = 'Do not model requirements 
 update coupling_criterion set decomposition_impact = 'Do not model data with different requirements in same service.' where id = 7;
 update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 8;
 update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 9;
-update coupling_criterion set decomposition_impact = 'Model data which is regularly accessed within the same services to avoid network traffic' where id = 10;
+--update coupling_criterion set decomposition_impact = 'Model data which is regularly accessed within the same services to avoid network traffic' where id = 10;
 update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service' where id = 11;
 update coupling_criterion set decomposition_impact = 'Respect the constraints in the modelling algorithm.' where id = 12;
-update coupling_criterion set decomposition_impact = 'Immutable data are well suited for published language and communication between services. So if data fields have high coupling but are immutable, they might still be splitted across services if this generates other advantages.' where id = 13;
+--update coupling_criterion set decomposition_impact = 'Immutable data are well suited for published language and communication between services. So if data fields have high coupling but are immutable, they might still be splitted across services if this generates other advantages.' where id = 13;
 update coupling_criterion set decomposition_impact = 'Services should reflect the organization of a company.' where id = 13;
 
 
@@ -79,9 +79,9 @@ insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id,
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (21, 1, 9, 3, 'Normal', 1);
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (22, 1, 9, 10, 'Huge', 0);
 -- 10 Network
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (24, 1, 10, 0, 'Low', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (25, 1, 10, 4, 'Normal', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (26, 1, 10, 10, 'High', 0);
+--insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (24, 1, 10, 0, 'Low', 0);
+--insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (25, 1, 10, 4, 'Normal', 1);
+--insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (26, 1, 10, 10, 'High', 0);
 -- 11 Change Similarity
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (28, 1, 11, 10, 'Often', 0);
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (29, 1, 11, 4, 'Normal', 1);
@@ -89,8 +89,8 @@ insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id,
 -- 12
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (31, 1, 12, 'Predefined Service', 0);
 -- 13
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (32, 1, 13, 'Mutable', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (33, 1, 13, 'Immutable', 0);
+--insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (32, 1, 13, 'Mutable', 0);
+--insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (33, 1, 13, 'Immutable', 0);
 -- 14
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (34, 1, 14, 'Responsibility Area', 0);
 

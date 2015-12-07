@@ -40,10 +40,10 @@ import ch.hsr.servicestoolkit.solver.SolverResult;
 @WebAppConfiguration
 public class TradingExampleRestTest {
 
-	private static final String TRADING_EXAMPLE_JSON = "trading_example.json";
-	private static final String TRADING_EXAMPLE_BUSINESS_TRANSACTION = "trading_use_cases.json";
-	private static final String TRADING_EXAMPLE_DISTANCE_VARIANTS = "trading_characteristics.json";
-	private static final String TRADING_EXAMPLE_SEPARATION_CRITERIA = "trading_constraints_security.json";
+	private static final String TRADING_EXAMPLE_JSON = "trading_1_model.json";
+	private static final String TRADING_EXAMPLE_BUSINESS_TRANSACTION = "trading_2_use_cases.json";
+	private static final String TRADING_EXAMPLE_DISTANCE_VARIANTS = "trading_3_characteristics.json";
+	private static final String TRADING_EXAMPLE_SEPARATION_CRITERIA = "trading_5_constraints_security.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();

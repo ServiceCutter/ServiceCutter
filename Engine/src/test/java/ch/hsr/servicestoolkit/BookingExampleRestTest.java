@@ -39,9 +39,9 @@ import ch.hsr.servicestoolkit.solver.SolverResult;
 @WebAppConfiguration
 public class BookingExampleRestTest {
 
-	private static final String BOOKING_EXAMPLE_FILE = "booking_example.json";
-	private static final String BOOKING_EXAMPLE_USE_CASES_FILE = "booking_example_use_cases.json";
-	private static final String BOOKING_EXAMPLE_CHARACTERISTICS_FILE = "booking_characteristics.json";
+	private static final String BOOKING_EXAMPLE_FILE = "booking_1_model.json";
+	private static final String BOOKING_EXAMPLE_USE_CASES_FILE = "booking_2_use_cases.json";
+	private static final String BOOKING_EXAMPLE_CHARACTERISTICS_FILE = "booking_3_characteristics.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();

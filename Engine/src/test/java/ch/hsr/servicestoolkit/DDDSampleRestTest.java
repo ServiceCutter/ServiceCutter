@@ -40,10 +40,10 @@ import ch.hsr.servicestoolkit.solver.SolverResult;
 @WebAppConfiguration
 public class DDDSampleRestTest {
 
-	private static final String DDD_EXAMPLE_FILE = "ddd_example.json";
-	private static final String DDD_USE_CASES_FILE = "ddd_use_cases.json";
-	private static final String DDD_CHARACTERISTICS_FILE = "ddd_characteristics.json";
-	private static final String DDD_RESPONSIBILITES_FILE = "ddd_cohesive_groups_responsibility.json";
+	private static final String DDD_EXAMPLE_FILE = "ddd_1_model.json";
+	private static final String DDD_USE_CASES_FILE = "ddd_2_use_cases.json";
+	private static final String DDD_CHARACTERISTICS_FILE = "ddd_3_characteristics.json";
+	private static final String DDD_RESPONSIBILITES_FILE = "ddd_4_cohesive_groups_responsibility.json";
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();

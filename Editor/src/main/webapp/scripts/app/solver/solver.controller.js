@@ -156,7 +156,7 @@ angular.module('editorApp')
 		$scope.showRelations = false;
 		
 		$scope.leungM = 0.1;
-		$scope.leungDelta = 0.05;
+		$scope.leungDelta = 0.55;
 		$scope.iterations = 1;
 
 

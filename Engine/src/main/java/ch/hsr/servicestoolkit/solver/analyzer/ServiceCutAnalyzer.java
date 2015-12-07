@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
@@ -80,8 +81,7 @@ public class ServiceCutAnalyzer {
 				Double score = getProximityScoreFor(serviceList.get(a), serviceList.get(b), scores, model);
 				final List<String> sharedFiels = getSharedFields(serviceList.get(a), serviceList.get(b), useCaseResponsibilites);
 				if (score > 0) {
-					log.info("create service relation for services {} and {} with score {} and fields {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score,
-							sharedFiels.toString());
+					log.info("create service relation for services {} and {} with score {} and fields {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score, sharedFiels.toString());
 					relations.add(new ServiceRelation(sharedFiels, score, serviceTuple.getServiceA(), serviceTuple.getServiceB()));
 				}
 			}
@@ -125,6 +125,7 @@ public class ServiceCutAnalyzer {
 		for (MonoCouplingInstance instance : monoCouplingInstanceRepository.findByModelAndVariant(model, useCaseVariant)) {
 			DualCouplingInstance dualInstance = (DualCouplingInstance) instance;
 			Service responsibleService = getResponsibleService(set, dualInstance);
+			Assert.notNull(responsibleService, "Responsible service for " + dualInstance.getName() + " not found!");
 			if (useCaseResponsibilites.get(responsibleService) == null) {
 				useCaseResponsibilites.put(responsibleService, new ArrayList<>());
 			}

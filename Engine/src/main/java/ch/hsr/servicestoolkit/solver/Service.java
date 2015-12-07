@@ -6,12 +6,12 @@ import com.google.common.base.Objects;
 
 public class Service {
 
-	List<String> dataFields;
-	String name;
+	private List<String> dataFields;
+	private char id;
 
 	public Service(final List<String> dataFields, final char id) {
 		this.dataFields = dataFields;
-		this.name = "Service " + id;
+		this.id = id;
 	}
 
 	public Service() {
@@ -23,24 +23,24 @@ public class Service {
 	}
 
 	public String getName() {
-		return name;
+		return "Service " + id;
 	}
 
 	@Override
 	public String toString() {
-		return "Service [dataFields=" + dataFields + "]";
+		return "Service " + id + " [dataFields=" + dataFields + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(name);
+		return Objects.hashCode(id);
 	}
 
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof Service) {
 			Service other = (Service) obj;
-			return this == other || Objects.equal(name, other.name);
+			return this == other || Objects.equal(id, other.id);
 		} else {
 			return false;
 		}

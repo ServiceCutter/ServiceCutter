@@ -69,7 +69,7 @@ public class SolverEndpoint {
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
 			solver = new GephiSolver(model, scores, mode, numberOfClusters);
 		} else {
-			log.error("algorith {} not found, supported values: {}", algorithm, GephiSolver.MODES);
+			log.error("algorithm {} not found, supported values: {}", algorithm, GephiSolver.MODES);
 			throw new InvalidRestParam();
 		}
 		sw.stop();
@@ -79,7 +79,11 @@ public class SolverEndpoint {
 		sw.stop();
 		log.info("Found clusters in {}ms", sw.getLastTaskTimeMillis());
 		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.getServices().size(), result.toString());
-		analyzer.analyseResult(result, scores, model);
+		if (result.getServices().size() > 0) {
+			analyzer.analyseResult(result, scores, model);
+		} else {
+			log.warn("No services found!");
+		}
 		return result;
 	}
 

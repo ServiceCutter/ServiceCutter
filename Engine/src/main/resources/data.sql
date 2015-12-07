@@ -14,7 +14,7 @@ insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'COMMU
 insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'COHESIVENESS');
 insert into coupling_criterion (id, name, type) values (15, 'Latency', 'COHESIVENESS');
 insert into coupling_criterion (id, name, type) values (16, 'Consistency Constraint', 'CONSTRAINTS');
-
+	
 
 -- description
 update coupling_criterion set description = 'Data which belong to the same identity and therefore shares a common lifecycle.' where id = 1;
@@ -72,7 +72,7 @@ insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id,
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (16, 1, 7, 0, 'Rarely', 0);
 -- 8 Consistency
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (17, 1, 8, 10, 'High', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (18, 1, 8, 3, 'Eventually', 0);
+insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (18, 1, 8, 4, 'Eventually', 0);
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (19, 1, 8, 0, 'Weak', 0);
 -- 9 Storage
 insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (20, 1, 9, 0, 'Tiny', 0);

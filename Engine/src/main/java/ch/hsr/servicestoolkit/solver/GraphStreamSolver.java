@@ -15,8 +15,8 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
@@ -28,7 +28,6 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	private final Logger log = LoggerFactory.getLogger(GraphStreamSolver.class);
 	protected double m = 0.1;
 	protected double delta = 0.05;
-	private int iterations = 1;
 
 	public GraphStreamSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final SolverConfiguration config) {
 		super(model, scores);
@@ -43,10 +42,6 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 			log.info("parameter 'delta' is {}", delta);
 			this.delta = delta;
 		}
-		Double iterations = config.getAlgorithmParams().get("iterations");
-		if (iterations != null) {
-			this.iterations = iterations.intValue();
-		}
 		buildNodes();
 		buildEdges();
 	}
@@ -56,10 +51,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 		Leung algorithm = new Leung(graph, null, WEIGHT);
 		algorithm.setParameters(m, delta);
 		log.info("Using parameters m={} and delta={}", m, delta);
-		for (int i = 0; i < iterations; i++) {
-			algorithm.compute();
-		}
-		log.info("Solved with {} iterations ", iterations);
+		algorithm.compute();
 		Map<String, List<String>> families = new HashMap<>();
 		for (Node node : graph) {
 			String family = node.getAttribute("ui.class");

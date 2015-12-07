@@ -78,8 +78,7 @@ angular.module('editorApp')
         										  'extraClusters': $scope.extraClusterSlider,
         										  'numberOfClusters': $scope.numberSlider,
         										  'leungM': $scope.leungM,
-        										  'leungDelta': $scope.leungDelta,
-        										  'iterations' : $scope.iterations
+        										  'leungDelta': $scope.leungDelta
         							},
         							'priorities': {
         							},
@@ -157,8 +156,6 @@ angular.module('editorApp')
 		
 		$scope.leungM = 0.1;
 		$scope.leungDelta = 0.55;
-		$scope.iterations = 1;
-
 
         $scope.availableModels = Model.all();
         

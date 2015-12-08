@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('SolverController', function ($scope, $http, Principal, VisDataSet, Model, Coupling, $timeout) {
+    .controller('SolverController', function ($scope, $http, Principal, VisDataSet, Model, Coupling, Blob, FileSaver, $timeout) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -141,6 +141,13 @@ angular.module('editorApp')
         		XL : {value: 8, name: "XL"},
         		XXL : {value: 13, name: "XXL"}
         }
+        
+        $scope.downloadCut = function() {
+        	var data = JSON.stringify($scope.result);
+        	var data = new Blob([data], { type: 'text/plain;charset=utf-8' });
+            FileSaver.saveAs(data, 'Services.json');
+        }
+        
         
 		$scope.sameEntitySlider = 0.2;
 		$scope.compositionSlider = 0.2;

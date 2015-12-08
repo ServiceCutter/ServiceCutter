@@ -3,7 +3,7 @@
 angular.module('editorApp', ['LocalStorageModule', 
                'ui.bootstrap', // for modal dialogs
     'ngResource', 'ui.router', 'ngCookies', 'ngAria', 'ngCacheBuster', 'ngFileUpload', 'infinite-scroll', 'ngVis', 
-    'angularScreenfull', 'rzModule', 'toggle-switch'])
+    'angularScreenfull', 'rzModule', 'toggle-switch', 'ngFileSaver'])
 
     .run(function ($rootScope, $location, $window, $http, $state,  Auth, Principal, ENV, VERSION) {
         $rootScope.ENV = ENV;

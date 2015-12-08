@@ -9,6 +9,7 @@
     "angular-bootstrap": "0.13.3",
     "angular-cache-buster": "0.4.3",
     "angular-cookies": "1.4.5",
+    "angular-file-saver": "~1.0.1",
     "angular-local-storage": "0.2.2",
     "angular-resource": "1.4.5",
     "angular-sanitize": "1.4.5",

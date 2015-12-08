@@ -22,12 +22,12 @@
 							<button class="btn btn-default" title="Recalculate" ng-click="solve()">
 								<span class="glyphicon glyphicon-repeat"></span>
 							</button>
+							<button class="btn btn-default" title="Save suggested service cut" ng-click="downloadCut()">
+								<span class="glyphicon glyphicon-download-alt"> </span> 
+							</button>
 							<button class="btn btn-default" title="Full screen" ngsf-toggle-fullscreen>
 								<span class="glyphicon glyphicon-resize-full"></span>
 							</button>
-							<!-- <button class="btn btn-default">
-								<span class="glyphicon glyphicon-floppy-disk"></span>
-							</button> -->
 						</div>
 						<vis-network data="graphData" options="graphOptions"
 							events="graphEvents"></vis-network>

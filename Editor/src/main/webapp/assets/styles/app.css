@@ -3,11 +3,11 @@
 	width: 100%;
 	height: 600px;
 }
-.graph-container button {
+.graph-container .buttons {
 	position: relative;
 	float: right;
 	margin-top: -40px;
-	margin-right: 10px;
+	margin-right: 10px; 
 }
 .fullscreen {
 	height: 100% !important;

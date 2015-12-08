@@ -8,7 +8,7 @@ angular.module('editorApp')
         });
         
         $scope.availableAlgorithms = ['Leung','Girvan-Newman'];
-        $scope.algorithm = 'Girvan-Newman';
+        $scope.algorithm = 'Girvan-Newman'; // default
         
         $scope.graphOptions = {
 			autoResize: true,

@@ -30,31 +30,24 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
-import cz.cvut.fit.krizeji1.markov_cluster.MCClusterer;
 
 public class GephiSolver extends AbstractSolver<Node, Edge> {
 
-	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
-	public static final String MODE_MARKOV = "MCL";
-	public static final String MODE_LEUNG = "Leung";
-	public static final String[] MODES = new String[] {MODE_GIRVAN_NEWMAN, MODE_MARKOV, MODE_LEUNG};
 	private Map<String, Node> nodes;
 	private UndirectedGraph undirectedGraph;
 	private GraphModel graphModel;
 
 	private Logger log = LoggerFactory.getLogger(GephiSolver.class);
-	private String mode;
 	private Integer numberOfClusters;
 	private char serviceIdGenerator = 'A';
 
-	public GephiSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final String mode, final Integer numberOfClusters) {
+	public GephiSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final Integer numberOfClusters) {
 		super(model, scores);
-		this.mode = mode;
 		this.numberOfClusters = numberOfClusters;
 		if (model == null || model.getDataFields().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
@@ -94,14 +87,6 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 
 		previewController.refreshPreview();
 
-		// OpenOrdLayout layout = new OpenOrdLayout(new OpenOrdLayoutBuilder());
-		// layout.setGraphModel(graphModel);
-		// layout.resetPropertiesValues();
-		//
-		// layout.initAlgo();
-		// layout.goAlgo();
-		// layout.endAlgo();
-
 		// Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
 		try {
@@ -114,10 +99,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 
 	@Override
 	public SolverResult solve() {
-		if (MODE_GIRVAN_NEWMAN.equals(mode)) {
-			return solveWithGirvanNewman(numberOfClusters);
-		}
-		return solveWithMarkov();
+		return solveWithGirvanNewman(numberOfClusters);
 	}
 
 	SolverResult solveWithGirvanNewman(final int numberOfClusters) {
@@ -126,21 +108,6 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 		clusterer.setPreferredNumberOfClusters(numberOfClusters);
 		clusterer.execute(graphModel);
 		SolverResult solverResult = new SolverResult(getClustererResult(clusterer));
-		return solverResult;
-	}
-
-	SolverResult solveWithMarkov() {
-		Log.debug("solve cluster with MCL");
-
-		MCClusterer clusterer = new MCClusterer();
-		// the higher the more clusters?
-		clusterer.setInflation(3);
-		clusterer.setExtraClusters(true);
-		clusterer.setSelfLoop(true); // must be true
-		clusterer.setPower(2);
-		clusterer.execute(graphModel);
-		Set<Service> clustererResult = getClustererResult(clusterer);
-		SolverResult solverResult = new SolverResult(clustererResult);
 		return solverResult;
 	}
 

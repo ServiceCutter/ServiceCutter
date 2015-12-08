@@ -37,7 +37,7 @@ import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { SolverConfiguration.class })
+@ContextConfiguration(classes = {SolverConfiguration.class})
 public class GephiSolverTest {
 
 	private SolverConfiguration config;
@@ -65,33 +65,7 @@ public class GephiSolverTest {
 		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
 		final Model model = new Model();
 		final Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
-		new GephiSolver(model, scores, GephiSolver.MODE_GIRVAN_NEWMAN, 3);
-	}
-
-	@Ignore
-	@Test
-	public void testSimpleModelNoEdges() {
-		Model model = new Model();
-		model.addDataField(createDataField("field1"));
-		model.addDataField(createDataField("field2"));
-		model.addDataField(createDataField("field3"));
-		model.addDataField(createDataField("field4"));
-		model.addDataField(createDataField("field5"));
-		model.addDataField(createDataField("field6"));
-		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
-		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
-		GephiSolver solver = new GephiSolver(model, scores, GephiSolver.MODE_MARKOV, null);
-		SolverResult result1 = solver.solveWithMarkov();
-		assertEquals(3, result1.getServices().size());
-		for (Service context : result1.getServices()) {
-			assertEquals(2, context.getDataFields().size());
-		}
-
-		SolverResult result2 = solver.solveWithMarkov();
-		assertEquals(2, result2.getServices().size());
-		for (Service context : result2.getServices()) {
-			assertEquals(3, context.getDataFields().size());
-		}
+		new GephiSolver(model, scores, 3);
 	}
 
 	@Test
@@ -106,14 +80,14 @@ public class GephiSolverTest {
 		model.addDataField(createDataField("field6"));
 
 		Set<MonoCouplingInstance> instances = new HashSet<>();
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] { "field1", "field2", "field3" }));
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] { "field4", "field5", "field6" }));
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field1", "field2", "field3"}));
+		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field4", "field5", "field6"}));
 		when(monoCouplingInstanceRepository.findByModel(model)).thenReturn(instances);
 
 		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
 		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
-		GephiSolver solver = new GephiSolver(model, scores, GephiSolver.MODE_MARKOV, null);
-		SolverResult result = solver.solveWithMarkov();
+		GephiSolver solver = new GephiSolver(model, scores, null);
+		SolverResult result = solver.solveWithGirvanNewman(2);
 
 		assertEquals(2, result.getServices().size());
 		for (Service context : result.getServices()) {

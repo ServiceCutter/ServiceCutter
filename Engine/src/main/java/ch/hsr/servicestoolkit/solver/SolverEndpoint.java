@@ -34,6 +34,10 @@ public class SolverEndpoint {
 	private ServiceCutAnalyzer analyzer;
 	private Scorer scorer;
 
+	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
+	public static final String MODE_LEUNG = "Leung";
+	public static final String[] MODES = new String[] {MODE_GIRVAN_NEWMAN, MODE_LEUNG};
+
 	@Autowired
 	public SolverEndpoint(final ModelRepository modelRepository, final Scorer scorer, final ServiceCutAnalyzer analyzer) {
 		this.modelRepository = modelRepository;
@@ -58,18 +62,13 @@ public class SolverEndpoint {
 		sw.start();
 
 		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
-		if (GephiSolver.MODE_LEUNG.equals(algorithm)) {
+		if (MODE_LEUNG.equals(algorithm)) {
 			solver = new GraphStreamSolver(model, scores, config);
-		} else if (GephiSolver.MODE_GIRVAN_NEWMAN.equals(algorithm)) {
-			String mode = GephiSolver.MODE_GIRVAN_NEWMAN;
+		} else if (MODE_GIRVAN_NEWMAN.equals(algorithm)) {
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
-			solver = new GephiSolver(model, scores, mode, numberOfClusters);
-		} else if (GephiSolver.MODE_MARKOV.equals(algorithm)) {
-			String mode = GephiSolver.MODE_MARKOV;
-			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
-			solver = new GephiSolver(model, scores, mode, numberOfClusters);
+			solver = new GephiSolver(model, scores, numberOfClusters);
 		} else {
-			log.error("algorithm {} not found, supported values: {}", algorithm, GephiSolver.MODES);
+			log.error("algorithm {} not found, supported values: {}", algorithm, MODES);
 			throw new InvalidRestParam();
 		}
 		sw.stop();

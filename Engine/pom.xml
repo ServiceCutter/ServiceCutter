@@ -99,17 +99,6 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.gephi</groupId>
-			<artifactId>markov_cluster_gephi_plugin</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<!-- needed for markov clusterer -->
-		<dependency>
-			<groupId>com.googlecode.efficient-java-matrix-library</groupId>
-			<artifactId>ejml</artifactId>
-			<version>0.25</version>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
 		</dependency>

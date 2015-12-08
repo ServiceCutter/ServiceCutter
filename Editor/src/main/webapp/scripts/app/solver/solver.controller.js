@@ -121,6 +121,7 @@ angular.module('editorApp')
         	}
         }
         
+        $scope.criteriaTypes = ["COHESIVENESS", "COMPATIBILITY", "CONSTRAINTS"];
         
         $scope.criteria = Coupling.all(function(criteria) {
         	angular.forEach(criteria, function(value, index){
@@ -131,6 +132,13 @@ angular.module('editorApp')
         		}
         	})
         });
+        
+        $scope.expectComparator = function (actual, expected) {
+            if (!expected) {
+               return true;
+            }
+            return angular.equals(expected, actual);
+        }
         
         $scope.priorityMetric = {
         		IGNORE : {value: 0, name: "IGNORE"},
@@ -166,4 +174,6 @@ angular.module('editorApp')
 
         $scope.availableModels = Model.all();
         
-    });
+    }).filter('capitalize', function() {
+        return function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}
+        });

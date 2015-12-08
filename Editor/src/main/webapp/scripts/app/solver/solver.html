@@ -54,9 +54,11 @@
 			<!-- this structure is a bit complicated as bootstrap requires:
 				"Content should be placed within columns, and only columns may be immediate children of rows."
 			 -->
-				<div class="row"><h3>Coupling Criteria Priorities:</h3></div>
+
 				<div class="row"><form class="form-inline" name="myForm">
-					<div ng-repeat="criterion in criteria" class="form-group form-group-sm col-md-12">
+				<div ng-repeat="type in criteriaTypes" class="form-group form-group-sm col-md-12">
+					<h4>{{type | capitalize}} Criteria Priorities</h4>
+					<div ng-repeat="criterion in criteria | filter:type:expectComparator" class="form-group form-group-sm col-md-12">
 						<div class="row" style="margin-bottom: 10px">
 							<div class="col-md-8">
 								<label for="{{criterion.name}}">{{criterion.name}}</label>
@@ -69,6 +71,7 @@
 							</div>
 						</div>
 					</div>
+				</div>
 				</form></div>
 				
 				<h3>Algorithm:</h3>

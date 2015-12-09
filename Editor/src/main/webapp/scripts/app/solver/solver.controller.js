@@ -58,11 +58,12 @@ angular.module('editorApp')
         
         
         $scope.$watch('modelId', function () {
-        	$scope.solve();
+        	$scope.calculated = false;
         });
         
         $scope.solve=function(){
-        	 $scope.solveModel($scope.modelId);
+        	$scope.selectedServiceName = '';
+        	$scope.solveModel($scope.modelId);
         }
 
         $scope.solveModel = function(modelId) {
@@ -110,13 +111,14 @@ angular.module('editorApp')
 		    			// service relations
 		    			if($scope.showRelations){
 			    			for(var relation in data.relations){
-			    					serviceEdges.add({from: data.relations[relation].serviceA, to: data.relations[relation].serviceB, color:'#B0DF9B', label: data.relations[relation].score});
+			    					serviceEdges.add({from: data.relations[relation].serviceA, to: data.relations[relation].serviceB, color:'#B0DF9B'});
 			    			}
 		    			}
 		    	        $scope.graphData = {
 	    	            	'nodes': serviceNodes,
 	    	            	'edges': serviceEdges
 	    	            };
+		    	        $scope.calculated = true;
 	            });
         	}
         }
@@ -156,6 +158,7 @@ angular.module('editorApp')
             FileSaver.saveAs(data, 'Services.json');
         }
         
+        $scope.solved = false;
         
 		$scope.sameEntitySlider = 0.2;
 		$scope.compositionSlider = 0.2;

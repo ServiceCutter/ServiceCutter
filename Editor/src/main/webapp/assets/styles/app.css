@@ -22,6 +22,16 @@
     color: #777;
     font-weight: bold;
 }
-span.inline-help {
+.inline-help {
 	text-decoration: underline;
+}
+div.toggle-switch {
+	margin-left: 20px;
+}
+#result-container {
+	text-align: center;
+	height: 600px;
+}
+#calculate-button {
+	margin-top: 100px;
 }

@@ -15,9 +15,13 @@
 					<span>{{status}}</span>
 				</form>
 	
-				<div ng-show="modelId">
+				<div id="result-container" ng-show="modelId">
+
+					<button ng-show="!calculated" id="calculate-button" class="btn btn-default" title="Calculate" ng-click="solve()">
+						<span class="glyphicon glyphicon-cog"></span> Calculate candidate service cut
+					</button>
 	
-					<div class="graph-container" ngsf-fullscreen>
+					<div ng-show="calculated" class="graph-container" ngsf-fullscreen>
 						<div class="buttons">
 							<button class="btn btn-default" title="Recalculate" ng-click="solve()">
 								<span class="glyphicon glyphicon-repeat"></span>
@@ -41,7 +45,7 @@
 					<ul>
 						<li ng-repeat="useCase in selectedServiceUseCases">{{useCase}}</li>
 					</ul>
-					<p><b>Relationships:</b></p>
+					<h3>Published Language</h3>
 					<div ng-repeat="relation in selectedServiceRelations">
 						<p>Published Language between {{relation.name}}</p>
 						<ul>
@@ -49,23 +53,28 @@
 						</ul>
 					</div>
 				</div>
+				<div ng-show="calculated && !selectedServiceName" 
+					class="alert alert-info" role="alert">
+					<strong>Hint:</strong> Select a service to see its responsibilities and dependencies.
+				</div>
 			</div>
 			<div class="col-md-5">
 			<!-- this structure is a bit complicated as bootstrap requires:
 				"Content should be placed within columns, and only columns may be immediate children of rows."
 			 -->
 
+				<h3>Priorities</h3>
+				
 				<div class="row"><form class="form-inline" name="myForm">
 				<div ng-repeat="type in criteriaTypes" class="form-group form-group-sm col-md-12">
-					<h4>{{type | capitalize}} Criteria Priorities</h4>
+					<h4>{{type | capitalize}} Criteria</h4>
 					<div ng-repeat="criterion in criteria | filter:type:expectComparator" class="form-group form-group-sm col-md-12">
 						<div class="row" style="margin-bottom: 10px">
 							<div class="col-md-8">
 								<label for="{{criterion.name}}">{{criterion.name}}</label>
 							</div>
 							<div class="col-md-4">
-								<select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority"  
-									ng-change="solve()" class="form-control">
+								<select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority" class="form-control">
 								  	<option ng-selected="criterion.priority == metric.value" ng-repeat="metric in priorityMetric" value="{{metric.value}}">{{metric.name}}</option>
 								</select>
 							</div>
@@ -74,25 +83,25 @@
 				</div>
 				</form></div>
 				
-				<h3>Algorithm:</h3>
-				<select class="form-control" ng-model="algorithm" ng-options="a for a in availableAlgorithms" ng-change="solve()"></select>
+				<h3>Algorithm</h3>
+				<select class="form-control" ng-model="algorithm" ng-options="a for a in availableAlgorithms"></select>
 				
-				<h3>Visualization:</h3>
+				<h3>Visualization</h3>
 				<form class="form-inline" name="myVizForm">	
 				<div class="form-group form-group-sm">			
-					<label for="show-relations">Show Service Relations</label> <br />
+					<span class="inline-help" popover="Enable to draw an egde between services sharing use cases." popover-trigger="mouseenter">
+						Show Service Relations</span> 
 					<toggle-switch ng-model="showRelations" id="show-relations"
 						ng-click="solve()"></toggle-switch>
 				</div>
 				</form>
 				
-				<h3>Algorithm Params:</h3>
+				<h3>Algorithm parameters</h3>
 				<div width="50%">
 				    Number of Services (Girvan-Newman):<br />
 				    <rzslider rz-slider-model="numberSlider" 
 				    	rz-slider-step="1" 
 				    	rz-slider-precision="0" 
-				    	rz-slider-on-end="solve()" 
 				    	rz-slider-floor="0" 
 				    	rz-slider-ceil="10">
 				    </rzslider>
@@ -102,7 +111,6 @@
 				    <rzslider rz-slider-model="leungM" 
 				    	rz-slider-step="0.1" 
 				    	rz-slider-precision="1" 
-				    	rz-slider-on-end="solve()" 
 				    	rz-slider-floor="-2" 
 				    	rz-slider-ceil="2">
 				    </rzslider>
@@ -112,7 +120,6 @@
 				    <rzslider rz-slider-model="leungDelta" 
 				    	rz-slider-step="0.05" 
 				    	rz-slider-precision="2" 
-				    	rz-slider-on-end="solve()" 
 				    	rz-slider-floor="0" 
 				    	rz-slider-ceil="1">
 				    </rzslider>

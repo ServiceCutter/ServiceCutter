@@ -74,16 +74,25 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 		return solverResult;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void createNode(final String name) {
 		graph.addNode(name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Node getNode(final String name) {
 		return graph.getNode(name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void createEdgeAndSetWeight(final NanoEntity first, final NanoEntity second, final double weight) {
 		String firstName = createNodeIdentifier(first);
@@ -96,11 +105,17 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 		return firstName + "-" + secondName;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void removeEdge(final Edge edge) {
 		graph.removeEdge(edge);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Edge getEdge(final NanoEntity first, final NanoEntity second) {
 		String firstName = createNodeIdentifier(first);
@@ -108,18 +123,27 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 		return graph.getEdge(createEdgeIdentifier(firstName, secondName));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Iterable<Edge> getEdges() {
 		return (Iterable<Edge>) graph.getEachEdge();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected double getWeight(final Edge edge) {
 		Double weight = edge.getAttribute(WEIGHT);
 		return weight != null ? weight : 0;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void setWeight(final Edge edge, final double weight) {
 		edge.setAttribute(WEIGHT, weight);

@@ -8,11 +8,21 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
+/**
+ * Implement this class to support an algorithm in the Service Cutter.
+ * 
+ * This class utilizes the Template Method pattern.
+ * 
+ * @param <N>
+ *            the class for a Node
+ * @param <E>
+ *            the class for an Edge
+ */
 public abstract class AbstractSolver<N, E> implements Solver {
 
 	private Model model;
@@ -25,24 +35,85 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		log.info("Created solver of type {}", getClass());
 	}
 
+	/**
+	 * Create a new node on the graph
+	 * 
+	 * @param name
+	 *            the name of the node
+	 */
 	protected abstract void createNode(String name);
 
-	protected N getNode(final NanoEntity dataField) {
-		return getNode(createNodeIdentifier(dataField));
+	/**
+	 * Get a node from the graph
+	 * 
+	 * @param nanoentity
+	 *            the originating nanoentity
+	 * @return
+	 */
+	protected N getNode(final NanoEntity nanoentity) {
+		return getNode(createNodeIdentifier(nanoentity));
 	}
 
+	/**
+	 * Get a node from the graph
+	 * 
+	 * @param name
+	 *            the given name of a nanoentity
+	 * @return
+	 */
 	protected abstract N getNode(String name);
 
+	/**
+	 * Create a new edge and set a weight on it
+	 * 
+	 * @param first
+	 *            the first side of the edge
+	 * @param second
+	 *            the second side of the edge
+	 * @param weight
+	 *            a weight that is used to persist the score
+	 */
 	protected abstract void createEdgeAndSetWeight(NanoEntity first, NanoEntity second, double weight);
 
+	/**
+	 * Remove an edge from the graph
+	 * 
+	 * @param edge
+	 *            the edge to be removed
+	 */
 	protected abstract void removeEdge(E edge);
 
+	/**
+	 * Get an existing edge from the graph
+	 * 
+	 * @param first
+	 *            the first side of the edge
+	 * @param second
+	 *            the second side of the edge
+	 * @return the edge
+	 */
 	protected abstract E getEdge(final NanoEntity first, final NanoEntity second);
 
+	/**
+	 * @return all edges in the graph
+	 */
 	protected abstract Iterable<E> getEdges();
 
+	/**
+	 * @param edge
+	 * @return the weight representing the score
+	 */
 	protected abstract double getWeight(E edge);
 
+	/**
+	 * Set a weight representing the score
+	 * 
+	 * @see #getWeight(Object)
+	 * @see #createEdgeAndSetWeight(NanoEntity, NanoEntity, double)
+	 * @param edge
+	 * @param weight
+	 *            weight representing the score
+	 */
 	protected abstract void setWeight(E edge, double weight);
 
 	protected void buildNodes() {

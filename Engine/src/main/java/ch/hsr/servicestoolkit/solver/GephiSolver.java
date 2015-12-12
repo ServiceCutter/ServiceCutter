@@ -97,6 +97,9 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public SolverResult solve() {
 		return solveWithGirvanNewman(numberOfClusters);
@@ -129,21 +132,33 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Iterable<Edge> getEdges() {
 		return undirectedGraph.getEdges();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Edge getEdge(final NanoEntity first, final NanoEntity second) {
 		return undirectedGraph.getEdge(getNode(first), getNode(second));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void removeEdge(final Edge edge) {
 		undirectedGraph.removeEdge(edge);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void createEdgeAndSetWeight(final NanoEntity first, final NanoEntity second, final double weight) {
 		Edge edge = graphModel.factory().newEdge(getNode(first), getNode(second), (float) weight, false);
@@ -151,22 +166,34 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 		edge.getEdgeData().setLabel(edge.getWeight() + "");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected double getWeight(final Edge edge) {
 		return edge.getWeight();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void setWeight(final Edge edge, final double weight) {
 		edge.setWeight((float) weight);
 		edge.getEdgeData().setLabel(edge.getWeight() + "");
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected Node getNode(final String name) {
 		return nodes.get(name);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void createNode(final String name) {
 		Node node = graphModel.factory().newNode(name);

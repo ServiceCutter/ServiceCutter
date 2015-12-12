@@ -64,7 +64,9 @@ public class GephiSolverTest {
 	public void testEmptyModel() {
 		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
 		final Model model = new Model();
-		final Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
+		final Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, (String key) -> {
+			return config.getPriorityForCouplingCriterion(key);
+		});
 		new GephiSolver(model, scores, 3);
 	}
 
@@ -85,7 +87,9 @@ public class GephiSolverTest {
 		when(monoCouplingInstanceRepository.findByModel(model)).thenReturn(instances);
 
 		final Scorer scorer = new Scorer(monoCouplingInstanceRepository, nanoentityRepository);
-		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
+		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, (String key) -> {
+			return config.getPriorityForCouplingCriterion(key);
+		});
 		GephiSolver solver = new GephiSolver(model, scores, null);
 		SolverResult result = solver.solveWithGirvanNewman(2);
 

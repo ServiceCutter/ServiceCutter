@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import ch.hsr.servicestoolkit.importer.InvalidRestParam;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
+import ch.hsr.servicestoolkit.rest.InvalidRestParam;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
@@ -61,7 +61,9 @@ public class SolverEndpoint {
 		StopWatch sw = new StopWatch();
 		sw.start();
 
-		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, config);
+		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, (String key) -> {
+			return config.getPriorityForCouplingCriterion(key);
+		});
 		if (MODE_LEUNG.equals(algorithm)) {
 			solver = new GraphStreamSolver(model, scores, config);
 		} else if (MODE_GIRVAN_NEWMAN.equals(algorithm)) {

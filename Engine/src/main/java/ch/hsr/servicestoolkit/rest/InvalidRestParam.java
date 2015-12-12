@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.importer;
+package ch.hsr.servicestoolkit.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

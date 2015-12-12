@@ -21,27 +21,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroup;
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
 import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
-import ch.hsr.servicestoolkit.importer.api.NanoEntityInput;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
+import ch.hsr.servicestoolkit.importer.api.NanoEntityInput;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingCriterionFactory;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
+import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.DataFieldRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.rest.InvalidRestParam;
 
 @Component
 @Path("/engine/import")
@@ -49,19 +52,21 @@ public class ImportEndpoint {
 
 	private final Logger log = LoggerFactory.getLogger(ImportEndpoint.class);
 	private final ModelRepository modelRepository;
-	private DataFieldRepository dataFieldRepository;
-	private CouplingCriterionFactory couplingCriterionFactory;
-	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
+	private final DataFieldRepository dataFieldRepository;
+	private final CouplingCriterionRepository couplingCriterionRepository;
+	private final CouplingCriteriaVariantRepository couplingCriteriaVariantRepository;
+	private final MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 	private ModelCompleter modelCompleter;
 
 	@Autowired
-	public ImportEndpoint(final ModelRepository modelRepository, final DataFieldRepository dataFieldRepository, final CouplingCriterionFactory couplingCriterionFactory,
-			final MonoCouplingInstanceRepository monoCouplingInstanceRepository, final ModelCompleter modelCompleter) {
+	public ImportEndpoint(final ModelRepository modelRepository, final DataFieldRepository dataFieldRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository,
+			final ModelCompleter modelCompleter, CouplingCriterionRepository couplingCriterionRepository, CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
 		this.modelRepository = modelRepository;
 		this.dataFieldRepository = dataFieldRepository;
-		this.couplingCriterionFactory = couplingCriterionFactory;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
 		this.modelCompleter = modelCompleter;
+		this.couplingCriterionRepository = couplingCriterionRepository;
+		this.couplingCriteriaVariantRepository = couplingCriteriaVariantRepository;
 
 	}
 
@@ -85,7 +90,7 @@ public class ImportEndpoint {
 
 		}
 		// entities
-		CouplingCriteriaVariant sameEntityVariant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
+		CouplingCriteriaVariant sameEntityVariant = findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
 		for (Entry<String, List<NanoEntityInput>> entity : findRealEntities(domainModel).entrySet()) {
 			MonoCouplingInstance couplingInstance = sameEntityVariant.createInstance();
 			monoCouplingInstanceRepository.save(couplingInstance);
@@ -105,7 +110,7 @@ public class ImportEndpoint {
 		}
 
 		// Aggregations
-		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.AGGREGATION);
+		CouplingCriteriaVariant aggregationVariant = findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.AGGREGATION);
 		for (EntityRelation relation : domainModel.getRelations()) {
 			if (RelationType.AGGREGATION.equals(relation.getType())) {
 				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
@@ -172,18 +177,14 @@ public class ImportEndpoint {
 
 		// get all entites that will have no other entities merged into them
 		List<Entity> reducableEntities = inputEntites.stream()
-				.filter(entity -> currentRelations.stream()
-						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
-								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
-						.collect(Collectors.toList()).isEmpty())
-				.collect(Collectors.toList());
+				.filter(entity -> currentRelations.stream().filter(
+						r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE)) || (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList()).isEmpty()).collect(Collectors.toList());
 
 		// get all relations that will merge the reducableEntities into another
 		// entity
-		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
-				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
-						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
-				.collect(Collectors.toList());
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream().filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+				|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION))).collect(Collectors.toList());
 
 		return relationsToEdgeEntities;
 	}
@@ -197,7 +198,7 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		CouplingCriteriaVariant aggregationVariant = couplingCriterionFactory.findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.SHARED_FIELD_ACCESS);
+		CouplingCriteriaVariant aggregationVariant = findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriteriaVariant.SHARED_FIELD_ACCESS);
 		for (UseCase transaction : transactions) {
 			DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
 			monoCouplingInstanceRepository.save(instance);
@@ -218,7 +219,7 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
+		CouplingCriteriaVariant variant = findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriteriaVariant.SAME_ENTITY);
 		for (Entity entity : entities) {
 			MonoCouplingInstance instance = variant.createInstance();
 			monoCouplingInstanceRepository.save(instance);
@@ -238,7 +239,7 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 		for (DistanceVariant inputVariant : inputVariants) {
-			CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
+			CouplingCriteriaVariant variant = findVariant(inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
 			if (variant == null) {
 				log.error("variant {} not known! ignore", inputVariant);
 				continue;
@@ -270,7 +271,7 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 		for (SeparationCriterion inputCriterion : criteria) {
-			CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(inputCriterion.getCouplingCriterionName(), inputCriterion.getVariantName());
+			CouplingCriteriaVariant variant = findVariant(inputCriterion.getCouplingCriterionName(), inputCriterion.getVariantName());
 			if (variant == null) {
 				log.error("variant {} not known! ignore", inputCriterion);
 				continue;
@@ -285,8 +286,7 @@ public class ImportEndpoint {
 				newInstance.setModel(model);
 				newInstance.setDataFields(loadDataFields(inputCriterion.getGroupAnanoentities(), model));
 				newInstance.setSecondDataFields(loadDataFields(inputCriterion.getGroupBnanoentities(), model));
-				log.info("Import separation constraint {} on fields {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getDataFields(),
-						newInstance.getSecondDataFields());
+				log.info("Import separation constraint {} on fields {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getDataFields(), newInstance.getSecondDataFields());
 			} else {
 				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputCriterion.getCouplingCriterionName(), inputCriterion.getVariantName());
 				throw new InvalidRestParam();
@@ -305,7 +305,7 @@ public class ImportEndpoint {
 		}
 
 		for (CohesiveGroups groups : listOfGroups) {
-			CouplingCriteriaVariant variant = couplingCriterionFactory.findVariant(groups.getCouplingCriterionName(), groups.getVariantName());
+			CouplingCriteriaVariant variant = findVariant(groups.getCouplingCriterionName(), groups.getVariantName());
 			if (variant == null) {
 				log.error("variant {} not known! ignore", groups.getVariantName());
 				continue;
@@ -343,4 +343,11 @@ public class ImportEndpoint {
 		return dataFields;
 	}
 
+	private CouplingCriteriaVariant findVariant(String coupling, String variant) {
+		CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(coupling);
+		Assert.notNull(couplingCriterion, "Coupling with name " + coupling + " not found!");
+		CouplingCriteriaVariant result = couplingCriteriaVariantRepository.readByNameAndCouplingCriterion(variant, couplingCriterion);
+		Assert.notNull(result, "Variant with name " + variant + " not found!");
+		return result;
+	}
 }

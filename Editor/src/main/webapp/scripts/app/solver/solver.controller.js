@@ -101,8 +101,8 @@ angular.module('editorApp')
 		    			// services
 		    			for (var x in services) {
 		    				serviceNodes.add({id: services[x].name, shape: 'square', color: '#93D276', label: services[x].name});
-		    				for (var y in services[x].dataFields) {
-		    					var field = services[x].dataFields[y];
+		    				for (var y in services[x].nanoentities) {
+		    					var field = services[x].nanoentities[y];
 		    					serviceNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: field});
 		    					serviceEdges.add({from: services[x].name, to: nodeId});
 		    					nodeId++;

@@ -125,7 +125,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 				}
 				Service boundedContext = new Service(dataFields, serviceIdGenerator++);
 				result.add(boundedContext);
-				log.debug("BoundedContext found: {}, {}", boundedContext.getDataFields().toString(), boundedContext.hashCode());
+				log.debug("BoundedContext found: {}, {}", boundedContext.getNanoentity().toString(), boundedContext.hashCode());
 			}
 		}
 		return result;

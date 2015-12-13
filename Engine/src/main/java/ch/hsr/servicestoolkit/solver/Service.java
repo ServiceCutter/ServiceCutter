@@ -6,11 +6,11 @@ import com.google.common.base.Objects;
 
 public class Service {
 
-	private List<String> dataFields;
+	private List<String> nanoentities;
 	private char id;
 
-	public Service(final List<String> dataFields, final char id) {
-		this.dataFields = dataFields;
+	public Service(final List<String> nanoentities, final char id) {
+		this.nanoentities = nanoentities;
 		this.id = id;
 	}
 
@@ -18,8 +18,8 @@ public class Service {
 		// needed for Jackson
 	}
 
-	public List<String> getDataFields() {
-		return dataFields;
+	public List<String> getNanoentity() {
+		return nanoentities;
 	}
 
 	public String getName() {
@@ -28,7 +28,7 @@ public class Service {
 
 	@Override
 	public String toString() {
-		return "Service " + id + " [dataFields=" + dataFields + "]";
+		return "Service " + id + " [nanoentities=" + nanoentities + "]";
 	}
 
 	@Override

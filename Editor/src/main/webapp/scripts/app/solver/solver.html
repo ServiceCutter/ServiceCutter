@@ -47,9 +47,9 @@
 					</ul>
 					<h3>Published Language</h3>
 					<div ng-repeat="relation in selectedServiceRelations">
-						<p>Published Language between {{relation.name}}</p>
+						<p>Published Language between <strong>{{relation.name}}</strong></p>
 						<ul>
-							<li ng-repeat="field in relation.fields">{{field}}</li>
+							<li ng-repeat="nanoentity in relation.entities">{{nanoentity}}</li>
 						</ul>
 					</div>
 				</div>

@@ -40,7 +40,7 @@ angular.module('editorApp')
 					if(relations[relation].serviceA == nodeId || relations[relation].serviceB == nodeId){
 						var r = {};
 						r['name'] = relations[relation].serviceA + ' - ' +  relations[relation].serviceB
-						r['fields'] = relations[relation].sharedFields;
+						r['entities'] = relations[relation].sharedEntities;
 						selectedServiceRelations.push(r);
 					}
         		}
@@ -102,8 +102,8 @@ angular.module('editorApp')
 		    			for (var x in services) {
 		    				serviceNodes.add({id: services[x].name, shape: 'square', color: '#93D276', label: services[x].name});
 		    				for (var y in services[x].nanoentities) {
-		    					var field = services[x].nanoentities[y];
-		    					serviceNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: field});
+		    					var nanoentity = services[x].nanoentities[y];
+		    					serviceNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: nanoentity});
 		    					serviceEdges.add({from: services[x].name, to: nodeId});
 		    					nodeId++;
 		    				}

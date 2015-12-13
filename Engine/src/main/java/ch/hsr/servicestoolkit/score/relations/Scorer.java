@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.repository.DataFieldRepository;
-import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.model.repository.DataFieldRepository;
+import ch.hsr.servicestoolkit.model.repository.MonoCouplingInstanceRepository;
 
 @Component
 public class Scorer {

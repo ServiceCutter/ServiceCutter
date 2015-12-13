@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.repository.ModelRepository;
+import ch.hsr.servicestoolkit.model.repository.ModelRepository;
 import ch.hsr.servicestoolkit.rest.InvalidRestParam;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;

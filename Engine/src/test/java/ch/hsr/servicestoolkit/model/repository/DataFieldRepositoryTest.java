@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.repository;
+package ch.hsr.servicestoolkit.model.repository;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -13,6 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicestoolkit.EngineServiceAppication;
 import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.repository.DataFieldRepository;
+import ch.hsr.servicestoolkit.model.repository.ModelRepository;
 import ch.hsr.servicestoolkit.model.Model;
 
 @RunWith(SpringJUnit4ClassRunner.class)

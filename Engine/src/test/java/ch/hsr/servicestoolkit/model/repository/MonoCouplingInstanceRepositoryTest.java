@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.repository;
+package ch.hsr.servicestoolkit.model.repository;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -19,6 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.hsr.servicestoolkit.EngineServiceAppication;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.repository.CouplingCriteriaVariantRepository;
+import ch.hsr.servicestoolkit.model.repository.DataFieldRepository;
+import ch.hsr.servicestoolkit.model.repository.ModelRepository;
+import ch.hsr.servicestoolkit.model.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;

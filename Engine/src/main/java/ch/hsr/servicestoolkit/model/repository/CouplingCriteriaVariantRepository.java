@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.repository;
+package ch.hsr.servicestoolkit.model.repository;
 
 import java.util.List;
 

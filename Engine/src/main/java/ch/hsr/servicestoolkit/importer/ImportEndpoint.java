@@ -39,11 +39,11 @@ import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.NanoEntity;
-import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
-import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
-import ch.hsr.servicestoolkit.repository.DataFieldRepository;
-import ch.hsr.servicestoolkit.repository.ModelRepository;
-import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.model.repository.CouplingCriteriaVariantRepository;
+import ch.hsr.servicestoolkit.model.repository.CouplingCriterionRepository;
+import ch.hsr.servicestoolkit.model.repository.DataFieldRepository;
+import ch.hsr.servicestoolkit.model.repository.ModelRepository;
+import ch.hsr.servicestoolkit.model.repository.MonoCouplingInstanceRepository;
 import ch.hsr.servicestoolkit.rest.InvalidRestParam;
 
 @Component

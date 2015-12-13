@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
 import ch.hsr.servicestoolkit.model.NanoEntity;
@@ -32,7 +32,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 			addScoreForMixedAccess(fieldsWritten, fieldsRead);
 		}
 
-		List<MonoCouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.getVariant().getName().equals(CouplingCriteriaVariant.AGGREGATION))
+		List<MonoCouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.getVariant().getName().equals(CouplingCriterionCharacteristic.AGGREGATION))
 				.collect(Collectors.toList());
 		for (MonoCouplingInstance aggregationInstance : aggregationInstances) {
 			DualCouplingInstance aggregationInstanceDual = (DualCouplingInstance) aggregationInstance;

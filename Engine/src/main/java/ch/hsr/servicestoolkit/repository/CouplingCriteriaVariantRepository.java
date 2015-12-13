@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 
-public interface CouplingCriteriaVariantRepository extends CrudRepository<CouplingCriteriaVariant, Long> {
+public interface CouplingCriteriaVariantRepository extends CrudRepository<CouplingCriterionCharacteristic, Long> {
 
-	public CouplingCriteriaVariant readByNameAndCouplingCriterion(String name, CouplingCriterion couplingCriterion);
+	public CouplingCriterionCharacteristic readByNameAndCouplingCriterion(String name, CouplingCriterion couplingCriterion);
 
-	public List<CouplingCriteriaVariant> readByCouplingCriterion(CouplingCriterion couplingCriterion);
+	public List<CouplingCriterionCharacteristic> readByCouplingCriterion(CouplingCriterion couplingCriterion);
 
-	public CouplingCriteriaVariant readByCouplingCriterionAndIsDefault(CouplingCriterion criterion, boolean isDefault);
+	public CouplingCriterionCharacteristic readByCouplingCriterionAndIsDefault(CouplingCriterion criterion, boolean isDefault);
 
 }

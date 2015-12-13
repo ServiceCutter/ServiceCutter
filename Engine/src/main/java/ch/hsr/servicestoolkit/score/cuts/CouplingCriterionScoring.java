@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -35,7 +35,7 @@ public class CouplingCriterionScoring {
 	public double calculateScore(final ServiceCut cut, final CouplingCriterion criterion, final CouplingContext context) {
 		logger.info("calculating score for {}", criterion);
 		// TODO validate that the service cut contains all fields!
-		Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap = context.getCouplingInstances(criterion);
+		Map<CouplingCriterionCharacteristic, List<MonoCouplingInstance>> variantsMap = context.getCouplingInstances(criterion);
 		double result = 0;
 		if (CouplingType.COHESIVENESS.equals(criterion.getType())) {
 			result = calculateProximity(cut, variantsMap);
@@ -47,7 +47,7 @@ public class CouplingCriterionScoring {
 		return result;
 	}
 
-	private double calculateDistance(final ServiceCut cut, final Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap) {
+	private double calculateDistance(final ServiceCut cut, final Map<CouplingCriterionCharacteristic, List<MonoCouplingInstance>> variantsMap) {
 		Collection<Service> services = cut.getServices();
 		// init
 		Map<Service, List<Integer>> weightsPerService = new HashMap<>();
@@ -55,7 +55,7 @@ public class CouplingCriterionScoring {
 			weightsPerService.put(service, new ArrayList<>());
 		}
 		// collect weights per service
-		for (Entry<CouplingCriteriaVariant, List<MonoCouplingInstance>> e : variantsMap.entrySet()) {
+		for (Entry<CouplingCriterionCharacteristic, List<MonoCouplingInstance>> e : variantsMap.entrySet()) {
 			for (MonoCouplingInstance couplingInstance : e.getValue()) {
 				for (NanoEntity dataField : couplingInstance.getDataFields()) {
 					Service service = cut.getService(dataField);
@@ -77,12 +77,12 @@ public class CouplingCriterionScoring {
 		return totalScore / services.size();
 	}
 
-	private double calculateProximity(final ServiceCut cut, final Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> variantsMap) {
+	private double calculateProximity(final ServiceCut cut, final Map<CouplingCriterionCharacteristic, List<MonoCouplingInstance>> variantsMap) {
 		double result;
 		double totalScore = 0;
 		double totalWeight = 0;
-		for (Entry<CouplingCriteriaVariant, List<MonoCouplingInstance>> entry : variantsMap.entrySet()) {
-			CouplingCriteriaVariant variant = entry.getKey();
+		for (Entry<CouplingCriterionCharacteristic, List<MonoCouplingInstance>> entry : variantsMap.entrySet()) {
+			CouplingCriterionCharacteristic variant = entry.getKey();
 			Collection<MonoCouplingInstance> couplingInstances = entry.getValue();
 			for (MonoCouplingInstance couplingInstance : couplingInstances) {
 				double localScore = 0;

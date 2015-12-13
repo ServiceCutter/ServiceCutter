@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.Model;
@@ -54,7 +54,7 @@ public class ModelCompleter {
 			Set<NanoEntity> missingFields = allFieldsInModel.stream().filter(field -> !definedFields.contains(field)).collect(Collectors.toSet());
 
 			if (!missingFields.isEmpty()) {
-				CouplingCriteriaVariant defaultVariant = variantRepository.readByCouplingCriterionAndIsDefault(couplingCriterionRepository.readByName(criterion.getKey()), true);
+				CouplingCriterionCharacteristic defaultVariant = variantRepository.readByCouplingCriterionAndIsDefault(couplingCriterionRepository.readByName(criterion.getKey()), true);
 				Set<MonoCouplingInstance> instances = couplingInstanceRepository.findByModelAndVariant(model, defaultVariant);
 				MonoCouplingInstance instance;
 				if (instances.size() == 1) {

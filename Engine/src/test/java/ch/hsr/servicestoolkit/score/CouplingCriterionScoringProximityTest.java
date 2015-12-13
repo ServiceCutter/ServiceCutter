@@ -11,7 +11,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
@@ -35,8 +35,8 @@ public class CouplingCriterionScoringProximityTest {
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion identityAndLifecycle;
-	private CouplingCriteriaVariant sameEntity;
-	private CouplingCriteriaVariant inheritance;
+	private CouplingCriterionCharacteristic sameEntity;
+	private CouplingCriterionCharacteristic inheritance;
 	private CouplingCriterionScoring couplingCriterionScoring = new CouplingCriterionScoring();
 	private MonoCouplingInstance entityStock;
 	private MonoCouplingInstance entityPrice;

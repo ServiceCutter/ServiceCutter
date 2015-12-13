@@ -43,7 +43,7 @@ public class MonoCouplingInstance {
 			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
 	private List<NanoEntity> dataFields = new ArrayList<>();
 	@ManyToOne
-	private CouplingCriteriaVariant variant;
+	private CouplingCriterionCharacteristic variant;
 	private boolean singleInstancePerModel = false;
 
 	public Long getId() {
@@ -77,11 +77,11 @@ public class MonoCouplingInstance {
 		this.singleInstancePerModel = singleInstancePerModel;
 	}
 
-	public CouplingCriteriaVariant getVariant() {
+	public CouplingCriterionCharacteristic getVariant() {
 		return variant;
 	}
 
-	public void setVariant(final CouplingCriteriaVariant variant) {
+	public void setVariant(final CouplingCriterionCharacteristic variant) {
 		this.variant = variant;
 	}
 

@@ -4,11 +4,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.google.common.base.MoreObjects;
 
 @Entity
-public class CouplingCriteriaVariant {
+@Table(name = "cc_characteristic")
+public class CouplingCriterionCharacteristic {
 
 	public static final String AGGREGATION = "Aggregation";
 	public static final String COMPOSITION = "Composition";

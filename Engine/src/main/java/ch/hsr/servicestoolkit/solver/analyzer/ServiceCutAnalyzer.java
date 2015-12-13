@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
@@ -121,7 +121,7 @@ public class ServiceCutAnalyzer {
 	private Map<Service, List<DualCouplingInstance>> getUseCaseResponsibilites(final Set<Service> set, final Model model) {
 		Map<Service, List<DualCouplingInstance>> useCaseResponsibilites = new HashMap<>();
 		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
-		CouplingCriteriaVariant useCaseVariant = variantRepository.readByNameAndCouplingCriterion(CouplingCriteriaVariant.SHARED_FIELD_ACCESS, criterion);
+		CouplingCriterionCharacteristic useCaseVariant = variantRepository.readByNameAndCouplingCriterion(CouplingCriterionCharacteristic.SHARED_FIELD_ACCESS, criterion);
 		for (MonoCouplingInstance instance : monoCouplingInstanceRepository.findByModelAndVariant(model, useCaseVariant)) {
 			DualCouplingInstance dualInstance = (DualCouplingInstance) instance;
 			Service responsibleService = getResponsibleService(set, dualInstance);

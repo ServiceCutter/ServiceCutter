@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -17,7 +17,7 @@ public interface MonoCouplingInstanceRepository extends CrudRepository<MonoCoupl
 
 	Set<MonoCouplingInstance> findByModel(Model model);
 
-	Set<MonoCouplingInstance> findByModelAndVariant(Model model, CouplingCriteriaVariant variant);
+	Set<MonoCouplingInstance> findByModelAndVariant(Model model, CouplingCriterionCharacteristic variant);
 
 	default Map<String, Set<MonoCouplingInstance>> findByModelGroupedByCriterion(final Model model) {
 		return groupByCriterion(findByModel(model));

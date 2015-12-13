@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
@@ -28,7 +28,7 @@ public class CouplingContext {
 		dataFields = model.getDataFields();
 	}
 
-	public Map<CouplingCriteriaVariant, List<MonoCouplingInstance>> getCouplingInstances(final CouplingCriterion criterion) {
+	public Map<CouplingCriterionCharacteristic, List<MonoCouplingInstance>> getCouplingInstances(final CouplingCriterion criterion) {
 		return couplingInstances.stream().filter(c -> matchesCriterion(c, criterion)).collect(Collectors.groupingBy(MonoCouplingInstance::getVariant));
 	}
 

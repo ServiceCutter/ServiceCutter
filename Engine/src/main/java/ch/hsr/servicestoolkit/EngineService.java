@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.EngineState;
@@ -110,11 +110,11 @@ public class EngineService {
 		private final Long id;
 		private final String name;
 		private final String description;
-		private final List<CouplingCriteriaVariant> variants;
+		private final List<CouplingCriterionCharacteristic> variants;
 		private final String decompositionImpact;
 		private final CouplingType type;
 
-		public CouplingCriterionDTO(final CouplingCriterion couplingCriterion, final List<CouplingCriteriaVariant> variants) {
+		public CouplingCriterionDTO(final CouplingCriterion couplingCriterion, final List<CouplingCriterionCharacteristic> variants) {
 			this.variants = variants;
 			this.name = couplingCriterion.getName();
 			this.id = couplingCriterion.getId();
@@ -131,7 +131,7 @@ public class EngineService {
 			return name;
 		}
 
-		public List<CouplingCriteriaVariant> getVariants() {
+		public List<CouplingCriterionCharacteristic> getVariants() {
 			return variants;
 		}
 

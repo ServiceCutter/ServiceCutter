@@ -1,8 +1,8 @@
 package ch.hsr.servicestoolkit.solver;
 
-import static ch.hsr.servicestoolkit.model.CouplingCriteriaVariant.AGGREGATION;
-import static ch.hsr.servicestoolkit.model.CouplingCriteriaVariant.COMPOSITION;
-import static ch.hsr.servicestoolkit.model.CouplingCriteriaVariant.SAME_ENTITY;
+import static ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic.AGGREGATION;
+import static ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic.COMPOSITION;
+import static ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic.SAME_ENTITY;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.Model;
@@ -109,7 +109,7 @@ public class GephiSolverTest {
 	}
 
 	void createVariant(final String variantName, final MonoCouplingInstance instance) {
-		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
+		CouplingCriterionCharacteristic variant = new CouplingCriterionCharacteristic();
 		variant.setName(variantName);
 		CouplingCriterion couplingCriterion = new CouplingCriterion();
 		couplingCriterion.setId(idGenerator.getAndIncrement());

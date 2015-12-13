@@ -11,7 +11,7 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.NanoEntity;
@@ -32,9 +32,9 @@ public class CouplingCriterionScoringDistanceTest {
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion volatility;
-	private CouplingCriteriaVariant often;
-	private CouplingCriteriaVariant regularly;
-	private CouplingCriteriaVariant rarely;
+	private CouplingCriterionCharacteristic often;
+	private CouplingCriterionCharacteristic regularly;
+	private CouplingCriterionCharacteristic rarely;
 	private CouplingCriterionScoring couplingCriterionScoring = new CouplingCriterionScoring();
 	private MonoCouplingInstance rarelyCoupling;
 	private MonoCouplingInstance oftenCoupling;

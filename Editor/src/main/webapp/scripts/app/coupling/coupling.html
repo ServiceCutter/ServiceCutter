@@ -1,9 +1,9 @@
 <div ng-cloak>
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Coupling Browser</h1>
+			<h1>Coupling Criteria Browser</h1>
 			
-			<p>All Coupling Criterias are listed here.</p>
+			<!-- <p>All Coupling Criterias are listed here.</p>
 			
 			<p><strong>Types:</strong>
 				<ul>
@@ -12,7 +12,7 @@
 					<li>SEPARATION - The fields <em>must</em> be distributed amongst different services.</li>
 					<li>EXCLUSIVE - The fields <em>must</em> form a service. No fields are assigned to another service; no fields are added to this service.</li>
 				</ul>
-			</p>
+			</p> -->
 
 			
 			<div class="col-md-4">
@@ -35,13 +35,15 @@
 
 			<p>{{criterion.decompositionImpact}}</p>
 			
-			<h3>Variants</h3>
-			
-			<ul>
-				<li ng-repeat="variant in criterion.variants">{{variant.name}} 
-					[Field Groups: {{variant.monoCoupling ? 1 : 2}}<span ng-show="variant.weight">; Weight: {{variant.weight}}</span>]
+			<div ng-show="criterion.type == 'COMPATIBILITY'">
+				<h3>Characteristics</h3>
+				<ul>
+					<li ng-repeat="variant in criterion.variants">
+						<strong>{{variant.name}}</strong> 
+						<span>[weight={{variant.weight}}]</span>
 					</li>
-			</ul>
+				</ul>
+			</div>
 
 			</div>
 			

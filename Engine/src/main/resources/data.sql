@@ -14,7 +14,6 @@ insert into coupling_criterion (id, name, type) values (12, 'Predefined Service 
 insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'COHESIVENESS');
 insert into coupling_criterion (id, name, type) values (15, 'Latency', 'COHESIVENESS');
 insert into coupling_criterion (id, name, type) values (16, 'Consistency Constraint', 'CONSTRAINTS');
-	
 
 -- description
 update coupling_criterion set description = 'Data which belong to the same identity and therefore shares a common lifecycle.' where id = 1;
@@ -50,48 +49,48 @@ update coupling_criterion set decomposition_impact = 'Services should reflect th
 
 
 -- 1
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (1, 1, 1, 'Same Entity', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (1, 1, 1, 'Same Entity', 0);
 -- 2
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (4, 0, 2, 'Aggregation', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (5, 0, 2, 'Shared Field Access', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (4, 0, 2, 'Aggregation', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (5, 0, 2, 'Shared Field Access', 0);
 -- 3
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (6, 0, 3, 'Separation Constraint', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (6, 0, 3, 'Separation Constraint', 0);
 -- 4 Security Criticality
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (7, 1, 4, 10, 'Critical', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (8, 1, 4, 3, 'Internal', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (9, 1, 4, 0, 'Public', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (7, 1, 4, 10, 'Critical', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (8, 1, 4, 3, 'Internal', 1);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (9, 1, 4, 0, 'Public', 0);
 -- 5
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (10, 1, 5, 'Security Context', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (10, 1, 5, 'Security Context', 0);
 -- 6 Resilience
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (11, 1, 6, 10, 'Critical', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (12, 1, 6, 4, 'Normal', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (13, 1, 6, 0, 'Low', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (11, 1, 6, 10, 'Critical', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (12, 1, 6, 4, 'Normal', 1);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (13, 1, 6, 0, 'Low', 0);
 -- 7 Volatility
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (14, 1, 7, 10, 'Often', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (15, 1, 7, 5, 'Regularly', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (16, 1, 7, 0, 'Rarely', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (14, 1, 7, 10, 'Often', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (15, 1, 7, 5, 'Regularly', 1);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (16, 1, 7, 0, 'Rarely', 0);
 -- 8 Consistency
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (17, 1, 8, 10, 'High', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (18, 1, 8, 4, 'Eventually', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (19, 1, 8, 0, 'Weak', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (17, 1, 8, 10, 'High', 1);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (18, 1, 8, 4, 'Eventually', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (19, 1, 8, 0, 'Weak', 0);
 -- 9 Storage
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (20, 1, 9, 0, 'Tiny', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (21, 1, 9, 3, 'Normal', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (22, 1, 9, 10, 'Huge', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (20, 1, 9, 0, 'Tiny', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (21, 1, 9, 3, 'Normal', 1);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (22, 1, 9, 10, 'Huge', 0);
 -- 10 Network
---insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (24, 1, 10, 0, 'Low', 0);
---insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (25, 1, 10, 4, 'Normal', 1);
---insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (26, 1, 10, 10, 'High', 0);
+--insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (24, 1, 10, 0, 'Low', 0);
+--insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (25, 1, 10, 4, 'Normal', 1);
+--insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (26, 1, 10, 10, 'High', 0);
 -- 11 Change Similarity
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (28, 1, 11, 10, 'Often', 0);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (29, 1, 11, 4, 'Normal', 1);
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (30, 1, 11, 0, 'Rarely', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (28, 1, 11, 10, 'Often', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (29, 1, 11, 4, 'Normal', 1);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, weight, name, is_default) values (30, 1, 11, 0, 'Rarely', 0);
 -- 12
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (31, 1, 12, 'Predefined Service', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (31, 1, 12, 'Predefined Service', 0);
 -- 13
---insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (32, 1, 13, 'Mutable', 0);
---insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (33, 1, 13, 'Immutable', 0);
+--insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (32, 1, 13, 'Mutable', 0);
+--insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (33, 1, 13, 'Immutable', 0);
 -- 14
-insert into coupling_criteria_variant (id, mono_coupling, coupling_criterion_id, name, is_default) values (34, 1, 14, 'Responsibility Area', 0);
+insert into cc_characteristic (id, mono_coupling, coupling_criterion_id, name, is_default) values (34, 1, 14, 'Responsibility Area', 0);
 
 

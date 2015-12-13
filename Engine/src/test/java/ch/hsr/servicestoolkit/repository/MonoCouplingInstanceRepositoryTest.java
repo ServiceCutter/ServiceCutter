@@ -17,7 +17,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicestoolkit.EngineServiceAppication;
-import ch.hsr.servicestoolkit.model.CouplingCriteriaVariant;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
@@ -41,7 +41,7 @@ public class MonoCouplingInstanceRepositoryTest {
 	@Test
 	@Transactional
 	public void testFindByModel() {
-		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
+		CouplingCriterionCharacteristic variant = new CouplingCriterionCharacteristic();
 		couplingCriteriaVariantRepository.save(variant);
 		addModel(variant);
 		Model model = addModel(variant);
@@ -54,7 +54,7 @@ public class MonoCouplingInstanceRepositoryTest {
 	@Test
 	@Transactional
 	public void testFindByModelTESTdual() {
-		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
+		CouplingCriterionCharacteristic variant = new CouplingCriterionCharacteristic();
 		couplingCriteriaVariantRepository.save(variant);
 		addModel(variant);
 		Model model = addModel(variant);
@@ -67,7 +67,7 @@ public class MonoCouplingInstanceRepositoryTest {
 	@Test
 	@Transactional
 	public void testDualCouplingPersistence() {
-		CouplingCriteriaVariant variant = new CouplingCriteriaVariant();
+		CouplingCriterionCharacteristic variant = new CouplingCriterionCharacteristic();
 		variant.setMonoCoupling(false);
 		variant.setName("monoCoupling");
 		couplingCriteriaVariantRepository.save(variant);
@@ -105,7 +105,7 @@ public class MonoCouplingInstanceRepositoryTest {
 		return dataField;
 	}
 
-	Model addModel(final CouplingCriteriaVariant variant) {
+	Model addModel(final CouplingCriterionCharacteristic variant) {
 		Model model = new Model();
 		modelRepository.save(model);
 		MonoCouplingInstance instance = variant.createInstance();

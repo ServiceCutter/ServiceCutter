@@ -40,9 +40,9 @@ public class SemanticProximityCriterionScorerTest {
 	}
 
 	private Nanoentity createNanoentity(final String string) {
-		Nanoentity field = new Nanoentity(string);
-		field.setId(idGen++);
-		return field;
+		Nanoentity nanoentity = new Nanoentity(string);
+		nanoentity.setId(idGen++);
+		return nanoentity;
 	}
 
 }

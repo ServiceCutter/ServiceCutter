@@ -7,21 +7,21 @@ import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class TestDataHelper {
 
-	public static CouplingInstance createCouplingInstance(CouplingCriterionCharacteristic characteristic, Nanoentity... fields) {
+	public static CouplingInstance createCouplingInstance(CouplingCriterionCharacteristic characteristic, Nanoentity... nanoentities) {
 		CouplingInstance result = new CouplingInstance();
-		for (Nanoentity nanoentity : fields) {
+		for (Nanoentity nanoentity : nanoentities) {
 			result.addNanoentity(nanoentity);
 		}
 		result.setCharacteristic(characteristic);
 		return result;
 	}
 
-	public static CouplingInstance createCouplingInstance(CouplingCriterionCharacteristic characteristic, Nanoentity[] fields, Nanoentity[] otherFields) {
+	public static CouplingInstance createCouplingInstance(CouplingCriterionCharacteristic characteristic, Nanoentity[] nanoentities, Nanoentity[] otherNanoentities) {
 		CouplingInstance result = new CouplingInstance();
-		for (Nanoentity nanoentity : fields) {
+		for (Nanoentity nanoentity : nanoentities) {
 			result.addNanoentity(nanoentity);
 		}
-		for (Nanoentity nanoentity : otherFields) {
+		for (Nanoentity nanoentity : otherNanoentities) {
 			result.addSecondNanoentity(nanoentity);
 		}
 		result.setCharacteristic(characteristic);

@@ -15,7 +15,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	// TODO: make configurable in UI
 	private static final int SCORE_WRITE = 10;
 	private static final int SCORE_READ = 3;
-	// use the same score as for reads for two fields of which
+	// use the same score as for reads for two nanoentities of which
 	// one is read and the other written
 	private static final int SCORE_MIXED = 3;
 	private static final int SCORE_AGGREGATION = 1;
@@ -23,18 +23,18 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	@Override
 	public Map<EntityPair, Double> getScores(final Set<CouplingInstance> instances) {
 		for (CouplingInstance instance : instances) {
-			List<Nanoentity> fieldsWritten = instance.getSecondNanoentities();
-			List<Nanoentity> fieldsRead = instance.getNanoentities();
-			addScoreForWriteAccess(fieldsWritten);
-			addScoreForReadAccess(fieldsRead);
-			addScoreForMixedAccess(fieldsWritten, fieldsRead);
+			List<Nanoentity> nanoentitiesWritten = instance.getSecondNanoentities();
+			List<Nanoentity> nanoentitiesRead = instance.getNanoentities();
+			addScoreForWriteAccess(nanoentitiesWritten);
+			addScoreForReadAccess(nanoentitiesRead);
+			addScoreForMixedAccess(nanoentitiesWritten, nanoentitiesRead);
 		}
 
 		List<CouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.isCharacteristic(CouplingCriterionCharacteristic.AGGREGATION)).collect(Collectors.toList());
 		for (CouplingInstance aggregationInstance : aggregationInstances) {
-			for (Nanoentity fieldA : aggregationInstance.getAllNanoentities()) {
-				for (Nanoentity fieldB : aggregationInstance.getSecondNanoentities()) {
-					addToResult(fieldA, fieldB, SCORE_AGGREGATION);
+			for (Nanoentity nanoentityA : aggregationInstance.getAllNanoentities()) {
+				for (Nanoentity nanoentityB : aggregationInstance.getSecondNanoentities()) {
+					addToResult(nanoentityA, nanoentityB, SCORE_AGGREGATION);
 				}
 			}
 		}
@@ -66,36 +66,36 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	}
 
 	/**
-	 * Fields read and written in same uc
+	 * Nanoentities read and written in same Use Case
 	 * 
 	 * @param frequency
 	 */
-	private void addScoreForMixedAccess(final List<Nanoentity> fieldsWritten, final List<Nanoentity> fieldsRead) {
-		for (Nanoentity fieldWritten : fieldsWritten) {
-			for (Nanoentity fieldRead : fieldsRead) {
-				addToResult(fieldRead, fieldWritten, SCORE_MIXED);
+	private void addScoreForMixedAccess(final List<Nanoentity> nanoentitiesWritten, final List<Nanoentity> nanoentitiesRead) {
+		for (Nanoentity nanoentityWritten : nanoentitiesWritten) {
+			for (Nanoentity nanoentityRead : nanoentitiesRead) {
+				addToResult(nanoentityRead, nanoentityWritten, SCORE_MIXED);
 			}
 		}
 	}
 
-	private void addScoreForReadAccess(final List<Nanoentity> fieldsRead) {
-		for (int i = 0; i < fieldsRead.size() - 1; i++) {
-			for (int j = i + 1; j < fieldsRead.size(); j++) {
-				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_READ);
+	private void addScoreForReadAccess(final List<Nanoentity> nanoentitiesRead) {
+		for (int i = 0; i < nanoentitiesRead.size() - 1; i++) {
+			for (int j = i + 1; j < nanoentitiesRead.size(); j++) {
+				addToResult(nanoentitiesRead.get(i), nanoentitiesRead.get(j), SCORE_READ);
 			}
 		}
 	}
 
-	private void addScoreForWriteAccess(final List<Nanoentity> fieldsWritten) {
-		for (int i = 0; i < fieldsWritten.size() - 1; i++) {
-			for (int j = i + 1; j < fieldsWritten.size(); j++) {
-				addToResult(fieldsWritten.get(i), fieldsWritten.get(j), SCORE_WRITE);
+	private void addScoreForWriteAccess(final List<Nanoentity> nanoentitiesWritten) {
+		for (int i = 0; i < nanoentitiesWritten.size() - 1; i++) {
+			for (int j = i + 1; j < nanoentitiesWritten.size(); j++) {
+				addToResult(nanoentitiesWritten.get(i), nanoentitiesWritten.get(j), SCORE_WRITE);
 			}
 		}
 	}
 
-	private void addToResult(final Nanoentity fieldA, final Nanoentity fieldB, final double score) {
-		EntityPair fieldTuple = new EntityPair(fieldA, fieldB);
+	private void addToResult(final Nanoentity nanoentityA, final Nanoentity nanoentityB, final double score) {
+		EntityPair fieldTuple = new EntityPair(nanoentityA, nanoentityB);
 		if (result.get(fieldTuple) == null) {
 			result.put(fieldTuple, score);
 		} else {

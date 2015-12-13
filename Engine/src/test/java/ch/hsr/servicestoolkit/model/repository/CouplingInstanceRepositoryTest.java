@@ -73,9 +73,9 @@ public class CouplingInstanceRepositoryTest {
 		Model model = new Model();
 		modelRepository.save(model);
 
-		Nanoentity nanoentity1 = createNanoentity(model, "field1");
-		Nanoentity nanoentity2 = createNanoentity(model, "field2");
-		Nanoentity nanoentity3 = createNanoentity(model, "field3");
+		Nanoentity nanoentity1 = createNanoentity(model, "nanoentity1");
+		Nanoentity nanoentity2 = createNanoentity(model, "nanoentity2");
+		Nanoentity nanoentity3 = createNanoentity(model, "nanoentity3");
 
 		CouplingInstance dualInstance = new CouplingInstance(characteristic);
 		model.addCouplingInstance(dualInstance);

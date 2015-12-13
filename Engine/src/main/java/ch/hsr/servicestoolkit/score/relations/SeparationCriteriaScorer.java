@@ -27,9 +27,9 @@ public class SeparationCriteriaScorer implements CriterionScorer {
 
 		// TODO: be able to handle more than 2 groups
 		CouplingInstance relevantCharacteristic = instances.iterator().next();
-		for (Nanoentity fieldA : relevantCharacteristic.getNanoentities()) {
-			for (Nanoentity fieldB : relevantCharacteristic.getSecondNanoentities()) {
-				resultPerCC.put(new EntityPair(fieldA, fieldB), SEPARATION_PENALTY);
+		for (Nanoentity nanoentityA : relevantCharacteristic.getNanoentities()) {
+			for (Nanoentity nanoentityB : relevantCharacteristic.getSecondNanoentities()) {
+				resultPerCC.put(new EntityPair(nanoentityA, nanoentityB), SEPARATION_PENALTY);
 			}
 		}
 		return resultPerCC;

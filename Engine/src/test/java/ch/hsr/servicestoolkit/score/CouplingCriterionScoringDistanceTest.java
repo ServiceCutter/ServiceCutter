@@ -1,7 +1,7 @@
 package ch.hsr.servicestoolkit.score;
 
-import static ch.hsr.servicestoolkit.score.TestDataHelper.createCouplingInstance;
 import static ch.hsr.servicestoolkit.score.TestDataHelper.createCharacteristic;
+import static ch.hsr.servicestoolkit.score.TestDataHelper.createCouplingInstance;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -11,24 +11,24 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.Nanoentity;
-import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
+import ch.hsr.servicestoolkit.model.CouplingType;
+import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 import ch.hsr.servicestoolkit.score.cuts.CouplingContext;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class CouplingCriterionScoringDistanceTest {
 
-	private Nanoentity fieldIsin;
-	private Nanoentity fieldName;
-	private Nanoentity fieldDatetime;
-	private Nanoentity fieldAmount;
-	private Nanoentity fieldIssuer;
-	private Nanoentity fieldYield;
+	private Nanoentity nanoentityIsin;
+	private Nanoentity nanoentityName;
+	private Nanoentity nanoentityDatetime;
+	private Nanoentity nanoentityAmount;
+	private Nanoentity nanoentityIssuer;
+	private Nanoentity nanoentityYield;
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion volatility;
@@ -46,21 +46,21 @@ public class CouplingCriterionScoringDistanceTest {
 	 */
 	@Before
 	public void setup() {
-		// fields & model
+		// nanoentities & model
 		id = 0l;
-		fieldIsin = createNanoentity("ISIN");
-		fieldName = createNanoentity("Name");
-		fieldDatetime = createNanoentity("Datetime");
-		fieldAmount = createNanoentity("Amount");
-		fieldIssuer = createNanoentity("Issuer");
-		fieldYield = createNanoentity("Yield");
+		nanoentityIsin = createNanoentity("ISIN");
+		nanoentityName = createNanoentity("Name");
+		nanoentityDatetime = createNanoentity("Datetime");
+		nanoentityAmount = createNanoentity("Amount");
+		nanoentityIssuer = createNanoentity("Issuer");
+		nanoentityYield = createNanoentity("Yield");
 		model = new Model();
-		model.addNanoentity(fieldIsin);
-		model.addNanoentity(fieldName);
-		model.addNanoentity(fieldDatetime);
-		model.addNanoentity(fieldAmount);
-		model.addNanoentity(fieldIssuer);
-		model.addNanoentity(fieldYield);
+		model.addNanoentity(nanoentityIsin);
+		model.addNanoentity(nanoentityName);
+		model.addNanoentity(nanoentityDatetime);
+		model.addNanoentity(nanoentityAmount);
+		model.addNanoentity(nanoentityIssuer);
+		model.addNanoentity(nanoentityYield);
 		// coupling
 		volatility = new CouplingCriterion();
 		volatility.setType(CouplingType.COMPATIBILITY);
@@ -69,38 +69,38 @@ public class CouplingCriterionScoringDistanceTest {
 		regularly = createCharacteristic(volatility, 5, "Regularly");
 		rarely = createCharacteristic(volatility, 9, "Rarely");
 		// coupling instances
-		rarelyCoupling = createCouplingInstance(rarely, fieldIsin, fieldYield); // 9
-		regularlyCoupling = createCouplingInstance(regularly, fieldName, fieldIssuer); // 5
-		oftenCoupling = createCouplingInstance(often, fieldDatetime, fieldAmount); // 1
+		rarelyCoupling = createCouplingInstance(rarely, nanoentityIsin, nanoentityYield); // 9
+		regularlyCoupling = createCouplingInstance(regularly, nanoentityName, nanoentityIssuer); // 5
+		oftenCoupling = createCouplingInstance(often, nanoentityDatetime, nanoentityAmount); // 1
 		// context
 		couplingContext = new CouplingContext(model, Arrays.asList(rarelyCoupling, regularlyCoupling, oftenCoupling));
 	}
 
 	private Nanoentity createNanoentity(final String name) {
-		Nanoentity field = new Nanoentity(name);
-		field.setId(id++);
-		return field;
+		Nanoentity nanoentity = new Nanoentity(name);
+		nanoentity.setId(id++);
+		return nanoentity;
 	}
 
 	@Test
 	public void volatilityCoupling() {
 		ServiceCut perfectCut = new ServiceCut();
-		perfectCut.addService(fieldIsin, fieldYield);
-		perfectCut.addService(fieldName, fieldIssuer);
-		perfectCut.addService(fieldDatetime, fieldAmount);
+		perfectCut.addService(nanoentityIsin, nanoentityYield);
+		perfectCut.addService(nanoentityName, nanoentityIssuer);
+		perfectCut.addService(nanoentityDatetime, nanoentityAmount);
 		ServiceCut badCut = new ServiceCut();
 		// weights: 9, 5, 1 // mean: 5 // deviation: 4+0+4
 		// score: 10-(8*2)/3=4.66
-		badCut.addService(fieldIsin, fieldName, fieldDatetime);
+		badCut.addService(nanoentityIsin, nanoentityName, nanoentityDatetime);
 		// weights: 5, 9, 1 // mean: 5 // deviation: 0+4+4
 		// score: 10-(8*2)/3=4.66
-		badCut.addService(fieldIssuer, fieldYield, fieldAmount);
+		badCut.addService(nanoentityIssuer, nanoentityYield, nanoentityAmount);
 		ServiceCut averageCut = new ServiceCut();
 		// weights: 9, 9, 5, 5 // mean: 7 // deviation: 2+2+2+2
 		// score: 10-(8*2)/4=6
-		averageCut.addService(fieldIsin, fieldYield, fieldName, fieldIssuer);
+		averageCut.addService(nanoentityIsin, nanoentityYield, nanoentityName, nanoentityIssuer);
 		// weights: 1, 1 // score: 10
-		averageCut.addService(fieldDatetime, fieldAmount);
+		averageCut.addService(nanoentityDatetime, nanoentityAmount);
 
 		double score = couplingCriterionScoring.calculateScore(perfectCut, volatility, couplingContext);
 		assertThat(score, is(10.0));

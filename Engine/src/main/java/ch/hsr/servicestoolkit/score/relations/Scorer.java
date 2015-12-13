@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingInstanceRepository;
+import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
 
 @Component
 public class Scorer {
@@ -38,10 +38,10 @@ public class Scorer {
 	// TODO unused?
 	public Map<EntityPair, Map<String, Score>> updateConfig(final Map<EntityPair, Map<String, Score>> scores, Function<String, Double> priorityProvider) {
 		Map<EntityPair, Map<String, Score>> result = new HashMap<>();
-		for (Entry<EntityPair, Map<String, Score>> scoresByFieldTuple : scores.entrySet()) {
-			result.put(scoresByFieldTuple.getKey(), new HashMap<>());
-			for (Entry<String, Score> scoreByCriterion : scoresByFieldTuple.getValue().entrySet()) {
-				result.get(scoresByFieldTuple.getKey()).put(scoreByCriterion.getKey(),
+		for (Entry<EntityPair, Map<String, Score>> scoresByNanoentityTuple : scores.entrySet()) {
+			result.put(scoresByNanoentityTuple.getKey(), new HashMap<>());
+			for (Entry<String, Score> scoreByCriterion : scoresByNanoentityTuple.getValue().entrySet()) {
+				result.get(scoresByNanoentityTuple.getKey()).put(scoreByCriterion.getKey(),
 						// scoreByCriterion.getValue().withPriority(config.getPriorityForCouplingCriterion(scoreByCriterion.getKey())));
 						scoreByCriterion.getValue().withPriority(priorityProvider.apply(scoreByCriterion.getKey())));
 			}
@@ -66,8 +66,7 @@ public class Scorer {
 		Map<EntityPair, Double> lifecycleScores = new CohesiveGroupCriteriaScorer().getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.IDENTITY_LIFECYCLE));
 		addScoresByCriterionToResult(result, CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores, priorityProvider.apply(CouplingCriterion.IDENTITY_LIFECYCLE));
 
-		Map<EntityPair, Double> semanticProximityScores = new SemanticProximityCriterionScorer()
-				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SEMANTIC_PROXIMITY));
+		Map<EntityPair, Double> semanticProximityScores = new SemanticProximityCriterionScorer().getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SEMANTIC_PROXIMITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores, priorityProvider.apply(CouplingCriterion.SEMANTIC_PROXIMITY));
 
 		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriteriaScorer().getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
@@ -92,21 +91,21 @@ public class Scorer {
 	}
 
 	private void addScoresByCriterionToResult(final Map<EntityPair, Map<String, Score>> result, final String couplingCriterionName, final Map<EntityPair, Double> scores, final Double priority) {
-		for (Entry<EntityPair, Double> fieldScore : scores.entrySet()) {
-			addScoresToResult(result, fieldScore.getKey(), couplingCriterionName, fieldScore.getValue(), priority);
+		for (Entry<EntityPair, Double> nanoentityScore : scores.entrySet()) {
+			addScoresToResult(result, nanoentityScore.getKey(), couplingCriterionName, nanoentityScore.getValue(), priority);
 		}
 	}
 
-	private void addScoresToResult(final Map<EntityPair, Map<String, Score>> result, final EntityPair fields, final String criterionName, final double score, final double priority) {
-		if (fields.nanoentityA.getId().equals(fields.nanoentityB.getId())) {
-			log.warn("score on same field ignored. Field: {}, Score: {}, Criterion: {}", fields.nanoentityA, score, criterionName);
+	private void addScoresToResult(final Map<EntityPair, Map<String, Score>> result, final EntityPair nanoentities, final String criterionName, final double score, final double priority) {
+		if (nanoentities.nanoentityA.getId().equals(nanoentities.nanoentityB.getId())) {
+			log.warn("score on same nanoentity ignored. Nanoentity: {}, Score: {}, Criterion: {}", nanoentities.nanoentityA, score, criterionName);
 			return;
 		}
 
-		if (result.get(fields) == null) {
-			result.put(fields, new HashMap<>());
+		if (result.get(nanoentities) == null) {
+			result.put(nanoentities, new HashMap<>());
 		}
-		result.get(fields).put(criterionName, new Score(score, priority));
+		result.get(nanoentities).put(criterionName, new Score(score, priority));
 	}
 
 }

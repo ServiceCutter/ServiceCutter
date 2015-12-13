@@ -80,12 +80,12 @@ public class EngineServiceRestTest {
 	private Model createModel() {
 		Model model = new Model();
 		model.setName("firstModel");
-		Nanoentity field1 = new Nanoentity();
-		field1.setName("firstField");
-		Nanoentity field2 = new Nanoentity();
-		field2.setName("secondField");
-		model.addNanoentity(field1);
-		model.addNanoentity(field2);
+		Nanoentity nanoentity1 = new Nanoentity();
+		nanoentity1.setName("firstNanoentity");
+		Nanoentity nanoentity2 = new Nanoentity();
+		nanoentity2.setName("secondNanoentity");
+		model.addNanoentity(nanoentity1);
+		model.addNanoentity(nanoentity2);
 		return model;
 	}
 

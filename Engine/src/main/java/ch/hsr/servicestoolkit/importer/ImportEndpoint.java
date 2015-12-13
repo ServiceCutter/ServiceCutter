@@ -37,6 +37,7 @@ import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.CouplingType;
+import ch.hsr.servicestoolkit.model.InstanceType;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionCharacteristicRepository;
@@ -116,15 +117,16 @@ public class ImportEndpoint {
 		for (EntityRelation relation : domainModel.getRelations()) {
 			if (RelationType.AGGREGATION.equals(relation.getType())) {
 				CouplingInstance instance = new CouplingInstance(semanticProximity);
+				instance.setType(InstanceType.AGGREGATION);
 				couplingInstanceRepository.save(instance);
-				List<Nanoentity> originFields = relation.getOrigin().getNanoentities().stream()
+				List<Nanoentity> originNanoentities = relation.getOrigin().getNanoentities().stream()
 						.map(attr -> nanoentityRepository.findByContextAndNameAndModel(relation.getOrigin().getName(), attr.getName(), model)).collect(Collectors.toList());
-				List<Nanoentity> destinationFields = relation.getDestination().getNanoentities().stream()
+				List<Nanoentity> destinationNanoentities = relation.getDestination().getNanoentities().stream()
 						.map(attr -> nanoentityRepository.findByContextAndNameAndModel(relation.getDestination().getName(), attr.getName(), model)).collect(Collectors.toList());
-				instance.setNanoentities(originFields);
-				instance.setSecondNanoentities(destinationFields);
+				instance.setNanoentities(originNanoentities);
+				instance.setSecondNanoentities(destinationNanoentities);
 				instance.setModel(model);
-				instance.setName("Aggregation: " + relation.getOrigin().getName() + "." + relation.getDestination().getName());
+				instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
 
 				log.info("Import aggregation on {} and {}", instance.getNanoentities(), instance.getSecondNanoentities());
 			}
@@ -202,9 +204,10 @@ public class ImportEndpoint {
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (UseCase transaction : transactions) {
 			CouplingInstance instance = new CouplingInstance(semanticProximity);
+			instance.setType(InstanceType.USE_CASE);
 			model.addCouplingInstance(instance);
 			couplingInstanceRepository.save(instance);
-			instance.setName("Use Case: " + transaction.getName());
+			instance.setName(transaction.getName());
 			instance.setModel(model);
 			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model));
 			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model));
@@ -224,9 +227,10 @@ public class ImportEndpoint {
 		CouplingCriterion identityLifecylcle = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (Entity entity : entities) {
 			CouplingInstance instance = new CouplingInstance(identityLifecylcle);
+			instance.setType(InstanceType.SAME_ENTITY);
 			model.addCouplingInstance(instance);
 			couplingInstanceRepository.save(instance);
-			instance.setName("Same Entity: " + entity.getName());
+			instance.setName(entity.getName());
 			instance.setNanoentities(loadNanoentities(entity.getNanoentities().stream().map(NanoEntityInput::getName).collect(Collectors.toList()), model));
 		}
 	}
@@ -255,7 +259,7 @@ public class ImportEndpoint {
 				newInstance.setName(inputCharacteristic.getCouplingCriterionName());
 				newInstance.setModel(model);
 				newInstance.setNanoentities(loadNanoentities(inputCharacteristic.getNanoentities(), model));
-				log.info("Import distance characteristic {}-{} with fields {}", inputCharacteristic.getCouplingCriterionName(), inputCharacteristic.getCharacteristicName(),
+				log.info("Import distance characteristic {}-{} with nanoentities {}", inputCharacteristic.getCouplingCriterionName(), inputCharacteristic.getCharacteristicName(),
 						newInstance.getAllNanoentities());
 			} else {
 				log.error("enhancing characteristics not yet implemented. criterion: {}, characteristic: {}", inputCharacteristic.getCouplingCriterionName(),
@@ -284,7 +288,7 @@ public class ImportEndpoint {
 			newInstance.setModel(model);
 			newInstance.setNanoentities(loadNanoentities(inputCriterion.getGroupAnanoentities(), model));
 			newInstance.setSecondNanoentities(loadNanoentities(inputCriterion.getGroupBnanoentities(), model));
-			log.info("Import separation constraint {} on fields {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getNanoentities(), newInstance.getSecondNanoentities());
+			log.info("Import separation constraint {} on nanoentities {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getNanoentities(), newInstance.getSecondNanoentities());
 		}
 	}
 
@@ -317,7 +321,7 @@ public class ImportEndpoint {
 				instance.setName(groups.getCouplingCriterionName());
 				instance.setModel(model);
 				instance.setNanoentities(loadNanoentities(cohesiveGroup.getNanoentities(), model));
-				log.info("Import cohesive group {} on fields {} ", cohesiveGroup.getName(), instance.getNanoentities());
+				log.info("Import cohesive group {} on nanoentities {} ", cohesiveGroup.getName(), instance.getNanoentities());
 			}
 		}
 	}
@@ -336,7 +340,7 @@ public class ImportEndpoint {
 			if (nanoentity != null) {
 				nanoentities.add(nanoentity);
 			} else {
-				log.warn("	 field with name {}", nanoentityName);
+				log.warn("	 nanoentity with name {}", nanoentityName);
 			}
 		}
 		return nanoentities;

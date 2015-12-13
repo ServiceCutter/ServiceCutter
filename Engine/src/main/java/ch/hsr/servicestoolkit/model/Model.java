@@ -41,6 +41,10 @@ public class Model {
 		instance.setModel(this);
 	}
 
+	public List<CouplingInstance> getCouplingInstances() {
+		return couplingInstances;
+	}
+
 	public Long getId() {
 		return id;
 	}

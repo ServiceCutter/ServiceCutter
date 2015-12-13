@@ -67,13 +67,8 @@ angular.module('editorApp')
         }
 
         $scope.solveModel = function(modelId) {
-        	if(parseInt(modelId) > 0) { // TODO cleanup
-        		var solverConfig = {'weights': {'Same Entity': $scope.sameEntitySlider,
-        										'Composition':$scope.compositionSlider,
-        										'Aggregation':$scope.aggregationSlider,
-        										'Shared Field Access':$scope.sharedFieldAccessSlider
-        							},
-        							'algorithmParams': {'inflation': $scope.inflationSlider,
+        	if(parseInt(modelId) > 0) {
+        		var solverConfig = {'algorithmParams': {'inflation': $scope.inflationSlider,
         										  'power': $scope.powerSlider,
         										  'prune': $scope.pruneSlider,
         										  'extraClusters': $scope.extraClusterSlider,
@@ -81,8 +76,7 @@ angular.module('editorApp')
         										  'leungM': $scope.leungM,
         										  'leungDelta': $scope.leungDelta
         							},
-        							'priorities': {
-        							},
+        							'priorities': {},
         							'algorithm': $scope.algorithm
         		};
         		angular.forEach($scope.criteria, function(value, index){
@@ -160,11 +154,6 @@ angular.module('editorApp')
         
         $scope.solved = false;
         
-		$scope.sameEntitySlider = 0.2;
-		$scope.compositionSlider = 0.2;
-		$scope.aggregationSlider = 0.2;
-		$scope.sharedFieldAccessSlider = 0.4;
-		
 		$scope.powerSlider = 1;
 		$scope.inflationSlider = 2;
 		$scope.pruneSlider = 0.0;

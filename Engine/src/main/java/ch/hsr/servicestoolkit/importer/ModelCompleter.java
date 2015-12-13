@@ -41,20 +41,20 @@ public class ModelCompleter {
 
 	/**
 	 * creates characteristics instances for the default characteristic of a
-	 * coupling criteria with all fields in the model for which no
+	 * coupling criteria with all nanoentities in the model for which no
 	 * characteristic is defined.
 	 */
 	public void completeModelWithDefaultsForDistance(final Model model) {
-		Set<Nanoentity> allFieldsInModel = nanoentityRepository.findByModel(model);
+		Set<Nanoentity> allNanoentitiesInModel = nanoentityRepository.findByModel(model);
 		Map<String, Set<CouplingInstance>> instancesByCriterion = couplingInstanceRepository.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.COMPATIBILITY);
 
 		// For every criterion
 		for (Entry<String, Set<CouplingInstance>> criterion : instancesByCriterion.entrySet()) {
-			Set<Nanoentity> definedFields = criterion.getValue().stream().flatMap(instance -> instance.getAllNanoentities().stream()).collect(Collectors.toSet());
-			// find missing fields which need to have an instance
-			Set<Nanoentity> missingFields = allFieldsInModel.stream().filter(field -> !definedFields.contains(field)).collect(Collectors.toSet());
+			Set<Nanoentity> definedNanoentities = criterion.getValue().stream().flatMap(instance -> instance.getAllNanoentities().stream()).collect(Collectors.toSet());
+			// find missing nanoentities which need to have an instance
+			Set<Nanoentity> missingNanoentities = allNanoentitiesInModel.stream().filter(nanoentity -> !definedNanoentities.contains(nanoentity)).collect(Collectors.toSet());
 
-			if (!missingFields.isEmpty()) {
+			if (!missingNanoentities.isEmpty()) {
 				CouplingCriterionCharacteristic defaultCharacteristic = characteristicRepository.readByCouplingCriterionAndIsDefault(couplingCriterionRepository.readByName(criterion.getKey()), true);
 				Set<CouplingInstance> instances = couplingInstanceRepository.findByModelAndCharacteristic(model, defaultCharacteristic);
 				CouplingInstance instance;
@@ -68,10 +68,10 @@ public class ModelCompleter {
 				} else {
 					throw new RuntimeException("only one instance per characteristic expected for distance criterion");
 				}
-				for (Nanoentity field : missingFields) {
-					instance.addNanoentity(field);
+				for (Nanoentity nanoentity : missingNanoentities) {
+					instance.addNanoentity(nanoentity);
 				}
-				log.info("Complete model with instance of characteristic {} of criterion {} and fields {}", defaultCharacteristic.getName(), criterion.getKey(), missingFields);
+				log.info("Complete model with instance of characteristic {} of criterion {} and nanoentities {}", defaultCharacteristic.getName(), criterion.getKey(), missingNanoentities);
 			}
 
 		}

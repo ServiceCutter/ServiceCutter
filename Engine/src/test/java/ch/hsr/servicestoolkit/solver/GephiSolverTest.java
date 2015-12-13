@@ -1,15 +1,12 @@
 package ch.hsr.servicestoolkit.solver;
 
-import static ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic.AGGREGATION;
-import static ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic.COMPOSITION;
-import static ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic.SAME_ENTITY;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,20 +15,19 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.CouplingType;
+import ch.hsr.servicestoolkit.model.InstanceType;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.Nanoentity;
-import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingInstanceRepository;
+import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.score.relations.Scorer;
@@ -44,20 +40,28 @@ public class GephiSolverTest {
 	private AtomicLong idGenerator = new AtomicLong(10);
 	private CouplingInstanceRepository couplingInstanceRepository;
 	private NanoentityRepository nanoentityRepository;
+	private CouplingCriterion identityCoupling;
+	private CouplingCriterion semanticCoupling;
 
 	@Before
 	public void setup() {
 		config = new SolverConfiguration();
-		Map<String, Double> weights = new HashMap<>();
-		weights.put(AGGREGATION, 0.1d);
-		weights.put(SAME_ENTITY, 0.5d);
-		weights.put(COMPOSITION, 0.2d);
-		config.setWeights(weights);
 		config.getAlgorithmParams().put("inflation", 2d);
 		config.getAlgorithmParams().put("power", 1d);
 		config.getAlgorithmParams().put("prune", 0.0);
 		couplingInstanceRepository = mock(CouplingInstanceRepository.class);
 		nanoentityRepository = mock(NanoentityRepository.class);
+		identityCoupling = createCriterion(CouplingType.COHESIVENESS, CouplingCriterion.IDENTITY_LIFECYCLE);
+		semanticCoupling = createCriterion(CouplingType.COHESIVENESS, CouplingCriterion.SEMANTIC_PROXIMITY);
+
+	}
+
+	private CouplingCriterion createCriterion(CouplingType type, String name) {
+		CouplingCriterion criterion = new CouplingCriterion();
+		criterion.setId(idGenerator.getAndIncrement());
+		criterion.setType(type);
+		criterion.setName(name);
+		return criterion;
 	}
 
 	@Test(expected = InvalidParameterException.class)
@@ -71,20 +75,22 @@ public class GephiSolverTest {
 	}
 
 	@Test
-	@Ignore // TODO: Girvan Newman can't work with disconnected subgraphs
 	public void testSimpleModelSomeEdges() {
 		Model model = new Model();
-		model.addNanoentity(createNanoentity("field1"));
-		model.addNanoentity(createNanoentity("field2"));
-		model.addNanoentity(createNanoentity("field3"));
-		model.addNanoentity(createNanoentity("field4"));
-		model.addNanoentity(createNanoentity("field5"));
-		model.addNanoentity(createNanoentity("field6"));
+		model.addNanoentity(createNanoentity("nanoentity1"));
+		model.addNanoentity(createNanoentity("nanoentity2"));
+		model.addNanoentity(createNanoentity("nanoentity3"));
+		model.addNanoentity(createNanoentity("nanoentity4"));
+		model.addNanoentity(createNanoentity("nanoentity5"));
+		model.addNanoentity(createNanoentity("nanoentity6"));
 
-		Set<CouplingInstance> instances = new HashSet<>();
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field1", "field2", "field3"}));
-		instances.add(addCriterionFields(model, SAME_ENTITY, new String[] {"field4", "field5", "field6"}));
-		when(couplingInstanceRepository.findByModel(model)).thenReturn(instances);
+		Set<CouplingInstance> entityCoupling = new HashSet<>();
+		entityCoupling.add(createInstance(model, new String[] {"nanoentity1", "nanoentity2", "nanoentity3"}));
+		entityCoupling.add(createInstance(model, new String[] {"nanoentity4", "nanoentity5", "nanoentity6"}));
+		Set<CouplingInstance> relationshipCoupling = createRelationship(model);
+		when(couplingInstanceRepository.findByModel(model)).thenReturn(entityCoupling);
+		when(couplingInstanceRepository.findByModelAndCriterion(model, identityCoupling.getName())).thenReturn(entityCoupling);
+		when(couplingInstanceRepository.findByModelAndCriterion(model, semanticCoupling.getName())).thenReturn(relationshipCoupling);
 
 		final Scorer scorer = new Scorer(couplingInstanceRepository, nanoentityRepository);
 		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, (String key) -> {
@@ -93,36 +99,37 @@ public class GephiSolverTest {
 		GephiSolver solver = new GephiSolver(model, scores, null);
 		SolverResult result = solver.solveWithGirvanNewman(2);
 
-		assertEquals(2, result.getServices().size());
+		assertThat(result.getServices(), hasSize(2));
 		for (Service context : result.getServices()) {
-			assertEquals(3, context.getNanoentities().size());
+			assertThat(context.getNanoentities(), hasSize(3));
 		}
 	}
 
-	private CouplingInstance addCriterionFields(final Model model, final String characteristicName, final String[] fields) {
+	private Set<CouplingInstance> createRelationship(Model model) {
+		Set<CouplingInstance> relationshipCoupling = new HashSet<>();
+		CouplingInstance relationship = new CouplingInstance();
+		relationship.setType(InstanceType.AGGREGATION);
+		relationship.addNanoentity(model.getNanoentities().get(0)); // nanoentity1
+		relationship.addNanoentity(model.getNanoentities().get(3)); // nanoentity4
+		relationship.setCouplingCriterion(semanticCoupling);
+		relationshipCoupling.add(relationship);
+		return relationshipCoupling;
+	}
+
+	private CouplingInstance createInstance(final Model model, final String[] nanoentities) {
 		CouplingInstance instance = new CouplingInstance();
-		List<String> fieldsFilter = Arrays.asList(fields);
-		instance.setNanoentities(model.getNanoentities().stream().filter(f -> fieldsFilter.contains(f.getName())).collect(Collectors.toList()));
-		createCharacteristic(characteristicName, instance);
+		instance.setType(InstanceType.SAME_ENTITY);
+		instance.setCouplingCriterion(identityCoupling);
+		List<String> filter = Arrays.asList(nanoentities);
+		instance.setNanoentities(model.getNanoentities().stream().filter(f -> filter.contains(f.getName())).collect(Collectors.toList()));
 		instance.setId(idGenerator.incrementAndGet());
 		return instance;
 	}
 
-	void createCharacteristic(final String characteristicName, final CouplingInstance instance) {
-		CouplingCriterionCharacteristic characteristic = new CouplingCriterionCharacteristic();
-		characteristic.setName(characteristicName);
-		CouplingCriterion couplingCriterion = new CouplingCriterion();
-		couplingCriterion.setId(idGenerator.getAndIncrement());
-		couplingCriterion.setType(CouplingType.COMPATIBILITY);
-		couplingCriterion.setName("criterionName");
-		characteristic.setCouplingCriterion(couplingCriterion);
-		characteristic.setWeight(6);
-		instance.setCharacteristic(characteristic);
-	}
-
-	private Nanoentity createNanoentity(final String field) {
+	private Nanoentity createNanoentity(final String name) {
 		Nanoentity nanoentity = new Nanoentity();
-		nanoentity.setName(field);
+		nanoentity.setName(name);
+		nanoentity.setId(idGenerator.incrementAndGet());
 		return nanoentity;
 	}
 

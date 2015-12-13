@@ -1,7 +1,7 @@
 package ch.hsr.servicestoolkit.score;
 
-import static ch.hsr.servicestoolkit.score.TestDataHelper.createCouplingInstance;
 import static ch.hsr.servicestoolkit.score.TestDataHelper.createCharacteristic;
+import static ch.hsr.servicestoolkit.score.TestDataHelper.createCouplingInstance;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -25,12 +25,12 @@ public class CouplingCriterionScoringProximityTest {
 
 	private static final int WEIGHT_INHERITANCE = 2;
 	private static final int WEIGHT_ENTITY = 5;
-	private Nanoentity fieldIsin;
-	private Nanoentity fieldName;
-	private Nanoentity fieldDatetime;
-	private Nanoentity fieldAmount;
-	private Nanoentity fieldIssuer;
-	private Nanoentity fieldYield;
+	private Nanoentity nanoentityIsin;
+	private Nanoentity nanoentityName;
+	private Nanoentity nanoentityDatetime;
+	private Nanoentity nanoentityAmount;
+	private Nanoentity nanoentityIssuer;
+	private Nanoentity nanoentityYield;
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion identityAndLifecycle;
@@ -49,20 +49,20 @@ public class CouplingCriterionScoringProximityTest {
 	@Before
 	public void setup() {
 		id = 0l;
-		// fields & model
-		fieldIsin = createNanoentity("ISIN");
-		fieldName = createNanoentity("Name");
-		fieldDatetime = createNanoentity("Datetime");
-		fieldAmount = createNanoentity("Amount");
-		fieldIssuer = createNanoentity("Issuer");
-		fieldYield = createNanoentity("Yield");
+		// nanoentities & model
+		nanoentityIsin = createNanoentity("ISIN");
+		nanoentityName = createNanoentity("Name");
+		nanoentityDatetime = createNanoentity("Datetime");
+		nanoentityAmount = createNanoentity("Amount");
+		nanoentityIssuer = createNanoentity("Issuer");
+		nanoentityYield = createNanoentity("Yield");
 		model = new Model();
-		model.addNanoentity(fieldIsin);
-		model.addNanoentity(fieldName);
-		model.addNanoentity(fieldDatetime);
-		model.addNanoentity(fieldAmount);
-		model.addNanoentity(fieldIssuer);
-		model.addNanoentity(fieldYield);
+		model.addNanoentity(nanoentityIsin);
+		model.addNanoentity(nanoentityName);
+		model.addNanoentity(nanoentityDatetime);
+		model.addNanoentity(nanoentityAmount);
+		model.addNanoentity(nanoentityIssuer);
+		model.addNanoentity(nanoentityYield);
 		// coupling
 		identityAndLifecycle = new CouplingCriterion();
 		identityAndLifecycle.setType(CouplingType.COHESIVENESS);
@@ -70,10 +70,10 @@ public class CouplingCriterionScoringProximityTest {
 		sameEntity = createCharacteristic(identityAndLifecycle, WEIGHT_ENTITY, "Same Entity");
 		inheritance = createCharacteristic(identityAndLifecycle, WEIGHT_INHERITANCE, "Inheritance");
 		// coupling instances
-		entityStock = createCouplingInstance(sameEntity, fieldIsin, fieldName);
-		entityPrice = createCouplingInstance(sameEntity, fieldDatetime, fieldAmount);
-		entityBond = createCouplingInstance(sameEntity, fieldIssuer, fieldYield);
-		inheritanceBondStock = createCouplingInstance(inheritance, new Nanoentity[] {fieldIsin, fieldName}, new Nanoentity[] {fieldIssuer, fieldYield});
+		entityStock = createCouplingInstance(sameEntity, nanoentityIsin, nanoentityName);
+		entityPrice = createCouplingInstance(sameEntity, nanoentityDatetime, nanoentityAmount);
+		entityBond = createCouplingInstance(sameEntity, nanoentityIssuer, nanoentityYield);
+		inheritanceBondStock = createCouplingInstance(inheritance, new Nanoentity[] {nanoentityIsin, nanoentityName}, new Nanoentity[] {nanoentityIssuer, nanoentityYield});
 		// context
 		couplingContext = new CouplingContext(model, Arrays.asList(entityStock, entityPrice, entityBond, inheritanceBondStock));
 
@@ -91,17 +91,17 @@ public class CouplingCriterionScoringProximityTest {
 		couplingContext = new CouplingContext(model, Arrays.asList(entityStock, entityPrice, entityBond));
 
 		ServiceCut perfectCut = new ServiceCut();
-		perfectCut.addService(fieldIsin, fieldName);
-		perfectCut.addService(fieldDatetime, fieldAmount);
-		perfectCut.addService(fieldIssuer, fieldYield);
+		perfectCut.addService(nanoentityIsin, nanoentityName);
+		perfectCut.addService(nanoentityDatetime, nanoentityAmount);
+		perfectCut.addService(nanoentityIssuer, nanoentityYield);
 		ServiceCut worstCut = new ServiceCut();
-		worstCut.addService(fieldDatetime, fieldName);
-		worstCut.addService(fieldIsin, fieldYield);
-		worstCut.addService(fieldIssuer, fieldAmount);
+		worstCut.addService(nanoentityDatetime, nanoentityName);
+		worstCut.addService(nanoentityIsin, nanoentityYield);
+		worstCut.addService(nanoentityIssuer, nanoentityAmount);
 		ServiceCut averageCut = new ServiceCut();
-		averageCut.addService(fieldIsin, fieldName, fieldDatetime);
-		averageCut.addService(fieldAmount);
-		perfectCut.addService(fieldIssuer, fieldYield);
+		averageCut.addService(nanoentityIsin, nanoentityName, nanoentityDatetime);
+		averageCut.addService(nanoentityAmount);
+		perfectCut.addService(nanoentityIssuer, nanoentityYield);
 
 		double score = couplingCriterionScoring.calculateScore(perfectCut, identityAndLifecycle, couplingContext);
 		assertThat(score, is(10.0));
@@ -114,13 +114,13 @@ public class CouplingCriterionScoringProximityTest {
 	@Test
 	public void twoCharacteristics() {
 		ServiceCut perfectCut = new ServiceCut();
-		perfectCut.addService(fieldIsin, fieldName, fieldIssuer, fieldYield);
-		perfectCut.addService(fieldDatetime, fieldAmount);
+		perfectCut.addService(nanoentityIsin, nanoentityName, nanoentityIssuer, nanoentityYield);
+		perfectCut.addService(nanoentityDatetime, nanoentityAmount);
 		ServiceCut goodCut = new ServiceCut();
-		goodCut.addService(fieldIsin, fieldName);
+		goodCut.addService(nanoentityIsin, nanoentityName);
 		// inheritance coupling is broken!
-		goodCut.addService(fieldIssuer, fieldYield);
-		goodCut.addService(fieldDatetime, fieldAmount);
+		goodCut.addService(nanoentityIssuer, nanoentityYield);
+		goodCut.addService(nanoentityDatetime, nanoentityAmount);
 
 		double score = couplingCriterionScoring.calculateScore(perfectCut, identityAndLifecycle, couplingContext);
 		assertThat(score, is(10.0));

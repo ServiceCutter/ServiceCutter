@@ -5,10 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -27,9 +26,9 @@ import ch.hsr.servicestoolkit.model.service.ServiceCut;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
-@DiscriminatorValue(value = "1")
 public class CouplingInstance implements Comparable<CouplingInstance> {
+
+	public static String USE_CASE = "Use Case";
 
 	@Id
 	@GeneratedValue
@@ -53,6 +52,9 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 	@JoinTable(name = "nanoentity_to_couplinginstance", joinColumns = {@JoinColumn(name = "nanoentity_id", referencedColumnName = "id")}, inverseJoinColumns = {
 			@JoinColumn(name = "coupling_id", referencedColumnName = "id")})
 	private List<Nanoentity> secondNanoentities = new ArrayList<>();
+
+	@Enumerated(EnumType.STRING)
+	private InstanceType instanceType;
 
 	public CouplingInstance(CouplingCriterion couplingCriterion) {
 		Assert.assertNotEquals("Constructor only to be used for not-compatibility criteria!", CouplingType.COMPATIBILITY, couplingCriterion.getType());
@@ -178,5 +180,13 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 	@Override
 	public int compareTo(CouplingInstance o) {
 		return couplingCriterion.getName().compareTo(o.getCouplingCriterion().getName());
+	}
+
+	public InstanceType getType() {
+		return instanceType;
+	}
+
+	public void setType(InstanceType type) {
+		this.instanceType = type;
 	}
 }

@@ -64,10 +64,10 @@ public class EditorResource {
 		return uploadCriteriaFile(file, modelId, "businessTransactions");
 	}
 
-	@RequestMapping(value = "/model/{modelId}/distanceVariants", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/model/{modelId}/distanceCharacteristics", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<Void> uploadDistanceVariants(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
-		return uploadCriteriaFile(file, modelId, "distanceVariants");
+	public ResponseEntity<Void> uploadDistanceCharacteristics(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
+		return uploadCriteriaFile(file, modelId, "distanceCharacteristics");
 	}
 
 	@RequestMapping(value = "/model/{modelId}/cohesiveGroups", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

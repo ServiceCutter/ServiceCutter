@@ -1,14 +1,14 @@
 package ch.hsr.servicestoolkit.score.relations;
 
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class EntityPair {
-	public final NanoEntity nanoentityA;
-	public final NanoEntity nanoentityB;
+	public final Nanoentity nanoentityA;
+	public final Nanoentity nanoentityB;
 
-	public EntityPair(final NanoEntity fieldA, final NanoEntity fieldB) {
-		this.nanoentityA = fieldA;
-		this.nanoentityB = fieldB;
+	public EntityPair(final Nanoentity nanoentityA, final Nanoentity nanoentityB) {
+		this.nanoentityA = nanoentityA;
+		this.nanoentityB = nanoentityB;
 	}
 
 	@Override

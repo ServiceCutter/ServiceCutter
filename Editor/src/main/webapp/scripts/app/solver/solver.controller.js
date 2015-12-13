@@ -67,7 +67,7 @@ angular.module('editorApp')
         }
 
         $scope.solveModel = function(modelId) {
-        	if(parseInt(modelId) > 0) {
+        	if(parseInt(modelId) > 0) { // TODO cleanup
         		var solverConfig = {'weights': {'Same Entity': $scope.sameEntitySlider,
         										'Composition':$scope.compositionSlider,
         										'Aggregation':$scope.aggregationSlider,

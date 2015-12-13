@@ -1,7 +1,7 @@
 package ch.hsr.servicestoolkit.score;
 
 import static ch.hsr.servicestoolkit.score.TestDataHelper.createCouplingInstance;
-import static ch.hsr.servicestoolkit.score.TestDataHelper.createVariant;
+import static ch.hsr.servicestoolkit.score.TestDataHelper.createCharacteristic;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -11,13 +11,12 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.DualCouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 import ch.hsr.servicestoolkit.score.cuts.CouplingContext;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
@@ -26,22 +25,22 @@ public class CouplingCriterionScoringProximityTest {
 
 	private static final int WEIGHT_INHERITANCE = 2;
 	private static final int WEIGHT_ENTITY = 5;
-	private NanoEntity fieldIsin;
-	private NanoEntity fieldName;
-	private NanoEntity fieldDatetime;
-	private NanoEntity fieldAmount;
-	private NanoEntity fieldIssuer;
-	private NanoEntity fieldYield;
+	private Nanoentity fieldIsin;
+	private Nanoentity fieldName;
+	private Nanoentity fieldDatetime;
+	private Nanoentity fieldAmount;
+	private Nanoentity fieldIssuer;
+	private Nanoentity fieldYield;
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion identityAndLifecycle;
 	private CouplingCriterionCharacteristic sameEntity;
 	private CouplingCriterionCharacteristic inheritance;
 	private CouplingCriterionScoring couplingCriterionScoring = new CouplingCriterionScoring();
-	private MonoCouplingInstance entityStock;
-	private MonoCouplingInstance entityPrice;
-	private MonoCouplingInstance entityBond;
-	private DualCouplingInstance inheritanceBondStock;
+	private CouplingInstance entityStock;
+	private CouplingInstance entityPrice;
+	private CouplingInstance entityBond;
+	private CouplingInstance inheritanceBondStock;
 	private Long id;
 
 	/**
@@ -51,39 +50,39 @@ public class CouplingCriterionScoringProximityTest {
 	public void setup() {
 		id = 0l;
 		// fields & model
-		fieldIsin = createDataField("ISIN");
-		fieldName = createDataField("Name");
-		fieldDatetime = createDataField("Datetime");
-		fieldAmount = createDataField("Amount");
-		fieldIssuer = createDataField("Issuer");
-		fieldYield = createDataField("Yield");
+		fieldIsin = createNanoentity("ISIN");
+		fieldName = createNanoentity("Name");
+		fieldDatetime = createNanoentity("Datetime");
+		fieldAmount = createNanoentity("Amount");
+		fieldIssuer = createNanoentity("Issuer");
+		fieldYield = createNanoentity("Yield");
 		model = new Model();
-		model.addDataField(fieldIsin);
-		model.addDataField(fieldName);
-		model.addDataField(fieldDatetime);
-		model.addDataField(fieldAmount);
-		model.addDataField(fieldIssuer);
-		model.addDataField(fieldYield);
+		model.addNanoentity(fieldIsin);
+		model.addNanoentity(fieldName);
+		model.addNanoentity(fieldDatetime);
+		model.addNanoentity(fieldAmount);
+		model.addNanoentity(fieldIssuer);
+		model.addNanoentity(fieldYield);
 		// coupling
 		identityAndLifecycle = new CouplingCriterion();
 		identityAndLifecycle.setType(CouplingType.COHESIVENESS);
 		identityAndLifecycle.setName(CouplingCriterion.IDENTITY_LIFECYCLE);
-		sameEntity = createVariant(identityAndLifecycle, WEIGHT_ENTITY, "Same Entity");
-		inheritance = createVariant(identityAndLifecycle, WEIGHT_INHERITANCE, "Inheritance");
+		sameEntity = createCharacteristic(identityAndLifecycle, WEIGHT_ENTITY, "Same Entity");
+		inheritance = createCharacteristic(identityAndLifecycle, WEIGHT_INHERITANCE, "Inheritance");
 		// coupling instances
 		entityStock = createCouplingInstance(sameEntity, fieldIsin, fieldName);
 		entityPrice = createCouplingInstance(sameEntity, fieldDatetime, fieldAmount);
 		entityBond = createCouplingInstance(sameEntity, fieldIssuer, fieldYield);
-		inheritanceBondStock = createCouplingInstance(inheritance, new NanoEntity[] { fieldIsin, fieldName }, new NanoEntity[] { fieldIssuer, fieldYield });
+		inheritanceBondStock = createCouplingInstance(inheritance, new Nanoentity[] {fieldIsin, fieldName}, new Nanoentity[] {fieldIssuer, fieldYield});
 		// context
 		couplingContext = new CouplingContext(model, Arrays.asList(entityStock, entityPrice, entityBond, inheritanceBondStock));
 
 	}
 
-	private NanoEntity createDataField(final String name) {
-		NanoEntity dataField = new NanoEntity(name);
-		dataField.setId(id++);
-		return dataField;
+	private Nanoentity createNanoentity(final String name) {
+		Nanoentity nanoentity = new Nanoentity(name);
+		nanoentity.setId(id++);
+		return nanoentity;
 	}
 
 	@Test
@@ -113,7 +112,7 @@ public class CouplingCriterionScoringProximityTest {
 	}
 
 	@Test
-	public void twoVariants() {
+	public void twoCharacteristics() {
 		ServiceCut perfectCut = new ServiceCut();
 		perfectCut.addService(fieldIsin, fieldName, fieldIssuer, fieldYield);
 		perfectCut.addService(fieldDatetime, fieldAmount);

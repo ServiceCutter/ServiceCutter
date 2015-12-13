@@ -1,7 +1,7 @@
 package ch.hsr.servicestoolkit.score;
 
 import static ch.hsr.servicestoolkit.score.TestDataHelper.createCouplingInstance;
-import static ch.hsr.servicestoolkit.score.TestDataHelper.createVariant;
+import static ch.hsr.servicestoolkit.score.TestDataHelper.createCharacteristic;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -14,21 +14,21 @@ import org.junit.Test;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 import ch.hsr.servicestoolkit.score.cuts.CouplingContext;
 import ch.hsr.servicestoolkit.score.cuts.CouplingCriterionScoring;
 
 public class CouplingCriterionScoringDistanceTest {
 
-	private NanoEntity fieldIsin;
-	private NanoEntity fieldName;
-	private NanoEntity fieldDatetime;
-	private NanoEntity fieldAmount;
-	private NanoEntity fieldIssuer;
-	private NanoEntity fieldYield;
+	private Nanoentity fieldIsin;
+	private Nanoentity fieldName;
+	private Nanoentity fieldDatetime;
+	private Nanoentity fieldAmount;
+	private Nanoentity fieldIssuer;
+	private Nanoentity fieldYield;
 	private Model model;
 	private CouplingContext couplingContext;
 	private CouplingCriterion volatility;
@@ -36,9 +36,9 @@ public class CouplingCriterionScoringDistanceTest {
 	private CouplingCriterionCharacteristic regularly;
 	private CouplingCriterionCharacteristic rarely;
 	private CouplingCriterionScoring couplingCriterionScoring = new CouplingCriterionScoring();
-	private MonoCouplingInstance rarelyCoupling;
-	private MonoCouplingInstance oftenCoupling;
-	private MonoCouplingInstance regularlyCoupling;
+	private CouplingInstance rarelyCoupling;
+	private CouplingInstance oftenCoupling;
+	private CouplingInstance regularlyCoupling;
 	private Long id;
 
 	/**
@@ -48,26 +48,26 @@ public class CouplingCriterionScoringDistanceTest {
 	public void setup() {
 		// fields & model
 		id = 0l;
-		fieldIsin = createDataField("ISIN");
-		fieldName = createDataField("Name");
-		fieldDatetime = createDataField("Datetime");
-		fieldAmount = createDataField("Amount");
-		fieldIssuer = createDataField("Issuer");
-		fieldYield = createDataField("Yield");
+		fieldIsin = createNanoentity("ISIN");
+		fieldName = createNanoentity("Name");
+		fieldDatetime = createNanoentity("Datetime");
+		fieldAmount = createNanoentity("Amount");
+		fieldIssuer = createNanoentity("Issuer");
+		fieldYield = createNanoentity("Yield");
 		model = new Model();
-		model.addDataField(fieldIsin);
-		model.addDataField(fieldName);
-		model.addDataField(fieldDatetime);
-		model.addDataField(fieldAmount);
-		model.addDataField(fieldIssuer);
-		model.addDataField(fieldYield);
+		model.addNanoentity(fieldIsin);
+		model.addNanoentity(fieldName);
+		model.addNanoentity(fieldDatetime);
+		model.addNanoentity(fieldAmount);
+		model.addNanoentity(fieldIssuer);
+		model.addNanoentity(fieldYield);
 		// coupling
 		volatility = new CouplingCriterion();
 		volatility.setType(CouplingType.COMPATIBILITY);
 		volatility.setName(CouplingCriterion.VOLATILITY);
-		often = createVariant(volatility, 1, "Often");
-		regularly = createVariant(volatility, 5, "Regularly");
-		rarely = createVariant(volatility, 9, "Rarely");
+		often = createCharacteristic(volatility, 1, "Often");
+		regularly = createCharacteristic(volatility, 5, "Regularly");
+		rarely = createCharacteristic(volatility, 9, "Rarely");
 		// coupling instances
 		rarelyCoupling = createCouplingInstance(rarely, fieldIsin, fieldYield); // 9
 		regularlyCoupling = createCouplingInstance(regularly, fieldName, fieldIssuer); // 5
@@ -76,8 +76,8 @@ public class CouplingCriterionScoringDistanceTest {
 		couplingContext = new CouplingContext(model, Arrays.asList(rarelyCoupling, regularlyCoupling, oftenCoupling));
 	}
 
-	private NanoEntity createDataField(final String name) {
-		NanoEntity field = new NanoEntity(name);
+	private Nanoentity createNanoentity(final String name) {
+		Nanoentity field = new Nanoentity(name);
 		field.setId(id++);
 		return field;
 	}

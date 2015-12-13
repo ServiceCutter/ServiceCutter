@@ -1,39 +1,38 @@
 package ch.hsr.servicestoolkit.score;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.NanoEntity;
-import ch.hsr.servicestoolkit.model.DualCouplingInstance;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class TestDataHelper {
 
-	public static MonoCouplingInstance createCouplingInstance(CouplingCriterionCharacteristic variant, NanoEntity... fields) {
-		MonoCouplingInstance result = new MonoCouplingInstance();
-		for (NanoEntity dataField : fields) {
-			result.addDataField(dataField);
+	public static CouplingInstance createCouplingInstance(CouplingCriterionCharacteristic characteristic, Nanoentity... fields) {
+		CouplingInstance result = new CouplingInstance();
+		for (Nanoentity nanoentity : fields) {
+			result.addNanoentity(nanoentity);
 		}
-		result.setVariant(variant);
+		result.setCharacteristic(characteristic);
 		return result;
 	}
 
-	public static DualCouplingInstance createCouplingInstance(CouplingCriterionCharacteristic variant, NanoEntity[] fields, NanoEntity[] otherFields) {
-		DualCouplingInstance result = new DualCouplingInstance();
-		for (NanoEntity dataField : fields) {
-			result.addDataField(dataField);
+	public static CouplingInstance createCouplingInstance(CouplingCriterionCharacteristic characteristic, Nanoentity[] fields, Nanoentity[] otherFields) {
+		CouplingInstance result = new CouplingInstance();
+		for (Nanoentity nanoentity : fields) {
+			result.addNanoentity(nanoentity);
 		}
-		for (NanoEntity dataField : otherFields) {
-			result.addSecondDataField(dataField);
+		for (Nanoentity nanoentity : otherFields) {
+			result.addSecondNanoentity(nanoentity);
 		}
-		result.setVariant(variant);
+		result.setCharacteristic(characteristic);
 		return result;
 	}
 
-	public static CouplingCriterionCharacteristic createVariant(CouplingCriterion criterion, int weight, String name) {
-		CouplingCriterionCharacteristic variant = new CouplingCriterionCharacteristic();
-		variant.setCouplingCriterion(criterion);
-		variant.setWeight(weight);
-		variant.setName(name);
-		return variant;
+	public static CouplingCriterionCharacteristic createCharacteristic(CouplingCriterion criterion, int weight, String name) {
+		CouplingCriterionCharacteristic characteristic = new CouplingCriterionCharacteristic();
+		characteristic.setCouplingCriterion(criterion);
+		characteristic.setWeight(weight);
+		characteristic.setName(name);
+		return characteristic;
 	}
 }

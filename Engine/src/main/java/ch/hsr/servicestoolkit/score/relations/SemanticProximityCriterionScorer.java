@@ -7,9 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.DualCouplingInstance;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {
 	Map<EntityPair, Double> result = new HashMap<>();
@@ -22,25 +21,21 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	private static final int SCORE_AGGREGATION = 1;
 
 	@Override
-	public Map<EntityPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
-		for (MonoCouplingInstance fieldAccessInstance : instances) {
-			DualCouplingInstance fieldAccessInstanceDual = (DualCouplingInstance) fieldAccessInstance;
-			List<NanoEntity> fieldsWritten = fieldAccessInstanceDual.getSecondDataFields();
-			List<NanoEntity> fieldsRead = fieldAccessInstanceDual.getDataFields();
+	public Map<EntityPair, Double> getScores(final Set<CouplingInstance> instances) {
+		for (CouplingInstance instance : instances) {
+			List<Nanoentity> fieldsWritten = instance.getSecondNanoentities();
+			List<Nanoentity> fieldsRead = instance.getNanoentities();
 			addScoreForWriteAccess(fieldsWritten);
 			addScoreForReadAccess(fieldsRead);
 			addScoreForMixedAccess(fieldsWritten, fieldsRead);
 		}
 
-		List<MonoCouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.getVariant().getName().equals(CouplingCriterionCharacteristic.AGGREGATION))
-				.collect(Collectors.toList());
-		for (MonoCouplingInstance aggregationInstance : aggregationInstances) {
-			DualCouplingInstance aggregationInstanceDual = (DualCouplingInstance) aggregationInstance;
-			for (NanoEntity fieldA : aggregationInstanceDual.getAllFields()) {
-				for (NanoEntity fieldB : aggregationInstanceDual.getSecondDataFields()) {
+		List<CouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.isCharacteristic(CouplingCriterionCharacteristic.AGGREGATION)).collect(Collectors.toList());
+		for (CouplingInstance aggregationInstance : aggregationInstances) {
+			for (Nanoentity fieldA : aggregationInstance.getAllNanoentities()) {
+				for (Nanoentity fieldB : aggregationInstance.getSecondNanoentities()) {
 					addToResult(fieldA, fieldB, SCORE_AGGREGATION);
 				}
-
 			}
 		}
 		normalizeResult(result);
@@ -75,15 +70,15 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	 * 
 	 * @param frequency
 	 */
-	private void addScoreForMixedAccess(final List<NanoEntity> fieldsWritten, final List<NanoEntity> fieldsRead) {
-		for (NanoEntity fieldWritten : fieldsWritten) {
-			for (NanoEntity fieldRead : fieldsRead) {
+	private void addScoreForMixedAccess(final List<Nanoentity> fieldsWritten, final List<Nanoentity> fieldsRead) {
+		for (Nanoentity fieldWritten : fieldsWritten) {
+			for (Nanoentity fieldRead : fieldsRead) {
 				addToResult(fieldRead, fieldWritten, SCORE_MIXED);
 			}
 		}
 	}
 
-	private void addScoreForReadAccess(final List<NanoEntity> fieldsRead) {
+	private void addScoreForReadAccess(final List<Nanoentity> fieldsRead) {
 		for (int i = 0; i < fieldsRead.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsRead.size(); j++) {
 				addToResult(fieldsRead.get(i), fieldsRead.get(j), SCORE_READ);
@@ -91,7 +86,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 		}
 	}
 
-	private void addScoreForWriteAccess(final List<NanoEntity> fieldsWritten) {
+	private void addScoreForWriteAccess(final List<Nanoentity> fieldsWritten) {
 		for (int i = 0; i < fieldsWritten.size() - 1; i++) {
 			for (int j = i + 1; j < fieldsWritten.size(); j++) {
 				addToResult(fieldsWritten.get(i), fieldsWritten.get(j), SCORE_WRITE);
@@ -99,7 +94,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 		}
 	}
 
-	private void addToResult(final NanoEntity fieldA, final NanoEntity fieldB, final double score) {
+	private void addToResult(final Nanoentity fieldA, final Nanoentity fieldB, final double score) {
 		EntityPair fieldTuple = new EntityPair(fieldA, fieldB);
 		if (result.get(fieldTuple) == null) {
 			result.put(fieldTuple, score);

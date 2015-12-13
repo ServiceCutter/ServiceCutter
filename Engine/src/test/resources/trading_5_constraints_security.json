@@ -1,7 +1,7 @@
 [
 	{
 		"couplingCriterionName": "Security Constraint",
-		"variantName": "Separation Constraint",
+		"characteristicName": "Separation Constraint",
 		"groupAnanoentities": [
 			"AccountOwner.address",
 			"NaturalPerson.name",

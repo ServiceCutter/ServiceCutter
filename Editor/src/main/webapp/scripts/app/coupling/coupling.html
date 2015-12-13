@@ -8,9 +8,9 @@
 			<p><strong>Types:</strong>
 				<ul>
 					<li>DISTANCE - The service <em>should</em> not contain different variants.</li>
-					<li>PROXIMITY - The fields <em>should</em> be in the same service.</li>
-					<li>SEPARATION - The fields <em>must</em> be distributed amongst different services.</li>
-					<li>EXCLUSIVE - The fields <em>must</em> form a service. No fields are assigned to another service; no fields are added to this service.</li>
+					<li>PROXIMITY - The nanoentities <em>should</em> be in the same service.</li>
+					<li>SEPARATION - The nanoentities <em>must</em> be distributed amongst different services.</li>
+					<li>EXCLUSIVE - The nanoentities <em>must</em> form a service. No nanoentities are assigned to another service; no nanoentities are added to this service.</li>
 				</ul>
 			</p> -->
 
@@ -38,9 +38,9 @@
 			<div ng-show="criterion.type == 'COMPATIBILITY'">
 				<h3>Characteristics</h3>
 				<ul>
-					<li ng-repeat="variant in criterion.variants">
-						<strong>{{variant.name}}</strong> 
-						<span>[weight={{variant.weight}}]</span>
+					<li ng-repeat="characteristic in criterion.characteristics">
+						<strong>{{characteristic.name}}</strong> 
+						<span>[weight={{characteristic.weight}}]</span>
 					</li>
 				</ul>
 			</div>

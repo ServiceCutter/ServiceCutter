@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
 
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroup;
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
-import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
+import ch.hsr.servicestoolkit.importer.api.DistanceCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
@@ -33,17 +33,17 @@ import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.importer.api.NanoEntityInput;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.DualCouplingInstance;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
+import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.model.NanoEntity;
-import ch.hsr.servicestoolkit.model.repository.CouplingCriteriaVariantRepository;
+import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.repository.CouplingCriterionCharacteristicRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionRepository;
-import ch.hsr.servicestoolkit.model.repository.DataFieldRepository;
+import ch.hsr.servicestoolkit.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicestoolkit.model.repository.ModelRepository;
-import ch.hsr.servicestoolkit.model.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
 import ch.hsr.servicestoolkit.rest.InvalidRestParam;
 
 @Component
@@ -52,21 +52,21 @@ public class ImportEndpoint {
 
 	private final Logger log = LoggerFactory.getLogger(ImportEndpoint.class);
 	private final ModelRepository modelRepository;
-	private final DataFieldRepository dataFieldRepository;
+	private final NanoentityRepository nanoentityRepository;
 	private final CouplingCriterionRepository couplingCriterionRepository;
-	private final CouplingCriteriaVariantRepository couplingCriteriaVariantRepository;
-	private final MonoCouplingInstanceRepository monoCouplingInstanceRepository;
+	private final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository;
+	private final CouplingInstanceRepository couplingInstanceRepository;
 	private ModelCompleter modelCompleter;
 
 	@Autowired
-	public ImportEndpoint(final ModelRepository modelRepository, final DataFieldRepository dataFieldRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository,
-			final ModelCompleter modelCompleter, CouplingCriterionRepository couplingCriterionRepository, CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
+	public ImportEndpoint(final ModelRepository modelRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
+			final ModelCompleter modelCompleter, CouplingCriterionRepository couplingCriterionRepository, CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository) {
 		this.modelRepository = modelRepository;
-		this.dataFieldRepository = dataFieldRepository;
-		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
+		this.nanoentityRepository = nanoentityRepository;
+		this.couplingInstanceRepository = couplingInstanceRepository;
 		this.modelCompleter = modelCompleter;
 		this.couplingCriterionRepository = couplingCriterionRepository;
-		this.couplingCriteriaVariantRepository = couplingCriteriaVariantRepository;
+		this.couplingCriteriaCharacteristicRepository = couplingCriteriaCharacteristicRepository;
 
 	}
 
@@ -90,42 +90,43 @@ public class ImportEndpoint {
 
 		}
 		// entities
-		CouplingCriterionCharacteristic sameEntityVariant = findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriterionCharacteristic.SAME_ENTITY);
+		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
 		for (Entry<String, List<NanoEntityInput>> entity : findRealEntities(domainModel).entrySet()) {
-			MonoCouplingInstance couplingInstance = sameEntityVariant.createInstance();
-			monoCouplingInstanceRepository.save(couplingInstance);
+			CouplingInstance couplingInstance = new CouplingInstance(criterion);
+			model.addCouplingInstance(couplingInstance);
+			couplingInstanceRepository.save(couplingInstance);
 			String entityName = entity.getKey();
 			couplingInstance.setName(entityName);
 			couplingInstance.setModel(model);
 			log.info("store entity with attributes {}", entity.getValue());
 			for (NanoEntityInput entityAttribute : entity.getValue()) {
-				NanoEntity dataField = new NanoEntity();
-				dataField.setName(entityAttribute.getName());
-				dataField.setContext(entityAttributes.get(entityAttribute));
-				model.addDataField(dataField);
-				dataFieldRepository.save(dataField);
-				couplingInstance.addDataField(dataField);
-				log.info("Import data field {}", dataField.getContextName());
+				Nanoentity nanoentity = new Nanoentity();
+				nanoentity.setName(entityAttribute.getName());
+				nanoentity.setContext(entityAttributes.get(entityAttribute));
+				model.addNanoentity(nanoentity);
+				nanoentityRepository.save(nanoentity);
+				couplingInstance.addNanoentity(nanoentity);
+				log.info("Import nanoentity {}", nanoentity.getContextName());
 			}
 		}
 
 		// Aggregations
-		CouplingCriterionCharacteristic aggregationVariant = findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriterionCharacteristic.AGGREGATION);
+
+		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (EntityRelation relation : domainModel.getRelations()) {
 			if (RelationType.AGGREGATION.equals(relation.getType())) {
-				DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
-
-				monoCouplingInstanceRepository.save(instance);
-				List<NanoEntity> originFields = relation.getOrigin().getNanoentities().stream()
-						.map(attr -> dataFieldRepository.findByContextAndNameAndModel(relation.getOrigin().getName(), attr.getName(), model)).collect(Collectors.toList());
-				List<NanoEntity> destinationFields = relation.getDestination().getNanoentities().stream()
-						.map(attr -> dataFieldRepository.findByContextAndNameAndModel(relation.getDestination().getName(), attr.getName(), model)).collect(Collectors.toList());
-				instance.setDataFields(originFields);
-				instance.setSecondDataFields(destinationFields);
+				CouplingInstance instance = new CouplingInstance(semanticProximity);
+				couplingInstanceRepository.save(instance);
+				List<Nanoentity> originFields = relation.getOrigin().getNanoentities().stream()
+						.map(attr -> nanoentityRepository.findByContextAndNameAndModel(relation.getOrigin().getName(), attr.getName(), model)).collect(Collectors.toList());
+				List<Nanoentity> destinationFields = relation.getDestination().getNanoentities().stream()
+						.map(attr -> nanoentityRepository.findByContextAndNameAndModel(relation.getDestination().getName(), attr.getName(), model)).collect(Collectors.toList());
+				instance.setNanoentities(originFields);
+				instance.setSecondNanoentities(destinationFields);
 				instance.setModel(model);
-				instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
+				instance.setName("Aggregation: " + relation.getOrigin().getName() + "." + relation.getDestination().getName());
 
-				log.info("Import aggregation on {} and {}", instance.getDataFields(), instance.getSecondDataFields());
+				log.info("Import aggregation on {} and {}", instance.getNanoentities(), instance.getSecondNanoentities());
 			}
 		}
 		// TODO: remove return value and set location header to URL of generated
@@ -198,14 +199,15 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		CouplingCriterionCharacteristic aggregationVariant = findVariant(CouplingCriterion.SEMANTIC_PROXIMITY, CouplingCriterionCharacteristic.SHARED_FIELD_ACCESS);
+		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (UseCase transaction : transactions) {
-			DualCouplingInstance instance = (DualCouplingInstance) aggregationVariant.createInstance();
-			monoCouplingInstanceRepository.save(instance);
-			instance.setName(transaction.getName());
+			CouplingInstance instance = new CouplingInstance(semanticProximity);
+			model.addCouplingInstance(instance);
+			couplingInstanceRepository.save(instance);
+			instance.setName("Use Case: " + transaction.getName());
 			instance.setModel(model);
-			instance.setDataFields(loadDataFields(transaction.getNanoentitiesRead(), model));
-			instance.setSecondDataFields(loadDataFields(transaction.getNanoentitiesWritten(), model));
+			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model));
+			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model));
 			log.info("Import business transactions {} with fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getNanoentitiesWritten(), transaction.getNanoentitiesRead());
 		}
 	}
@@ -219,42 +221,45 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		CouplingCriterionCharacteristic variant = findVariant(CouplingCriterion.IDENTITY_LIFECYCLE, CouplingCriterionCharacteristic.SAME_ENTITY);
+		CouplingCriterion identityLifecylcle = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (Entity entity : entities) {
-			MonoCouplingInstance instance = variant.createInstance();
-			monoCouplingInstanceRepository.save(instance);
-			instance.setName(entity.getName());
-			instance.setModel(model);
-			instance.setDataFields(loadDataFields(entity.getNanoentities().stream().map(NanoEntityInput::getName).collect(Collectors.toList()), model));
+			CouplingInstance instance = new CouplingInstance(identityLifecylcle);
+			model.addCouplingInstance(instance);
+			couplingInstanceRepository.save(instance);
+			instance.setName("Same Entity: " + entity.getName());
+			instance.setNanoentities(loadNanoentities(entity.getNanoentities().stream().map(NanoEntityInput::getName).collect(Collectors.toList()), model));
 		}
 	}
 
 	@POST
-	@Path("/{modelId}/distanceVariants/")
+	@Path("/{modelId}/distanceCharacteristics/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importDistanceCriterionInstance(@PathParam("modelId") final Long modelId, final List<DistanceVariant> inputVariants) {
+	public void importDistanceCriterionInstance(@PathParam("modelId") final Long modelId, final List<DistanceCharacteristic> inputCharacteristics) {
 		Model model = modelRepository.findOne(modelId);
-		if (model == null || inputVariants == null) {
+		if (model == null || inputCharacteristics == null) {
 			throw new InvalidRestParam();
 		}
-		for (DistanceVariant inputVariant : inputVariants) {
-			CouplingCriterionCharacteristic variant = findVariant(inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
-			if (variant == null) {
-				log.error("variant {} not known! ignore", inputVariant);
+		for (DistanceCharacteristic inputCharacteristic : inputCharacteristics) {
+			CouplingCriterionCharacteristic characteristic = findCharacteristic(inputCharacteristic.getCouplingCriterionName(), inputCharacteristic.getCharacteristicName());
+			if (characteristic == null) {
+				log.error("characteristic {} not known! ignore", inputCharacteristic);
 				continue;
 			}
-			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndVariant(model, variant);
+			Set<CouplingInstance> instance = couplingInstanceRepository.findByModelAndCharacteristic(model, characteristic);
 
 			if (instance == null || instance.isEmpty()) {
-				MonoCouplingInstance newInstance = variant.createInstance();
-				monoCouplingInstanceRepository.save(newInstance);
-				newInstance.setName(inputVariant.getCouplingCriterionName());
+				CouplingInstance newInstance = new CouplingInstance(characteristic);
+				model.addCouplingInstance(newInstance);
+				couplingInstanceRepository.save(newInstance);
+				newInstance.setName(inputCharacteristic.getCouplingCriterionName());
 				newInstance.setModel(model);
-				newInstance.setDataFields(loadDataFields(inputVariant.getNanoentities(), model));
-				log.info("Import distance variant {}-{} with fields {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName(), newInstance.getAllFields());
+				newInstance.setNanoentities(loadNanoentities(inputCharacteristic.getNanoentities(), model));
+				log.info("Import distance characteristic {}-{} with fields {}", inputCharacteristic.getCouplingCriterionName(), inputCharacteristic.getCharacteristicName(),
+						newInstance.getAllNanoentities());
 			} else {
-				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputVariant.getCouplingCriterionName(), inputVariant.getVariantName());
+				log.error("enhancing characteristics not yet implemented. criterion: {}, characteristic: {}", inputCharacteristic.getCouplingCriterionName(),
+						inputCharacteristic.getCharacteristicName());
 				throw new InvalidRestParam();
 			}
 		}
@@ -271,26 +276,15 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 		for (SeparationCriterion inputCriterion : criteria) {
-			CouplingCriterionCharacteristic variant = findVariant(inputCriterion.getCouplingCriterionName(), inputCriterion.getVariantName());
-			if (variant == null) {
-				log.error("variant {} not known! ignore", inputCriterion);
-				continue;
-			}
-			Set<MonoCouplingInstance> instance = monoCouplingInstanceRepository.findByModelAndVariant(model, variant);
-
-			if (instance == null || instance.isEmpty()) {
-				DualCouplingInstance newInstance = (DualCouplingInstance) variant.createInstance();
-
-				monoCouplingInstanceRepository.save(newInstance);
-				newInstance.setName(inputCriterion.getCouplingCriterionName());
-				newInstance.setModel(model);
-				newInstance.setDataFields(loadDataFields(inputCriterion.getGroupAnanoentities(), model));
-				newInstance.setSecondDataFields(loadDataFields(inputCriterion.getGroupBnanoentities(), model));
-				log.info("Import separation constraint {} on fields {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getDataFields(), newInstance.getSecondDataFields());
-			} else {
-				log.error("enhancing variants not yet implemented. criterion: {}, variant: {}", inputCriterion.getCouplingCriterionName(), inputCriterion.getVariantName());
-				throw new InvalidRestParam();
-			}
+			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(inputCriterion.getCouplingCriterionName());
+			CouplingInstance newInstance = new CouplingInstance(couplingCriterion);
+			model.addCouplingInstance(newInstance);
+			couplingInstanceRepository.save(newInstance);
+			newInstance.setName(inputCriterion.getCouplingCriterionName());
+			newInstance.setModel(model);
+			newInstance.setNanoentities(loadNanoentities(inputCriterion.getGroupAnanoentities(), model));
+			newInstance.setSecondNanoentities(loadNanoentities(inputCriterion.getGroupBnanoentities(), model));
+			log.info("Import separation constraint {} on fields {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getNanoentities(), newInstance.getSecondNanoentities());
 		}
 	}
 
@@ -305,49 +299,54 @@ public class ImportEndpoint {
 		}
 
 		for (CohesiveGroups groups : listOfGroups) {
-			CouplingCriterionCharacteristic variant = findVariant(groups.getCouplingCriterionName(), groups.getVariantName());
-			if (variant == null) {
-				log.error("variant {} not known! ignore", groups.getVariantName());
-				continue;
+			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(groups.getCouplingCriterionName());
+			CouplingCriterionCharacteristic characteristic = null;
+
+			if (CouplingType.COMPATIBILITY.equals(couplingCriterion.getType())) {
+				characteristic = findCharacteristic(groups.getCouplingCriterionName(), groups.getCharacteristicName());
+				if (characteristic == null) {
+					log.error("characteristic {} not known! ignore", groups.getCharacteristicName());
+					continue;
+				}
 			}
 
 			for (CohesiveGroup cohesiveGroup : groups.getCohesiveGroups()) {
-				MonoCouplingInstance instance = variant.createInstance();
-
-				monoCouplingInstanceRepository.save(instance);
+				CouplingInstance instance = characteristic == null ? new CouplingInstance(couplingCriterion) : new CouplingInstance(characteristic);
+				model.addCouplingInstance(instance);
+				couplingInstanceRepository.save(instance);
 				instance.setName(groups.getCouplingCriterionName());
 				instance.setModel(model);
-				instance.setDataFields(loadDataFields(cohesiveGroup.getNanoentities(), model));
-				log.info("Import cohesive group {} on fields {} ", cohesiveGroup.getName(), instance.getDataFields());
+				instance.setNanoentities(loadNanoentities(cohesiveGroup.getNanoentities(), model));
+				log.info("Import cohesive group {} on fields {} ", cohesiveGroup.getName(), instance.getNanoentities());
 			}
 		}
 	}
 
-	List<NanoEntity> loadDataFields(final List<String> fields, final Model model) {
-		List<NanoEntity> dataFields = new ArrayList<>();
-		for (String fieldName : fields) {
-			NanoEntity dataField;
-			if (fieldName.contains(".")) {
-				String[] splittedName = fieldName.split("\\.");
-				dataField = dataFieldRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);
+	List<Nanoentity> loadNanoentities(final List<String> names, final Model model) {
+		List<Nanoentity> nanoentities = new ArrayList<>();
+		for (String nanoentityName : names) {
+			Nanoentity nanoentity;
+			if (nanoentityName.contains(".")) {
+				String[] splittedName = nanoentityName.split("\\.");
+				nanoentity = nanoentityRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);
 			} else {
-				dataField = dataFieldRepository.findByNameAndModel(fieldName, model);
+				nanoentity = nanoentityRepository.findByNameAndModel(nanoentityName, model);
 			}
 
-			if (dataField != null) {
-				dataFields.add(dataField);
+			if (nanoentity != null) {
+				nanoentities.add(nanoentity);
 			} else {
-				log.warn("	 field with name {}", fieldName);
+				log.warn("	 field with name {}", nanoentityName);
 			}
 		}
-		return dataFields;
+		return nanoentities;
 	}
 
-	private CouplingCriterionCharacteristic findVariant(String coupling, String variant) {
+	private CouplingCriterionCharacteristic findCharacteristic(String coupling, String characteristic) {
 		CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(coupling);
 		Assert.notNull(couplingCriterion, "Coupling with name " + coupling + " not found!");
-		CouplingCriterionCharacteristic result = couplingCriteriaVariantRepository.readByNameAndCouplingCriterion(variant, couplingCriterion);
-		Assert.notNull(result, "Variant with name " + variant + " not found!");
+		CouplingCriterionCharacteristic result = couplingCriteriaCharacteristicRepository.readByNameAndCouplingCriterion(characteristic, couplingCriterion);
+		Assert.notNull(result, "Characteristic with name " + characteristic + " not found!");
 		return result;
 	}
 }

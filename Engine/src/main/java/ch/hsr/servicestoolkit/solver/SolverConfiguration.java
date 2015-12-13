@@ -49,12 +49,12 @@ public class SolverConfiguration {
 		return algorithmParams;
 	}
 
-	public Double getWeightForVariant(final String variantType) {
-		if (!weights.containsKey(variantType)) {
-			log.error("no weight defined for variant: " + variantType + ". Use 0");
+	public Double getWeightForCharacteristic(final String characteristicType) {
+		if (!weights.containsKey(characteristicType)) {
+			log.error("no weight defined for characteristic: " + characteristicType + ". Use 0");
 			return 0d;
 		}
-		return weights.get(variantType);
+		return weights.get(characteristicType);
 	}
 
 	public Double getPriorityForCouplingCriterion(final String criterionType) {
@@ -83,8 +83,7 @@ public class SolverConfiguration {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(getClass()).add("algorithm", algorithm).add("weights", weights).add("algorithmParams", algorithmParams).add("priorities", priorities)
-				.toString();
+		return MoreObjects.toStringHelper(getClass()).add("algorithm", algorithm).add("weights", weights).add("algorithmParams", algorithmParams).add("priorities", priorities).toString();
 	}
 
 }

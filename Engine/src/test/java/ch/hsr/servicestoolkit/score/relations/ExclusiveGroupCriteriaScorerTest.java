@@ -10,8 +10,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class ExclusiveGroupCriteriaScorerTest {
 
@@ -21,30 +21,30 @@ public class ExclusiveGroupCriteriaScorerTest {
 
 	@Test
 	public void testExclusiveGroups() {
-		MonoCouplingInstance group1 = new MonoCouplingInstance();
-		MonoCouplingInstance group2 = new MonoCouplingInstance();
-		MonoCouplingInstance group3 = new MonoCouplingInstance();
+		CouplingInstance group1 = new CouplingInstance();
+		CouplingInstance group2 = new CouplingInstance();
+		CouplingInstance group3 = new CouplingInstance();
 
-		NanoEntity nanoentity1a = createNanoEntity("1A");
-		NanoEntity nanoentity1b = createNanoEntity("1B");
+		Nanoentity nanoentity1a = createNanoEntity("1A");
+		Nanoentity nanoentity1b = createNanoEntity("1B");
 
-		group1.setDataFields(Arrays.asList(nanoentity1a, nanoentity1b));
+		group1.setNanoentities(Arrays.asList(nanoentity1a, nanoentity1b));
 
-		NanoEntity nanoentity2a = createNanoEntity("2A");
-		NanoEntity nanoentity2b = createNanoEntity("2B");
+		Nanoentity nanoentity2a = createNanoEntity("2A");
+		Nanoentity nanoentity2b = createNanoEntity("2B");
 
-		group2.setDataFields(Arrays.asList(nanoentity2a, nanoentity2b));
+		group2.setNanoentities(Arrays.asList(nanoentity2a, nanoentity2b));
 
-		NanoEntity nanoentity3a = createNanoEntity("3A");
-		NanoEntity nanoentity3b = createNanoEntity("3B");
+		Nanoentity nanoentity3a = createNanoEntity("3A");
+		Nanoentity nanoentity3b = createNanoEntity("3B");
 
-		group3.setDataFields(Arrays.asList(nanoentity3a, nanoentity3b));
+		group3.setNanoentities(Arrays.asList(nanoentity3a, nanoentity3b));
 
-		NanoEntity other = createNanoEntity("other");
+		Nanoentity other = createNanoEntity("other");
 
 		ExclusiveGroupCriteriaScorer scorer = new ExclusiveGroupCriteriaScorer(PENALTY, PREMIUM,
 				Arrays.asList(nanoentity1a, nanoentity1b, nanoentity2a, nanoentity2b, nanoentity3a, nanoentity3b, other));
-		Map<EntityPair, Double> scores = scorer.getScores(new HashSet<MonoCouplingInstance>(Arrays.asList(group1, group2, group3)));
+		Map<EntityPair, Double> scores = scorer.getScores(new HashSet<CouplingInstance>(Arrays.asList(group1, group2, group3)));
 
 		// check premiums
 		assertThat(scores.get(new EntityPair(nanoentity1a, nanoentity1b)), is(equalTo(PREMIUM)));
@@ -72,8 +72,8 @@ public class ExclusiveGroupCriteriaScorerTest {
 		assertThat(scores.get(new EntityPair(nanoentity3b, other)), is(equalTo(PENALTY)));
 	}
 
-	private NanoEntity createNanoEntity(final String name) {
-		NanoEntity nanoEntity = new NanoEntity(name);
+	private Nanoentity createNanoEntity(final String name) {
+		Nanoentity nanoEntity = new Nanoentity(name);
 		nanoEntity.setId(idGen++);
 		return nanoEntity;
 	}

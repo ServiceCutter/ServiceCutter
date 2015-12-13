@@ -5,28 +5,28 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class Service {
 
-	private Set<NanoEntity> dataFields = new HashSet<>();
+	private Set<Nanoentity> nanoentities = new HashSet<>();
 
 	public Service() {
 	}
 
-	public Service(NanoEntity... dataFields) {
-		Collections.addAll(this.dataFields, dataFields);
+	public Service(Nanoentity... nanoentities) {
+		Collections.addAll(this.nanoentities, nanoentities);
 	}
 
-	public Set<NanoEntity> getDataFields() {
-		return dataFields;
+	public Set<Nanoentity> getNanoentities() {
+		return nanoentities;
 	}
 
-	public void setDataFields(Set<NanoEntity> dataFields) {
-		this.dataFields = dataFields;
+	public void setNanoentities(Set<Nanoentity> nanoentities) {
+		this.nanoentities = nanoentities;
 	}
 
-	public String getFieldNames() {
-		return dataFields.stream().map(NanoEntity::getName).collect(Collectors.joining(","));
+	public String getNanoentityNames() {
+		return nanoentities.stream().map(Nanoentity::getName).collect(Collectors.joining(","));
 	}
 }

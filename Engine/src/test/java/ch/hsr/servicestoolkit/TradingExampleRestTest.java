@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
+import ch.hsr.servicestoolkit.importer.api.DistanceCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
@@ -42,7 +42,7 @@ public class TradingExampleRestTest {
 
 	private static final String TRADING_EXAMPLE_JSON = "trading_1_model.json";
 	private static final String TRADING_EXAMPLE_BUSINESS_TRANSACTION = "trading_2_use_cases.json";
-	private static final String TRADING_EXAMPLE_DISTANCE_VARIANTS = "trading_3_characteristics.json";
+	private static final String TRADING_EXAMPLE_DISTANCE_CHARACTERISTICS = "trading_3_characteristics.json";
 	private static final String TRADING_EXAMPLE_SEPARATION_CRITERIA = "trading_5_constraints_security.json";
 	@Value("${local.server.port}")
 	private int port;
@@ -54,7 +54,7 @@ public class TradingExampleRestTest {
 		Integer modelId = createModelOnApi();
 
 		loadBusinessTransactionOnModel(modelId);
-		loadDistanceVariantsOnModel(modelId);
+		loadDistanceCharacteristicsOnModel(modelId);
 		loadSeparationCriteriaOnModel(modelId);
 
 		solveModel(modelId);
@@ -87,14 +87,14 @@ public class TradingExampleRestTest {
 		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
 	}
 
-	private void loadDistanceVariantsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<DistanceVariant> variants = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_DISTANCE_VARIANTS, DistanceVariant.class);
+	private void loadDistanceCharacteristicsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
+		List<DistanceCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_DISTANCE_CHARACTERISTICS, DistanceCharacteristic.class);
 
-		log.info("read distance variants: {}", variants);
+		log.info("read distance characteristics: {}", characteristics);
 
-		HttpEntity<List<DistanceVariant>> request = IntegrationTestHelper.createHttpRequestWithPostObj(variants);
-		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceVariants/";
-		log.info("store distance variants on {}", path);
+		HttpEntity<List<DistanceCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
+		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceCharacteristics/";
+		log.info("store distance characteristics on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
 		});

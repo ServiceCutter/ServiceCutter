@@ -6,10 +6,10 @@ public class CohesiveGroups {
 
 	private List<CohesiveGroup> cohesiveGroups;
 	private String couplingCriterionName;
-	private String variantName;
+	private String characteristicName;
 
-	public CohesiveGroups(final String variantName, final String couplingCriterionName, final List<CohesiveGroup> cohesiveGroups) {
-		this.variantName = variantName;
+	public CohesiveGroups(final String characteristicName, final String couplingCriterionName, final List<CohesiveGroup> cohesiveGroups) {
+		this.characteristicName = characteristicName;
 		this.couplingCriterionName = couplingCriterionName;
 		this.cohesiveGroups = cohesiveGroups;
 	}
@@ -21,8 +21,8 @@ public class CohesiveGroups {
 		return cohesiveGroups;
 	}
 
-	public String getVariantName() {
-		return variantName;
+	public String getCharacteristicName() {
+		return characteristicName;
 	}
 
 	public String getCouplingCriterionName() {

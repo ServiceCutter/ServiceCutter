@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
@@ -94,7 +94,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void createEdgeAndSetWeight(final NanoEntity first, final NanoEntity second, final double weight) {
+	protected void createEdgeAndSetWeight(final Nanoentity first, final Nanoentity second, final double weight) {
 		String firstName = createNodeIdentifier(first);
 		String secondName = createNodeIdentifier(second);
 		Edge edge = graph.addEdge(createEdgeIdentifier(firstName, secondName), firstName, secondName);
@@ -117,7 +117,7 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Edge getEdge(final NanoEntity first, final NanoEntity second) {
+	protected Edge getEdge(final Nanoentity first, final Nanoentity second) {
 		String firstName = createNodeIdentifier(first);
 		String secondName = createNodeIdentifier(second);
 		return graph.getEdge(createEdgeIdentifier(firstName, secondName));

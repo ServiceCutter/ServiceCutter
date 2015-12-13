@@ -1,17 +1,17 @@
 [
   {
-    "couplingCriterionName": "Resilience",
+    "couplingCriterionName": "Availability",
     "variantName": "Low",
-    "fields": [
+    "nanoentities": [
       "News.title",
       "News.text",
       "News.image"
     ]
   },
   {
-    "couplingCriterionName": "Resilience",
+    "couplingCriterionName": "Availability",
     "variantName": "Critical",
-    "fields": [
+    "nanoentities": [
       "Price.dateTime",
       "Price.price",
       "Price.currency"

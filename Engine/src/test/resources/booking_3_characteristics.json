@@ -1,13 +1,13 @@
 [
   {
-    "couplingCriterionName": "Resilience",
+    "couplingCriterionName": "Availability",
     "characteristic": "Low",
     "nanoentities": [
       "Customer.firstname"
     ]
   },
   {
-    "couplingCriterionName": "Resilience",
+    "couplingCriterionName": "Availability",
     "characteristic": "Critical",
     "nanoentities": [
       "Article.articleName",

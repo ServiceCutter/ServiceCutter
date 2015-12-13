@@ -18,9 +18,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.model.NanoEntity;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -48,8 +48,8 @@ public class EngineServiceRestTest {
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET,
-				IntegrationTestHelper.createEmptyHttpRequest(), Model.class);
+		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET, IntegrationTestHelper.createEmptyHttpRequest(),
+				Model.class);
 		assertEquals("testModel", assertResult.getBody().getName());
 	}
 
@@ -60,36 +60,6 @@ public class EngineServiceRestTest {
 		// test whether created model is visible
 		assertEquals(before + 1, countModels());
 	}
-	// TODO ??
-	// @Test
-	// public void addCriterionToExistingModel() {
-	// Long modelId = createModelOnApi();
-	//
-	// List<CouplingCriterion> input = createCouplingCriteria();
-	//
-	// HttpEntity<List<CouplingCriterion>> request =
-	// IntegrationTestHelper.createHttpRequestWithPostObj(input);
-	// // write criteria
-	// ResponseEntity<String> entity =
-	// this.restTemplate.exchange("http://localhost:" + this.port +
-	// "/engine/models/" + modelId + "/couplingcriteria", HttpMethod.PUT,
-	// request, String.class);
-	// assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
-	//
-	// // read written criteria
-	// ResponseEntity<Set<CouplingCriterion>> assertResult =
-	// this.restTemplate.exchange("http://localhost:" + this.port +
-	// "/engine/models/" + modelId + "/couplingcriteria", HttpMethod.GET,
-	// IntegrationTestHelper.createEmptyHttpRequest(), new
-	// ParameterizedTypeReference<Set<CouplingCriterion>>() {
-	// });
-	// assertEquals(1, assertResult.getBody().size());
-	// for (CouplingCriterion criterion : assertResult.getBody()) {
-	// assertNotNull(criterion.getCriterionType());
-	// assertNotNull(criterion.getId());
-	// }
-	//
-	// }
 
 	private Long createModelOnApi() {
 		Model model = createModel();
@@ -110,12 +80,12 @@ public class EngineServiceRestTest {
 	private Model createModel() {
 		Model model = new Model();
 		model.setName("firstModel");
-		NanoEntity field1 = new NanoEntity();
+		Nanoentity field1 = new Nanoentity();
 		field1.setName("firstField");
-		NanoEntity field2 = new NanoEntity();
+		Nanoentity field2 = new Nanoentity();
 		field2.setName("secondField");
-		model.addDataField(field1);
-		model.addDataField(field2);
+		model.addNanoentity(field1);
+		model.addNanoentity(field2);
 		return model;
 	}
 

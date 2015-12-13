@@ -24,7 +24,7 @@ angular.module('editorApp')
         });
         
         $scope.$watch('characteristicsFile', function () {
-        	$scope.upload($scope.characteristicsFile, 'model/'+ $scope.modelId+'/distanceVariants', 'characteristicsStatus', false);
+        	$scope.upload($scope.characteristicsFile, 'model/'+ $scope.modelId+'/distanceCharacteristics', 'characteristicsStatus', false);
         });
         
         $scope.$watch('modelId', function () {
@@ -67,8 +67,8 @@ angular.module('editorApp')
         	});
         }
         
-        $scope.listFieldNames = function (fields) {
-        	return fields.map(function (o,i) {
+        $scope.listNanoentityNames = function (nanoentities) {
+        	return nanoentities.map(function (o,i) {
         		return o.name;
         	}).join(', ');
         }

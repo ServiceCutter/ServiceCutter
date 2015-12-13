@@ -9,7 +9,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class SemanticProximityCriterionScorerTest {
 
@@ -33,14 +33,14 @@ public class SemanticProximityCriterionScorerTest {
 
 		Random rand = new Random();
 		for (int i = 0; i < numberOfEdges; i++) {
-			input.put(new EntityPair(createDataField("A"), createDataField(i + "")), (double) rand.nextInt(100));
+			input.put(new EntityPair(createNanoentity("A"), createNanoentity(i + "")), (double) rand.nextInt(100));
 		}
 		sut.normalizeResult(input);
 		assertThat(input.values().stream().filter(d -> d >= 10d).count(), greaterThanOrEqualTo(numberOfExpectedMaxScores));
 	}
 
-	private NanoEntity createDataField(final String string) {
-		NanoEntity field = new NanoEntity(string);
+	private Nanoentity createNanoentity(final String string) {
+		Nanoentity field = new Nanoentity(string);
 		field.setId(idGen++);
 		return field;
 	}

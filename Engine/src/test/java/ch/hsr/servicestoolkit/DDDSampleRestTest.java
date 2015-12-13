@@ -28,7 +28,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
-import ch.hsr.servicestoolkit.importer.api.DistanceVariant;
+import ch.hsr.servicestoolkit.importer.api.DistanceCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
@@ -54,7 +54,7 @@ public class DDDSampleRestTest {
 		Integer modelId = createModelOnApi();
 
 		loadBusinessTransactionOnModel(modelId);
-		loadDistanceVariantsOnModel(modelId);
+		loadDistanceCharacteristicsOnModel(modelId);
 		loadCohesiveGroupsCriteriaOnModel(modelId);
 
 		solveModel(modelId);
@@ -87,14 +87,14 @@ public class DDDSampleRestTest {
 		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
 	}
 
-	private void loadDistanceVariantsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<DistanceVariant> variants = IntegrationTestHelper.readListFromFile(DDD_CHARACTERISTICS_FILE, DistanceVariant.class);
+	private void loadDistanceCharacteristicsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
+		List<DistanceCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(DDD_CHARACTERISTICS_FILE, DistanceCharacteristic.class);
 
-		log.info("read distance variants: {}", variants);
+		log.info("read distance characteristics: {}", characteristics);
 
-		HttpEntity<List<DistanceVariant>> request = IntegrationTestHelper.createHttpRequestWithPostObj(variants);
-		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceVariants/";
-		log.info("store distance variants on {}", path);
+		HttpEntity<List<DistanceCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
+		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceCharacteristics/";
+		log.info("store distance characteristics on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
 		});

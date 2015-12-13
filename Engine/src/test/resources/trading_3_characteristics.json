@@ -71,7 +71,7 @@
 		
 	},
 	{
-		"couplingCriterionName":"Resilience",
+		"couplingCriterionName":"Availability",
 		"characteristic":"Low",
 		"nanoentities":[
 			"News.title",

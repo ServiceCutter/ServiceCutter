@@ -12,6 +12,7 @@ import com.google.common.base.MoreObjects;
 @Table(name = "cc_characteristic")
 public class CouplingCriterionCharacteristic {
 
+	// TODO cleanup
 	public static final String AGGREGATION = "Aggregation";
 	public static final String COMPOSITION = "Composition";
 	public static final String INHERITANCE = "Inheritance";
@@ -22,7 +23,6 @@ public class CouplingCriterionCharacteristic {
 	@Id
 	@GeneratedValue
 	private Long id;
-	private boolean monoCoupling = true;
 	private String name;
 	private Integer weight;
 	private boolean isDefault = false;
@@ -37,16 +37,8 @@ public class CouplingCriterionCharacteristic {
 		this.id = id;
 	}
 
-	public boolean isMonoCoupling() {
-		return monoCoupling;
-	}
-
 	public boolean isDefault() {
 		return isDefault;
-	}
-
-	public void setMonoCoupling(final boolean monoCoupling) {
-		this.monoCoupling = monoCoupling;
 	}
 
 	public void setDefault(final boolean isDefault) {
@@ -67,12 +59,6 @@ public class CouplingCriterionCharacteristic {
 
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	public MonoCouplingInstance createInstance() {
-		MonoCouplingInstance result = monoCoupling ? new MonoCouplingInstance() : new DualCouplingInstance();
-		result.setVariant(this);
-		return result;
 	}
 
 	public Integer getWeight() {

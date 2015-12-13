@@ -16,16 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.DualCouplingInstance;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.model.NanoEntity;
-import ch.hsr.servicestoolkit.model.repository.CouplingCriteriaVariantRepository;
+import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.repository.CouplingCriterionCharacteristicRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionRepository;
-import ch.hsr.servicestoolkit.model.repository.DataFieldRepository;
-import ch.hsr.servicestoolkit.model.repository.MonoCouplingInstanceRepository;
+import ch.hsr.servicestoolkit.model.repository.CouplingInstanceRepository;
+import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import ch.hsr.servicestoolkit.solver.Service;
@@ -34,38 +33,38 @@ import ch.hsr.servicestoolkit.solver.SolverResult;
 @Component
 public class ServiceCutAnalyzer {
 
-	private DataFieldRepository dataFieldRepository;
-	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
-	private CouplingCriteriaVariantRepository variantRepository;
+	private NanoentityRepository nanoentityRepository;
+	private CouplingInstanceRepository couplingInstanceRepository;
+	private CouplingCriterionCharacteristicRepository characteristicRepository;
 	private CouplingCriterionRepository couplingCriterionRepository;
 
 	private Logger log = LoggerFactory.getLogger(ServiceCutAnalyzer.class);
 
 	@Autowired
-	public ServiceCutAnalyzer(final DataFieldRepository dataFieldRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository,
-			final CouplingCriteriaVariantRepository variantRepository, final CouplingCriterionRepository couplingCriterionRepository) {
-		this.dataFieldRepository = dataFieldRepository;
-		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
-		this.variantRepository = variantRepository;
+	public ServiceCutAnalyzer(final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
+			final CouplingCriterionCharacteristicRepository characteristicRepository, final CouplingCriterionRepository couplingCriterionRepository) {
+		this.nanoentityRepository = nanoentityRepository;
+		this.couplingInstanceRepository = couplingInstanceRepository;
+		this.characteristicRepository = characteristicRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 
 	}
 
-	private NanoEntity findDataField(final String fieldName, final Model model) {
-		NanoEntity dataField;
+	private Nanoentity findNanoentity(final String fieldName, final Model model) {
+		Nanoentity nanoentity;
 		if (fieldName.contains(".")) {
 			String[] splittedName = fieldName.split("\\.");
-			dataField = dataFieldRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);
+			nanoentity = nanoentityRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);
 		} else {
-			dataField = dataFieldRepository.findByNameAndModel(fieldName, model);
+			nanoentity = nanoentityRepository.findByNameAndModel(fieldName, model);
 		}
-		return dataField;
+		return nanoentity;
 
 	}
 
 	public void analyseResult(final SolverResult solverResult, final Map<EntityPair, Map<String, Score>> scores, final Model model) {
 		// use case responsibility
-		final Map<Service, List<DualCouplingInstance>> useCaseResponsibilites = getUseCaseResponsibilites(solverResult.getServices(), model);
+		final Map<Service, List<CouplingInstance>> useCaseResponsibilites = getUseCaseResponsibilites(solverResult.getServices(), model);
 		solverResult.setUseCaseResponsibility(transformResponsibilityMap(useCaseResponsibilites));
 		for (Entry<String, List<String>> responsibility : solverResult.getUseCaseResponsibility().entrySet()) {
 			log.info("attach use cases {} to service {}", responsibility.getValue().toString(), responsibility.getKey());
@@ -90,7 +89,7 @@ public class ServiceCutAnalyzer {
 
 	}
 
-	private List<String> getSharedFields(final Service serviceA, final Service serviceB, final Map<Service, List<DualCouplingInstance>> useCaseResponsibilites) {
+	private List<String> getSharedFields(final Service serviceA, final Service serviceB, final Map<Service, List<CouplingInstance>> useCaseResponsibilites) {
 		// use set to avoid duplicates
 		Set<String> result = new HashSet<String>();
 		result.addAll(getSharedFields(useCaseResponsibilites.get(serviceA), serviceB));
@@ -98,19 +97,19 @@ public class ServiceCutAnalyzer {
 		return new ArrayList<String>(result);
 	}
 
-	private List<String> getSharedFields(final List<DualCouplingInstance> primaryUseCases, final Service otherService) {
+	private List<String> getSharedFields(final List<CouplingInstance> primaryUseCases, final Service otherService) {
 		// for all use cases of primaryService, collect the fields placed in
 		// otherService and return it as StringList
 		if (primaryUseCases == null || primaryUseCases.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return primaryUseCases.stream().flatMap(instance -> instance.getAllFields().stream().filter(field -> otherService.getNanoentities().contains(field.getContextName())))
+		return primaryUseCases.stream().flatMap(instance -> instance.getAllNanoentities().stream().filter(field -> otherService.getNanoentities().contains(field.getContextName())))
 				.map(field -> field.getContextName()).collect(Collectors.toList());
 	}
 
-	private Map<String, List<String>> transformResponsibilityMap(final Map<Service, List<DualCouplingInstance>> useCaseResponsibilites) {
+	private Map<String, List<String>> transformResponsibilityMap(final Map<Service, List<CouplingInstance>> useCaseResponsibilites) {
 		Map<String, List<String>> result = new HashMap<>();
-		for (Entry<Service, List<DualCouplingInstance>> responsibility : useCaseResponsibilites.entrySet()) {
+		for (Entry<Service, List<CouplingInstance>> responsibility : useCaseResponsibilites.entrySet()) {
 			if (responsibility.getKey() != null) {
 				result.put(responsibility.getKey().getName(), responsibility.getValue().stream().map(instance -> instance.getName()).collect(Collectors.toList()));
 			}
@@ -118,12 +117,12 @@ public class ServiceCutAnalyzer {
 		return result;
 	}
 
-	private Map<Service, List<DualCouplingInstance>> getUseCaseResponsibilites(final Set<Service> set, final Model model) {
-		Map<Service, List<DualCouplingInstance>> useCaseResponsibilites = new HashMap<>();
+	private Map<Service, List<CouplingInstance>> getUseCaseResponsibilites(final Set<Service> set, final Model model) {
+		Map<Service, List<CouplingInstance>> useCaseResponsibilites = new HashMap<>();
 		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
-		CouplingCriterionCharacteristic useCaseVariant = variantRepository.readByNameAndCouplingCriterion(CouplingCriterionCharacteristic.SHARED_FIELD_ACCESS, criterion);
-		for (MonoCouplingInstance instance : monoCouplingInstanceRepository.findByModelAndVariant(model, useCaseVariant)) {
-			DualCouplingInstance dualInstance = (DualCouplingInstance) instance;
+		CouplingCriterionCharacteristic useCaseCharacteristic = characteristicRepository.readByNameAndCouplingCriterion(CouplingCriterionCharacteristic.SHARED_FIELD_ACCESS, criterion);
+		for (CouplingInstance instance : couplingInstanceRepository.findByModelAndCharacteristic(model, useCaseCharacteristic)) {
+			CouplingInstance dualInstance = instance;
 			Service responsibleService = getResponsibleService(set, dualInstance);
 			Assert.notNull(responsibleService, "Responsible service for " + dualInstance.getName() + " not found!");
 			if (useCaseResponsibilites.get(responsibleService) == null) {
@@ -134,14 +133,14 @@ public class ServiceCutAnalyzer {
 		return useCaseResponsibilites;
 	}
 
-	private Service getResponsibleService(final Set<Service> set, final DualCouplingInstance dualInstance) {
+	private Service getResponsibleService(final Set<Service> set, final CouplingInstance dualInstance) {
 		final double SCORE_WRITE = 1d;
 		final double SCORE_READ = 0.25d;
 		Service responsibleService = null;
 		Double highestScore = 0d;
 		for (final Service service : set) {
-			final long numberOfFieldsWritten = dualInstance.getSecondDataFields().stream().filter(field -> service.getNanoentities().contains(field.getContextName())).count();
-			final long numberOfFieldsRead = dualInstance.getDataFields().stream().filter(field -> service.getNanoentities().contains(field.getContextName())).count();
+			final long numberOfFieldsWritten = dualInstance.getSecondNanoentities().stream().filter(field -> service.getNanoentities().contains(field.getContextName())).count();
+			final long numberOfFieldsRead = dualInstance.getNanoentities().stream().filter(field -> service.getNanoentities().contains(field.getContextName())).count();
 			final double score = numberOfFieldsRead * SCORE_READ + numberOfFieldsWritten * SCORE_WRITE;
 			if (score > highestScore) {
 				highestScore = score;
@@ -155,7 +154,7 @@ public class ServiceCutAnalyzer {
 		Double score = 0d;
 		for (String fieldA : serviceA.getNanoentities()) {
 			for (String fieldB : serviceB.getNanoentities()) {
-				EntityPair fieldTuple = new EntityPair(findDataField(fieldA, model), findDataField(fieldB, model));
+				EntityPair fieldTuple = new EntityPair(findNanoentity(fieldA, model), findNanoentity(fieldB, model));
 				final Map<String, Score> scoresByTuple = scores.get(fieldTuple);
 				if (scoresByTuple == null) {
 					continue;

@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
@@ -49,7 +49,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	public GephiSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final Integer numberOfClusters) {
 		super(model, scores);
 		this.numberOfClusters = numberOfClusters;
-		if (model == null || model.getDataFields().isEmpty()) {
+		if (model == null || model.getNanoentities().isEmpty()) {
 			throw new InvalidParameterException("invalid model!");
 		}
 
@@ -119,11 +119,11 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 		Set<Service> result = new HashSet<>();
 		if (clusterer.getClusters() != null) {
 			for (Cluster cluster : clusterer.getClusters()) {
-				List<String> dataFields = new ArrayList<>();
+				List<String> nanoentities = new ArrayList<>();
 				for (Node node : cluster.getNodes()) {
-					dataFields.add(node.toString());
+					nanoentities.add(node.toString());
 				}
-				Service boundedContext = new Service(dataFields, serviceIdGenerator++);
+				Service boundedContext = new Service(nanoentities, serviceIdGenerator++);
 				result.add(boundedContext);
 				log.debug("BoundedContext found: {}, {}", boundedContext.getNanoentities().toString(), boundedContext.hashCode());
 			}
@@ -144,7 +144,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Edge getEdge(final NanoEntity first, final NanoEntity second) {
+	protected Edge getEdge(final Nanoentity first, final Nanoentity second) {
 		return undirectedGraph.getEdge(getNode(first), getNode(second));
 	}
 
@@ -160,7 +160,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void createEdgeAndSetWeight(final NanoEntity first, final NanoEntity second, final double weight) {
+	protected void createEdgeAndSetWeight(final Nanoentity first, final Nanoentity second, final double weight) {
 		Edge edge = graphModel.factory().newEdge(getNode(first), getNode(second), (float) weight, false);
 		undirectedGraph.addEdge(edge);
 		edge.getEdgeData().setLabel(edge.getWeight() + "");

@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.score.relations.EntityPair;
 import ch.hsr.servicestoolkit.score.relations.Score;
 
@@ -50,7 +50,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 	 *            the originating nanoentity
 	 * @return
 	 */
-	protected N getNode(final NanoEntity nanoentity) {
+	protected N getNode(final Nanoentity nanoentity) {
 		return getNode(createNodeIdentifier(nanoentity));
 	}
 
@@ -73,7 +73,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 	 * @param weight
 	 *            a weight that is used to persist the score
 	 */
-	protected abstract void createEdgeAndSetWeight(NanoEntity first, NanoEntity second, double weight);
+	protected abstract void createEdgeAndSetWeight(Nanoentity first, Nanoentity second, double weight);
 
 	/**
 	 * Remove an edge from the graph
@@ -92,7 +92,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 	 *            the second side of the edge
 	 * @return the edge
 	 */
-	protected abstract E getEdge(final NanoEntity first, final NanoEntity second);
+	protected abstract E getEdge(final Nanoentity first, final Nanoentity second);
 
 	/**
 	 * @return all edges in the graph
@@ -109,7 +109,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 	 * Set a weight representing the score
 	 * 
 	 * @see #getWeight(Object)
-	 * @see #createEdgeAndSetWeight(NanoEntity, NanoEntity, double)
+	 * @see #createEdgeAndSetWeight(Nanoentity, Nanoentity, double)
 	 * @param edge
 	 * @param weight
 	 *            weight representing the score
@@ -118,8 +118,8 @@ public abstract class AbstractSolver<N, E> implements Solver {
 
 	protected void buildNodes() {
 		// create nodes
-		for (NanoEntity field : model.getDataFields()) {
-			createNode(createNodeIdentifier(field));
+		for (Nanoentity nanoentity : model.getNanoentities()) {
+			createNode(createNodeIdentifier(nanoentity));
 		}
 	}
 
@@ -127,7 +127,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		for (Entry<EntityPair, Map<String, Score>> entry : scores.entrySet()) {
 			setWeight(entry.getKey().nanoentityA, entry.getKey().nanoentityB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
 			// Logging
-			log.info("Score for field tuple {}", entry.getKey());
+			log.info("Score for nanoentity tuple {}", entry.getKey());
 			for (Entry<String, Score> criteriaScores : entry.getValue().entrySet()) {
 				log.info("{}: {} with priority {} results in {}", criteriaScores.getKey(), criteriaScores.getValue().getScore(), criteriaScores.getValue().getPriority(),
 						criteriaScores.getValue().getPrioritizedScore());
@@ -138,8 +138,8 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		deleteNegativeEdges();
 	}
 
-	protected String createNodeIdentifier(final NanoEntity field) {
-		return field.getContextName();
+	protected String createNodeIdentifier(final Nanoentity nanoentity) {
+		return nanoentity.getContextName();
 	}
 
 	private void deleteNegativeEdges() {
@@ -157,7 +157,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		}
 	}
 
-	protected void setWeight(final NanoEntity first, final NanoEntity second, final double weight) {
+	protected void setWeight(final Nanoentity first, final Nanoentity second, final double weight) {
 		N nodeA = getNode(first);
 		N nodeB = getNode(second);
 		E existingEdge = getEdge(first, second);

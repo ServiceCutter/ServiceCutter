@@ -12,21 +12,21 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicestoolkit.EngineServiceAppication;
-import ch.hsr.servicestoolkit.model.NanoEntity;
-import ch.hsr.servicestoolkit.model.repository.DataFieldRepository;
+import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
 import ch.hsr.servicestoolkit.model.repository.ModelRepository;
 import ch.hsr.servicestoolkit.model.Model;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
-public class DataFieldRepositoryTest {
+public class NanoentityRepositoryTest {
 
 	private static final String FIELD_2 = "field2";
 
 	private static final String FIELD_1 = "field1";
 
 	@Autowired
-	DataFieldRepository dataRepo;
+	NanoentityRepository dataRepo;
 
 	@Autowired
 	ModelRepository modelRepo;
@@ -43,11 +43,11 @@ public class DataFieldRepositoryTest {
 		model2.setName("imported Thu Oct 15 09:28:11 CEST 2015");
 		modelRepo.save(model2);
 
-		NanoEntity field1 = new NanoEntity();
+		Nanoentity field1 = new Nanoentity();
 		field1.setName(FIELD_1);
-		model.addDataField(field1);
+		model.addNanoentity(field1);
 
-		NanoEntity field2 = new NanoEntity();
+		Nanoentity field2 = new Nanoentity();
 		field2.setName(FIELD_2);
 
 		dataRepo.save(field1);

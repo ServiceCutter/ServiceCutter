@@ -7,10 +7,10 @@ public class SeparationCriterion {
 	private List<String> groupAnanoentities;
 	private List<String> groupBnanoentities;
 	private String couplingCriterionName;
-	private String variantName;
+	private String characteristicName;
 
-	public SeparationCriterion(final String variantName, final String couplingCriterionName, final List<String> groupA, final List<String> groupB) {
-		this.variantName = variantName;
+	public SeparationCriterion(final String characteristicName, final String couplingCriterionName, final List<String> groupA, final List<String> groupB) {
+		this.characteristicName = characteristicName;
 		this.couplingCriterionName = couplingCriterionName;
 		this.groupAnanoentities = groupA;
 		this.groupBnanoentities = groupB;
@@ -27,8 +27,8 @@ public class SeparationCriterion {
 		return groupBnanoentities;
 	}
 
-	public String getVariantName() {
-		return variantName;
+	public String getCharacteristicName() {
+		return characteristicName;
 	}
 
 	public String getCouplingCriterionName() {

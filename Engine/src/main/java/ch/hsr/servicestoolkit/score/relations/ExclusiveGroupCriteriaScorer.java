@@ -4,37 +4,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import ch.hsr.servicestoolkit.model.MonoCouplingInstance;
-import ch.hsr.servicestoolkit.model.NanoEntity;
+import ch.hsr.servicestoolkit.model.CouplingInstance;
+import ch.hsr.servicestoolkit.model.Nanoentity;
 
 public class ExclusiveGroupCriteriaScorer implements CriterionScorer {
 
 	private double penalty;
 	private double premium;
-	private Iterable<NanoEntity> allNanoentities;
+	private Iterable<Nanoentity> allNanoentities;
 
-	public ExclusiveGroupCriteriaScorer(final double penalty, final double premium, final Iterable<NanoEntity> iterable) {
+	public ExclusiveGroupCriteriaScorer(final double penalty, final double premium, final Iterable<Nanoentity> iterable) {
 		this.penalty = penalty;
 		this.premium = premium;
 		this.allNanoentities = iterable;
 	}
 
 	@Override
-	public Map<EntityPair, Double> getScores(final Set<MonoCouplingInstance> instances) {
+	public Map<EntityPair, Double> getScores(final Set<CouplingInstance> instances) {
 		Map<EntityPair, Double> result = new HashMap<>();
-		for (MonoCouplingInstance instance : instances) {
+		for (CouplingInstance instance : instances) {
 			// add Premium to nanoentities in same group
-			for (int i = 0; i < instance.getDataFields().size() - 1; i++) {
-				for (int j = i + 1; j < instance.getDataFields().size(); j++) {
-					result.put(new EntityPair(instance.getDataFields().get(i), instance.getDataFields().get(j)), premium);
+			for (int i = 0; i < instance.getNanoentities().size() - 1; i++) {
+				for (int j = i + 1; j < instance.getNanoentities().size(); j++) {
+					result.put(new EntityPair(instance.getNanoentities().get(i), instance.getNanoentities().get(j)), premium);
 				}
 			}
 			// add penalty to from nanoentities in group to all other
 			// TODO: this overwrites some relations with the same value,
 			// optimize!
-			for (NanoEntity groupEntity : instance.getDataFields()) {
-				for (NanoEntity otherEntity : allNanoentities) {
-					if (!instance.getAllFields().contains(otherEntity)) {
+			for (Nanoentity groupEntity : instance.getNanoentities()) {
+				for (Nanoentity otherEntity : allNanoentities) {
+					if (!instance.getAllNanoentities().contains(otherEntity)) {
 						result.put(new EntityPair(groupEntity, otherEntity), penalty);
 					}
 				}

@@ -22,10 +22,10 @@
 			
 				<p>Name: <strong>{{model.name}}</strong></p>
 				
-				<p>Data Fields:</p>
+				<p>Nanoentities:</p>
 				
 				<ul>
-					<li ng-repeat="dataField in model.dataFields">#{{dataField.id}} - {{dataField.contextName}}</li>
+					<li ng-repeat="nanoentity in model.nanoentities">#{{nanoentity.id}} - {{nanoentity.contextName}}</li>
 				</ul>
 			
 			</div>
@@ -35,9 +35,11 @@
 				<h3>Coupling</h3>
 				
 				<ul>
-					<li ng-repeat="coupling in model.coupling">{{coupling.variant.couplingCriterion.name}} - <strong>{{coupling.variant.name}}</strong> - {{coupling.name}}
+					<li ng-repeat="coupling in model.coupling">{{coupling.couplingCriterion.name}}
+					<span ng-show="coupling.characteristic.name">- <strong>{{coupling.characteristic.name}}</strong></span>
+					<span ng-show="!coupling.characteristic.name">- <strong>{{coupling.name}}</strong></span>
 					<ul>
-						<li>{{ listFieldNames(coupling.allFields) }}</li>
+						<li>{{ listNanoentityNames(coupling.allNanoentities) }}</li>
 					</ul>
 					</li>
 				</ul>

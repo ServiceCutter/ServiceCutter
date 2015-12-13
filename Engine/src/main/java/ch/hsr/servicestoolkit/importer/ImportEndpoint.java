@@ -93,7 +93,7 @@ public class ImportEndpoint {
 		// entities
 		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
 		for (Entry<String, List<NanoEntityInput>> entity : findRealEntities(domainModel).entrySet()) {
-			CouplingInstance couplingInstance = new CouplingInstance(criterion);
+			CouplingInstance couplingInstance = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
 			model.addCouplingInstance(couplingInstance);
 			couplingInstanceRepository.save(couplingInstance);
 			String entityName = entity.getKey();
@@ -116,8 +116,7 @@ public class ImportEndpoint {
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (EntityRelation relation : domainModel.getRelations()) {
 			if (RelationType.AGGREGATION.equals(relation.getType())) {
-				CouplingInstance instance = new CouplingInstance(semanticProximity);
-				instance.setType(InstanceType.AGGREGATION);
+				CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.AGGREGATION);
 				couplingInstanceRepository.save(instance);
 				List<Nanoentity> originNanoentities = relation.getOrigin().getNanoentities().stream()
 						.map(attr -> nanoentityRepository.findByContextAndNameAndModel(relation.getOrigin().getName(), attr.getName(), model)).collect(Collectors.toList());
@@ -203,8 +202,7 @@ public class ImportEndpoint {
 		}
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (UseCase transaction : transactions) {
-			CouplingInstance instance = new CouplingInstance(semanticProximity);
-			instance.setType(InstanceType.USE_CASE);
+			CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.USE_CASE);
 			model.addCouplingInstance(instance);
 			couplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
@@ -224,10 +222,9 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		CouplingCriterion identityLifecylcle = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
+		CouplingCriterion identityLifecycle = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (Entity entity : entities) {
-			CouplingInstance instance = new CouplingInstance(identityLifecylcle);
-			instance.setType(InstanceType.SAME_ENTITY);
+			CouplingInstance instance = new CouplingInstance(identityLifecycle, InstanceType.SAME_ENTITY);
 			model.addCouplingInstance(instance);
 			couplingInstanceRepository.save(instance);
 			instance.setName(entity.getName());
@@ -253,7 +250,7 @@ public class ImportEndpoint {
 			Set<CouplingInstance> instance = couplingInstanceRepository.findByModelAndCharacteristic(model, characteristic);
 
 			if (instance == null || instance.isEmpty()) {
-				CouplingInstance newInstance = new CouplingInstance(characteristic);
+				CouplingInstance newInstance = new CouplingInstance(characteristic, InstanceType.CHARACTERISTIC);
 				model.addCouplingInstance(newInstance);
 				couplingInstanceRepository.save(newInstance);
 				newInstance.setName(inputCharacteristic.getCouplingCriterionName());
@@ -281,7 +278,7 @@ public class ImportEndpoint {
 		}
 		for (SeparationCriterion inputCriterion : criteria) {
 			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(inputCriterion.getCouplingCriterionName());
-			CouplingInstance newInstance = new CouplingInstance(couplingCriterion);
+			CouplingInstance newInstance = new CouplingInstance(couplingCriterion, InstanceType.SEPARATION_GROUP);
 			model.addCouplingInstance(newInstance);
 			couplingInstanceRepository.save(newInstance);
 			newInstance.setName(inputCriterion.getCouplingCriterionName());
@@ -315,7 +312,8 @@ public class ImportEndpoint {
 			}
 
 			for (CohesiveGroup cohesiveGroup : groups.getCohesiveGroups()) {
-				CouplingInstance instance = characteristic == null ? new CouplingInstance(couplingCriterion) : new CouplingInstance(characteristic);
+				CouplingInstance instance = characteristic == null ? new CouplingInstance(couplingCriterion, InstanceType.SHARED_OWNER)
+						: new CouplingInstance(characteristic, InstanceType.SHARED_OWNER);
 				model.addCouplingInstance(instance);
 				couplingInstanceRepository.save(instance);
 				instance.setName(groups.getCouplingCriterionName());

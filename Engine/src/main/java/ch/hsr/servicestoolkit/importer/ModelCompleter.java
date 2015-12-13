@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.CouplingType;
+import ch.hsr.servicestoolkit.model.InstanceType;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.Nanoentity;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionCharacteristicRepository;
@@ -61,7 +62,7 @@ public class ModelCompleter {
 				if (instances.size() == 1) {
 					instance = instances.iterator().next();
 				} else if (instances.size() == 0) {
-					instance = new CouplingInstance(defaultCharacteristic);
+					instance = new CouplingInstance(defaultCharacteristic, InstanceType.CHARACTERISTIC);
 					model.addCouplingInstance(instance);
 					instance.setName(defaultCharacteristic.getName());
 					couplingInstanceRepository.save(instance);

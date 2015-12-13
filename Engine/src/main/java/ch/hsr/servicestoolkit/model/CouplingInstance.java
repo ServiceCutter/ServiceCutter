@@ -56,12 +56,12 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 	@Enumerated(EnumType.STRING)
 	private InstanceType instanceType;
 
-	public CouplingInstance(CouplingCriterion couplingCriterion) {
+	public CouplingInstance(CouplingCriterion couplingCriterion, InstanceType type) {
 		Assert.assertNotEquals("Constructor only to be used for not-compatibility criteria!", CouplingType.COMPATIBILITY, couplingCriterion.getType());
 		this.couplingCriterion = couplingCriterion;
 	}
 
-	public CouplingInstance(CouplingCriterionCharacteristic characteristic) {
+	public CouplingInstance(CouplingCriterionCharacteristic characteristic, InstanceType type) {
 		setCharacteristicAndCriterion(characteristic);
 	}
 
@@ -186,7 +186,4 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 		return instanceType;
 	}
 
-	public void setType(InstanceType type) {
-		this.instanceType = type;
-	}
 }

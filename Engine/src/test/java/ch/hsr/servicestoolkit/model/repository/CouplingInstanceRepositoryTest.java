@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.hsr.servicestoolkit.EngineServiceAppication;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
+import ch.hsr.servicestoolkit.model.InstanceType;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.Nanoentity;
 
@@ -77,13 +78,13 @@ public class CouplingInstanceRepositoryTest {
 		Nanoentity nanoentity2 = createNanoentity(model, "nanoentity2");
 		Nanoentity nanoentity3 = createNanoentity(model, "nanoentity3");
 
-		CouplingInstance dualInstance = new CouplingInstance(characteristic);
-		model.addCouplingInstance(dualInstance);
-		couplingInstanceRepository.save(dualInstance);
-		dualInstance.addNanoentity(nanoentity1);
-		dualInstance.addNanoentity(nanoentity2);
-		dualInstance.addSecondNanoentity(nanoentity3);
-		model.addCouplingInstance(dualInstance);
+		CouplingInstance instance = new CouplingInstance(characteristic, InstanceType.CHARACTERISTIC);
+		model.addCouplingInstance(instance);
+		couplingInstanceRepository.save(instance);
+		instance.addNanoentity(nanoentity1);
+		instance.addNanoentity(nanoentity2);
+		instance.addSecondNanoentity(nanoentity3);
+		model.addCouplingInstance(instance);
 		//
 		em.flush();
 		em.clear();
@@ -108,7 +109,7 @@ public class CouplingInstanceRepositoryTest {
 	Model addModel(final CouplingCriterionCharacteristic characteristic) {
 		Model model = new Model();
 		modelRepository.save(model);
-		CouplingInstance instance = new CouplingInstance(characteristic);
+		CouplingInstance instance = new CouplingInstance(characteristic, InstanceType.CHARACTERISTIC);
 		couplingInstanceRepository.save(instance);
 		model.addCouplingInstance(instance);
 		return model;

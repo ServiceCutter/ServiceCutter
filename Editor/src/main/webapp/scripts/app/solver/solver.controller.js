@@ -30,8 +30,8 @@ angular.module('editorApp')
         	if(param.nodes.length > 0) {
         		var nodeId = param.nodes[0];
         		var listOfUseCases = $scope.result.useCaseResponsibility[nodeId];
+        		$scope.$apply(function() { $scope.selectedServiceName = nodeId;});
         		if(typeof listOfUseCases != 'undefined' && listOfUseCases.length > 0){
-        			$scope.$apply(function() { $scope.selectedServiceName = nodeId;});
         			$scope.$apply(function() { $scope.selectedServiceUseCases = listOfUseCases;});
         		}
         		var selectedServiceRelations = [];

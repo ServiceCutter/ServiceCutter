@@ -18,7 +18,7 @@ public class Service {
 		// needed for Jackson
 	}
 
-	public List<String> getNanoentity() {
+	public List<String> getNanoentities() {
 		return nanoentities;
 	}
 

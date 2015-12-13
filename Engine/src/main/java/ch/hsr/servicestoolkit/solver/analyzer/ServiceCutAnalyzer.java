@@ -104,7 +104,7 @@ public class ServiceCutAnalyzer {
 		if (primaryUseCases == null || primaryUseCases.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return primaryUseCases.stream().flatMap(instance -> instance.getAllFields().stream().filter(field -> otherService.getNanoentity().contains(field.getContextName())))
+		return primaryUseCases.stream().flatMap(instance -> instance.getAllFields().stream().filter(field -> otherService.getNanoentities().contains(field.getContextName())))
 				.map(field -> field.getContextName()).collect(Collectors.toList());
 	}
 
@@ -140,8 +140,8 @@ public class ServiceCutAnalyzer {
 		Service responsibleService = null;
 		Double highestScore = 0d;
 		for (final Service service : set) {
-			final long numberOfFieldsWritten = dualInstance.getSecondDataFields().stream().filter(field -> service.getNanoentity().contains(field.getContextName())).count();
-			final long numberOfFieldsRead = dualInstance.getDataFields().stream().filter(field -> service.getNanoentity().contains(field.getContextName())).count();
+			final long numberOfFieldsWritten = dualInstance.getSecondDataFields().stream().filter(field -> service.getNanoentities().contains(field.getContextName())).count();
+			final long numberOfFieldsRead = dualInstance.getDataFields().stream().filter(field -> service.getNanoentities().contains(field.getContextName())).count();
 			final double score = numberOfFieldsRead * SCORE_READ + numberOfFieldsWritten * SCORE_WRITE;
 			if (score > highestScore) {
 				highestScore = score;
@@ -153,8 +153,8 @@ public class ServiceCutAnalyzer {
 
 	private Double getProximityScoreFor(final Service serviceA, final Service serviceB, final Map<EntityPair, Map<String, Score>> scores, final Model model) {
 		Double score = 0d;
-		for (String fieldA : serviceA.getNanoentity()) {
-			for (String fieldB : serviceB.getNanoentity()) {
+		for (String fieldA : serviceA.getNanoentities()) {
+			for (String fieldB : serviceB.getNanoentities()) {
 				EntityPair fieldTuple = new EntityPair(findDataField(fieldA, model), findDataField(fieldB, model));
 				final Map<String, Score> scoresByTuple = scores.get(fieldTuple);
 				if (scoresByTuple == null) {

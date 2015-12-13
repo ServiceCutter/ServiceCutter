@@ -95,7 +95,7 @@ public class GephiSolverTest {
 
 		assertEquals(2, result.getServices().size());
 		for (Service context : result.getServices()) {
-			assertEquals(3, context.getNanoentity().size());
+			assertEquals(3, context.getNanoentities().size());
 		}
 	}
 

@@ -1,9 +1,11 @@
 package ch.hsr.servicestoolkit;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -21,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
+import com.google.common.collect.Lists;
+
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.EngineState;
 import ch.hsr.servicestoolkit.model.Model;
@@ -31,7 +35,6 @@ import ch.hsr.servicestoolkit.repository.CouplingCriteriaVariantRepository;
 import ch.hsr.servicestoolkit.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.repository.ModelRepository;
 import ch.hsr.servicestoolkit.repository.MonoCouplingInstanceRepository;
-import jersey.repackaged.com.google.common.collect.Lists;
 
 @Component
 @Path("/engine")
@@ -44,8 +47,8 @@ public class EngineService {
 	private MonoCouplingInstanceRepository monoCouplingInstanceRepository;
 
 	@Autowired
-	public EngineService(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository,
-			final MonoCouplingInstanceRepository monoCouplingInstanceRepository, final CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
+	public EngineService(final ModelRepository modelRepository, final CouplingCriterionRepository couplingCriterionRepository, final MonoCouplingInstanceRepository monoCouplingInstanceRepository,
+			final CouplingCriteriaVariantRepository couplingCriteriaVariantRepository) {
 		this.modelRepository = modelRepository;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.monoCouplingInstanceRepository = monoCouplingInstanceRepository;
@@ -96,18 +99,18 @@ public class EngineService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/couplingcriteria")
 	@Transactional
-	public List<CouplingCriterionDTO> getCouplingCriteriaVariants() {
-		List<CouplingCriterionDTO> result = new ArrayList<>();
-		List<CouplingCriterion> list = Lists.newArrayList(couplingCriterionRepository.findAll());
-		for (CouplingCriterion couplingCriterion : list) {
-			result.add(new CouplingCriterionDTO(couplingCriterion, couplingCriteriaVariantRepository.readByCouplingCriterion(couplingCriterion)));
-		}
+	public List<CouplingCriterionDTO> getCouplingCriteria() {
+		Stream<CouplingCriterion> criteria = StreamSupport.stream(couplingCriterionRepository.findAll().spliterator(), false);
+		List<CouplingCriterionDTO> result = criteria.map(criterion -> {
+			return new CouplingCriterionDTO(criterion, couplingCriteriaVariantRepository.readByCouplingCriterion(criterion));
+		}).sorted().collect(Collectors.toList());
 		return result;
 	}
 
-	public class CouplingCriterionDTO {
+	public class CouplingCriterionDTO implements Comparable<CouplingCriterionDTO> {
 
 		private final Long id;
+		private final String code;
 		private final String name;
 		private final String description;
 		private final List<CouplingCriterionCharacteristic> variants;
@@ -121,6 +124,7 @@ public class EngineService {
 			this.description = couplingCriterion.getDescription();
 			decompositionImpact = couplingCriterion.getDecompositionImpact();
 			type = couplingCriterion.getType();
+			code = couplingCriterion.getCode();
 		}
 
 		public Long getId() {
@@ -146,6 +150,18 @@ public class EngineService {
 		public CouplingType getType() {
 			return type;
 		}
+
+		public String getCode() {
+			return code;
+		}
+
+		@Override
+		public int compareTo(CouplingCriterionDTO o) {
+			Integer thisNumber = new Integer(code.split("-")[1]);
+			Integer otherNumber = new Integer(o.getCode().split("-")[1]);
+			return thisNumber.compareTo(otherNumber);
+		}
+
 	}
 
 	@PUT

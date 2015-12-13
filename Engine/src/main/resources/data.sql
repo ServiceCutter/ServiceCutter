@@ -1,19 +1,19 @@
-insert into coupling_criterion (id, name, type) values (1, 'Identity & Lifecycle Commonality', 'COHESIVENESS');
-insert into coupling_criterion (id, name, type) values (2, 'Semantic Proximity', 'COHESIVENESS');
-insert into coupling_criterion (id, name, type) values (3, 'Security Constraint', 'CONSTRAINTS');
-insert into coupling_criterion (id, name, type) values (4, 'Security Criticality', 'COMPATIBILITY');
-insert into coupling_criterion (id, name, type) values (5, 'Security Context Distinction', 'COHESIVENESS');
-insert into coupling_criterion (id, name, type) values (6, 'Resilience', 'COMPATIBILITY');
-insert into coupling_criterion (id, name, type) values (7, 'Volatility', 'COMPATIBILITY');
-insert into coupling_criterion (id, name, type) values (8, 'Consistency', 'COMPATIBILITY');
-insert into coupling_criterion (id, name, type) values (9, 'Storage Similarity', 'COMPATIBILITY');
---insert into coupling_criterion (id, name, type) values (10, 'Network Traffic Similarity', 'COMMUNICATION');
-insert into coupling_criterion (id, name, type) values (11, 'Change Similarity', 'COMPATIBILITY');
-insert into coupling_criterion (id, name, type) values (12, 'Predefined Service Constraint', 'CONSTRAINTS');
---insert into coupling_criterion (id, name, type) values (13, 'Mutability', 'COMMUNICATION');
-insert into coupling_criterion (id, name, type) values (14, 'Responsibility', 'COHESIVENESS');
-insert into coupling_criterion (id, name, type) values (15, 'Latency', 'COHESIVENESS');
-insert into coupling_criterion (id, name, type) values (16, 'Consistency Constraint', 'CONSTRAINTS');
+insert into coupling_criterion (id, code, name, type) values ( 1, 'CC-1', 'Identity & Lifecycle Commonality', 'COHESIVENESS');
+insert into coupling_criterion (id, code, name, type) values ( 2, 'CC-2', 'Semantic Proximity', 'COHESIVENESS');
+insert into coupling_criterion (id, code, name, type) values (14, 'CC-3', 'Responsibility', 'COHESIVENESS');
+insert into coupling_criterion (id, code, name, type) values (11, 'CC-4', 'Change Similarity', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values (15, 'CC-5', 'Latency', 'COHESIVENESS');
+insert into coupling_criterion (id, code, name, type) values ( 8, 'CC-6', 'Consistency', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values ( 6, 'CC-7', 'Availability', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values ( 7, 'CC-8', 'Volatility', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values (16, 'CC-9', 'Consistency Constraint', 'CONSTRAINTS');
+--insert into coupling_criterion (id, code, name, type) values (13, 'CC-10', 'Mutability', 'COMMUNICATION');
+insert into coupling_criterion (id, code, name, type) values ( 9, 'CC-11', 'Storage Similarity', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values (12, 'CC-12', 'Predefined Service Constraint', 'CONSTRAINTS');
+--insert into coupling_criterion (id, code, name, type) values (10, 'CC-13', 'Network Traffic Similarity', 'COMMUNICATION');
+insert into coupling_criterion (id, code, name, type) values ( 5, 'CC-14', 'Security Contextuality', 'COHESIVENESS');
+insert into coupling_criterion (id, code, name, type) values ( 4, 'CC-15', 'Security Criticality', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values ( 3, 'CC-16', 'Security Constraint', 'CONSTRAINTS');
 
 -- description
 update coupling_criterion set description = 'Data which belong to the same identity and therefore shares a common lifecycle.' where id = 1;

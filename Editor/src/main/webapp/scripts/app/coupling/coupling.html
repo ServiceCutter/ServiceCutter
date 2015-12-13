@@ -18,14 +18,14 @@
 			<div class="col-md-4">
 			
 				<tabset vertical="true" type="pills">
-					<tab ng-repeat="criterion in criteria" select="tabSwitched(criterion)" heading="{{criterion.name}}" ></tab>
+					<tab ng-repeat="criterion in criteria" select="tabSwitched(criterion)" heading="{{criterion.code}} {{criterion.name}}" ></tab>
 				</tabset>
 				
 			</div>
 			
 			<div class="col-md-8" ng-show="criterion">
 			
-			<h2>{{criterion.name}}</h2>
+			<h2>{{criterion.code}} {{criterion.name}}</h2>
 			
 			<p>{{criterion.description}}</p>
 

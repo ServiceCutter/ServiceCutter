@@ -1,0 +1,46 @@
+{ 
+"useCases": 
+	[
+		{
+			"nanoentitiesRead": [],
+			"nanoentitiesWritten":["Customer.firstname","Customer.name","Customer.street","Customer.city","Customer.creditCard","Customer.accountNr"],
+			"name":"createCustomer"
+		},
+		{	"nanoentitiesRead": ["Article.price"],
+			"nanoentitiesWritten":["Booking.bookingDate","Booking.paymentDate","Booking.totalPrice","Booking.bookingState"],
+			"name":"createBooking"
+		},
+		{	"nanoentitiesRead": [],
+			"nanoentitiesWritten":["Article.articleName", "Article.price", "Article.serial"],
+			"name":"createArticle"
+		},
+		{	"nanoentitiesRead": ["Article.articleName", "Article.price", "Article.serial"],
+			"nanoentitiesWritten":[],
+			"name":"searchArticles"
+		},
+		{	"nanoentitiesRead": ["Customer.creditCard"],
+			"nanoentitiesWritten":["Booking.paymentDate", "Booking.bookingState"],
+			"name":"payBooking"
+		}
+	],
+"characteristics": 
+	[
+	  {
+		"couplingCriterionName": "Availability",
+		"characteristic": "Low",
+		"nanoentities": [
+		  "Customer.firstname"
+		]
+	  },
+	  {
+		"couplingCriterionName": "Availability",
+		"characteristic": "Critical",
+		"nanoentities": [
+		  "Article.articleName",
+		  "Article.price",
+		  "Article.serial",
+		  "Customer.creditCard"
+		]
+	  }
+	]
+}

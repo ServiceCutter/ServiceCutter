@@ -8,7 +8,6 @@ angular.module('editorApp')
         });
         
         $scope.availableAlgorithms = ['Leung','Girvan-Newman'];
-        $scope.algorithm = 'Girvan-Newman'; // default
         
         $scope.graphOptions = {
 			autoResize: true,
@@ -186,7 +185,7 @@ angular.module('editorApp')
         
         $scope.criteriaTypes = ["COHESIVENESS", "COMPATIBILITY", "CONSTRAINTS"];
         
-        // init priorities and then solve if global models have been defined
+        // init priorities, algorithm and then solve if global models have been defined
         $scope.criteria = Coupling.all(function(criteria) {
         	angular.forEach(criteria, function(value, index){
         		if (value.type == "COHESIVENESS" || value.type == "CONSTRAINTS"){
@@ -196,6 +195,8 @@ angular.module('editorApp')
         		}
         	})
         	
+        	
+        	$scope.algorithm = 'Girvan-Newman'; // default
         	$scope.modelId = $rootScope.modelId;
         });
         

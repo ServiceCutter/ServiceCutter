@@ -36,7 +36,7 @@ public class SolverEndpoint {
 
 	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
 	public static final String MODE_LEUNG = "Leung";
-	public static final String[] MODES = new String[] {MODE_GIRVAN_NEWMAN, MODE_LEUNG};
+	public static final String[] MODES = new String[] { MODE_GIRVAN_NEWMAN, MODE_LEUNG };
 
 	@Autowired
 	public SolverEndpoint(final ModelRepository modelRepository, final Scorer scorer, final ServiceCutAnalyzer analyzer) {
@@ -52,7 +52,7 @@ public class SolverEndpoint {
 	@Transactional
 	public SolverResult solveModel(@PathParam("modelId") final Long id, final SolverConfiguration config) {
 		Model model = modelRepository.findOne(id);
-		if (model == null || config == null) {
+		if (model == null || config == null || config.getPriorities().isEmpty()) {
 			return new SolverResult(Collections.emptySet());
 		}
 
@@ -61,7 +61,7 @@ public class SolverEndpoint {
 		StopWatch sw = new StopWatch();
 		sw.start();
 
-		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, (String key) -> {
+		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, (final String key) -> {
 			return config.getPriorityForCouplingCriterion(key);
 		});
 		if (MODE_LEUNG.equals(algorithm)) {

@@ -13,7 +13,10 @@ angular.module('editorApp')
         $scope.graphOptions = {
 			autoResize: true,
 			height: '100%',
-			width: '100%'
+			width: '100%',
+			nodes : {
+				font: '19px arial black'
+			}
 		};
         
         $scope.graphResize = function(param) {

@@ -64,7 +64,25 @@ angular.module('editorApp')
         $scope.solve=function(){
         	$scope.selectedServiceName = '';
         	$scope.solveModel($scope.modelId);
+        	$scope.checkGirvanNewmanWarning();
         }
+        
+        $scope.$watch('result', function () {
+        	var oneNanoEntityPerService = true;
+
+        	if($scope.result){
+	        	var services = $scope.result.services;
+				// services
+				for (var x in services) {
+					if(services[x].nanoentities.length > 1){
+						oneNanoEntityPerService = false;
+					}
+				}
+				
+				$scope.showGirvanWarning = oneNanoEntityPerService;
+        	}
+        });
+        
 
         $scope.solveModel = function(modelId) {
         	if(parseInt(modelId) > 0) {
@@ -165,6 +183,8 @@ angular.module('editorApp')
 		$scope.leungDelta = 0.55;
 
         $scope.availableModels = Model.all();
+        
+		$scope.showGirvanWarning = false;
         
     }).filter('capitalize', function() {
         return function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}

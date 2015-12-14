@@ -63,6 +63,11 @@ angular.module('editorApp')
         $scope.$watch('modelId', function () {
         	$scope.calculated = false;
         });
+
+        $scope.$watch('algorithm', function () {
+        	$scope.girvanNewmanActive = $scope.algorithm == 'Girvan-Newman';
+        	$scope.solve();
+        });
         
         $scope.solve=function(){
         	$scope.selectedServiceName = '';
@@ -77,9 +82,10 @@ angular.module('editorApp')
         
         // watcher for girvanNewmanWarning
         $scope.$watch('result', function () {
+        	$scope.showGirvanWarning = false;	
         	var oneNanoEntityPerService = true;
 
-        	if($scope.result && $scope.algorithm == 'Girvan-Newman'){
+        	if($scope.result && $scope.girvanNewmanActive == true){
 	        	var services = $scope.result.services;
 				// services
 				for (var x in services) {
@@ -115,33 +121,37 @@ angular.module('editorApp')
         		$http.post('/api/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
 		        		$scope.result = data;
-		    			var serviceNodes = new VisDataSet([]);
-		    			var serviceEdges = new VisDataSet([]);
-		    			var nodeId = 1;
-		    			var services = data.services;
-		    			// services
-		    			for (var x in services) {
-		    				serviceNodes.add({id: services[x].name, shape: 'square', color: '#93D276', label: services[x].name});
-		    				for (var y in services[x].nanoentities) {
-		    					var nanoentity = services[x].nanoentities[y];
-		    					serviceNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: nanoentity});
-		    					serviceEdges.add({from: services[x].name, to: nodeId});
-		    					nodeId++;
-		    				}
-		    			}
-		    			// service relations
-		    			if($scope.showRelations){
-			    			for(var relation in data.relations){
-			    					serviceEdges.add({from: data.relations[relation].serviceA, to: data.relations[relation].serviceB, color:'#B0DF9B'});
-			    			}
-		    			}
-		    	        $scope.graphData = {
-	    	            	'nodes': serviceNodes,
-	    	            	'edges': serviceEdges
-	    	            };
+		        		$scope.repaintGraph();
 		    	        $scope.calculated = true;
 	            });
         	}
+        }
+        
+        $scope.repaintGraph = function(){
+			var serviceNodes = new VisDataSet([]);
+			var serviceEdges = new VisDataSet([]);
+			var nodeId = 1;
+			var services = $scope.result.services;
+			// services
+			for (var x in services) {
+				serviceNodes.add({id: services[x].name, shape: 'square', color: '#93D276', label: services[x].name});
+				for (var y in services[x].nanoentities) {
+					var nanoentity = services[x].nanoentities[y];
+					serviceNodes.add({id: nodeId, shape: 'square', size: 10, color: '#909090', label: nanoentity});
+					serviceEdges.add({from: services[x].name, to: nodeId});
+					nodeId++;
+				}
+			}
+			// service relations
+			if($scope.showRelations){
+    			for(var relation in $scope.result.relations){
+    					serviceEdges.add({from: $scope.result.relations[relation].serviceA, to: $scope.result.relations[relation].serviceB, color:'#B0DF9B'});
+    			}
+			}
+	        $scope.graphData = {
+            	'nodes': serviceNodes,
+            	'edges': serviceEdges
+            };
         }
         
         $scope.criteriaTypes = ["COHESIVENESS", "COMPATIBILITY", "CONSTRAINTS"];

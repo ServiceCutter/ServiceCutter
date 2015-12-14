@@ -1,19 +1,19 @@
 start the service:
 
 ```
-spring-boot:run
+mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8090'
 ```
 
 get the engine state:
 
 ```
-curl -i -H "Accept: application/json" http://localhost:8080/engine
+curl -i -H "Accept: application/json" http://localhost:8090/engine
 ```
 
 import a domain model:
 
 ```
-curl -i -H "Content-Type: application/json" -X PUT http://localhost:8080/engine/import -d @domain_model.json
+curl -i -H "Content-Type: application/json" -X PUT http://localhost:8090/engine/import -d @domain_model.json
 ```
 
 # WS docs

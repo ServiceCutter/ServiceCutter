@@ -58,28 +58,10 @@ public class EditorResource {
 		return result;
 	}
 
-	@RequestMapping(value = "/model/{modelId}/usecases", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/model/{modelId}/userrepresentations", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
 	public ResponseEntity<Void> uploadBusinessTransactionFile(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
-		return uploadCriteriaFile(file, modelId, "usecases");
-	}
-
-	@RequestMapping(value = "/model/{modelId}/characteristics", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
-	public ResponseEntity<Void> uploadDistanceCharacteristics(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
-		return uploadCriteriaFile(file, modelId, "characteristics");
-	}
-
-	@RequestMapping(value = "/model/{modelId}/cohesivegroups", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
-	public ResponseEntity<Void> uploadCohesiveGroups(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
-		return uploadCriteriaFile(file, modelId, "cohesivegroups");
-	}
-
-	@RequestMapping(value = "/model/{modelId}/separations", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Timed
-	public ResponseEntity<Void> uploadSeparationCriteria(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
-		return uploadCriteriaFile(file, modelId, "separations");
+		return uploadCriteriaFile(file, modelId, "userrepresentations");
 	}
 
 	private ResponseEntity<Void> uploadCriteriaFile(final MultipartFile file, final String modelId, final String pathEnding) {

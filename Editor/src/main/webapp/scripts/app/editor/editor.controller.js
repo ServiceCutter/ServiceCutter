@@ -11,22 +11,10 @@ angular.module('editorApp')
         	$scope.upload($scope.file, 'model', 'status', true);
         });
         
-        $scope.$watch('transactionsFile', function () {
-        	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/usecases', 'transactionStatus', false);
+        $scope.$watch('userRepFile', function () {
+        	$scope.upload($scope.userRepFile, 'model/'+ $scope.modelId+'/userrepresentations', 'userRepStatus', false);
         });
 
-        $scope.$watch('separationCriteriaFile', function () {
-        	$scope.upload($scope.separationCriteriaFile, 'model/'+ $scope.modelId+'/separations', 'separationStatus', false);
-        });
-        
-        $scope.$watch('cohesiveGroupsFile', function () {
-        	$scope.upload($scope.cohesiveGroupsFile, 'model/'+ $scope.modelId+'/cohesivegroups', 'cohesiveGroupsStatus', false);
-        });
-        
-        $scope.$watch('characteristicsFile', function () {
-        	$scope.upload($scope.characteristicsFile, 'model/'+ $scope.modelId+'/characteristics', 'characteristicsStatus', false);
-        });
-        
         $scope.$watch('modelId', function () {
         	$scope.showModel();
         });
@@ -74,10 +62,7 @@ angular.module('editorApp')
         }
         
         
-        $scope.transactionStatus = 'No upload yet.';
-        $scope.separationStatus = 'No upload yet.';
-        $scope.cohesiveGroupsStatus = 'No upload yet.';
-        $scope.characteristicsStatus = 'No upload yet.';
+        $scope.userRepStatus = 'No upload yet.';
         $scope.status = 'No upload yet.';
         $scope.modelId = 0;
         $scope.model = null;

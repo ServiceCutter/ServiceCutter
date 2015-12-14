@@ -33,6 +33,7 @@ import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.importer.api.ImportNanoentity;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
+import ch.hsr.servicestoolkit.importer.api.UserRepresentationContainer;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
@@ -185,13 +186,6 @@ public class ImportEndpoint {
 		return relationsToEdgeEntities;
 	}
 
-	public class UserRepresentationContainer {
-		public List<UseCase> useCases;
-		List<DistanceCharacteristic> characteristics;
-		List<SeparationCriterion> separations;
-		List<CohesiveGroups> cohesiveGroups;
-	}
-
 	@POST
 	@Path("/{modelId}/userrepresentations/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -201,10 +195,10 @@ public class ImportEndpoint {
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		persistUseCases(model, userRepresentations.useCases);
-		persistCharacteristics(model, userRepresentations.characteristics);
-		persistSeparations(model, userRepresentations.separations);
-		persistCohesiveGroups(model, userRepresentations.cohesiveGroups);
+		persistUseCases(model, userRepresentations.getUseCases());
+		persistCharacteristics(model, userRepresentations.getCharacteristics());
+		persistSeparations(model, userRepresentations.getSeparations());
+		persistCohesiveGroups(model, userRepresentations.getCohesiveGroups());
 		log.info("Imported user representations");
 	}
 

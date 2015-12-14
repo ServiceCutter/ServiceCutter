@@ -1,19 +1,17 @@
-The services toolkit consists of the following components:
+The Service Cutter consists of the following components:
 
-* Engine - the REST API (Spring Boot, Jersey)
-* Editor - a Web App to Edit the model (JHipster)
+* Editor - a web application, the graphical user interface of the Service Cutter (based on [JHipster](https://jhipster.github.io/))
+* Engine - the RESTful HTTP API offering the core functionality of the service cutter (based on [Spring Boot](http://projects.spring.io/spring-boot/) and [Jersey](https://jersey.java.net/))
+* Samples - contains three sample systems that can be analyzed with the Service Cutter
+   * A tiny booking system with three entities.
+   * The domain model of the DDD sample application "[Cargo Tracker](http://dddsample.sourceforge.net/)"
+   * An imaginary trading system one might find in a bank.
 
 All source code is released under the terms of the Apache 2.0 license.
 
 ## Docker
 
-All components can be started using docker.
-
-```
-docker-compose up
-```
-
-All docker images need to be built using Maven before using docker-compose.
+All components can be started using docker. The Docker images can be built using Maven and a docker-compose configuration is provided in the root folder of the repository. 
 
 ## REST / HTTP Methods
 

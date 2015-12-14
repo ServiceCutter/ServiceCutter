@@ -46,9 +46,9 @@
 					<strong>Alert:</strong>The Girvan-Newman algorithm has problems finding services from the input data. Please add more data to describe your system or change to Leung algorithm.
 				</div>
 				
-				<div ng-show="showRelations" 
+				<div ng-show="showRelations && !(selectedServiceName || selectedServiceRelations)" 
 					class="alert alert-info" role="alert">
-					<strong>Hint:</strong> Select a service to see its responsibilities and dependencies.
+					<strong>Hint:</strong> Select a service or a relation between services to see responsibilites and published language.
 				</div>
 			</div>
 			<div class="col-md-5">

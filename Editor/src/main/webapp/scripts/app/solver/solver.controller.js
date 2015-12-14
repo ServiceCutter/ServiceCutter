@@ -22,32 +22,37 @@ angular.module('editorApp')
         $scope.graphResize = function(param) {
         	this.fit(); // Zooms out so all nodes fit on the canvas.
         };
-        
+
+        $scope.removeSelection = function(param) {
+    		$scope.selectedServiceName = (function () { return; })();
+    		$scope.selectedServiceUseCases = (function () { return; })();
+    		$scope.selectedServiceRelations = (function () { return; })();        	
+        }
         
         $scope.updateSelection = function(param) {
         	$scope.$apply(function() {
-        		$scope.selectedServiceName = (function () { return; })();
-        		$scope.selectedServiceUseCases = (function () { return; })();
-        		$scope.selectedServiceRelations = (function () { return; })();
+        		$scope.removeSelection();
         	});
-        	if(param.nodes.length > 0) {
+        	if(param && param.nodes.length > 0) {
         		var nodeId = param.nodes[0];
         		var listOfUseCases = $scope.result.useCaseResponsibility[nodeId];
-        		$scope.$apply(function() { $scope.selectedServiceName = nodeId;});
-        		if(typeof listOfUseCases != 'undefined' && listOfUseCases.length > 0){
-        			$scope.$apply(function() { $scope.selectedServiceUseCases = listOfUseCases;});
+        		if(listOfUseCases != undefined){
+	        		$scope.$apply(function() { $scope.selectedServiceName = nodeId;});
+	        		if(typeof listOfUseCases != 'undefined' && listOfUseCases.length > 0){
+	        			$scope.$apply(function() { $scope.selectedServiceUseCases = listOfUseCases;});
+	        		}
+	        		var selectedServiceRelations = [];
+	        		var relations = $scope.result.relations;
+	        		for(var relation in relations){
+						if(relations[relation].serviceA == nodeId || relations[relation].serviceB == nodeId){
+							var r = {};
+							r['name'] = relations[relation].serviceA + ' - ' +  relations[relation].serviceB
+							r['entities'] = relations[relation].sharedEntities;
+							selectedServiceRelations.push(r);
+						}
+	        		}
+	        		$scope.$apply(function() { $scope.selectedServiceRelations = selectedServiceRelations;});
         		}
-        		var selectedServiceRelations = [];
-        		var relations = $scope.result.relations;
-        		for(var relation in relations){
-					if(relations[relation].serviceA == nodeId || relations[relation].serviceB == nodeId){
-						var r = {};
-						r['name'] = relations[relation].serviceA + ' - ' +  relations[relation].serviceB
-						r['entities'] = relations[relation].sharedEntities;
-						selectedServiceRelations.push(r);
-					}
-        		}
-        		$scope.$apply(function() { $scope.selectedServiceRelations = selectedServiceRelations;});
     		}else if(param.edges.length > 0){
         		var edgeId = param.edges[0];
     			var relations = $scope.result.relations;
@@ -77,6 +82,7 @@ angular.module('editorApp')
         $scope.$watch('modelId', function () {
         	$scope.solve();
         	$rootScope.modelId = $scope.modelId;
+        	$scope.showRelations = false;
         });
 
         $scope.$watch('algorithm', function () {
@@ -173,6 +179,7 @@ angular.module('editorApp')
             	'nodes': serviceNodes,
             	'edges': serviceEdges
             };
+	        $scope.removeSelection();
         }
         
         $scope.criteriaTypes = ["COHESIVENESS", "COMPATIBILITY", "CONSTRAINTS"];

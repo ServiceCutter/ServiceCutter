@@ -26,11 +26,13 @@
 				</div>
 				            
 				<div ng-show="selectedServiceName && showRelations">
-					<h2>{{selectedServiceName}}</h2>
+					<h3>{{selectedServiceName}}</h3>
 					<p>Responsible for Use Cases:</p>
 					<ul>
 						<li ng-repeat="useCase in selectedServiceUseCases">{{useCase}}</li>
 					</ul>
+				</div>
+				<div ng-show="selectedServiceRelations && showRelations">
 					<h3>Published Language</h3>
 					<div ng-repeat="relation in selectedServiceRelations">
 						<p>Published Language between <strong>{{relation.name}}</strong></p>

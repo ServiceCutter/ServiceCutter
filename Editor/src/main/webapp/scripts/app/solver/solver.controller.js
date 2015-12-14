@@ -48,7 +48,21 @@ angular.module('editorApp')
 					}
         		}
         		$scope.$apply(function() { $scope.selectedServiceRelations = selectedServiceRelations;});
-    		}
+    		}else if(param.edges.length > 0){
+        		var edgeId = param.edges[0];
+    			var relations = $scope.result.relations;
+    			for(var relation in relations){
+					if(edgeId.indexOf(relations[relation].serviceA) > -1 && edgeId.indexOf(relations[relation].serviceB) > -1){
+		        		var selectedServiceRelations = [];
+						var r = {};
+						r['name'] = relations[relation].serviceA + ' - ' +  relations[relation].serviceB
+						r['entities'] = relations[relation].sharedEntities;
+						selectedServiceRelations.push(r);
+		        		$scope.$apply(function() { $scope.selectedServiceRelations = selectedServiceRelations;});
+		        		break;
+					}
+        		}
+        	}
         };
         
         $scope.graphEvents = {
@@ -150,7 +164,9 @@ angular.module('editorApp')
 			// service relations
 			if($scope.showRelations){
     			for(var relation in $scope.result.relations){
-    					serviceEdges.add({from: $scope.result.relations[relation].serviceA, to: $scope.result.relations[relation].serviceB, color:'#B0DF9B'});
+    					var fromNode = $scope.result.relations[relation].serviceA;
+    					var toNode = $scope.result.relations[relation].serviceB;
+    					serviceEdges.add({from: fromNode, to: toNode, id: fromNode + '-'+toNode, color:'#B0DF9B'});
     			}
 			}
 	        $scope.graphData = {

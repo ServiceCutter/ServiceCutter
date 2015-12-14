@@ -16,81 +16,82 @@ insert into coupling_criterion (id, code, name, type) values ( 4, 'CC-15', 'Secu
 insert into coupling_criterion (id, code, name, type) values ( 3, 'CC-16', 'Security Constraint', 'CONSTRAINTS');
 
 -- description
-update coupling_criterion set description = 'Data which belong to the same identity and therefore shares a common lifecycle.' where id = 1;
-update coupling_criterion set description = 'A field A is semantically close to field B. Semantic proximity originates from coherent field updates (e.g. in a transaction / common use case) or aggregations in UML class diagram.' where id = 2;
-update coupling_criterion set description = 'Data which mustn’t be kept in the same service.' where id = 3;
-update coupling_criterion set description = 'Criticality in a security context of a given field.' where id = 4;
-update coupling_criterion set description = 'One service ideally serves a single role. If one services is accessed by multiple roles with different security contexts, an authorization system needs to be implemented and maintained.' where id = 5;
-update coupling_criterion set description = 'Data has varying availability constraints. Some parts are critical while others can be unavailable for some time.' where id = 6;
-update coupling_criterion set description = 'Some data is hardly updated. Some data is updated very often.' where id = 7;
-update coupling_criterion set description = 'Some data loses its value if not kept consistent together while other data is more tolerant to inconsistencies.' where id = 8;
-update coupling_criterion set description = 'Storage that is required to persist all instances of a data field.' where id = 9;
---update coupling_criterion set description = 'Volume of data transferred on the network. This information is defined by how often an instance of a field is read or written, how many instances of the field exist and the size of the field.' where id = 10;
-update coupling_criterion set description = 'How often do Change Requests have to be implemented in this area.' where id = 11;
-update coupling_criterion set description = 'There might be different reasons why some parts forcefully needs to be modelled in the same service.' where id = 12;
---update coupling_criterion set description = 'Some data can be defined as immutable, meaning that it will not be affected by any change after the time of creation.' where id = 13;
-update coupling_criterion set description = 'Data is usually governed, maintained or produced by a single person, a role or a department of a company.' where id = 14;
+-- CC-1
+update coupling_criterion set description = 'Nanoentities that belong to the same identity and therefore share a common lifecycle.' where id = 1;
+-- CC-2
+update coupling_criterion set description = 'Two nanoentities are semantically proximate when they have a semantic connection given by the business domain. The strongest indicator for semantic proximity is coherent access on nanoentities within the same use case.' where id = 2;
+-- CC-3
+update coupling_criterion set description = 'The same person, role or department is responsible for a group of nanoentities. Service decomposition should try to keep entities with the same responsible role together while not mixing entities with different responsible instances in one service.' where id = 14;
+-- CC-4
+update coupling_criterion set description = 'How often change requests need to be implemented affecting nanoentities.' where id = 11;
+-- CC-5
+update coupling_criterion set description = 'Groups of nanoentities with high performance requirements for a specific user request. These nanoentities should be modelled in the same service to avoid remote calls.' where id = 15;
+-- CC-6
+update coupling_criterion set description = 'Some data such as financial records loses its value in case of inconsistencies while other data is more tolerant to inconsistencies.' where id = 8;
+-- CC-7
+update coupling_criterion set description = 'Nanoentities have varying availability constraints. Some are critical while others can be unavailable for some time. As providing high availability comes at a cost, nanoentities classified with different characteristics should not be composed in the same service.' where id = 6;
+-- CC-8
+update coupling_criterion set description = 'A nanoentity can be classified by its volatility which defines how frequent it is updated. Highly volatile and more stable nanoentities should be composed in different services.' where id = 7;
+-- CC-9
+update coupling_criterion set description = 'A group of nanoentities that have a dependent state and therefore need to be kept consistent to each other.' where id = 16;
+-- CC-10
+--update coupling_criterion set description = 'Immutable information is much simpler to manage in a distributed system than mutable objects. Immutable nanoentities are therefore good candidates for the published language shared between two services. Service decomposition should be done in a way that favors sharing immutable nanoentities over mutable ones.' where id = 13;
+-- CC-11
+update coupling_criterion set description = 'Storage that is required to persist all instances of a nanoentity.' where id = 9;
+-- CC-12
+update coupling_criterion set description = 'There might be the following reasons why some nanoentities forcefully need to be modelled in the same service: Technological optimizations or Legacy systems' where id = 12;
+-- CC-13
+--update coupling_criterion set description = 'Service decomposition has a significant impact on network traffic, depending on which nanoentities are shared between services and how often. Small and less frequently accessed nanoentities are better suited to be shared between services.' where id = 10;
+-- CC-14
+update coupling_criterion set description = 'A security role is allowed to see or process a group of nanoentities. Mixing security contexts in one service complicates authentication and authorization implementations.' where id = 5;
+-- CC-15
+update coupling_criterion set description = 'Criticality of an nanoentity in case of data loss or a privacy violation. Represents the reputational or financial damage when the information is disclosed to unauthorized parties. As high security criticality comes at a cost, nanoentities classified with different characteristics should not be composed in the same service.' where id = 4;
+-- CC-16
+update coupling_criterion set description = 'Groups of nanoentities are semantically related but must not reside in the same service in order to satisfy information security requirements. This restriction can be established by an external party such as a certification authority or an internal design team.' where id = 3;
 
--- decomposition impact
-update coupling_criterion set decomposition_impact = 'Model in same service.' where id = 1;
-update coupling_criterion set decomposition_impact = 'Gather together those things that change for the same reason, and separate those things that change for different reasons. (Robert C. Martin)' where id = 2;
-update coupling_criterion set decomposition_impact = 'Model in different services.' where id = 3;
-update coupling_criterion set decomposition_impact = 'Do not model requirements with different criticality in same service.' where id = 4;
-update coupling_criterion set decomposition_impact = 'Do not mix different security contexts in a single service.' where id = 5;
-update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 6;
-update coupling_criterion set decomposition_impact = 'Do not model data with different requirements in same service.' where id = 7;
-update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 8;
-update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 9;
+-- decomposition impact // NOT UP TO DATE!
+-- update coupling_criterion set decomposition_impact = 'Model in same service.' where id = 1;
+-- update coupling_criterion set decomposition_impact = 'Gather together those things that change for the same reason, and separate those things that change for different reasons. (Robert C. Martin)' where id = 2;
+-- update coupling_criterion set decomposition_impact = 'Model in different services.' where id = 3;
+-- update coupling_criterion set decomposition_impact = 'Do not model requirements with different criticality in same service.' where id = 4;
+-- update coupling_criterion set decomposition_impact = 'Do not mix different security contexts in a single service.' where id = 5;
+-- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 6;
+-- update coupling_criterion set decomposition_impact = 'Do not model data with different requirements in same service.' where id = 7;
+-- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 8;
+-- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 9;
 --update coupling_criterion set decomposition_impact = 'Model data which is regularly accessed within the same services to avoid network traffic' where id = 10;
-update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service' where id = 11;
-update coupling_criterion set decomposition_impact = 'Respect the constraints in the modelling algorithm.' where id = 12;
+-- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service' where id = 11;
+-- update coupling_criterion set decomposition_impact = 'Respect the constraints in the modelling algorithm.' where id = 12;
 --update coupling_criterion set decomposition_impact = 'Immutable data are well suited for published language and communication between services. So if data fields have high coupling but are immutable, they might still be splitted across services if this generates other advantages.' where id = 13;
-update coupling_criterion set decomposition_impact = 'Services should reflect the organization of a company.' where id = 13;
+-- update coupling_criterion set decomposition_impact = 'Services should reflect the organization of a company.' where id = 13;
 
-
--- 1
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (1, 1, 'Same Entity', 0);
--- 2
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (4, 2, 'Aggregation', 0);
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (5, 2, 'Shared Field Access', 0);
--- 3
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (6, 3, 'Separation Constraint', 0);
--- 4 Security Criticality
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (7, 4, 10, 'Critical', 0);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (8, 4, 3, 'Internal', 1);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (9, 4, 0, 'Public', 0);
--- 5
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (10, 5, 'Security Context', 0);
--- 6 Resilience
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (11, 6, 10, 'Critical', 0);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (12, 6, 4, 'Normal', 1);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (13, 6, 0, 'Low', 0);
--- 7 Volatility
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (14, 7, 10, 'Often', 0);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (15, 7, 5, 'Regularly', 1);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (16, 7, 0, 'Rarely', 0);
--- 8 Consistency
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (17, 8, 10, 'High', 1);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (18, 8, 4, 'Eventually', 0);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (19, 8, 0, 'Weak', 0);
--- 9 Storage
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (20, 9, 0, 'Tiny', 0);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (21, 9, 3, 'Normal', 1);
-insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (22, 9, 10, 'Huge', 0);
--- 10 Network
---insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (24, 10, 0, 'Low', 0);
---insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (25, 10, 4, 'Normal', 1);
---insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (26, 10, 10, 'High', 0);
--- 11 Change Similarity
+-- CC-4 Change Similarity
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (28, 11, 10, 'Often', 0);
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (29, 11, 4, 'Normal', 1);
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (30, 11, 0, 'Rarely', 0);
--- 12
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (31, 12, 'Predefined Service', 0);
--- 13
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (32, 13, 'Mutable', 0);
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (33, 13, 'Immutable', 0);
--- 14
---insert into cc_characteristic (id, coupling_criterion_id, name, is_default) values (34, 14, 'Responsibility Area', 0);
 
+-- CC-6 Consistency
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (17, 8, 10, 'High', 1);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (18, 8, 4, 'Eventually', 0);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (19, 8, 0, 'Weak', 0);
+
+-- CC-7 Availability
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (11, 6, 10, 'Critical', 0);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (12, 6, 4, 'Normal', 1);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (13, 6, 0, 'Low', 0);
+
+-- CC-8 Volatility
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (14, 7, 10, 'Often', 0);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (15, 7, 5, 'Regularly', 1);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (16, 7, 0, 'Rarely', 0);
+
+-- CC-11 Storage Similarity
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (20, 9, 0, 'Tiny', 0);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (21, 9, 3, 'Normal', 1);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (22, 9, 10, 'Huge', 0);
+
+-- CC-15 Security Criticality
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (7, 4, 10, 'Critical', 0);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (8, 4, 3, 'Internal', 1);
+insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (9, 4, 0, 'Public', 0);
 

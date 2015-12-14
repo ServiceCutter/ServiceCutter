@@ -1,5 +1,6 @@
 package ch.hsr.servicestoolkit.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -25,6 +26,7 @@ public class CouplingCriterion {
 	private Long id;
 	private String code;
 	private String name;
+	@Column(length = 400)
 	private String description;
 	private String decompositionImpact;
 	@Enumerated(EnumType.STRING)

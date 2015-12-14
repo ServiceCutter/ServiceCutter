@@ -80,9 +80,11 @@ angular.module('editorApp')
         
         
         $scope.$watch('modelId', function () {
-        	$scope.solve();
-        	$rootScope.modelId = $scope.modelId;
-        	$scope.showRelations = false;
+        	if($scope.modelId != undefined){
+	        	$scope.solve();
+	        	$rootScope.modelId = $scope.modelId;
+	        	$scope.showRelations = false;
+        	}
         });
 
         $scope.$watch('algorithm', function () {
@@ -184,6 +186,7 @@ angular.module('editorApp')
         
         $scope.criteriaTypes = ["COHESIVENESS", "COMPATIBILITY", "CONSTRAINTS"];
         
+        // init priorities and then solve if global models have been defined
         $scope.criteria = Coupling.all(function(criteria) {
         	angular.forEach(criteria, function(value, index){
         		if (value.type == "COHESIVENESS" || value.type == "CONSTRAINTS"){
@@ -193,9 +196,7 @@ angular.module('editorApp')
         		}
         	})
         	
-        	if($scope.modelId){
-        		$scope.solve();
-        	}
+        	$scope.modelId = $rootScope.modelId;
         });
         
         $scope.expectComparator = function (actual, expected) {
@@ -238,7 +239,6 @@ angular.module('editorApp')
         $scope.availableModels = Model.all();
         $scope.recalculationRequired = false,        
 		$scope.showGirvanWarning = false;
-        $scope.modelId = $rootScope.modelId;
         
     }).filter('capitalize', function() {
         return function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}

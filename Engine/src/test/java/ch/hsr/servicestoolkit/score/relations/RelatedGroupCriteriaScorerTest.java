@@ -13,14 +13,14 @@ import org.junit.Test;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.Nanoentity;
 
-public class ExclusiveGroupCriteriaScorerTest {
+public class RelatedGroupCriteriaScorerTest {
 
 	private static final double PREMIUM = 10d;
 	private static final double PENALTY = -5d;
 	static long idGen = 0;
 
 	@Test
-	public void testExclusiveGroups() {
+	public void testRelatedGroups() {
 		CouplingInstance group1 = new CouplingInstance();
 		CouplingInstance group2 = new CouplingInstance();
 		CouplingInstance group3 = new CouplingInstance();
@@ -42,7 +42,7 @@ public class ExclusiveGroupCriteriaScorerTest {
 
 		Nanoentity other = createNanoEntity("other");
 
-		ExclusiveGroupCriteriaScorer scorer = new ExclusiveGroupCriteriaScorer(PENALTY, PREMIUM,
+		RelatedGroupCriteriaScorer scorer = new RelatedGroupCriteriaScorer(PENALTY, PREMIUM,
 				Arrays.asList(nanoentity1a, nanoentity1b, nanoentity2a, nanoentity2b, nanoentity3a, nanoentity3b, other));
 		Map<EntityPair, Double> scores = scorer.getScores(new HashSet<CouplingInstance>(Arrays.asList(group1, group2, group3)));
 

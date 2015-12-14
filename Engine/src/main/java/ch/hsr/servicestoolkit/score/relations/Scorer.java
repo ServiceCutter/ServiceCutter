@@ -24,6 +24,7 @@ public class Scorer {
 
 	public static final double MAX_SCORE = 10d;
 	public static final double MIN_SCORE = -10d;
+	public static final double NO_SCORE = 0d;
 
 	private Logger log = LoggerFactory.getLogger(Scorer.class);
 
@@ -36,7 +37,7 @@ public class Scorer {
 	}
 
 	// TODO unused?
-	public Map<EntityPair, Map<String, Score>> updateConfig(final Map<EntityPair, Map<String, Score>> scores, Function<String, Double> priorityProvider) {
+	public Map<EntityPair, Map<String, Score>> updateConfig(final Map<EntityPair, Map<String, Score>> scores, final Function<String, Double> priorityProvider) {
 		Map<EntityPair, Map<String, Score>> result = new HashMap<>();
 		for (Entry<EntityPair, Map<String, Score>> scoresByNanoentityTuple : scores.entrySet()) {
 			result.put(scoresByNanoentityTuple.getKey(), new HashMap<>());
@@ -49,7 +50,7 @@ public class Scorer {
 		return result;
 	}
 
-	public Map<EntityPair, Map<String, Score>> getScores(final Model model, Function<String, Double> priorityProvider) {
+	public Map<EntityPair, Map<String, Score>> getScores(final Model model, final Function<String, Double> priorityProvider) {
 		if (new HashSet<>(couplingInstancesRepo.findByModel(model)).isEmpty()) {
 			throw new InvalidParameterException("model needs at least 1 coupling criterion in order for gephi clusterer to work");
 		}
@@ -62,18 +63,21 @@ public class Scorer {
 
 	}
 
-	private void addScoresForProximityCriteria(final Model model, Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
-		Map<EntityPair, Double> lifecycleScores = new CohesiveGroupCriteriaScorer().getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.IDENTITY_LIFECYCLE));
+	private void addScoresForProximityCriteria(final Model model, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
+		Map<EntityPair, Double> lifecycleScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
+				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.IDENTITY_LIFECYCLE));
 		addScoresByCriterionToResult(result, CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores, priorityProvider.apply(CouplingCriterion.IDENTITY_LIFECYCLE));
 
-		Map<EntityPair, Double> semanticProximityScores = new SemanticProximityCriterionScorer().getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SEMANTIC_PROXIMITY));
+		Map<EntityPair, Double> semanticProximityScores = new SemanticProximityCriterionScorer()
+				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SEMANTIC_PROXIMITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores, priorityProvider.apply(CouplingCriterion.SEMANTIC_PROXIMITY));
 
-		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriteriaScorer().getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
+		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
+				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.RESPONSIBILITY, responsibilityScores, priorityProvider.apply(CouplingCriterion.RESPONSIBILITY));
 	}
 
-	private void addScoresForCharacteristicsCriteria(final Model model, Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
+	private void addScoresForCharacteristicsCriteria(final Model model, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
 		Map<String, Map<EntityPair, Double>> scoresByCriterion = new CharacteristicsCriteriaScorer()
 				.getScores(couplingInstancesRepo.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.COMPATIBILITY));
 		for (Entry<String, Map<EntityPair, Double>> distanceScores : scoresByCriterion.entrySet()) {
@@ -81,22 +85,25 @@ public class Scorer {
 		}
 	}
 
-	private void addScoresForConstraintsCriteria(final Model model, Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
-		Map<EntityPair, Double> securityScores = new SeparationCriteriaScorer().getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SECURITY_CONSTRAINT));
+	private void addScoresForConstraintsCriteria(final Model model, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
+		Map<EntityPair, Double> securityScores = new SeparatedGroupCriterionScorer(nanoentityRepo.findByModel(model))
+				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SECURITY_CONSTRAINT));
 		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONSTRAINT, securityScores, priorityProvider.apply(CouplingCriterion.SECURITY_CONSTRAINT));
 
-		Map<EntityPair, Double> predefinedServiceScores = new ExclusiveGroupCriteriaScorer(MIN_SCORE, MAX_SCORE, nanoentityRepo.findAll())
+		Map<EntityPair, Double> predefinedServiceScores = new ExclusiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
 				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.PREDEFINED_SERVICE));
 		addScoresByCriterionToResult(result, CouplingCriterion.PREDEFINED_SERVICE, predefinedServiceScores, priorityProvider.apply(CouplingCriterion.PREDEFINED_SERVICE));
 	}
 
-	private void addScoresByCriterionToResult(final Map<EntityPair, Map<String, Score>> result, final String couplingCriterionName, final Map<EntityPair, Double> scores, final Double priority) {
+	private void addScoresByCriterionToResult(final Map<EntityPair, Map<String, Score>> result, final String couplingCriterionName, final Map<EntityPair, Double> scores,
+			final Double priority) {
 		for (Entry<EntityPair, Double> nanoentityScore : scores.entrySet()) {
 			addScoresToResult(result, nanoentityScore.getKey(), couplingCriterionName, nanoentityScore.getValue(), priority);
 		}
 	}
 
-	private void addScoresToResult(final Map<EntityPair, Map<String, Score>> result, final EntityPair nanoentities, final String criterionName, final double score, final double priority) {
+	private void addScoresToResult(final Map<EntityPair, Map<String, Score>> result, final EntityPair nanoentities, final String criterionName, final double score,
+			final double priority) {
 		if (nanoentities.nanoentityA.getId().equals(nanoentities.nanoentityB.getId())) {
 			log.warn("score on same nanoentity ignored. Nanoentity: {}, Score: {}, Criterion: {}", nanoentities.nanoentityA, score, criterionName);
 			return;

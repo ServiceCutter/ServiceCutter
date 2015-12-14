@@ -72,8 +72,8 @@ public class Scorer {
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores, priorityProvider.apply(CouplingCriterion.SEMANTIC_PROXIMITY));
 
 		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
-				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.RESPONSIBILITY));
-		addScoresByCriterionToResult(result, CouplingCriterion.RESPONSIBILITY, responsibilityScores, priorityProvider.apply(CouplingCriterion.SHARED_OWNER));
+				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SHARED_OWNER));
+		addScoresByCriterionToResult(result, CouplingCriterion.SHARED_OWNER, responsibilityScores, priorityProvider.apply(CouplingCriterion.SHARED_OWNER));
 	}
 
 	private void addScoresForCharacteristicsCriteria(final Model model, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {

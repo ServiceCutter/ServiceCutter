@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('SolverController', function ($scope, $http, Principal, VisDataSet, Model, Coupling, Blob, FileSaver, $timeout) {
+    .controller('SolverController', function ($scope, $rootScope, $http, Principal, VisDataSet, Model, Coupling, Blob, FileSaver, $timeout) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
@@ -62,6 +62,7 @@ angular.module('editorApp')
         
         $scope.$watch('modelId', function () {
         	$scope.solve();
+        	$rootScope.modelId = $scope.modelId;
         });
 
         $scope.$watch('algorithm', function () {
@@ -168,6 +169,10 @@ angular.module('editorApp')
         			value.priority = 0.5
         		}
         	})
+        	
+        	if($scope.modelId){
+        		$scope.solve();
+        	}
         });
         
         $scope.expectComparator = function (actual, expected) {
@@ -210,6 +215,7 @@ angular.module('editorApp')
         $scope.availableModels = Model.all();
         $scope.recalculationRequired = false,        
 		$scope.showGirvanWarning = false;
+        $scope.modelId = $rootScope.modelId;
         
     }).filter('capitalize', function() {
         return function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}

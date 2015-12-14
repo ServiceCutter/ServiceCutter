@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('editorApp')
-    .controller('EditorController', function ($scope, $http, Principal, Upload, VisDataSet, Model) {
+    .controller('EditorController', function ($scope, $rootScope,$http, Principal, Upload, VisDataSet, Model) {
         Principal.identity().then(function(account) {
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated; 
@@ -17,6 +17,7 @@ angular.module('editorApp')
 
         $scope.$watch('modelId', function () {
         	$scope.showModel();
+        	$rootScope.modelId = $scope.modelId;
         });
         
         $scope.upload = function (file, url, statusField, fullReload) {
@@ -64,7 +65,7 @@ angular.module('editorApp')
         
         $scope.userRepStatus = 'No upload yet.';
         $scope.status = 'No upload yet.';
-        $scope.modelId = 0;
+        $scope.modelId = ($rootScope.modelId == undefined ? 0 : $rootScope.modelId) ;
         $scope.model = null;
         $scope.modelsById = {};
         $scope.availableModels = Model.all(function(models) {

@@ -10,28 +10,19 @@
 							<option value=''>- Choose an existing model -</option>
 						</select>
 					</div>
-					
-	
 					<span>{{status}}</span>
 				</form>
 	
 				<div id="result-container" ng-show="modelId">
 					<div class="graph-container" ngsf-fullscreen>
-						<div class="buttons">
-							<button ng-class="{'btn-info': !girvanNewmanActive, 'btn-danger': recalculationRequired}" class="btn btn-default" title="Recalculate" ng-click="solve()">
-								<span class="glyphicon glyphicon-repeat"></span>&nbsp;Recalculate
-							</button>
-							<button class="btn btn-default" title="Save suggested service cut" ng-click="downloadCut()">
-								<span class="glyphicon glyphicon-download-alt"> </span> 
-							</button>
-							<button class="btn btn-default" title="Full screen" ngsf-toggle-fullscreen>
-								<span class="glyphicon glyphicon-resize-full"></span>
-							</button>
-						</div>
 						<vis-network data="graphData" options="graphOptions"
 							events="graphEvents"></vis-network>
-					</div>
-	
+						<div class="buttons" ng-show=modelId>
+							<button class="btn btn-default" title="Full screen" ngsf-toggle-fullscreen>
+							<span class="glyphicon glyphicon-resize-full"></span>&nbsp;Fullscreen
+							</button>
+						</div>
+					</div>	
 				</div>
 				            
 				<div ng-show="selectedServiceName && showRelations">
@@ -62,6 +53,13 @@
 			<!-- this structure is a bit complicated as bootstrap requires:
 				"Content should be placed within columns, and only columns may be immediate children of rows."
 			 -->
+
+				<button ng-class="{'btn-info': !girvanNewmanActive, 'btn-danger': recalculationRequired}" class="btn btn-default" title="Recalculate" ng-click="solve()" ng-disabled="!modelId">
+					<span class="glyphicon glyphicon-repeat"></span>&nbsp;Recalculate
+				</button>
+				<button class="btn btn-default" title="Save suggested service cut" ng-click="downloadCut()" ng-disabled="!modelId">
+					<span class="glyphicon glyphicon-download-alt"></span>&nbsp;Export JSON 
+				</button>
 
 				<h3>Priorities</h3>
 				

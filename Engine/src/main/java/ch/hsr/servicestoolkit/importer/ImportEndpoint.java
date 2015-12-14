@@ -60,7 +60,7 @@ public class ImportEndpoint {
 	private final CouplingInstanceRepository couplingInstanceRepository;
 	private final ModelCompleter modelCompleter;
 	//
-	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.RESPONSIBILITY, CouplingCriterion.CONSISTENCY_CONSTRAINT, CouplingCriterion.PREDEFINED_SERVICE,
+	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.SHARED_OWNER, CouplingCriterion.CONSISTENCY_CONSTRAINT, CouplingCriterion.PREDEFINED_SERVICE,
 			CouplingCriterion.SECURITY_CONSTRAINT);
 
 	@Autowired

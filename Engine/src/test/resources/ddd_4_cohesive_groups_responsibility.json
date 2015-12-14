@@ -1,6 +1,6 @@
 	[
 	  {
-		"couplingCriterionName": "Responsibility",
+		"couplingCriterionName": "Shared Owner",
 		"relatedGroups": [
 		  {
 			"nanoentities": [

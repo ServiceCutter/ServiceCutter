@@ -1,6 +1,6 @@
 insert into coupling_criterion (id, code, name, type) values ( 1, 'CC-1', 'Identity & Lifecycle Commonality', 'COHESIVENESS');
 insert into coupling_criterion (id, code, name, type) values ( 2, 'CC-2', 'Semantic Proximity', 'COHESIVENESS');
-insert into coupling_criterion (id, code, name, type) values (14, 'CC-3', 'Responsibility', 'COHESIVENESS');
+insert into coupling_criterion (id, code, name, type) values (14, 'CC-3', 'Shared Owner', 'COHESIVENESS');
 insert into coupling_criterion (id, code, name, type) values (11, 'CC-4', 'Change Similarity', 'COMPATIBILITY');
 insert into coupling_criterion (id, code, name, type) values (15, 'CC-5', 'Latency', 'COHESIVENESS');
 insert into coupling_criterion (id, code, name, type) values ( 8, 'CC-6', 'Consistency', 'COMPATIBILITY');

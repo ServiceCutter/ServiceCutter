@@ -82,7 +82,7 @@
 "relatedGroups":
 	[
 	  {
-		"couplingCriterionName": "Responsibility",
+		"couplingCriterionName": "Shared Owner",
 		"relatedGroups": [
 		  {
 			"name": "cargoPlaner",

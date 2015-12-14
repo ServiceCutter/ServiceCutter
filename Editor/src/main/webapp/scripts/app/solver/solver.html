@@ -90,17 +90,7 @@
 				
 				<h3>Algorithm</h3>
 				<select class="form-control" ng-model="algorithm" ng-options="a for a in availableAlgorithms"></select>
-				
-				<h3>Visualization</h3>
-				<form class="form-inline" name="myVizForm">	
-				<div class="form-group form-group-sm">			
-					<span class="inline-help" popover="Enable to draw an egde between services sharing use cases." popover-trigger="mouseenter">
-						Show Service Relations</span> 
-					<toggle-switch ng-model="showRelations" id="show-relations"
-						ng-click="solve()"></toggle-switch>
-				</div>
-				</form>
-				
+
 				<h3>Algorithm parameters</h3>
 				<div width="50%">
 				    Number of Services (Girvan-Newman):<br />
@@ -110,6 +100,24 @@
 				    	rz-slider-floor="0" 
 				    	rz-slider-ceil="10">
 				    </rzslider>
+				</div>
+				
+				<h3>Visualization</h3>
+				<form class="form-inline" name="myVizForm">	
+				<div class="form-group form-group-sm">
+					<span ng-show="disableVisualization">Please provide use case specifications to enable visualization</span>			
+					<div ng-show="!disableVisualization">
+						<span class="inline-help" popover="Enable to draw an egde between services sharing use cases." popover-trigger="mouseenter">
+							Show Service Relations</span> 
+						<toggle-switch ng-model="showRelations" id="show-relations"
+							ng-click="solve()"></toggle-switch>
+					</div>
+				</div>
+				</form>
+
+<!-- excluded to simplify UI for demonstration purposes   				
+				<h3>Algorithm parameters</h3>
+				<div width="50%">
 				    <span class="inline-help" popover="An exponential factor applied to the clustering function. For values > 0 more preference is given to a node with 
 				    	more neighbours; for values < 0 less." popover-trigger="mouseenter">
 				    	Node characteristic preference</span> (Leung):<br />
@@ -128,8 +136,10 @@
 				    	rz-slider-floor="0" 
 				    	rz-slider-ceil="1">
 				    </rzslider>
-				</div>				
+				</div>
+-->				
 			</div>
+			
 		</div>
 	</div>
 </div>

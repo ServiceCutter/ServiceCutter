@@ -67,11 +67,11 @@ public class ServiceCutAnalyzer {
 			for (int b = a + 1; b < serviceList.size(); b++) {
 				ServiceTuple serviceTuple = new ServiceTuple(serviceList.get(a).getName(), serviceList.get(b).getName());
 				Double score = getProximityScoreFor(serviceList.get(a), serviceList.get(b), scores, model);
-				final List<String> sharedFiels = getSharedNanoentities(serviceList.get(a), serviceList.get(b), useCaseResponsibilites);
-				if (score > 0) {
+				final List<String> sharedNanoentities = getSharedNanoentities(serviceList.get(a), serviceList.get(b), useCaseResponsibilites);
+				if (score > 0 && !sharedNanoentities.isEmpty()) {
 					log.info("create service relation for services {} and {} with score {} and nanoentities {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score,
-							sharedFiels.toString());
-					relations.add(new ServiceRelation(sharedFiels, score, serviceTuple.getServiceA(), serviceTuple.getServiceB()));
+							sharedNanoentities.toString());
+					relations.add(new ServiceRelation(sharedNanoentities, score, serviceTuple.getServiceA(), serviceTuple.getServiceB()));
 				}
 			}
 		}
@@ -94,7 +94,8 @@ public class ServiceCutAnalyzer {
 		if (primaryUseCases == null || primaryUseCases.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return primaryUseCases.stream().flatMap(instance -> instance.getAllNanoentities().stream().filter(nanoentity -> otherService.getNanoentities().contains(nanoentity.getContextName())))
+		return primaryUseCases.stream()
+				.flatMap(instance -> instance.getAllNanoentities().stream().filter(nanoentity -> otherService.getNanoentities().contains(nanoentity.getContextName())))
 				.map(nanoentity -> nanoentity.getContextName()).collect(Collectors.toList());
 	}
 
@@ -129,8 +130,10 @@ public class ServiceCutAnalyzer {
 		Service responsibleService = null;
 		Double highestScore = 0d;
 		for (final Service service : set) {
-			final long numberOfNanoentitiesWritten = dualInstance.getSecondNanoentities().stream().filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName())).count();
-			final long numberOfNanoentitiesRead = dualInstance.getNanoentities().stream().filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName())).count();
+			final long numberOfNanoentitiesWritten = dualInstance.getSecondNanoentities().stream()
+					.filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName())).count();
+			final long numberOfNanoentitiesRead = dualInstance.getNanoentities().stream().filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName()))
+					.count();
 			final double score = numberOfNanoentitiesRead * SCORE_READ + numberOfNanoentitiesWritten * SCORE_WRITE;
 			if (score > highestScore) {
 				highestScore = score;

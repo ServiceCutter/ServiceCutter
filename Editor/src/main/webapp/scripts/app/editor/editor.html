@@ -36,7 +36,7 @@
 				
 				<ul>
 					<li ng-repeat="coupling in model.coupling">{{coupling.couplingCriterion.name}}
-					<span ng-show="coupling.type">- {{coupling.type}}</span>
+					<span ng-show="coupling.instanceType">- {{coupling.instanceType}}</span>
 					<span ng-show="coupling.characteristic.name">- <strong>{{coupling.characteristic.name}}</strong></span>
 					<span ng-show="!coupling.characteristic.name">- <strong>{{coupling.name}}</strong></span>
 					<ul>

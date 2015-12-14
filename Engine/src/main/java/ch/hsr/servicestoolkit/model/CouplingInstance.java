@@ -58,10 +58,12 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 
 	public CouplingInstance(CouplingCriterion couplingCriterion, InstanceType type) {
 		Assert.assertNotEquals("Constructor only to be used for not-compatibility criteria!", CouplingType.COMPATIBILITY, couplingCriterion.getType());
+		instanceType = type;
 		this.couplingCriterion = couplingCriterion;
 	}
 
 	public CouplingInstance(CouplingCriterionCharacteristic characteristic, InstanceType type) {
+		instanceType = type;
 		setCharacteristicAndCriterion(characteristic);
 	}
 

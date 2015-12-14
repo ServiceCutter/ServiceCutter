@@ -61,7 +61,7 @@ angular.module('editorApp')
         
         
         $scope.$watch('modelId', function () {
-        	$scope.calculated = false;
+        	$scope.solve();
         });
 
         $scope.$watch('algorithm', function () {
@@ -69,9 +69,14 @@ angular.module('editorApp')
         	$scope.solve();
         });
         
+        $scope.requireRecalculate=function(){
+        	$scope.recalculationRequired  = true;
+        }
+        
         $scope.solve=function(){
         	$scope.selectedServiceName = '';
         	$scope.solveModel($scope.modelId);
+        	$scope.recalculationRequired = false;
         }
 
         //watch for service relations
@@ -122,7 +127,6 @@ angular.module('editorApp')
 		    		success(function(data) {
 		        		$scope.result = data;
 		        		$scope.repaintGraph();
-		    	        $scope.calculated = true;
 	            });
         	}
         }
@@ -173,6 +177,8 @@ angular.module('editorApp')
             return angular.equals(expected, actual);
         }
         
+
+        
         $scope.priorityMetric = {
         		IGNORE : {value: 0, name: "IGNORE"},
         		XS : {value: 0.5, name: "XS"},
@@ -202,7 +208,7 @@ angular.module('editorApp')
 		$scope.leungDelta = 0.55;
 
         $scope.availableModels = Model.all();
-        
+        $scope.recalculationRequired = false,        
 		$scope.showGirvanWarning = false;
         
     }).filter('capitalize', function() {

@@ -16,15 +16,10 @@
 				</form>
 	
 				<div id="result-container" ng-show="modelId">
-
-					<button ng-show="!calculated" id="calculate-button" class="btn btn-default" title="Calculate" ng-click="solve()">
-						<span class="glyphicon glyphicon-cog"></span> Calculate candidate service cut
-					</button>
-	
-					<div ng-show="calculated" class="graph-container" ngsf-fullscreen>
+					<div class="graph-container" ngsf-fullscreen>
 						<div class="buttons">
-							<button class="btn btn-default" title="Recalculate" ng-click="solve()">
-								<span class="glyphicon glyphicon-repeat"></span>
+							<button ng-class="{'btn-info': !girvanNewmanActive, 'btn-danger': recalculationRequired}" class="btn btn-default" title="Recalculate" ng-click="solve()">
+								<span class="glyphicon glyphicon-repeat"></span>&nbsp;Recalculate
 							</button>
 							<button class="btn btn-default" title="Save suggested service cut" ng-click="downloadCut()">
 								<span class="glyphicon glyphicon-download-alt"> </span> 
@@ -79,7 +74,7 @@
 								<label for="{{criterion.name}}">{{criterion.name}}</label>
 							</div>
 							<div class="col-md-4">
-								<select name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority" class="form-control">
+								<select ng-change="requireRecalculate()" name="{{criterion.name}}" id="{{criterion.name}}" ng-model="criterion.priority" class="form-control">
 								  	<option ng-selected="criterion.priority == metric.value" ng-repeat="metric in priorityMetric" value="{{metric.value}}">{{metric.name}}</option>
 								</select>
 							</div>
@@ -108,6 +103,7 @@
 					    	rz-slider-step="1" 
 					    	rz-slider-precision="0" 
 					    	rz-slider-floor="0" 
+					    	rz-slider-on-end="requireRecalculate()" 
 					    	rz-slider-ceil="10">
 					    </rzslider>
 					</div>

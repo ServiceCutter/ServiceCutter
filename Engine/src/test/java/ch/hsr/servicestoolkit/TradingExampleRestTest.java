@@ -63,9 +63,8 @@ public class TradingExampleRestTest {
 	private void solveModel(final Integer modelId) {
 		SolverConfiguration config = new SolverConfiguration();
 		HttpEntity<SolverConfiguration> request = IntegrationTestHelper.createHttpRequestWithPostObj(config);
-		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST, request,
-				new ParameterizedTypeReference<SolverResult>() {
-				});
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request, new ParameterizedTypeReference<SolverResult>() {
+		});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
 
@@ -78,7 +77,7 @@ public class TradingExampleRestTest {
 		log.info("read business Transactions: {}", transactions);
 
 		HttpEntity<List<UseCase>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
-		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/businessTransactions/";
+		String path = UrlHelper.useCases(modelId, port);
 		log.info("store business transactions on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
@@ -93,7 +92,7 @@ public class TradingExampleRestTest {
 		log.info("read distance characteristics: {}", characteristics);
 
 		HttpEntity<List<DistanceCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
-		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceCharacteristics/";
+		String path = UrlHelper.characteristics(modelId, port);
 		log.info("store distance characteristics on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
@@ -108,7 +107,7 @@ public class TradingExampleRestTest {
 		log.info("read separation criteria: {}", criteria);
 
 		HttpEntity<List<SeparationCriterion>> request = IntegrationTestHelper.createHttpRequestWithPostObj(criteria);
-		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/separationCriteria/";
+		String path = UrlHelper.separations(modelId, port);
 		log.info("store seperation criteria on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
@@ -121,9 +120,8 @@ public class TradingExampleRestTest {
 		DomainModel input = IntegrationTestHelper.readFromFile(TRADING_EXAMPLE_JSON, DomainModel.class);
 
 		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
-		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,
-				new ParameterizedTypeReference<Map<String, Object>>() {
-				});
+		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
+		});
 
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		Integer modelId = (Integer) entity.getBody().get("id");

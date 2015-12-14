@@ -60,9 +60,9 @@ public class BookingExampleRestTest {
 	private void solveModel(final Integer modelId) {
 		final SolverConfiguration config = new SolverConfiguration();
 		HttpEntity<SolverConfiguration> request = IntegrationTestHelper.createHttpRequestWithPostObj(config);
-		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/solver/" + modelId, HttpMethod.POST, request,
-				new ParameterizedTypeReference<SolverResult>() {
-				});
+		int port2 = this.port;
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port2), HttpMethod.POST, request, new ParameterizedTypeReference<SolverResult>() {
+		});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
 
@@ -72,13 +72,13 @@ public class BookingExampleRestTest {
 	private void loadBusinessTransactionOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
 		List<UseCase> transactions = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_USE_CASES_FILE, UseCase.class);
 
-		log.info("read business Transactions: {}", transactions);
+		log.info("read use cases: {}", transactions);
 
 		HttpEntity<List<UseCase>> request = IntegrationTestHelper.createHttpRequestWithPostObj(transactions);
-		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/businessTransactions/";
+		String path = UrlHelper.useCases(modelId, this.port);
 		log.info("store business transactions on {}", path);
 
-		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
+		ResponseEntity<Void> entity = restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
 		});
 
 		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
@@ -90,7 +90,7 @@ public class BookingExampleRestTest {
 		log.info("read characteristics: {}", characteristics);
 
 		HttpEntity<List<DistanceCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
-		String path = "http://localhost:" + this.port + "/engine/import/" + modelId.toString() + "/distanceCharacteristics/";
+		String path = UrlHelper.characteristics(modelId, port);
 		log.info("store characteristics on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
@@ -103,9 +103,9 @@ public class BookingExampleRestTest {
 		DomainModel input = IntegrationTestHelper.readFromFile(BOOKING_EXAMPLE_FILE, DomainModel.class);
 
 		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
-		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,
-				new ParameterizedTypeReference<Map<String, Object>>() {
-				});
+		int port = this.port;
+		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
+		});
 
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		Integer modelId = (Integer) entity.getBody().get("id");

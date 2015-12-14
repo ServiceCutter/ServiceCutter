@@ -30,7 +30,7 @@ import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
-import ch.hsr.servicestoolkit.importer.api.NanoEntityInput;
+import ch.hsr.servicestoolkit.importer.api.ImportNanoentity;
 import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
@@ -57,7 +57,7 @@ public class ImportEndpoint {
 	private final CouplingCriterionRepository couplingCriterionRepository;
 	private final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository;
 	private final CouplingInstanceRepository couplingInstanceRepository;
-	private ModelCompleter modelCompleter;
+	private final ModelCompleter modelCompleter;
 
 	@Autowired
 	public ImportEndpoint(final ModelRepository modelRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
@@ -68,7 +68,6 @@ public class ImportEndpoint {
 		this.modelCompleter = modelCompleter;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.couplingCriteriaCharacteristicRepository = couplingCriteriaCharacteristicRepository;
-
 	}
 
 	@POST
@@ -83,36 +82,31 @@ public class ImportEndpoint {
 		modelRepository.save(model);
 		model.setName("imported " + new Date().toString());
 
-		Map<NanoEntityInput, String> entityAttributes = new HashMap<>();
+		Map<ImportNanoentity, String> entityAttributes = new HashMap<>();
 		for (Entity entity : domainModel.getEntities()) {
-			for (NanoEntityInput attribute : entity.getNanoentities()) {
+			for (ImportNanoentity attribute : entity.getNanoentities()) {
 				entityAttributes.put(attribute, entity.getName());
 			}
 
 		}
 		// entities
 		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
-		for (Entry<String, List<NanoEntityInput>> entity : findRealEntities(domainModel).entrySet()) {
-			CouplingInstance couplingInstance = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
-			model.addCouplingInstance(couplingInstance);
-			couplingInstanceRepository.save(couplingInstance);
-			String entityName = entity.getKey();
-			couplingInstance.setName(entityName);
-			couplingInstance.setModel(model);
-			log.info("store entity with attributes {}", entity.getValue());
-			for (NanoEntityInput entityAttribute : entity.getValue()) {
-				Nanoentity nanoentity = new Nanoentity();
-				nanoentity.setName(entityAttribute.getName());
-				nanoentity.setContext(entityAttributes.get(entityAttribute));
-				model.addNanoentity(nanoentity);
-				nanoentityRepository.save(nanoentity);
-				couplingInstance.addNanoentity(nanoentity);
+		for (Entry<String, List<ImportNanoentity>> entityAndNanoentities : findRealEntities(domainModel).entrySet()) {
+			CouplingInstance entityInstance = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
+			model.addCouplingInstance(entityInstance);
+			couplingInstanceRepository.save(entityInstance);
+			String entityName = entityAndNanoentities.getKey();
+			entityInstance.setName(entityName);
+			entityInstance.setModel(model);
+			log.info("store entity with attributes {}", entityAndNanoentities.getValue());
+			for (ImportNanoentity entityAttribute : entityAndNanoentities.getValue()) {
+				Nanoentity nanoentity = persistNanoentity(model, entityAttributes.get(entityAttribute), entityAttribute.getName());
+				entityInstance.addNanoentity(nanoentity);
 				log.info("Import nanoentity {}", nanoentity.getContextName());
 			}
 		}
 
 		// Aggregations
-
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (EntityRelation relation : domainModel.getRelations()) {
 			if (RelationType.AGGREGATION.equals(relation.getType())) {
@@ -138,8 +132,8 @@ public class ImportEndpoint {
 		return result;
 	}
 
-	private Map<String, List<NanoEntityInput>> findRealEntities(final DomainModel domainModel) {
-		Map<String, List<NanoEntityInput>> realEntities = new HashMap<>();
+	private Map<String, List<ImportNanoentity>> findRealEntities(final DomainModel domainModel) {
+		Map<String, List<ImportNanoentity>> realEntities = new HashMap<>();
 		for (Entity entity : domainModel.getEntities()) {
 			realEntities.put(entity.getName(), entity.getNanoentities());
 		}
@@ -153,7 +147,7 @@ public class ImportEndpoint {
 			log.info("Entity reduction iteration, reduce relations {}", relationsToEdgeEntities);
 			for (EntityRelation relation : relationsToEdgeEntities) {
 				if (RelationType.COMPOSITION.equals(relation.getType())) {
-					List<NanoEntityInput> list = realEntities.get(relation.getOrigin().getName());
+					List<ImportNanoentity> list = realEntities.get(relation.getOrigin().getName());
 					if (list != null) {
 						list.addAll(relation.getDestination().getNanoentities());
 					} else {
@@ -191,17 +185,44 @@ public class ImportEndpoint {
 		return relationsToEdgeEntities;
 	}
 
+	public class UserRepresentationContainer {
+		public List<UseCase> useCases;
+		List<DistanceCharacteristic> characteristics;
+		List<SeparationCriterion> separations;
+		List<CohesiveGroups> cohesiveGroups;
+	}
+
 	@POST
-	@Path("/{modelId}/businessTransactions/")
+	@Path("/{modelId}/userrepresentations/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importBusinessTransaction(@PathParam("modelId") final Long modelId, final List<UseCase> transactions) {
+	public void importUserRepresentations(@PathParam("modelId") final Long modelId, UserRepresentationContainer userRepresentations) {
 		Model model = modelRepository.findOne(modelId);
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
+		persistUseCases(model, userRepresentations.useCases);
+		persistCharacteristics(model, userRepresentations.characteristics);
+		persistSeparations(model, userRepresentations.separations);
+		persistCohesiveGroups(model, userRepresentations.cohesiveGroups);
+		log.info("Imported user representations");
+	}
+
+	@POST
+	@Path("/{modelId}/usecases/")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Transactional
+	public void importUseCases(@PathParam("modelId") final Long modelId, final List<UseCase> transactions) {
+		Model model = modelRepository.findOne(modelId);
+		if (model == null) {
+			throw new InvalidRestParam();
+		}
+		persistUseCases(model, transactions);
+	}
+
+	private void persistUseCases(Model model, final List<UseCase> useCases) {
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
-		for (UseCase transaction : transactions) {
+		for (UseCase transaction : useCases) {
 			CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.USE_CASE);
 			model.addCouplingInstance(instance);
 			couplingInstanceRepository.save(instance);
@@ -209,39 +230,47 @@ public class ImportEndpoint {
 			instance.setModel(model);
 			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model));
 			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model));
-			log.info("Import business transactions {} with fieldsWritten {} and fieldsRead {}", transaction.getName(), transaction.getNanoentitiesWritten(), transaction.getNanoentitiesRead());
+			log.info("Import use cases {} with fields written {} and fields read {}", transaction.getName(), transaction.getNanoentitiesWritten(), transaction.getNanoentitiesRead());
 		}
 	}
 
 	@POST
-	@Path("/{modelId}/entities/")
+	@Path("/{modelId}/nanoentities/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importEntities(@PathParam("modelId") final Long modelId, final List<Entity> entities) {
+	public void importNanoentities(@PathParam("modelId") final Long modelId, final List<ImportNanoentity> nanoentities) {
 		Model model = modelRepository.findOne(modelId);
 		if (model == null) {
 			throw new InvalidRestParam();
 		}
-		CouplingCriterion identityLifecycle = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
-		for (Entity entity : entities) {
-			CouplingInstance instance = new CouplingInstance(identityLifecycle, InstanceType.SAME_ENTITY);
-			model.addCouplingInstance(instance);
-			couplingInstanceRepository.save(instance);
-			instance.setName(entity.getName());
-			instance.setNanoentities(loadNanoentities(entity.getNanoentities().stream().map(NanoEntityInput::getName).collect(Collectors.toList()), model));
-		}
+		nanoentities.forEach((nanoentity) -> {
+			persistNanoentity(model, nanoentity.getContext(), nanoentity.getName());
+		});
+	}
+
+	private Nanoentity persistNanoentity(Model model, String context, String name) {
+		Nanoentity nanoentity = new Nanoentity();
+		nanoentity.setName(name);
+		nanoentity.setContext(context);
+		model.addNanoentity(nanoentity);
+		nanoentityRepository.save(nanoentity);
+		return nanoentity;
 	}
 
 	@POST
-	@Path("/{modelId}/distanceCharacteristics/")
+	@Path("/{modelId}/characteristics/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importDistanceCriterionInstance(@PathParam("modelId") final Long modelId, final List<DistanceCharacteristic> inputCharacteristics) {
+	public void importCharacteristics(@PathParam("modelId") final Long modelId, final List<DistanceCharacteristic> characteristics) {
 		Model model = modelRepository.findOne(modelId);
-		if (model == null || inputCharacteristics == null) {
+		if (model == null || characteristics == null) {
 			throw new InvalidRestParam();
 		}
-		for (DistanceCharacteristic inputCharacteristic : inputCharacteristics) {
+		persistCharacteristics(model, characteristics);
+	}
+
+	private void persistCharacteristics(Model model, final List<DistanceCharacteristic> characteristics) {
+		for (DistanceCharacteristic inputCharacteristic : characteristics) {
 			CouplingCriterionCharacteristic characteristic = findCharacteristic(inputCharacteristic.getCouplingCriterionName(), inputCharacteristic.getCharacteristicName());
 			if (characteristic == null) {
 				log.error("characteristic {} not known! ignore", inputCharacteristic);
@@ -268,15 +297,19 @@ public class ImportEndpoint {
 	}
 
 	@POST
-	@Path("/{modelId}/separationCriteria/")
+	@Path("/{modelId}/separations/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importSeparationCriterionInstance(@PathParam("modelId") final Long modelId, final List<SeparationCriterion> criteria) {
+	public void importSeparations(@PathParam("modelId") final Long modelId, final List<SeparationCriterion> separations) {
 		Model model = modelRepository.findOne(modelId);
-		if (model == null || criteria == null) {
+		if (model == null || separations == null) {
 			throw new InvalidRestParam();
 		}
-		for (SeparationCriterion inputCriterion : criteria) {
+		persistSeparations(model, separations);
+	}
+
+	private void persistSeparations(Model model, final List<SeparationCriterion> separations) {
+		for (SeparationCriterion inputCriterion : separations) {
 			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(inputCriterion.getCouplingCriterionName());
 			CouplingInstance newInstance = new CouplingInstance(couplingCriterion, InstanceType.SEPARATION_GROUP);
 			model.addCouplingInstance(newInstance);
@@ -290,7 +323,7 @@ public class ImportEndpoint {
 	}
 
 	@POST
-	@Path("/{modelId}/cohesiveGroups/")
+	@Path("/{modelId}/cohesivegroups/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
 	public void importCohesiveGroups(@PathParam("modelId") final Long modelId, final List<CohesiveGroups> listOfGroups) {
@@ -299,6 +332,10 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 
+		persistCohesiveGroups(model, listOfGroups);
+	}
+
+	private void persistCohesiveGroups(Model model, final List<CohesiveGroups> listOfGroups) {
 		for (CohesiveGroups groups : listOfGroups) {
 			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(groups.getCouplingCriterionName());
 			CouplingCriterionCharacteristic characteristic = null;
@@ -324,7 +361,7 @@ public class ImportEndpoint {
 		}
 	}
 
-	List<Nanoentity> loadNanoentities(final List<String> names, final Model model) {
+	private List<Nanoentity> loadNanoentities(final List<String> names, final Model model) {
 		List<Nanoentity> nanoentities = new ArrayList<>();
 		for (String nanoentityName : names) {
 			Nanoentity nanoentity;

@@ -11,7 +11,7 @@ import com.google.common.base.Objects;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name")
 public class Entity {
 	private String name;
-	private List<NanoEntityInput> nanoentities;
+	private List<ImportNanoentity> nanoentities;
 
 	// used by Jackson
 	public Entity() {
@@ -19,7 +19,7 @@ public class Entity {
 
 	public Entity(final String name) {
 		super();
-		this.nanoentities = new ArrayList<NanoEntityInput>();
+		this.nanoentities = new ArrayList<ImportNanoentity>();
 		this.name = name;
 	}
 
@@ -27,11 +27,11 @@ public class Entity {
 		return name;
 	}
 
-	public void addAttribute(final NanoEntityInput attribute) {
+	public void addAttribute(final ImportNanoentity attribute) {
 		this.nanoentities.add(attribute);
 	}
 
-	public List<NanoEntityInput> getNanoentities() {
+	public List<ImportNanoentity> getNanoentities() {
 		return nanoentities;
 	}
 

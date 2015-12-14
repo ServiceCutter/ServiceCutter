@@ -12,19 +12,19 @@ angular.module('editorApp')
         });
         
         $scope.$watch('transactionsFile', function () {
-        	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/transactions', 'transactionStatus', false);
+        	$scope.upload($scope.transactionsFile, 'model/'+ $scope.modelId+'/usecases', 'transactionStatus', false);
         });
 
         $scope.$watch('separationCriteriaFile', function () {
-        	$scope.upload($scope.separationCriteriaFile, 'model/'+ $scope.modelId+'/separationCriteria', 'separationStatus', false);
+        	$scope.upload($scope.separationCriteriaFile, 'model/'+ $scope.modelId+'/separations', 'separationStatus', false);
         });
         
         $scope.$watch('cohesiveGroupsFile', function () {
-        	$scope.upload($scope.cohesiveGroupsFile, 'model/'+ $scope.modelId+'/cohesiveGroups', 'cohesiveGroupsStatus', false);
+        	$scope.upload($scope.cohesiveGroupsFile, 'model/'+ $scope.modelId+'/cohesivegroups', 'cohesiveGroupsStatus', false);
         });
         
         $scope.$watch('characteristicsFile', function () {
-        	$scope.upload($scope.characteristicsFile, 'model/'+ $scope.modelId+'/distanceCharacteristics', 'characteristicsStatus', false);
+        	$scope.upload($scope.characteristicsFile, 'model/'+ $scope.modelId+'/characteristics', 'characteristicsStatus', false);
         });
         
         $scope.$watch('modelId', function () {

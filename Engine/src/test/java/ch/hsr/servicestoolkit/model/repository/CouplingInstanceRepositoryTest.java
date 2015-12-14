@@ -17,6 +17,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicestoolkit.EngineServiceAppication;
+import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.InstanceType;
@@ -34,6 +35,8 @@ public class CouplingInstanceRepositoryTest {
 	@Autowired
 	private CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository;
 	@Autowired
+	private CouplingCriterionRepository couplingCriterionRepository;
+	@Autowired
 	private NanoentityRepository nanoentityRepository;
 	@PersistenceContext
 	EntityManager em;
@@ -41,8 +44,7 @@ public class CouplingInstanceRepositoryTest {
 	@Test
 	@Transactional
 	public void testFindByModel() {
-		CouplingCriterionCharacteristic characteristic = new CouplingCriterionCharacteristic();
-		couplingCriteriaCharacteristicRepository.save(characteristic);
+		CouplingCriterionCharacteristic characteristic = createCharacteristic();
 		addModel(characteristic);
 		Model model = addModel(characteristic);
 		//
@@ -51,26 +53,10 @@ public class CouplingInstanceRepositoryTest {
 		assertThat(list, hasSize(1));
 	}
 
-	@Test
-	@Transactional
-	public void testFindByModelTESTdual() {
-		CouplingCriterionCharacteristic characteristic = new CouplingCriterionCharacteristic();
-		couplingCriteriaCharacteristicRepository.save(characteristic);
-		addModel(characteristic);
-		Model model = addModel(characteristic);
-		//
-		em.flush();
-		Set<CouplingInstance> list = couplingInstanceRepository.findByModel(model);
-		assertThat(list, hasSize(1));
-	}
-
-	// TODO verify test - still required?
 	@Test
 	@Transactional
 	public void testDualCouplingPersistence() {
-		CouplingCriterionCharacteristic characteristic = new CouplingCriterionCharacteristic();
-		characteristic.setName("coupling");
-		couplingCriteriaCharacteristicRepository.save(characteristic);
+		CouplingCriterionCharacteristic characteristic = createCharacteristic();
 		Model model = new Model();
 		modelRepository.save(model);
 
@@ -96,6 +82,17 @@ public class CouplingInstanceRepositoryTest {
 		assertThat(persistedInstance.getSecondNanoentities(), hasSize(1));
 		assertThat(persistedInstance.getSecondNanoentities().get(0).getId(), is(nanoentity3.getId()));
 
+	}
+
+	private CouplingCriterionCharacteristic createCharacteristic() {
+		CouplingCriterionCharacteristic characteristic = new CouplingCriterionCharacteristic();
+		characteristic.setName("coupling");
+		CouplingCriterion criterion = new CouplingCriterion();
+		couplingCriterionRepository.save(criterion);
+		characteristic.setCouplingCriterion(criterion);
+		couplingCriteriaCharacteristicRepository.save(characteristic);
+
+		return characteristic;
 	}
 
 	private Nanoentity createNanoentity(final Model model, final String name) {

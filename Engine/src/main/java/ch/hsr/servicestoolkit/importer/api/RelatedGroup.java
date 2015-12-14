@@ -2,17 +2,17 @@ package ch.hsr.servicestoolkit.importer.api;
 
 import java.util.List;
 
-public class CohesiveGroup {
+public class RelatedGroup {
 
 	private List<String> nanoentities;
 	private String name;
 
 	// Jackson
-	public CohesiveGroup() {
+	public RelatedGroup() {
 
 	}
 
-	public CohesiveGroup(final List<String> nanoentities, final String name) {
+	public RelatedGroup(final List<String> nanoentities, final String name) {
 		super();
 		this.nanoentities = nanoentities;
 		this.name = name;

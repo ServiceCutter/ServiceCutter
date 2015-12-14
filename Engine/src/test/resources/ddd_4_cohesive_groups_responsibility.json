@@ -1,6 +1,7 @@
 	[
 	  {
-		"cohesiveGroups": [
+		"couplingCriterionName": "Responsibility",
+		"relatedGroups": [
 		  {
 			"nanoentities": [
 			  "Cargo.trackingId",
@@ -46,8 +47,6 @@
 			],
 			"name": "admin"
 		  }
-		],
-		"couplingCriterionName": "Responsibility",
-		"characteristicName": "Responsibility Area"
+		]
 	  }
 	]

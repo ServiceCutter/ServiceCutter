@@ -1,14 +1,15 @@
 [
 	{
 		"couplingCriterionName": "Security Constraint",
-		"characteristicName": "Separation Constraint",
-		"groupAnanoentities": [
-			"AccountOwner.address",
-			"NaturalPerson.name",
-			"Company.companyName"
-		],
-		"groupBnanoentities": [
-			"Account.number"
+		"relatedGroups": [
+			{
+				"name": "Personally identifiable information",
+				"nanoentities" : ["AccountOwner.address","NaturalPerson.name","Company.companyName"]
+			},
+			{
+				"name": "Company Internal Data",
+				"nanoentities" : ["Account.number"]
+			}
 		]
 	}
 ]

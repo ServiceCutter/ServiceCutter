@@ -27,9 +27,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
-import ch.hsr.servicestoolkit.importer.api.DistanceCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
+import ch.hsr.servicestoolkit.importer.api.ImportCharacteristic;
+import ch.hsr.servicestoolkit.importer.api.RelatedGroups;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 import ch.hsr.servicestoolkit.solver.SolverResult;
@@ -87,11 +87,11 @@ public class DDDSampleRestTest {
 	}
 
 	private void loadDistanceCharacteristicsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<DistanceCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(DDD_CHARACTERISTICS_FILE, DistanceCharacteristic.class);
+		List<ImportCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(DDD_CHARACTERISTICS_FILE, ImportCharacteristic.class);
 
 		log.info("read distance characteristics: {}", characteristics);
 
-		HttpEntity<List<DistanceCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
+		HttpEntity<List<ImportCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
 		String path = UrlHelper.characteristics(modelId, port);
 		log.info("store distance characteristics on {}", path);
 
@@ -102,13 +102,13 @@ public class DDDSampleRestTest {
 	}
 
 	private void loadCohesiveGroupsCriteriaOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<CohesiveGroups> criteria = IntegrationTestHelper.readListFromFile(DDD_RESPONSIBILITES_FILE, CohesiveGroups.class);
+		List<RelatedGroups> criteria = IntegrationTestHelper.readListFromFile(DDD_RESPONSIBILITES_FILE, RelatedGroups.class);
 
-		log.info("read cohesive groups: {}", criteria);
+		log.info("read related groups: {}", criteria);
 
-		HttpEntity<List<CohesiveGroups>> request = IntegrationTestHelper.createHttpRequestWithPostObj(criteria);
-		String path = UrlHelper.cohesiveGroups(modelId, port);
-		log.info("store cohesive groups criteria on {}", path);
+		HttpEntity<List<RelatedGroups>> request = IntegrationTestHelper.createHttpRequestWithPostObj(criteria);
+		String path = UrlHelper.relatedGroups(modelId, port);
+		log.info("store related groups criteria on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
 		});

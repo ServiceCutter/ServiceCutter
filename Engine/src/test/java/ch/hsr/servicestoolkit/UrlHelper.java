@@ -17,12 +17,8 @@ public class UrlHelper {
 		return HOST + port + IMPORTER_PATH + modelId.toString() + "/usecases/";
 	}
 
-	public static String separations(final Integer modelId, int port) {
-		return HOST + port + IMPORTER_PATH + modelId.toString() + "/separations/";
-	}
-
-	public static String cohesiveGroups(final Integer modelId, int port) {
-		return HOST + port + IMPORTER_PATH + modelId.toString() + "/cohesivegroups/";
+	public static String relatedGroups(final Integer modelId, int port) {
+		return HOST + port + IMPORTER_PATH + modelId.toString() + "/relatedgroups/";
 	}
 
 	public static String solve(final Integer modelId, int port) {

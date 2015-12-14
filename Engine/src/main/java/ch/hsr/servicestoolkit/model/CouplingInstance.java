@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import org.junit.Assert;
 
@@ -27,8 +28,6 @@ import ch.hsr.servicestoolkit.model.service.ServiceCut;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class CouplingInstance implements Comparable<CouplingInstance> {
-
-	public static String USE_CASE = "Use Case";
 
 	@Id
 	@GeneratedValue
@@ -44,6 +43,7 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 			@JoinColumn(name = "coupling_id", referencedColumnName = "id")})
 	private List<Nanoentity> nanoentities = new ArrayList<>();
 	@ManyToOne
+	@NotNull
 	private CouplingCriterion couplingCriterion;
 	@ManyToOne
 	private CouplingCriterionCharacteristic characteristic;

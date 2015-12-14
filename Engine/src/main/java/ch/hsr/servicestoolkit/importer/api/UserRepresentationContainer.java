@@ -5,9 +5,8 @@ import java.util.List;
 
 public class UserRepresentationContainer {
 	private List<UseCase> useCases = new ArrayList<>();
-	private List<DistanceCharacteristic> characteristics = new ArrayList<>();
-	private List<SeparationCriterion> separations = new ArrayList<>();
-	private List<CohesiveGroups> cohesiveGroups = new ArrayList<>();
+	private List<ImportCharacteristic> characteristics = new ArrayList<>();
+	private List<RelatedGroups> relatedGroups = new ArrayList<>();
 
 	public List<UseCase> getUseCases() {
 		return useCases;
@@ -17,27 +16,20 @@ public class UserRepresentationContainer {
 		this.useCases = useCases;
 	}
 
-	public List<DistanceCharacteristic> getCharacteristics() {
+	public List<ImportCharacteristic> getCharacteristics() {
 		return characteristics;
 	}
 
-	public void setCharacteristics(List<DistanceCharacteristic> characteristics) {
+	public void setCharacteristics(List<ImportCharacteristic> characteristics) {
 		this.characteristics = characteristics;
 	}
 
-	public List<SeparationCriterion> getSeparations() {
-		return separations;
+	public List<RelatedGroups> getRelatedGroups() {
+		return relatedGroups;
 	}
 
-	public void setSeparations(List<SeparationCriterion> separations) {
-		this.separations = separations;
+	public void setRelatedGroups(List<RelatedGroups> relatedGroups) {
+		this.relatedGroups = relatedGroups;
 	}
 
-	public List<CohesiveGroups> getCohesiveGroups() {
-		return cohesiveGroups;
-	}
-
-	public void setCohesiveGroups(List<CohesiveGroups> cohesiveGroups) {
-		this.cohesiveGroups = cohesiveGroups;
-	}
 }

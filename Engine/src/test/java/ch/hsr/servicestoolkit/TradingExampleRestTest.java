@@ -27,9 +27,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.importer.api.DistanceCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
-import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
+import ch.hsr.servicestoolkit.importer.api.ImportCharacteristic;
+import ch.hsr.servicestoolkit.importer.api.RelatedGroups;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
 import ch.hsr.servicestoolkit.solver.SolverResult;
@@ -87,11 +87,11 @@ public class TradingExampleRestTest {
 	}
 
 	private void loadDistanceCharacteristicsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<DistanceCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_DISTANCE_CHARACTERISTICS, DistanceCharacteristic.class);
+		List<ImportCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_DISTANCE_CHARACTERISTICS, ImportCharacteristic.class);
 
 		log.info("read distance characteristics: {}", characteristics);
 
-		HttpEntity<List<DistanceCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
+		HttpEntity<List<ImportCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
 		String path = UrlHelper.characteristics(modelId, port);
 		log.info("store distance characteristics on {}", path);
 
@@ -102,12 +102,12 @@ public class TradingExampleRestTest {
 	}
 
 	private void loadSeparationCriteriaOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<SeparationCriterion> criteria = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_SEPARATION_CRITERIA, SeparationCriterion.class);
+		List<RelatedGroups> criteria = IntegrationTestHelper.readListFromFile(TRADING_EXAMPLE_SEPARATION_CRITERIA, RelatedGroups.class);
 
 		log.info("read separation criteria: {}", criteria);
 
-		HttpEntity<List<SeparationCriterion>> request = IntegrationTestHelper.createHttpRequestWithPostObj(criteria);
-		String path = UrlHelper.separations(modelId, port);
+		HttpEntity<List<RelatedGroups>> request = IntegrationTestHelper.createHttpRequestWithPostObj(criteria);
+		String path = UrlHelper.relatedGroups(modelId, port);
 		log.info("store seperation criteria on {}", path);
 
 		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {

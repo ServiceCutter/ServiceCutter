@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.importer.api.DistanceCharacteristic;
+import ch.hsr.servicestoolkit.importer.api.ImportCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.solver.SolverConfiguration;
@@ -85,11 +85,11 @@ public class BookingExampleRestTest {
 	}
 
 	private void loadDistanceCharacteristicsOnModel(final Integer modelId) throws UnsupportedEncodingException, URISyntaxException, IOException {
-		List<DistanceCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_CHARACTERISTICS_FILE, DistanceCharacteristic.class);
+		List<ImportCharacteristic> characteristics = IntegrationTestHelper.readListFromFile(BOOKING_EXAMPLE_CHARACTERISTICS_FILE, ImportCharacteristic.class);
 
 		log.info("read characteristics: {}", characteristics);
 
-		HttpEntity<List<DistanceCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
+		HttpEntity<List<ImportCharacteristic>> request = IntegrationTestHelper.createHttpRequestWithPostObj(characteristics);
 		String path = UrlHelper.characteristics(modelId, port);
 		log.info("store characteristics on {}", path);
 

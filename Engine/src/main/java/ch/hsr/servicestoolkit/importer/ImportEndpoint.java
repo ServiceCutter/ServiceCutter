@@ -1,6 +1,7 @@
 package ch.hsr.servicestoolkit.importer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,22 +23,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
-import ch.hsr.servicestoolkit.importer.api.CohesiveGroup;
-import ch.hsr.servicestoolkit.importer.api.CohesiveGroups;
-import ch.hsr.servicestoolkit.importer.api.DistanceCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
+import ch.hsr.servicestoolkit.importer.api.ImportCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.ImportNanoentity;
-import ch.hsr.servicestoolkit.importer.api.SeparationCriterion;
+import ch.hsr.servicestoolkit.importer.api.RelatedGroup;
+import ch.hsr.servicestoolkit.importer.api.RelatedGroups;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.importer.api.UserRepresentationContainer;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.CouplingType;
 import ch.hsr.servicestoolkit.model.InstanceType;
 import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.Nanoentity;
@@ -59,6 +59,9 @@ public class ImportEndpoint {
 	private final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository;
 	private final CouplingInstanceRepository couplingInstanceRepository;
 	private final ModelCompleter modelCompleter;
+	//
+	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.RESPONSIBILITY, CouplingCriterion.CONSISTENCY_CONSTRAINT, CouplingCriterion.PREDEFINED_SERVICE,
+			CouplingCriterion.SECURITY_CONSTRAINT);
 
 	@Autowired
 	public ImportEndpoint(final ModelRepository modelRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
@@ -197,8 +200,7 @@ public class ImportEndpoint {
 		}
 		persistUseCases(model, userRepresentations.getUseCases());
 		persistCharacteristics(model, userRepresentations.getCharacteristics());
-		persistSeparations(model, userRepresentations.getSeparations());
-		persistCohesiveGroups(model, userRepresentations.getCohesiveGroups());
+		persistRelatedGroups(model, userRepresentations.getRelatedGroups());
 		log.info("Imported user representations");
 	}
 
@@ -255,7 +257,7 @@ public class ImportEndpoint {
 	@Path("/{modelId}/characteristics/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importCharacteristics(@PathParam("modelId") final Long modelId, final List<DistanceCharacteristic> characteristics) {
+	public void importCharacteristics(@PathParam("modelId") final Long modelId, final List<ImportCharacteristic> characteristics) {
 		Model model = modelRepository.findOne(modelId);
 		if (model == null || characteristics == null) {
 			throw new InvalidRestParam();
@@ -263,11 +265,11 @@ public class ImportEndpoint {
 		persistCharacteristics(model, characteristics);
 	}
 
-	private void persistCharacteristics(Model model, final List<DistanceCharacteristic> characteristics) {
-		for (DistanceCharacteristic inputCharacteristic : characteristics) {
+	private void persistCharacteristics(Model model, final List<ImportCharacteristic> characteristics) {
+		for (ImportCharacteristic inputCharacteristic : characteristics) {
 			CouplingCriterionCharacteristic characteristic = findCharacteristic(inputCharacteristic.getCouplingCriterionName(), inputCharacteristic.getCharacteristicName());
 			if (characteristic == null) {
-				log.error("characteristic {} not known! ignore", inputCharacteristic);
+				log.error("characteristic {} not known! ignoring...", inputCharacteristic);
 				continue;
 			}
 			Set<CouplingInstance> instance = couplingInstanceRepository.findByModelAndCharacteristic(model, characteristic);
@@ -291,66 +293,32 @@ public class ImportEndpoint {
 	}
 
 	@POST
-	@Path("/{modelId}/separations/")
+	@Path("/{modelId}/relatedgroups/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importSeparations(@PathParam("modelId") final Long modelId, final List<SeparationCriterion> separations) {
-		Model model = modelRepository.findOne(modelId);
-		if (model == null || separations == null) {
-			throw new InvalidRestParam();
-		}
-		persistSeparations(model, separations);
-	}
-
-	private void persistSeparations(Model model, final List<SeparationCriterion> separations) {
-		for (SeparationCriterion inputCriterion : separations) {
-			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(inputCriterion.getCouplingCriterionName());
-			CouplingInstance newInstance = new CouplingInstance(couplingCriterion, InstanceType.SEPARATION_GROUP);
-			model.addCouplingInstance(newInstance);
-			couplingInstanceRepository.save(newInstance);
-			newInstance.setName(inputCriterion.getCouplingCriterionName());
-			newInstance.setModel(model);
-			newInstance.setNanoentities(loadNanoentities(inputCriterion.getGroupAnanoentities(), model));
-			newInstance.setSecondNanoentities(loadNanoentities(inputCriterion.getGroupBnanoentities(), model));
-			log.info("Import separation constraint {} on nanoentities {} and {}", inputCriterion.getCouplingCriterionName(), newInstance.getNanoentities(), newInstance.getSecondNanoentities());
-		}
-	}
-
-	@POST
-	@Path("/{modelId}/cohesivegroups/")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Transactional
-	public void importCohesiveGroups(@PathParam("modelId") final Long modelId, final List<CohesiveGroups> listOfGroups) {
+	public void importRelatedGroups(@PathParam("modelId") final Long modelId, final List<RelatedGroups> listOfGroups) {
 		Model model = modelRepository.findOne(modelId);
 		if (model == null || listOfGroups == null) {
 			throw new InvalidRestParam();
 		}
 
-		persistCohesiveGroups(model, listOfGroups);
+		persistRelatedGroups(model, listOfGroups);
 	}
 
-	private void persistCohesiveGroups(Model model, final List<CohesiveGroups> listOfGroups) {
-		for (CohesiveGroups groups : listOfGroups) {
-			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(groups.getCouplingCriterionName());
-			CouplingCriterionCharacteristic characteristic = null;
-
-			if (CouplingType.COMPATIBILITY.equals(couplingCriterion.getType())) {
-				characteristic = findCharacteristic(groups.getCouplingCriterionName(), groups.getCharacteristicName());
-				if (characteristic == null) {
-					log.error("characteristic {} not known! ignore", groups.getCharacteristicName());
-					continue;
-				}
-			}
-
-			for (CohesiveGroup cohesiveGroup : groups.getCohesiveGroups()) {
-				CouplingInstance instance = characteristic == null ? new CouplingInstance(couplingCriterion, InstanceType.SHARED_OWNER)
-						: new CouplingInstance(characteristic, InstanceType.SHARED_OWNER);
+	private void persistRelatedGroups(Model model, final List<RelatedGroups> listOfGroups) {
+		for (RelatedGroups groups : listOfGroups) {
+			String couplingCriterionName = groups.getCouplingCriterionName();
+			CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(couplingCriterionName);
+			Assert.state(RELATED_GROUPS_IMPORT.contains(couplingCriterionName), couplingCriterionName + "not allowed in the related groups import.");
+			for (RelatedGroup relatedGroup : groups.getRelatedGroups()) {
+				CouplingInstance instance = new CouplingInstance(couplingCriterion, InstanceType.RELATED_GROUP);
 				model.addCouplingInstance(instance);
 				couplingInstanceRepository.save(instance);
-				instance.setName(groups.getCouplingCriterionName());
+				String name = relatedGroup.getName();
+				instance.setName(StringUtils.hasLength(name) ? name : couplingCriterionName);
 				instance.setModel(model);
-				instance.setNanoentities(loadNanoentities(cohesiveGroup.getNanoentities(), model));
-				log.info("Import cohesive group {} on nanoentities {} ", cohesiveGroup.getName(), instance.getNanoentities());
+				instance.setNanoentities(loadNanoentities(relatedGroup.getNanoentities(), model));
+				log.info("Import related group {} on nanoentities {} ", name, instance.getNanoentities());
 			}
 		}
 	}

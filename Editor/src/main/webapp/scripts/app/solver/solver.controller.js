@@ -70,7 +70,7 @@ angular.module('editorApp')
         $scope.$watch('result', function () {
         	var oneNanoEntityPerService = true;
 
-        	if($scope.result){
+        	if($scope.result && $scope.algorithm == 'Girvan-Newman'){
 	        	var services = $scope.result.services;
 				// services
 				for (var x in services) {

@@ -7,7 +7,9 @@ angular.module('editorApp')
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
         
-        
+        //introduce early to not show the alerts on init
+        $scope.recalculationRequired = false,        
+		$scope.showGirvanWarning = false;
         
         /********* SOLVE ***********/
         
@@ -264,8 +266,6 @@ angular.module('editorApp')
 		$scope.leungDelta = 0.55;
 
         $scope.availableModels = Model.all();
-        $scope.recalculationRequired = false,        
-		$scope.showGirvanWarning = false;
         
     }).filter('capitalize', function() {
         return function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}

@@ -210,12 +210,12 @@ public class ImportEndpoint {
 		persistUseCases(model, userRepresentations.getUseCases());
 		Compatibilities compatibilities = userRepresentations.getCompatibilities();
 		if (compatibilities != null) {
-			persistCharacteristics(model, compatibilities.getChangeSimilarityCompatibility(), CouplingCriterion.CHANGE_SIMILARITY);
-			persistCharacteristics(model, compatibilities.getConsistencyCompatibility(), CouplingCriterion.CONSISTENCY);
-			persistCharacteristics(model, compatibilities.getSecurityCriticalityCompatibility(), CouplingCriterion.SECURITY_CRITICALITY);
-			persistCharacteristics(model, compatibilities.getStorageSimilarityCompatibility(), CouplingCriterion.STORAGE_SIMILARITY);
-			persistCharacteristics(model, compatibilities.getVolatilityCompatibility(), CouplingCriterion.VOLATILITY);
-			persistCharacteristics(model, compatibilities.getAvailabilityCompatibility(), CouplingCriterion.AVAILABILITY);
+			persistCharacteristics(model, compatibilities.getChangeSimilarity(), CouplingCriterion.CHANGE_SIMILARITY);
+			persistCharacteristics(model, compatibilities.getConsistency(), CouplingCriterion.CONSISTENCY);
+			persistCharacteristics(model, compatibilities.getSecurityCriticality(), CouplingCriterion.SECURITY_CRITICALITY);
+			persistCharacteristics(model, compatibilities.getStorageSimilarity(), CouplingCriterion.STORAGE_SIMILARITY);
+			persistCharacteristics(model, compatibilities.getVolatility(), CouplingCriterion.VOLATILITY);
+			persistCharacteristics(model, compatibilities.getAvailability(), CouplingCriterion.AVAILABILITY);
 		}
 		persistRelatedGroups(model, userRepresentations.getAggregates(), CouplingCriterion.CONSISTENCY_CONSTRAINT);
 		persistRelatedGroups(model, userRepresentations.getEntities(), CouplingCriterion.IDENTITY_LIFECYCLE);

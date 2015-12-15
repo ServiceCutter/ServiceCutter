@@ -49,7 +49,7 @@
 	],
 "compatibilities":
 	{
-		"volatilityCompatibility": 
+		"volatility": 
 			[
 				{
 					"characteristic":"Often",
@@ -71,7 +71,7 @@
 					]
 				}
 			],
-		"changeSimilarityCompatibility":
+		"changeSimilarity":
 			[
 				{
 					"characteristic":"Rarely",

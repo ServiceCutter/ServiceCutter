@@ -72,7 +72,7 @@
 	],
 "compatibilities":
 	{
-		"volatilityCompatibility":
+		"volatility":
 			[
 				{
 					"characteristic":"Often",
@@ -93,7 +93,7 @@
 					]
 				}
 			],
-		"changeSimilarityCompatibility":
+		"changeSimilarity":
 			[	
 				{
 					"characteristic":"Often",
@@ -102,7 +102,7 @@
 					]		
 				}
 			],
-		"availabilityCompatibility":
+		"availability":
 			[
 				{
 					"characteristic":"Low",
@@ -114,7 +114,7 @@
 					]
 				}
 			],
-		"consistencyCompatibility":
+		"consistency":
 			[
 				{
 					"characteristic":"Eventually",
@@ -125,7 +125,7 @@
 					]
 				}
 			],
-		"storageSimilarityCompatibility":
+		"storageSimilarity":
 			[
 				{
 					"characteristic":"Huge",
@@ -135,7 +135,7 @@
 					
 				}
 			],
-		"securityCriticalityCompatibility": 
+		"securityCriticality": 
 			[
 				{
 					"characteristic":"Public",

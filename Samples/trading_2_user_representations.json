@@ -72,7 +72,70 @@
 	],
 "compatibilities":
 	{
-		"securityCriticalityCompatibility": 
+		"volatility":
+			[
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency"
+					]
+					
+				},
+				{
+					"characteristic":"Rarely",
+					"nanoentities":[
+						"AccountOwner.address",
+						"NaturalPerson.name",
+						"Company.companyName",
+						"Account.number"
+					]
+				}
+			],
+		"changeSimilarity":
+			[	
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"Recommendation.description"
+					]		
+				}
+			],
+		"availability":
+			[
+				{
+					"characteristic":"Low",
+					"nanoentities":[
+						"News.title",
+						"News.text",
+						"News.image",
+						"Recommendation.description"
+					]
+				}
+			],
+		"consistency":
+			[
+				{
+					"characteristic":"Eventually",
+					"nanoentities":[
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency"
+					]
+				}
+			],
+		"storageSimilarity":
+			[
+				{
+					"characteristic":"Huge",
+					"nanoentities":[
+						"News.image"
+					]
+					
+				}
+			],
+		"securityCriticality": 
 			[
 				{
 					"characteristic":"Public",
@@ -95,69 +158,6 @@
 						"Company.companyName"
 					]
 					
-				}
-			],
-		"volatilityCompatibility":
-			[
-				{
-					"characteristic":"Often",
-					"nanoentities":[
-						"Price.dateTime",
-						"Price.price",
-						"Price.currency"
-					]
-					
-				},
-				{
-					"characteristic":"Rarely",
-					"nanoentities":[
-						"AccountOwner.address",
-						"NaturalPerson.name",
-						"Company.companyName",
-						"Account.number"
-					]
-				}
-			],
-		"consistencyCompatibility":
-			[
-				{
-					"characteristic":"Eventually",
-					"nanoentities":[
-						"Price.dateTime",
-						"Price.price",
-						"Price.currency"
-					]
-				}
-			],
-		"storageSimilarityCompatibility":
-			[
-				{
-					"characteristic":"Huge",
-					"nanoentities":[
-						"News.image"
-					]
-					
-				}
-			],
-		"changeSimilarityCompatibility":
-			[	
-				{
-					"characteristic":"Often",
-					"nanoentities":[
-						"Recommendation.description"
-					]		
-				}
-			],
-		"availabilityCompatibility":
-			[
-				{
-					"characteristic":"Low",
-					"nanoentities":[
-						"News.title",
-						"News.text",
-						"News.image",
-						"Recommendation.description"
-					]
 				}
 			]
 	}

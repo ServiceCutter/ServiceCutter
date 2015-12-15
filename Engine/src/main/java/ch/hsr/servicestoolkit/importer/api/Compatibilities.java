@@ -3,62 +3,62 @@ package ch.hsr.servicestoolkit.importer.api;
 import java.util.List;
 
 public class Compatibilities {
-	private List<Characteristic> volatilityCompatibility;
-	private List<Characteristic> changeSimilarityCompatibility;
-	private List<Characteristic> availabilityCompatibility;
-	private List<Characteristic> consistencyCompatibility;
-	private List<Characteristic> storageSimilarityCompatibility;
-	private List<Characteristic> securityCriticalityCompatibility;
+	private List<Characteristic> volatility;
+	private List<Characteristic> changeSimilarity;
+	private List<Characteristic> availability;
+	private List<Characteristic> consistency;
+	private List<Characteristic> storageSimilarity;
+	private List<Characteristic> securityCriticality;
 
 	public Compatibilities() {
 	}
 
-	public List<Characteristic> getVolatilityCompatibility() {
-		return volatilityCompatibility;
+	public List<Characteristic> getVolatility() {
+		return volatility;
 	}
 
-	public void setVolatilityCompatibility(final List<Characteristic> volatilityCompatibility) {
-		this.volatilityCompatibility = volatilityCompatibility;
+	public void setVolatility(final List<Characteristic> volatility) {
+		this.volatility = volatility;
 	}
 
-	public List<Characteristic> getChangeSimilarityCompatibility() {
-		return changeSimilarityCompatibility;
+	public List<Characteristic> getChangeSimilarity() {
+		return changeSimilarity;
 	}
 
-	public void setChangeSimilarityCompatibility(final List<Characteristic> changeSimilarityCompatibility) {
-		this.changeSimilarityCompatibility = changeSimilarityCompatibility;
+	public void setChangeSimilarity(final List<Characteristic> changeSimilarity) {
+		this.changeSimilarity = changeSimilarity;
 	}
 
-	public List<Characteristic> getAvailabilityCompatibility() {
-		return availabilityCompatibility;
+	public List<Characteristic> getAvailability() {
+		return availability;
 	}
 
-	public void setAvailabilityCompatibility(final List<Characteristic> availabilityCompatibility) {
-		this.availabilityCompatibility = availabilityCompatibility;
+	public void setAvailability(final List<Characteristic> availability) {
+		this.availability = availability;
 	}
 
-	public List<Characteristic> getConsistencyCompatibility() {
-		return consistencyCompatibility;
+	public List<Characteristic> getConsistency() {
+		return consistency;
 	}
 
-	public void setConsistencyCompatibility(final List<Characteristic> consistencyCompatibility) {
-		this.consistencyCompatibility = consistencyCompatibility;
+	public void setConsistency(final List<Characteristic> consistency) {
+		this.consistency = consistency;
 	}
 
-	public List<Characteristic> getStorageSimilarityCompatibility() {
-		return storageSimilarityCompatibility;
+	public List<Characteristic> getStorageSimilarity() {
+		return storageSimilarity;
 	}
 
-	public void setStorageSimilarityCompatibility(final List<Characteristic> storageSimilarityCompatibility) {
-		this.storageSimilarityCompatibility = storageSimilarityCompatibility;
+	public void setStorageSimilarity(final List<Characteristic> storageSimilarity) {
+		this.storageSimilarity = storageSimilarity;
 	}
 
-	public List<Characteristic> getSecurityCriticalityCompatibility() {
-		return securityCriticalityCompatibility;
+	public List<Characteristic> getSecurityCriticality() {
+		return securityCriticality;
 	}
 
-	public void setSecurityCriticalityCompatibility(final List<Characteristic> securityCriticalityCompatibility) {
-		this.securityCriticalityCompatibility = securityCriticalityCompatibility;
+	public void setSecurityCriticality(final List<Characteristic> securityCriticality) {
+		this.securityCriticality = securityCriticality;
 	}
 
 }

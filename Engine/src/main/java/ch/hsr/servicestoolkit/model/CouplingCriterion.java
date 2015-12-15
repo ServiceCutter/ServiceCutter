@@ -20,6 +20,12 @@ public class CouplingCriterion {
 	public static final String SECURITY_CONSTRAINT = "Security Constraint";
 	public static final String PREDEFINED_SERVICE = "Predefined Service Constraint";
 	public static final String CONSISTENCY_CONSTRAINT = "Consistency Constraint";
+	public static final String CHANGE_SIMILARITY = "Change Similarity";
+	public static final String CONSISTENCY = "Consistency";
+	public static final String SECURITY_CRITICALITY = "Security Criticality";
+	public static final String STORAGE_SIMILARITY = "Storage Similarity";
+	public static final String AVAILABILITY = "Availability";
+	public static final String SECURITY_CONTEXUALITY = "Security Contextuality";
 
 	@Id
 	@GeneratedValue
@@ -44,7 +50,7 @@ public class CouplingCriterion {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(final String code) {
 		this.code = code;
 	}
 

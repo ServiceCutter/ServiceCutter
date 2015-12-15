@@ -5,9 +5,9 @@ import java.util.List;
 
 public class UseCase {
 
+	private String name;
 	private List<String> nanoentitiesRead = new ArrayList<>();
 	private List<String> nanoentitiesWritten = new ArrayList<>();
-	private String name;
 
 	public UseCase() {
 	}

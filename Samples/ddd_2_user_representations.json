@@ -2,55 +2,54 @@
 "useCases": 
 	[
 		{
+			"name":"ViewTracking",
 			"nanoentitiesRead": ["Cargo.trackingId", "HandlingEvent.type", "HandlingEvent.location", "HandlingEvent.completionTime", "Delivery.transportStatus", "Delivery.estimatedArrivalTime", "Delivery.misdirected", "Voyage.voyageNumber", "RouteSpecification.destination"],
-			"nanoentitiesWritten":[],
-			"name":"ViewTracking"
+			"nanoentitiesWritten":[]
 		},
 		{
+			"name":"ViewCargos",
 			"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.arrivalDeadline", "Delivery.routingStatus", "Itinerary.itineraryNumber"],
-			"nanoentitiesWritten":[],
-			"name":"ViewCargos"
+			"nanoentitiesWritten":[]
 		},
 		{
+			"name":"BookCargo",
 			"nanoentitiesRead": ["Location.unLocode"],
-			"nanoentitiesWritten":["Cargo.trackingId", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "RouteSpecification.destination"],
-			"name":"BookCargo"
+			"nanoentitiesWritten":["Cargo.trackingId", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "RouteSpecification.destination"]
 		},
 		{
+			"name":"ChangeCargoDestination",
 			"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination"],
-			"nanoentitiesWritten":["RouteSpecification.destination"],
-			"name":"ChangeCargoDestination"
+			"nanoentitiesWritten":["RouteSpecification.destination"]
 		},
 		{
+			"name":"RouteCargo",
 			"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "Location.unLocode", "Voyage.voyageNumber", "CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
-			"nanoentitiesWritten":["Itinerary.itineraryNumber", "Leg.loadLocation", "Leg.unloadLocation", "Leg.loadTime", "Leg.unloadTime"],
-			"name":"RouteCargo"
+			"nanoentitiesWritten":["Itinerary.itineraryNumber", "Leg.loadLocation", "Leg.unloadLocation", "Leg.loadTime", "Leg.unloadTime"]
 		},
 		{
+			"name":"Create Location",
 			"nanoentitiesRead": [],
-			"nanoentitiesWritten":["Location.unLocode", "Location.name"],
-			"name":"Create Location"
+			"nanoentitiesWritten":["Location.unLocode", "Location.name"]
 		},
 		{
+			"name":"Create Voyage",
 			"nanoentitiesRead": [],
-			"nanoentitiesWritten":["Voyage.voyageNumber"],
-			"name":"Create Voyage"
+			"nanoentitiesWritten":["Voyage.voyageNumber"]
 		},
 		{
+			"name":"AddCarrierMovement",
 			"nanoentitiesRead": ["Voyage.voyageNumber"],
-			"nanoentitiesWritten":["CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
-			"name":"AddCarrierMovement"
+			"nanoentitiesWritten":["CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"]
 		},
 		{
+			"name":"handleCargoEvent",
 			"nanoentitiesRead": ["Voyage.voyageNumber", "Cargo.trackingId"],
-			"nanoentitiesWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"],
-			"name":"handleCargoEvent"
+			"nanoentitiesWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"]
 		}
 	],
-"characteristics": 
+"volatilityCompatibility": 
 	[
 		{
-			"couplingCriterionName":"Volatility",
 			"characteristic":"Often",
 			"nanoentities":[
 				"HandlingEvent.type",
@@ -63,15 +62,6 @@
 			
 		},
 		{
-			"couplingCriterionName":"Volatility",
-			"characteristic":"Rarely",
-			"nanoentities":[
-				"Location.unLocode",
-				"Location.name"
-			]
-		},
-		{
-			"couplingCriterionName":"Change Similarity",
 			"characteristic":"Rarely",
 			"nanoentities":[
 				"Location.unLocode",
@@ -79,57 +69,61 @@
 			]
 		}
 	],
-"relatedGroups":
+"changeSimilarityCompatibility":
 	[
-	  {
-		"couplingCriterionName": "Shared Owner",
-		"relatedGroups": [
-		  {
-			"name": "cargoPlaner",
-			"nanoentities": [
-			  "Cargo.trackingId",
-			  "RouteSpecification.origin",
-			  "RouteSpecification.destination",
-			  "RouteSpecification.arrivalDeadline",
-			  "Itinerary.itineraryNumber",
-			  "Leg.loadLocation",
-			  "Leg.unloadLocation",
-			  "Leg.loadTime",
-			  "Leg.unloadTime",
-			  "Delivery.estimatedArrivalTime",
-			  "Delivery.routingStatus"
+		{
+			"characteristic":"Rarely",
+			"nanoentities":[
+				"Location.unLocode",
+				"Location.name"
 			]
-		  },
-		  {
-			"name": "cargoTracker",
-			"nanoentities": [
-			  "HandlingEvent.type",
-			  "HandlingEvent.completionTime",
-			  "HandlingEvent.registrationTime",
-			  "HandlingEvent.location",
-			  "Delivery.transportStatus",
-			  "Delivery.misdirected",
-			  "Delivery.isUnloadedAtDestination"
-			]
-		  },
-		  {
-			"name": "voyageManager",
-			"nanoentities": [
-			  "Voyage.voyageNumber",
-			  "CarrierMovement.departureLocation",
-			  "CarrierMovement.arrivalLocation",
-			  "CarrierMovement.departureTime",
-			  "CarrierMovement.arrivalTime"
-			]
-		  },
-		  {
-			"name": "admin",
-			"nanoentities": [
-			  "Location.name",
-			  "Location.unLocode"
-			]
-		  }
-		]
-	  }
+		}
+	],
+"sharedOwnerGroups": [
+  {
+	"name": "cargoPlaner",
+	"nanoentities": [
+	  "Cargo.trackingId",
+	  "RouteSpecification.origin",
+	  "RouteSpecification.destination",
+	  "RouteSpecification.arrivalDeadline",
+	  "Itinerary.itineraryNumber",
+	  "Leg.loadLocation",
+	  "Leg.unloadLocation",
+	  "Leg.loadTime",
+	  "Leg.unloadTime",
+	  "Delivery.estimatedArrivalTime",
+	  "Delivery.routingStatus"
 	]
+  },
+  {
+	"name": "cargoTracker",
+	"nanoentities": [
+	  "HandlingEvent.type",
+	  "HandlingEvent.completionTime",
+	  "HandlingEvent.registrationTime",
+	  "HandlingEvent.location",
+		"Delivery.transportStatus",
+	  "Delivery.misdirected",
+	  "Delivery.isUnloadedAtDestination"
+	]
+  },
+  {
+	"name": "voyageManager",
+	"nanoentities": [
+	  "Voyage.voyageNumber",
+	  "CarrierMovement.departureLocation",
+	  "CarrierMovement.arrivalLocation",
+	  "CarrierMovement.departureTime",
+	  "CarrierMovement.arrivalTime"
+	]
+  },
+  {
+	"name": "admin",
+	"nanoentities": [
+	  "Location.name",
+	  "Location.unLocode"
+	]
+  }
+]
 }

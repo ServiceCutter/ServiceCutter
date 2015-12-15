@@ -5,13 +5,13 @@ import java.util.List;
 public class ImportCharacteristic {
 
 	private List<String> nanoentities;
-	private String couplingCriterionName;
+	private String compatibilityCriterion;
 	private String characteristic;
 
 	public ImportCharacteristic(final String characteristic, final String couplingCriterionName, final List<String> nanoentities) {
 		super();
 		this.characteristic = characteristic;
-		this.couplingCriterionName = couplingCriterionName;
+		this.setCompatibilityCriterion(couplingCriterionName);
 		this.nanoentities = nanoentities;
 	}
 
@@ -26,8 +26,12 @@ public class ImportCharacteristic {
 		return characteristic;
 	}
 
-	public String getCouplingCriterionName() {
-		return couplingCriterionName;
+	public String getCompatibilityCriterion() {
+		return compatibilityCriterion;
+	}
+
+	public void setCompatibilityCriterion(final String compatibilityCriterion) {
+		this.compatibilityCriterion = compatibilityCriterion;
 	}
 
 }

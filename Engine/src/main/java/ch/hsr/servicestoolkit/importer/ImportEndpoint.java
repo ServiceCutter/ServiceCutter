@@ -60,8 +60,8 @@ public class ImportEndpoint {
 	private final CouplingInstanceRepository couplingInstanceRepository;
 	private final ModelCompleter modelCompleter;
 	//
-	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.SHARED_OWNER, CouplingCriterion.CONSISTENCY_CONSTRAINT,
-			CouplingCriterion.PREDEFINED_SERVICE, CouplingCriterion.SECURITY_CONSTRAINT);
+	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.SHARED_OWNER, CouplingCriterion.CONSISTENCY_CONSTRAINT, CouplingCriterion.PREDEFINED_SERVICE,
+			CouplingCriterion.SECURITY_CONSTRAINT);
 
 	@Autowired
 	public ImportEndpoint(final ModelRepository modelRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
@@ -85,7 +85,11 @@ public class ImportEndpoint {
 		}
 		Model model = new Model();
 		modelRepository.save(model);
-		model.setName("imported " + new Date().toString());
+		String name = domainModel.getName();
+		if (!StringUtils.hasLength(name)) {
+			name = "imported " + new Date().toString();
+		}
+		model.setName(name);
 
 		Map<ImportNanoentity, String> entityAttributes = new HashMap<>();
 		for (Entity entity : domainModel.getEntities()) {
@@ -178,18 +182,14 @@ public class ImportEndpoint {
 
 		// get all entites that will have no other entities merged into them
 		List<Entity> reducableEntities = inputEntites.stream()
-				.filter(entity -> currentRelations.stream()
-						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
-								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
-						.collect(Collectors.toList()).isEmpty())
-				.collect(Collectors.toList());
+				.filter(entity -> currentRelations.stream().filter(
+						r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE)) || (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList()).isEmpty()).collect(Collectors.toList());
 
 		// get all relations that will merge the reducableEntities into another
 		// entity
-		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
-				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
-						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
-				.collect(Collectors.toList());
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream().filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+				|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION))).collect(Collectors.toList());
 
 		return relationsToEdgeEntities;
 	}
@@ -243,8 +243,7 @@ public class ImportEndpoint {
 			instance.setModel(model);
 			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model));
 			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model));
-			log.info("Import use cases {} with fields written {} and fields read {}", transaction.getName(), transaction.getNanoentitiesWritten(),
-					transaction.getNanoentitiesRead());
+			log.info("Import use cases {} with fields written {} and fields read {}", transaction.getName(), transaction.getNanoentitiesWritten(), transaction.getNanoentitiesRead());
 		}
 	}
 

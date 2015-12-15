@@ -6,7 +6,7 @@
 				<form class="form-inline">
 					<div class="form-group">
 						<select id="modelId" class="form-control" ng-model="modelId"
-							ng-options="item.id as 'Model #' + item.id for item in availableModels">
+							ng-options="item.id as '#' + item.id + ' ' + item.name for item in availableModels">
 							<option value=''>- Choose an existing model -</option>
 						</select>
 					</div>

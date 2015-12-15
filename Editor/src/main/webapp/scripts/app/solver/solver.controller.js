@@ -125,7 +125,7 @@ angular.module('editorApp')
         //watch for service relations
         $scope.$watch('result', function () {
         	var hasRelations = $scope.result && $scope.result.relations && $scope.result.relations.length > 0;
-        	$scope.disableVisualization = !hasRelations;
+        	$scope.disableVisualization = $scope.result == undefined || ($scope.result.services.length > 1 && !hasRelations);
         });
 
 

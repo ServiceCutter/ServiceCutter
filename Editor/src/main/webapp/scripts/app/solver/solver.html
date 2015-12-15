@@ -43,7 +43,7 @@
 				</div>
 				<div ng-show="showGirvanWarning" 
 					class="alert alert-danger" role="alert">
-					<strong>Alert:</strong>The Girvan-Newman algorithm has problems finding services from the input data. Please add more data to describe your system or change to Leung algorithm.
+					<strong>Alert:</strong>The Girvan-Newman algorithm has problems finding services from the input data. Please add more data to describe your system, change priorities or change to Leung algorithm.
 				</div>
 				
 				<div ng-show="showGirvanWarningNoC" 
@@ -51,10 +51,16 @@
 					<strong>Alert:</strong>The Girvan-Newman algorithm could not provide to requested number of services.
 				</div>
 				
+				<div ng-show="!girvanNewmanActive" class="alert alert-info" role="alert">
+					<strong>Hint:</strong> Leung algorithm is not deterministic. Recalculate to run the algorithm again.
+				</div>
+				
+				
 				<div ng-show="showRelations && !(selectedServiceName || selectedServiceRelations)" 
 					class="alert alert-info" role="alert">
-					<strong>Hint:</strong> Select a service or a relation between services to see responsibilites and published language.
+					<strong>Hint:</strong> Select a service or a relation between services to see responsibilities and published language.
 				</div>
+				
 			</div>
 			<div class="col-md-5">
 			<!-- this structure is a bit complicated as bootstrap requires:
@@ -91,7 +97,7 @@
 				<h3>Analysis Mode</h3>
 				<form class="form-inline" name="myVizForm">	
 				<div class="form-group form-group-sm">
-					<div class="alert alert-info" role="alert" ng-show="disableVisualization">Please provide use case specifications to enable analysis mode</div>			
+					<div class="alert alert-info" role="alert" ng-show="disableVisualization">Please provide use case specifications or change Semantic Proximity priority to enable analysis mode</div>			
 					<div ng-show="!disableVisualization"> 
 						<toggle-switch ng-model="showRelations" id="show-relations" ng-click="repaintGraph()"></toggle-switch>
 					</div>

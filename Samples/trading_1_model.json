@@ -1,4 +1,5 @@
 {
+   "name" : "Trading System",
    "entities":[
       {
          "name":"AccountOwner",

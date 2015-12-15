@@ -1,6 +1,7 @@
 package ch.hsr.servicestoolkit.editor.web.rest;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,8 +52,15 @@ public class EditorResource {
 			ResponseEntity<Map> responseEntity = rest.exchange(engineUrl + "/engine/import", HttpMethod.POST, requestEntity, Map.class);
 			@SuppressWarnings("unchecked")
 			Map<String, Object> serviceResponse = responseEntity.getBody();
+			serviceResponse.put("message", "Upload successful!");
 			log.debug("importer response: {}", serviceResponse);
 			result = new ResponseEntity<>(serviceResponse, HttpStatus.CREATED);
+		} catch (HttpClientErrorException e) {
+			log.error("", e.getResponseBodyAsString());
+			Map<String, Object> serviceResponse = new HashMap<>();
+			serviceResponse.put("message", "Upload failed!");
+			serviceResponse.put("jsonError", e.getResponseBodyAsString());
+			result = new ResponseEntity<>(serviceResponse, HttpStatus.OK);
 		} catch (IOException e) {
 			log.error("", e);
 		}
@@ -60,12 +69,9 @@ public class EditorResource {
 
 	@RequestMapping(value = "/model/{modelId}/userrepresentations", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed
-	public ResponseEntity<Void> uploadBusinessTransactionFile(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
-		return uploadCriteriaFile(file, modelId, "userrepresentations");
-	}
-
-	private ResponseEntity<Void> uploadCriteriaFile(final MultipartFile file, final String modelId, final String pathEnding) {
-		ResponseEntity<Void> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> uploadUserRepresentationsFile(@RequestParam("file") final MultipartFile file, @PathVariable("modelId") final String modelId) {
+		ResponseEntity<?> result = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		Map<String, Object> resultBody = new HashMap<>();
 		try {
 			String theString = IOUtils.toString(file.getInputStream());
 			log.debug("modelId:{}", modelId);
@@ -73,10 +79,16 @@ public class EditorResource {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
-			String path = engineUrl + "/engine/import/" + modelId + "/" + pathEnding + "/";
+			String path = engineUrl + "/engine/import/" + modelId + "/" + "userrepresentations" + "/";
 			log.debug("post on {}", path);
-			ResponseEntity<Void> responseEntity = rest.exchange(path, HttpMethod.POST, requestEntity, Void.class);
-			result = new ResponseEntity<Void>(responseEntity.getStatusCode());
+			rest.exchange(path, HttpMethod.POST, requestEntity, Void.class);
+			resultBody.put("message", "Upload successfull!");
+			result = ResponseEntity.ok(resultBody);
+		} catch (HttpClientErrorException e) {
+			log.error("", e.getResponseBodyAsString());
+			resultBody.put("message", "Upload failed");
+			resultBody.put("jsonError", e.getResponseBodyAsString());
+			result = ResponseEntity.ok(resultBody);
 		} catch (IOException e) {
 			log.error("", e);
 		}

@@ -31,3 +31,6 @@
 	height: 600px;
 	margin-bottom:50px;
 }
+.popover{
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+}

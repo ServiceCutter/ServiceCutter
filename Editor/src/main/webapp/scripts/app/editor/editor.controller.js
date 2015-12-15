@@ -7,40 +7,64 @@ angular.module('editorApp')
             $scope.isAuthenticated = Principal.isAuthenticated; 
         });
         
-        $scope.$watch('file', function () {
-        	$scope.upload($scope.file, 'model', 'status', true);
-        });
-        
-        $scope.$watch('userRepFile', function () {
-        	$scope.upload($scope.userRepFile, 'model/'+ $scope.modelId+'/userrepresentations', 'userRepStatus', false);
-        });
 
         $scope.$watch('modelId', function () {
         	$scope.showModel();
         	$rootScope.modelId = $scope.modelId;
+            $scope.userRepStatus = '';
+            $scope.status = '';
+            $scope.jsonError = undefined;
         });
         
-        $scope.upload = function (file, url, statusField, fullReload) {
+        $scope.$watch('file', function () {
+        	$scope.uploadModel($scope.file);
+        });
+        
+        $scope.$watch('userRepFile', function () {
+        	$scope.uploadUserReps($scope.userRepFile);
+        });
+
+        
+        $scope.uploadModel = function (file) {
             if (file && !file.$error) {
-            	$scope[statusField] = 'Uploading...';
+            	$scope['status'] = 'Uploading...';
 				Upload.upload({
-					url: 'api/editor/'+url,
+					url: 'api/editor/model',
 					file: file,
 					progress: function(e){}
-				}).success(function(data, status, headers, config) {
-					$scope[statusField] = 'Upload successful!';
-					if(fullReload){
-						$scope.availableModels = Model.all();
-						$scope.modelId = parseInt(data['id']);
-					} else {
-						$scope.loadCoupling($scope.modelId)
-					}
-				}).error(function (data, status, headers, config) {
-					$scope[statusField] = 'Upload failed! (' + data['error'] + ')';
+				}).then(function (resp) {
+					$scope['status'] = resp['data']['message'];
+					$scope.availableModels = Model.all();
+					$scope.modelId = parseInt(resp['data']['id']);
+				}, function (resp) {
+					$scope['status'] = resp['data']['message'];
+					$scope.jsonError = resp['data']['jsonError'];
 		        }); 
 
             }
         };
+        
+        $scope.uploadUserReps = function (file, url, statusField, modelUpload) {
+            if (file && !file.$error) {
+            	$scope['userRepStatus'] = 'Uploading...';
+				Upload.upload({
+					url: 'api/editor/model/'+ $scope.modelId+'/userrepresentations',
+					file: file,
+					progress: function(e){}
+				}).then(function (resp) {
+					$scope['userRepStatus'] = resp['data']['message'];
+					$scope.jsonError = resp['data']['jsonError'];
+					$scope.loadCoupling($scope.modelId)
+		        }, function (resp) {
+					$scope['userRepStatus'] = resp['data']['message'];
+					$scope.jsonError = resp['data']['jsonError'];
+
+		        }, function (evt) {});
+            }
+        };
+        
+
+        
         
         $scope.showModel = function () {
         	if($scope.modelId != 0) {
@@ -63,8 +87,8 @@ angular.module('editorApp')
         }
         
         
-        $scope.userRepStatus = 'No upload yet.';
-        $scope.status = 'No upload yet.';
+        $scope.userRepStatus = '';
+        $scope.status = '';
         $scope.modelId = ($rootScope.modelId == undefined ? 0 : $rootScope.modelId) ;
         $scope.model = null;
         $scope.modelsById = {};

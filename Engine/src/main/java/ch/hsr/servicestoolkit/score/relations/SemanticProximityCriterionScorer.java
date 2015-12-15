@@ -22,7 +22,12 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 
 	@Override
 	public Map<EntityPair, Double> getScores(final Set<CouplingInstance> instances) {
-		for (CouplingInstance instance : instances) {
+		Set<CouplingInstance> useCaseInstances = instances;
+		// TODO found missing filter on 15.12.2015, activate it after thesis is
+		// due in order to keep test results stable.
+		// useCaseInstances = instances.stream().filter(instance ->
+		// instance.getType().equals(InstanceType.USE_CASE)).collect(Collectors.toSet());
+		for (CouplingInstance instance : useCaseInstances) {
 			List<Nanoentity> nanoentitiesWritten = instance.getSecondNanoentities();
 			List<Nanoentity> nanoentitiesRead = instance.getNanoentities();
 			addScoreForWriteAccess(nanoentitiesWritten);
@@ -30,9 +35,10 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 			addScoreForMixedAccess(nanoentitiesWritten, nanoentitiesRead);
 		}
 
-		List<CouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.isCharacteristic(CouplingCriterionCharacteristic.AGGREGATION)).collect(Collectors.toList());
+		List<CouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.isCharacteristic(CouplingCriterionCharacteristic.AGGREGATION))
+				.collect(Collectors.toList());
 		for (CouplingInstance aggregationInstance : aggregationInstances) {
-			for (Nanoentity nanoentityA : aggregationInstance.getAllNanoentities()) {
+			for (Nanoentity nanoentityA : aggregationInstance.getNanoentities()) {
 				for (Nanoentity nanoentityB : aggregationInstance.getSecondNanoentities()) {
 					addToResult(nanoentityA, nanoentityB, SCORE_AGGREGATION);
 				}

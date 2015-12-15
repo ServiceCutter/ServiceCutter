@@ -250,16 +250,17 @@ public class ImportEndpoint {
 
 	private void persistUseCases(final Model model, final List<UseCase> useCases, final List<String> warnings) {
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
-		for (UseCase transaction : useCases) {
-			CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.USE_CASE);
+		for (UseCase usecase : useCases) {
+			InstanceType type;
+			type = usecase.isLatencyCritical() ? InstanceType.LATENCY_USE_CASE : InstanceType.USE_CASE;
+			CouplingInstance instance = new CouplingInstance(semanticProximity, type);
 			model.addCouplingInstance(instance);
 			couplingInstanceRepository.save(instance);
-			instance.setName(transaction.getName());
+			instance.setName(usecase.getName());
 			instance.setModel(model);
-			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model, warnings));
-			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model, warnings));
-			log.info("Import use cases {} with fields written {} and fields read {}", transaction.getName(), transaction.getNanoentitiesWritten(),
-					transaction.getNanoentitiesRead());
+			instance.setNanoentities(loadNanoentities(usecase.getNanoentitiesRead(), model, warnings));
+			instance.setSecondNanoentities(loadNanoentities(usecase.getNanoentitiesWritten(), model, warnings));
+			log.info("Import use cases {} with fields written {} and fields read {}", usecase.getName(), usecase.getNanoentitiesWritten(), usecase.getNanoentitiesRead());
 		}
 	}
 

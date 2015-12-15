@@ -11,6 +11,7 @@ import org.springframework.data.repository.CrudRepository;
 import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.CouplingInstance;
 import ch.hsr.servicestoolkit.model.CouplingType;
+import ch.hsr.servicestoolkit.model.InstanceType;
 import ch.hsr.servicestoolkit.model.Model;
 
 public interface CouplingInstanceRepository extends CrudRepository<CouplingInstance, Long> {
@@ -42,5 +43,7 @@ public interface CouplingInstanceRepository extends CrudRepository<CouplingInsta
 	default Set<CouplingInstance> findByModelAndCriterion(final Model model, final String criterion) {
 		return findByModel(model).stream().filter(instance -> criterion.equals(instance.getCouplingCriterion().getName())).collect(Collectors.toSet());
 	}
+
+	Set<CouplingInstance> findByModelAndInstanceType(final Model model, final InstanceType type);
 
 }

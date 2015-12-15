@@ -26,6 +26,7 @@ public class CouplingCriterion {
 	public static final String STORAGE_SIMILARITY = "Storage Similarity";
 	public static final String AVAILABILITY = "Availability";
 	public static final String SECURITY_CONTEXUALITY = "Security Contextuality";
+	public static final String LATENCY = "Latency";
 
 	@Id
 	@GeneratedValue

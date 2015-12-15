@@ -25,9 +25,9 @@ public class RelatedGroupCriteriaScorer implements CriterionScorer {
 		for (CouplingInstance instance : instances) {
 			// add Premium to nanoentities in same group
 			if (premium != 0d) {
-				for (int i = 0; i < instance.getNanoentities().size() - 1; i++) {
-					for (int j = i + 1; j < instance.getNanoentities().size(); j++) {
-						result.put(new EntityPair(instance.getNanoentities().get(i), instance.getNanoentities().get(j)), premium);
+				for (int i = 0; i < instance.getAllNanoentities().size() - 1; i++) {
+					for (int j = i + 1; j < instance.getAllNanoentities().size(); j++) {
+						result.put(new EntityPair(instance.getAllNanoentities().get(i), instance.getAllNanoentities().get(j)), premium);
 					}
 				}
 			}
@@ -35,7 +35,7 @@ public class RelatedGroupCriteriaScorer implements CriterionScorer {
 			// TODO: this overwrites some relations with the same value,
 			// optimize!
 			if (penalty != 0) {
-				for (Nanoentity groupEntity : instance.getNanoentities()) {
+				for (Nanoentity groupEntity : instance.getAllNanoentities()) {
 					for (Nanoentity otherEntity : allNanoentities) {
 						if (!instance.getAllNanoentities().contains(otherEntity)) {
 							result.put(new EntityPair(groupEntity, otherEntity), penalty);

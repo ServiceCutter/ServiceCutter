@@ -112,7 +112,7 @@ public class ServiceCutAnalyzer {
 	private Map<Service, List<CouplingInstance>> getUseCaseResponsibilites(final Set<Service> set, final Model model) {
 		Map<Service, List<CouplingInstance>> useCaseResponsibilites = new HashMap<>();
 		model.getCouplingInstances().stream().filter((instance) -> {
-			return InstanceType.USE_CASE.equals(instance.getType());
+			return InstanceType.USE_CASE.equals(instance.getType()) || InstanceType.LATENCY_USE_CASE.equals(instance.getType());
 		}).forEach((instance) -> {
 			Service responsibleService = getResponsibleService(set, instance);
 			Assert.notNull(responsibleService, "Responsible service for " + instance.getName() + " not found!");

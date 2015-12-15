@@ -47,38 +47,41 @@
 			"nanoentitiesWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"]
 		}
 	],
-"volatilityCompatibility": 
-	[
-		{
-			"characteristic":"Often",
-			"nanoentities":[
-				"HandlingEvent.type",
-				"HandlingEvent.completionTime",
-				"HandlingEvent.registrationTime",
-				"HandlingEvent.location",
-				"Delivery.transportStatus"
-				
+"compatibilities":
+	{
+		"volatilityCompatibility": 
+			[
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"HandlingEvent.type",
+						"HandlingEvent.completionTime",
+						"HandlingEvent.registrationTime",
+						"HandlingEvent.location",
+						"Delivery.transportStatus"
+						
+					]
+					
+				},
+				{
+					"characteristic":"Rarely",
+					"nanoentities":[
+						"Location.unLocode",
+						"Location.name"
+					]
+				}
+			],
+		"changeSimilarityCompatibility":
+			[
+				{
+					"characteristic":"Rarely",
+					"nanoentities":[
+						"Location.unLocode",
+						"Location.name"
+					]
+				}
 			]
-			
-		},
-		{
-			"characteristic":"Rarely",
-			"nanoentities":[
-				"Location.unLocode",
-				"Location.name"
-			]
-		}
-	],
-"changeSimilarityCompatibility":
-	[
-		{
-			"characteristic":"Rarely",
-			"nanoentities":[
-				"Location.unLocode",
-				"Location.name"
-			]
-		}
-	],
+	},
 "sharedOwnerGroups": [
   {
 	"name": "cargoPlaner",

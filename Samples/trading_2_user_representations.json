@@ -70,92 +70,95 @@
 			]
 		}
 	],
-"securityCriticalityCompatibility": 
-	[
-		{
-			"characteristic":"Public",
-			"nanoentities":[
-				"Stock.identifier",
-				"Stock.stockName",
-				"Price.dateTime",
-				"Price.price",
-				"Price.currency",
-				"News.title",
-				"News.text",
-				"News.image"
+"compatibilities":
+	{
+		"securityCriticalityCompatibility": 
+			[
+				{
+					"characteristic":"Public",
+					"nanoentities":[
+						"Stock.identifier",
+						"Stock.stockName",
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency",
+						"News.title",
+						"News.text",
+						"News.image"
+					]
+				},
+				{
+					"characteristic":"Critical",
+					"nanoentities":[
+						"AccountOwner.address",
+						"NaturalPerson.name",
+						"Company.companyName"
+					]
+					
+				}
+			],
+		"volatilityCompatibility":
+			[
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency"
+					]
+					
+				},
+				{
+					"characteristic":"Rarely",
+					"nanoentities":[
+						"AccountOwner.address",
+						"NaturalPerson.name",
+						"Company.companyName",
+						"Account.number"
+					]
+				}
+			],
+		"consistencyCompatibility":
+			[
+				{
+					"characteristic":"Eventually",
+					"nanoentities":[
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency"
+					]
+				}
+			],
+		"storageSimilarityCompatibility":
+			[
+				{
+					"characteristic":"Huge",
+					"nanoentities":[
+						"News.image"
+					]
+					
+				}
+			],
+		"changeSimilarityCompatibility":
+			[	
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"Recommendation.description"
+					]		
+				}
+			],
+		"availabilityCompatibility":
+			[
+				{
+					"characteristic":"Low",
+					"nanoentities":[
+						"News.title",
+						"News.text",
+						"News.image",
+						"Recommendation.description"
+					]
+				}
 			]
-		},
-		{
-			"characteristic":"Critical",
-			"nanoentities":[
-				"AccountOwner.address",
-				"NaturalPerson.name",
-				"Company.companyName"
-			]
-			
-		}
-	],
-"volatilityCompatibility":
-	[
-		{
-			"characteristic":"Often",
-			"nanoentities":[
-				"Price.dateTime",
-				"Price.price",
-				"Price.currency"
-			]
-			
-		},
-		{
-			"characteristic":"Rarely",
-			"nanoentities":[
-				"AccountOwner.address",
-				"NaturalPerson.name",
-				"Company.companyName",
-				"Account.number"
-			]
-		}
-	],
-"consistencyCompatibility":
-	[
-		{
-			"characteristic":"Eventually",
-			"nanoentities":[
-				"Price.dateTime",
-				"Price.price",
-				"Price.currency"
-			]
-		}
-	],
-"storageSimilarityCompatibility":
-	[
-		{
-			"characteristic":"Huge",
-			"nanoentities":[
-				"News.image"
-			]
-			
-		}
-	],
-"changeSimilarityCompatibility":
-	[	
-		{
-			"characteristic":"Often",
-			"nanoentities":[
-				"Recommendation.description"
-			]		
-		}
-	],
-"availabilityCompatibility":
-	[
-		{
-			"characteristic":"Low",
-			"nanoentities":[
-				"News.title",
-				"News.text"
-				"News.image",
-				"Recommendation.description"
-			]
-		}
-	]
+	}
 }

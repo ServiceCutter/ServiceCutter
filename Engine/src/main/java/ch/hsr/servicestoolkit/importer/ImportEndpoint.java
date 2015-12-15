@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import ch.hsr.servicestoolkit.importer.api.Compatibilities;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
@@ -204,13 +205,15 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 		persistUseCases(model, userRepresentations.getUseCases());
-		persistCharacteristics(model, userRepresentations.getChangeSimilarityCompatibility(), CouplingCriterion.CHANGE_SIMILARITY);
-		persistCharacteristics(model, userRepresentations.getConsistencyCompatibility(), CouplingCriterion.CONSISTENCY);
-		persistCharacteristics(model, userRepresentations.getSecurityCriticalityCompatibility(), CouplingCriterion.SECURITY_CRITICALITY);
-		persistCharacteristics(model, userRepresentations.getStorageSimilarityCompatibility(), CouplingCriterion.STORAGE_SIMILARITY);
-		persistCharacteristics(model, userRepresentations.getVolatilityCompatibility(), CouplingCriterion.VOLATILITY);
-		persistCharacteristics(model, userRepresentations.getAvailabilityCompatibility(), CouplingCriterion.AVAILABILITY);
-
+		Compatibilities compatibilities = userRepresentations.getCompatibilities();
+		if (compatibilities != null) {
+			persistCharacteristics(model, compatibilities.getChangeSimilarityCompatibility(), CouplingCriterion.CHANGE_SIMILARITY);
+			persistCharacteristics(model, compatibilities.getConsistencyCompatibility(), CouplingCriterion.CONSISTENCY);
+			persistCharacteristics(model, compatibilities.getSecurityCriticalityCompatibility(), CouplingCriterion.SECURITY_CRITICALITY);
+			persistCharacteristics(model, compatibilities.getStorageSimilarityCompatibility(), CouplingCriterion.STORAGE_SIMILARITY);
+			persistCharacteristics(model, compatibilities.getVolatilityCompatibility(), CouplingCriterion.VOLATILITY);
+			persistCharacteristics(model, compatibilities.getAvailabilityCompatibility(), CouplingCriterion.AVAILABILITY);
+		}
 		persistRelatedGroups(model, userRepresentations.getAggregates(), CouplingCriterion.CONSISTENCY_CONSTRAINT);
 		persistRelatedGroups(model, userRepresentations.getEntities(), CouplingCriterion.IDENTITY_LIFECYCLE);
 		persistRelatedGroups(model, userRepresentations.getPredefinedServices(), CouplingCriterion.PREDEFINED_SERVICE);

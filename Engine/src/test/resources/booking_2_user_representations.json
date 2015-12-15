@@ -1,26 +1,30 @@
 { 
 "useCases": 
 	[
-		{
+		{	
+			"name":"createCustomer",
 			"nanoentitiesRead": [],
-			"nanoentitiesWritten":["Customer.firstname","Customer.name","Customer.street","Customer.city","Customer.creditCard","Customer.accountNr"],
-			"name":"createCustomer"
+			"nanoentitiesWritten":["Customer.firstname","Customer.name","Customer.street","Customer.city","Customer.creditCard","Customer.accountNr"]
 		},
-		{	"nanoentitiesRead": ["Article.price"],
-			"nanoentitiesWritten":["Booking.bookingDate","Booking.paymentDate","Booking.totalPrice","Booking.bookingState"],
-			"name":"createBooking"
+		{	
+			"name":"createBooking",
+			"nanoentitiesRead": ["Article.price"],
+			"nanoentitiesWritten":["Booking.bookingDate","Booking.paymentDate","Booking.totalPrice","Booking.bookingState"]
 		},
-		{	"nanoentitiesRead": [],
-			"nanoentitiesWritten":["Article.articleName", "Article.price", "Article.serial"],
-			"name":"createArticle"
+		{	"name":"createArticle",
+			"nanoentitiesRead": [],
+			"nanoentitiesWritten":["Article.articleName", "Article.price", "Article.serial"]
 		},
-		{	"nanoentitiesRead": ["Article.articleName", "Article.price", "Article.serial"],
+		{	
+			"name":"searchArticles",
+			"nanoentitiesRead": ["Article.articleName", "Article.price", "Article.serial"],
 			"nanoentitiesWritten":[],
-			"name":"searchArticles"
+			"isLatencyCritical":"true"
 		},
-		{	"nanoentitiesRead": ["Customer.creditCard"],
-			"nanoentitiesWritten":["Booking.paymentDate", "Booking.bookingState"],
-			"name":"payBooking"
+		{	
+			"name":"payBooking",
+			"nanoentitiesRead": ["Customer.creditCard"],
+			"nanoentitiesWritten":["Booking.paymentDate", "Booking.bookingState"]
 		}
 	],
 "compatibilities": 
@@ -43,5 +47,50 @@
 					]
 				}
 			]
-	}
+	},
+"aggregates":[
+  {
+	"name": "BookingAggregate",
+	"nanoentities":[
+        "Booking.bookingDate",
+        "Booking.paymentDate",
+        "Booking.totalPrice",
+        "Booking.bookingState"
+	]
+  }
+],
+"securityAccessGroups":[
+  {
+	"name": "adminAccess",
+	"nanoentities": [
+		"Article.articleName",
+		"Article.price",
+		"Article.serial"
+	]
+  },
+  {
+	"name": "userAccess",
+	"nanoentities":[
+		"Customer.firstname",
+		"Customer.name",
+		"Customer.street",
+		"Customer.city",
+		"Customer.creditCard",
+		"Customer.accountNr"
+	]
+  }
+],
+"predefinedServices":[
+  {
+	"name": "CRM",
+	"nanoentities":[
+		"Customer.firstname",
+		"Customer.name",
+		"Customer.street",
+		"Customer.city",
+		"Customer.creditCard",
+		"Customer.accountNr"
+	]
+  }
+]
 }

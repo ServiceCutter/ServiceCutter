@@ -1,7 +1,6 @@
 package ch.hsr.servicestoolkit.importer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import ch.hsr.servicestoolkit.importer.api.Characteristic;
@@ -60,8 +58,6 @@ public class ImportEndpoint {
 	private final CouplingInstanceRepository couplingInstanceRepository;
 	private final ModelCompleter modelCompleter;
 	//
-	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.SHARED_OWNER, CouplingCriterion.CONSISTENCY_CONSTRAINT,
-			CouplingCriterion.PREDEFINED_SERVICE, CouplingCriterion.SECURITY_CONSTRAINT);
 
 	@Autowired
 	public ImportEndpoint(final ModelRepository modelRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
@@ -320,7 +316,6 @@ public class ImportEndpoint {
 			return;
 		}
 		CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(couplingCriterionName);
-		Assert.state(RELATED_GROUPS_IMPORT.contains(couplingCriterionName), couplingCriterionName + "not allowed in the related groups import.");
 		for (RelatedGroup relatedGroup : listOfGroups) {
 			CouplingInstance instance = new CouplingInstance(couplingCriterion, InstanceType.RELATED_GROUP);
 			model.addCouplingInstance(instance);

@@ -81,6 +81,12 @@ public class Scorer {
 		Map<EntityPair, Double> latencyScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
 				.getScores(couplingInstancesRepo.findByModelAndInstanceType(model, InstanceType.USE_CASE));
 		addScoresByCriterionToResult(result, CouplingCriterion.LATENCY, latencyScores, priorityProvider.apply(CouplingCriterion.LATENCY));
+
+		// security contextuality
+		Map<EntityPair, Double> securityContextualityScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
+				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.SECURITY_CONTEXUALITY));
+		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONTEXUALITY, securityContextualityScores, priorityProvider.apply(CouplingCriterion.SECURITY_CONTEXUALITY));
+
 	}
 
 	private void addScoresForCharacteristicsCriteria(final Model model, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
@@ -104,7 +110,6 @@ public class Scorer {
 				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.CONSISTENCY_CONSTRAINT));
 		addScoresByCriterionToResult(result, CouplingCriterion.CONSISTENCY_CONSTRAINT, consistencyConstraintScores,
 				priorityProvider.apply(CouplingCriterion.CONSISTENCY_CONSTRAINT));
-
 	}
 
 	private void addScoresByCriterionToResult(final Map<EntityPair, Map<String, Score>> result, final String couplingCriterionName, final Map<EntityPair, Double> scores,

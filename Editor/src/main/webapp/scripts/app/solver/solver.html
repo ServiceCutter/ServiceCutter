@@ -46,6 +46,11 @@
 					<strong>Alert:</strong>The Girvan-Newman algorithm has problems finding services from the input data. Please add more data to describe your system or change to Leung algorithm.
 				</div>
 				
+				<div ng-show="showGirvanWarningNoC" 
+					class="alert alert-danger" role="alert">
+					<strong>Alert:</strong>The Girvan-Newman algorithm could not provide to requested number of services.
+				</div>
+				
 				<div ng-show="showRelations && !(selectedServiceName || selectedServiceRelations)" 
 					class="alert alert-info" role="alert">
 					<strong>Hint:</strong> Select a service or a relation between services to see responsibilites and published language.

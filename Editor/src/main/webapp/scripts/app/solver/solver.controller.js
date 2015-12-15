@@ -191,7 +191,17 @@ angular.module('editorApp')
             return angular.equals(expected, actual);
         }
         
-        // watcher for girvanNewmanWarning
+        // watcher for girvanNewmanWarningNoC
+        $scope.$watch('result', function () {
+			$scope.showGirvanWarningNoC = false;
+        	if($scope.result && $scope.girvanNewmanActive == true){
+				if($scope.numberSlider != $scope.result.services.length){
+					$scope.showGirvanWarningNoC = true;
+				}
+        	}
+        });
+        
+        // watcher for girvanNewmanWarningNoClustering
         $scope.$watch('result', function () {
         	$scope.showGirvanWarning = false;	
         	var oneNanoEntityPerService = true;

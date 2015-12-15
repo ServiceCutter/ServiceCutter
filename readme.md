@@ -1,6 +1,8 @@
 # Service Cutter
 
-TODO: add abstract?
+The Service Cutter suggests a structured way to service decomposition. There is [a tutorial](https://servicecutter.github.io/) providing you with an overview. This readme focuses on installation and development aspects. A comprehensive documentation of the import file is attached in the file `import.md` in this repository.
+
+# Overview
 
 The Service Cutter consists of the following components:
 
@@ -15,36 +17,27 @@ All source code is released under the terms of the Apache 2.0 license.
 
 ## Build and Run
 
-* prerequisite: maven & jdk 1.8
-run in two command lines!
+Prerequisite: Maven & JDK 1.8 is installed.
+
+Then run in two different command prompts:
 * `cd Engine; mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8090'`
 * `cd Editor; mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8080'`
 
-The editor by default expects the engine to be accessible under http://localhost:8090. if not, add the following JVM parameters to the editor:
+Now you should be able to access the Service Cutter on the following URL: http://localhost:8080
+
+The editor by default expects the engine to be accessible under http://localhost:8090. If not, please add the following JVM parameters to the editor:
 * `application.links.engine.host=enginehost`
 * `application.links.engine.port=1234`
 
-## Simple Example
+# Deployment
 
-* load domain model
-* load use case
-* load characteristics
-* load related groups
+You have two options to run the Service Cutter:
+
+* Use the embedded Tomcat provided by Spring Boot.
+* Deploy the `.war` file into a Java application server.
+
+The required setup and dependencies are demonstrated in the provided Docker configuration.
 
 ## Docker
 
-All components can be started using docker. The Docker images can be built using Maven and a docker-compose configuration is provided in the root folder of the repository. 
-
-## REST / HTTP Methods
-
-TODO remove?
-
-http://stackoverflow.com/questions/6203231/which-http-methods-match-up-to-which-crud-methods
-
-```
-Create = PUT with a new URI
-         POST to a base URI returning a newly created URI
-Read   = GET
-Update = PUT with an existing URI
-Delete = DELETE
-```
+All components can be started using docker. The Docker images can be built using Maven and a docker-compose configuration (`docker-compose.yml`) is provided in the root folder of this repository. Please remember to change the database user passwords in a productive environment!

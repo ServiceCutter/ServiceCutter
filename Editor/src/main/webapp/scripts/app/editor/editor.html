@@ -16,6 +16,13 @@
 				<span>{{status}}</span>
             </form>
             
+ 			<br />
+            <div ng-show="jsonErrorModel" class="alert alert-danger" role="alert">
+        
+				<strong>Input Validation Error. </strong><span popover-append-to-body="true" class="inline-help" popover="{{jsonErrorModel}}" popover-trigger="mouseenter">
+				    	Display JSON parsing error</span>
+			</div>
+            
 			<div ng-show="modelId">
 			
 				<h2>System #{{modelId}}</h2>
@@ -50,13 +57,20 @@
         </div>
         <div class="col-md-4" ng-show="modelId">
         
-        	<h3>Enhance system #{{modelId}}</h3>
+        	<h3>Enhance System #{{modelId}}</h3>
 			
 			 <form class="form-inline">
 				<div class="btn btn-default" ngf-select ng-model="userRepFile" ngf-multiple="false">Upload User Representations</div>
 				<span>{{userRepStatus}}</span>
 				</p>
             </form>
+            
+            <div ng-show="inputError" class="alert alert-danger" role="alert">
+				<strong>Input Errors: </strong>
+				<ul>
+					<li ng-repeat="error in inputError">{{error}}</li>
+				</ul>
+			</div>
             
            	<div ng-show="jsonError" class="alert alert-danger" role="alert">
 				<strong>Input Validation Error. </strong><span popover-append-to-body="true" class="inline-help" popover="{{jsonError}}" popover-trigger="mouseenter">

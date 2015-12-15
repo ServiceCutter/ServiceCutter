@@ -32,4 +32,9 @@ public class Characteristic {
 		this.nanoentities = nanoentities;
 	}
 
+	@Override
+	public String toString() {
+		return characteristic;
+	}
+
 }

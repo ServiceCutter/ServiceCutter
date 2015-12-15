@@ -13,7 +13,9 @@ angular.module('editorApp')
         	$rootScope.modelId = $scope.modelId;
             $scope.userRepStatus = '';
             $scope.status = '';
+			$scope.inputError = undefined;
             $scope.jsonError = undefined;
+            $scope.jsonErrorModel = undefined;
         });
         
         $scope.$watch('file', function () {
@@ -33,18 +35,17 @@ angular.module('editorApp')
 					file: file,
 					progress: function(e){}
 				}).then(function (resp) {
-					$scope['status'] = resp['data']['message'];
-					$scope.availableModels = Model.all();
-					$scope.modelId = parseInt(resp['data']['id']);
-				}, function (resp) {
-					$scope['status'] = resp['data']['message'];
-					$scope.jsonError = resp['data']['jsonError'];
-		        }); 
+					if(resp['data']['id']){
+						$scope.availableModels = Model.all();
+						$scope.modelId = parseInt(resp['data']['id']);
+					}
+					$scope.updateFields(resp, 'status', 'jsonErrorModel');
+				}); 
 
             }
         };
         
-        $scope.uploadUserReps = function (file, url, statusField, modelUpload) {
+        $scope.uploadUserReps = function (file) {
             if (file && !file.$error) {
             	$scope['userRepStatus'] = 'Uploading...';
 				Upload.upload({
@@ -52,17 +53,17 @@ angular.module('editorApp')
 					file: file,
 					progress: function(e){}
 				}).then(function (resp) {
-					$scope['userRepStatus'] = resp['data']['message'];
-					$scope.jsonError = resp['data']['jsonError'];
-					$scope.loadCoupling($scope.modelId)
-		        }, function (resp) {
-					$scope['userRepStatus'] = resp['data']['message'];
-					$scope.jsonError = resp['data']['jsonError'];
-
-		        }, function (evt) {});
+					$scope.loadCoupling($scope.modelId);
+					$scope.updateFields(resp, 'userRepStatus', 'jsonError');
+		        });
             }
         };
         
+        $scope.updateFields = function(resp, statusfield, jsonErrorDiv){
+			$scope[statusfield] = resp['data']['message'];
+			$scope.inputError = resp['data']['warnings'];
+			$scope[jsonErrorDiv] = resp['data']['jsonError'];
+        }
 
         
         

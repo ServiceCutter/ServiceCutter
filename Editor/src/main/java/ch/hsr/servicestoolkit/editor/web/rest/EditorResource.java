@@ -2,12 +2,14 @@ package ch.hsr.servicestoolkit.editor.web.rest;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,13 +56,22 @@ public class EditorResource {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> serviceResponse = responseEntity.getBody();
 			serviceResponse.put("message", "Upload successful!");
+			@SuppressWarnings("unchecked")
+			List<String> warnings = (List<String>) serviceResponse.get("warnings");
+			if (warnings != null && !warnings.isEmpty()) {
+				serviceResponse.put("warnings", warnings);
+			}
 			log.debug("importer response: {}", serviceResponse);
 			result = new ResponseEntity<>(serviceResponse, HttpStatus.CREATED);
 		} catch (HttpClientErrorException e) {
-			log.error("", e.getResponseBodyAsString());
+			log.error(e.getResponseBodyAsString());
 			Map<String, Object> serviceResponse = new HashMap<>();
 			serviceResponse.put("message", "Upload failed!");
 			serviceResponse.put("jsonError", e.getResponseBodyAsString());
+			result = new ResponseEntity<>(serviceResponse, HttpStatus.OK);
+		} catch (HttpServerErrorException e) {
+			Map<String, Object> serviceResponse = new HashMap<>();
+			serviceResponse.put("message", "Upload failed! Please check your input");
 			result = new ResponseEntity<>(serviceResponse, HttpStatus.OK);
 		} catch (IOException e) {
 			log.error("", e);
@@ -81,7 +93,13 @@ public class EditorResource {
 			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
 			String path = engineUrl + "/engine/import/" + modelId + "/" + "userrepresentations" + "/";
 			log.debug("post on {}", path);
-			rest.exchange(path, HttpMethod.POST, requestEntity, Void.class);
+			ResponseEntity<Map<String, Object>> resultEntity = rest.exchange(path, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
+			});
+			@SuppressWarnings("unchecked")
+			List<String> warnings = (List<String>) resultEntity.getBody().get("warnings");
+			if (warnings != null && !warnings.isEmpty()) {
+				resultBody.put("warnings", warnings);
+			}
 			resultBody.put("message", "Upload successfull!");
 			result = ResponseEntity.ok(resultBody);
 		} catch (HttpClientErrorException e) {
@@ -89,6 +107,10 @@ public class EditorResource {
 			resultBody.put("message", "Upload failed");
 			resultBody.put("jsonError", e.getResponseBodyAsString());
 			result = ResponseEntity.ok(resultBody);
+		} catch (HttpServerErrorException e) {
+			Map<String, Object> serviceResponse = new HashMap<>();
+			serviceResponse.put("message", "Upload failed! Please check your input");
+			result = new ResponseEntity<>(serviceResponse, HttpStatus.OK);
 		} catch (IOException e) {
 			log.error("", e);
 		}

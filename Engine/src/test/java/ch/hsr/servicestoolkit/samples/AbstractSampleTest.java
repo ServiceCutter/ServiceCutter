@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
@@ -54,6 +55,7 @@ public abstract class AbstractSampleTest {
 		solveModel(modelId);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void uploadUserRepresentations(final Integer modelId) throws URISyntaxException, UnsupportedEncodingException, IOException {
 		UserRepresentationContainer userRepContainer = IntegrationTestHelper.readFromFile(getRepresentationsFile(), UserRepresentationContainer.class);
 
@@ -63,10 +65,11 @@ public abstract class AbstractSampleTest {
 		String path = UrlHelper.userRepresentations(modelId, port);
 		log.info("store user representations on {}", path);
 
-		ResponseEntity<Void> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Void>() {
+		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
 		});
 
-		assertEquals(HttpStatus.NO_CONTENT, entity.getStatusCode());
+		assertTrue(((List<String>) entity.getBody().get("warnings")).isEmpty());
+		assertEquals(HttpStatus.OK, entity.getStatusCode());
 	}
 
 	private void solveModel(final Integer modelId) {

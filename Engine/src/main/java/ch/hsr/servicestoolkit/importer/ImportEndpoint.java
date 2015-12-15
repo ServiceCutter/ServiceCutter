@@ -83,6 +83,11 @@ public class ImportEndpoint {
 		if (domainModel == null) {
 			throw new InvalidRestParam();
 		}
+		Map<String, Object> result = new HashMap<>();
+
+		List<String> warnings = new ArrayList<>();
+		result.put("warnings", warnings);
+
 		Model model = new Model();
 		modelRepository.save(model);
 		String name = domainModel.getName();
@@ -98,6 +103,7 @@ public class ImportEndpoint {
 			}
 
 		}
+
 		// entities
 		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
 		for (Entry<String, List<ImportNanoentity>> entityAndNanoentities : findRealEntities(domainModel).entrySet()) {
@@ -135,7 +141,6 @@ public class ImportEndpoint {
 		}
 		// TODO: remove return value and set location header to URL of generated
 		// model
-		Map<String, Object> result = new HashMap<>();
 		result.put("message", "model " + model.getId() + " has been created");
 		result.put("id", model.getId());
 		return result;
@@ -188,46 +193,62 @@ public class ImportEndpoint {
 						.collect(Collectors.toList()).isEmpty())
 				.collect(Collectors.toList());
 
-		// get all relations that will merge the reducableEntities into another
+		// get all relations that will merge the reducableEntities into
+		// another
 		// entity
 		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
 				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
 						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
 				.collect(Collectors.toList());
-
 		return relationsToEdgeEntities;
 	}
 
 	@POST
 	@Path("/{modelId}/userrepresentations/")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importUserRepresentations(@PathParam("modelId") final Long modelId, final UserRepresentationContainer userRepresentations) {
+	public Map<String, Object> importUserRepresentations(@PathParam("modelId") final Long modelId, final UserRepresentationContainer userRepresentations) {
+		Map<String, Object> result = new HashMap<>();
+		List<String> warnings = new ArrayList<>();
+		result.put("warnings", warnings);
+
 		Model model = modelRepository.findOne(modelId);
 		if (model == null) {
-			throw new InvalidRestParam();
+			warnings.add("model not defined!");
+			return result;
 		}
-		persistUseCases(model, userRepresentations.getUseCases());
+
+		// TODO create better check if userRepts are already loaded
+		long count = couplingInstanceRepository.findByModel(model).stream().filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY)
+				&& !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE)).count();
+		if (count != 0) {
+			warnings.add("Enhancing an already specified system is not yet implemented!");
+			return result;
+		}
+
+		persistUseCases(model, userRepresentations.getUseCases(), warnings);
 		Compatibilities compatibilities = userRepresentations.getCompatibilities();
 		if (compatibilities != null) {
-			persistCharacteristics(model, compatibilities.getChangeSimilarity(), CouplingCriterion.CHANGE_SIMILARITY);
-			persistCharacteristics(model, compatibilities.getConsistency(), CouplingCriterion.CONSISTENCY);
-			persistCharacteristics(model, compatibilities.getSecurityCriticality(), CouplingCriterion.SECURITY_CRITICALITY);
-			persistCharacteristics(model, compatibilities.getStorageSimilarity(), CouplingCriterion.STORAGE_SIMILARITY);
-			persistCharacteristics(model, compatibilities.getVolatility(), CouplingCriterion.VOLATILITY);
-			persistCharacteristics(model, compatibilities.getAvailability(), CouplingCriterion.AVAILABILITY);
+			persistCharacteristics(model, compatibilities.getChangeSimilarity(), CouplingCriterion.CHANGE_SIMILARITY, warnings);
+			persistCharacteristics(model, compatibilities.getConsistency(), CouplingCriterion.CONSISTENCY, warnings);
+			persistCharacteristics(model, compatibilities.getSecurityCriticality(), CouplingCriterion.SECURITY_CRITICALITY, warnings);
+			persistCharacteristics(model, compatibilities.getStorageSimilarity(), CouplingCriterion.STORAGE_SIMILARITY, warnings);
+			persistCharacteristics(model, compatibilities.getVolatility(), CouplingCriterion.VOLATILITY, warnings);
+			persistCharacteristics(model, compatibilities.getAvailability(), CouplingCriterion.AVAILABILITY, warnings);
 		}
-		persistRelatedGroups(model, userRepresentations.getAggregates(), CouplingCriterion.CONSISTENCY_CONSTRAINT);
-		persistRelatedGroups(model, userRepresentations.getEntities(), CouplingCriterion.IDENTITY_LIFECYCLE);
-		persistRelatedGroups(model, userRepresentations.getPredefinedServices(), CouplingCriterion.PREDEFINED_SERVICE);
-		persistRelatedGroups(model, userRepresentations.getSecurityAccessGroups(), CouplingCriterion.SECURITY_CONTEXUALITY);
-		persistRelatedGroups(model, userRepresentations.getSeparatedSecurityZones(), CouplingCriterion.SECURITY_CONSTRAINT);
-		persistRelatedGroups(model, userRepresentations.getSharedOwnerGroups(), CouplingCriterion.SHARED_OWNER);
+		persistRelatedGroups(model, userRepresentations.getAggregates(), CouplingCriterion.CONSISTENCY_CONSTRAINT, warnings);
+		persistRelatedGroups(model, userRepresentations.getEntities(), CouplingCriterion.IDENTITY_LIFECYCLE, warnings);
+		persistRelatedGroups(model, userRepresentations.getPredefinedServices(), CouplingCriterion.PREDEFINED_SERVICE, warnings);
+		persistRelatedGroups(model, userRepresentations.getSecurityAccessGroups(), CouplingCriterion.SECURITY_CONTEXUALITY, warnings);
+		persistRelatedGroups(model, userRepresentations.getSeparatedSecurityZones(), CouplingCriterion.SECURITY_CONSTRAINT, warnings);
+		persistRelatedGroups(model, userRepresentations.getSharedOwnerGroups(), CouplingCriterion.SHARED_OWNER, warnings);
 
 		log.info("Imported user representations");
+		return result;
 	}
 
-	private void persistUseCases(final Model model, final List<UseCase> useCases) {
+	private void persistUseCases(final Model model, final List<UseCase> useCases, final List<String> warnings) {
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (UseCase transaction : useCases) {
 			CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.USE_CASE);
@@ -235,8 +256,8 @@ public class ImportEndpoint {
 			couplingInstanceRepository.save(instance);
 			instance.setName(transaction.getName());
 			instance.setModel(model);
-			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model));
-			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model));
+			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model, warnings));
+			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model, warnings));
 			log.info("Import use cases {} with fields written {} and fields read {}", transaction.getName(), transaction.getNanoentitiesWritten(),
 					transaction.getNanoentitiesRead());
 		}
@@ -265,7 +286,7 @@ public class ImportEndpoint {
 		return nanoentity;
 	}
 
-	private void persistCharacteristics(final Model model, final List<Characteristic> characteristics, final String criterionName) {
+	private void persistCharacteristics(final Model model, final List<Characteristic> characteristics, final String criterionName, final List<String> warnings) {
 		if (characteristics == null || characteristics.isEmpty()) {
 			return;
 		}
@@ -273,6 +294,7 @@ public class ImportEndpoint {
 			CouplingCriterionCharacteristic characteristic = findCharacteristic(criterionName, inputCharacteristic.getCharacteristic());
 			if (characteristic == null) {
 				log.error("characteristic {} not known! ignoring...", inputCharacteristic);
+				warnings.add("characteristic " + inputCharacteristic + " not known!");
 				continue;
 			}
 			Set<CouplingInstance> instance = couplingInstanceRepository.findByModelAndCharacteristic(model, characteristic);
@@ -283,17 +305,16 @@ public class ImportEndpoint {
 				couplingInstanceRepository.save(newInstance);
 				newInstance.setName(criterionName);
 				newInstance.setModel(model);
-				newInstance.setNanoentities(loadNanoentities(inputCharacteristic.getNanoentities(), model));
+				newInstance.setNanoentities(loadNanoentities(inputCharacteristic.getNanoentities(), model, warnings));
 				log.info("Import distance characteristic {}-{} with nanoentities {}", criterionName, inputCharacteristic.getCharacteristic(), newInstance.getAllNanoentities());
 			} else {
 				log.error("enhancing characteristics not yet implemented. criterion: {}, characteristic: {}", criterionName, inputCharacteristic.getCharacteristic());
-				throw new InvalidRestParam();
 			}
 		}
 		modelCompleter.completeModelWithDefaultsForDistance(model);
 	}
 
-	private void persistRelatedGroups(final Model model, final List<RelatedGroup> listOfGroups, final String couplingCriterionName) {
+	private void persistRelatedGroups(final Model model, final List<RelatedGroup> listOfGroups, final String couplingCriterionName, final List<String> warnings) {
 		if (listOfGroups == null || listOfGroups.isEmpty()) {
 			return;
 		}
@@ -306,12 +327,12 @@ public class ImportEndpoint {
 			String name = relatedGroup.getName();
 			instance.setName(StringUtils.hasLength(name) ? name : couplingCriterionName);
 			instance.setModel(model);
-			instance.setNanoentities(loadNanoentities(relatedGroup.getNanoentities(), model));
+			instance.setNanoentities(loadNanoentities(relatedGroup.getNanoentities(), model, warnings));
 			log.info("Import related group {} on nanoentities {} ", name, instance.getNanoentities());
 		}
 	}
 
-	private List<Nanoentity> loadNanoentities(final List<String> names, final Model model) {
+	private List<Nanoentity> loadNanoentities(final List<String> names, final Model model, final List<String> warnings) {
 		List<Nanoentity> nanoentities = new ArrayList<>();
 		for (String nanoentityName : names) {
 			Nanoentity nanoentity;
@@ -325,7 +346,8 @@ public class ImportEndpoint {
 			if (nanoentity != null) {
 				nanoentities.add(nanoentity);
 			} else {
-				log.warn("	 nanoentity with name {}", nanoentityName);
+				log.warn("nanoentity with name {} not found", nanoentityName);
+				warnings.add("nanoentity with name " + nanoentityName + " not found!");
 			}
 		}
 		return nanoentities;
@@ -333,9 +355,7 @@ public class ImportEndpoint {
 
 	private CouplingCriterionCharacteristic findCharacteristic(final String coupling, final String characteristic) {
 		CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(coupling);
-		Assert.notNull(couplingCriterion, "Coupling with name " + coupling + " not found!");
 		CouplingCriterionCharacteristic result = couplingCriteriaCharacteristicRepository.readByNameAndCouplingCriterion(characteristic, couplingCriterion);
-		Assert.notNull(result, "Characteristic with name " + characteristic + " not found!");
 		return result;
 	}
 }

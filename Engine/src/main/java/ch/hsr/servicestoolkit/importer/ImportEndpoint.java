@@ -33,7 +33,6 @@ import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicestoolkit.importer.api.ImportNanoentity;
 import ch.hsr.servicestoolkit.importer.api.RelatedGroup;
-import ch.hsr.servicestoolkit.importer.api.RelatedGroups;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.importer.api.UserRepresentationContainer;
 import ch.hsr.servicestoolkit.model.CouplingCriterion;
@@ -228,18 +227,6 @@ public class ImportEndpoint {
 		log.info("Imported user representations");
 	}
 
-	@POST
-	@Path("/{modelId}/usecases/")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Transactional
-	public void importUseCases(@PathParam("modelId") final Long modelId, final List<UseCase> transactions) {
-		Model model = modelRepository.findOne(modelId);
-		if (model == null) {
-			throw new InvalidRestParam();
-		}
-		persistUseCases(model, transactions);
-	}
-
 	private void persistUseCases(final Model model, final List<UseCase> useCases) {
 		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
 		for (UseCase transaction : useCases) {
@@ -278,18 +265,6 @@ public class ImportEndpoint {
 		return nanoentity;
 	}
 
-	@POST
-	@Path("/{modelId}/characteristics/")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Transactional
-	public void importCharacteristics(@PathParam("modelId") final Long modelId, final List<Characteristic> characteristics) {
-		Model model = modelRepository.findOne(modelId);
-		if (model == null || characteristics == null) {
-			throw new InvalidRestParam();
-		}
-		// persistCharacteristics(model, characteristics, );
-	}
-
 	private void persistCharacteristics(final Model model, final List<Characteristic> characteristics, final String criterionName) {
 		if (characteristics == null || characteristics.isEmpty()) {
 			return;
@@ -316,20 +291,6 @@ public class ImportEndpoint {
 			}
 		}
 		modelCompleter.completeModelWithDefaultsForDistance(model);
-	}
-
-	@POST
-	@Path("/{modelId}/relatedgroups/")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Transactional
-	public void importRelatedGroups(@PathParam("modelId") final Long modelId, final List<RelatedGroups> listOfGroups) {
-		Model model = modelRepository.findOne(modelId);
-		if (model == null || listOfGroups == null) {
-			throw new InvalidRestParam();
-		}
-
-		// TODO REMOVE
-		// persistRelatedGroups(model, listOfGroups);
 	}
 
 	private void persistRelatedGroups(final Model model, final List<RelatedGroup> listOfGroups, final String couplingCriterionName) {

@@ -99,6 +99,12 @@ public class Scorer {
 		Map<EntityPair, Double> predefinedServiceScores = new ExclusiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
 				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.PREDEFINED_SERVICE));
 		addScoresByCriterionToResult(result, CouplingCriterion.PREDEFINED_SERVICE, predefinedServiceScores, priorityProvider.apply(CouplingCriterion.PREDEFINED_SERVICE));
+
+		Map<EntityPair, Double> consistencyConstraintScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByModel(model))
+				.getScores(couplingInstancesRepo.findByModelAndCriterion(model, CouplingCriterion.CONSISTENCY_CONSTRAINT));
+		addScoresByCriterionToResult(result, CouplingCriterion.CONSISTENCY_CONSTRAINT, consistencyConstraintScores,
+				priorityProvider.apply(CouplingCriterion.CONSISTENCY_CONSTRAINT));
+
 	}
 
 	private void addScoresByCriterionToResult(final Map<EntityPair, Map<String, Score>> result, final String couplingCriterionName, final Map<EntityPair, Double> scores,

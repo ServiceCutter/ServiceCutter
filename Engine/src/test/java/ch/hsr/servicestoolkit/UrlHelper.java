@@ -9,19 +9,23 @@ public class UrlHelper {
 		return HOST + port + IMPORTER_PATH + modelId.toString() + "/characteristics/";
 	}
 
-	public static String importDomain(int port) {
+	public static String importDomain(final int port) {
 		return HOST + port + "/engine/import";
 	}
 
-	public static String useCases(final Integer modelId, int port) {
+	public static String useCases(final Integer modelId, final int port) {
 		return HOST + port + IMPORTER_PATH + modelId.toString() + "/usecases/";
 	}
 
-	public static String relatedGroups(final Integer modelId, int port) {
+	public static String userRepresentations(final Integer modelId, final int port) {
+		return HOST + port + IMPORTER_PATH + modelId.toString() + "/userrepresentations/";
+	}
+
+	public static String relatedGroups(final Integer modelId, final int port) {
 		return HOST + port + IMPORTER_PATH + modelId.toString() + "/relatedgroups/";
 	}
 
-	public static String solve(final Integer modelId, int port) {
+	public static String solve(final Integer modelId, final int port) {
 		return HOST + port + SOLVER_PATH + modelId;
 	}
 }

@@ -3,7 +3,6 @@ package ch.hsr.servicestoolkit.importer.api;
 import java.util.List;
 
 public class UserRepresentationContainer {
-
 	private List<UseCase> useCases;
 	private List<RelatedGroup> sharedOwnerGroups;
 	private List<RelatedGroup> aggregates;

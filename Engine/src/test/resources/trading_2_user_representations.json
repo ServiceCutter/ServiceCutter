@@ -1,0 +1,164 @@
+{ 
+"useCases": 
+	[
+		{
+			"name":"PostOrder",
+			"nanoentitiesRead": ["Account.number", "Stock.identifier", "Stock.stockName"],
+			"nanoentitiesWritten":["Order.posted","Order.expires","Order.triggerPrice","Order.executed","Order.type","Order.amount"]
+		},
+		
+		{	
+			"name":"InstructOrder",
+			"nanoentitiesRead": ["PaymentInfo.cashAccount"],
+			"nanoentitiesWritten":["Instruction.instructedTime", "Order.executed", "Position.balance"]
+		},
+		{	
+			"name":"ImportPrice",
+			"nanoentitiesRead": ["Order.triggerPrice", "Stock.identifier"],
+			"nanoentitiesWritten":["Price.dateTime","Price.price","Price.currency"]
+		},
+		{	
+			"name":"ReadNews",
+			"nanoentitiesRead": ["Stock.identifier", "News.title", "News.text", "News.image"],
+			"nanoentitiesWritten":[]
+		},
+		{	
+			"name":"ImportNews",
+			"nanoentitiesRead": ["Stock.identifier"],
+			"nanoentitiesWritten":["News.title", "News.text", "News.image"]
+		},
+		{	
+			"name":"View Recommendations",
+			"nanoentitiesRead": ["Account.number","Recommendation.description","Stock.identifier","Stock.stockName"],
+			"nanoentitiesWritten":[]
+		},
+		{	
+			"name":"SuggestRecommendations",
+			"nanoentitiesRead": ["Account.number","Stock.identifier","Stock.stockName","Position.balance"],
+			"nanoentitiesWritten":["Recommendation.description"]
+		},
+		{	
+			"name":"CreateAccount",
+			"nanoentitiesRead": ["AccountOwner.address","NaturalPerson.name","Company.companyName"],
+			"nanoentitiesWritten":["Account.number"]
+		},
+		{	
+			"name":"CreateAccountOwner",
+			"nanoentitiesRead": [],
+			"nanoentitiesWritten":["AccountOwner.address","NaturalPerson.name","Company.companyName"]
+		},
+		{	
+			"name":"viewPortfolio",
+			"nanoentitiesRead": ["Account.number","Position.balance","Stock.identifier", "Stock.stockName", "Order.triggerPrice", "Order.amount", "Order.posted", "Order.expires", "Order.executed", "Order.type"],
+			"nanoentitiesWritten":[]
+		}
+	],
+"separatedSecurityZones": 
+	[
+		{
+			"name":"PII",
+			"nanoentities": [
+				"AccountOwner.address",
+				"NaturalPerson.name",
+				"Company.companyName"
+			]
+		},
+		{
+			"name":"AccountData",
+			"nanoentities": [
+				"Account.number"
+			]
+		}
+	],
+"compatibilities":
+	{
+		"volatilityCompatibility":
+			[
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency"
+					]
+					
+				},
+				{
+					"characteristic":"Rarely",
+					"nanoentities":[
+						"AccountOwner.address",
+						"NaturalPerson.name",
+						"Company.companyName",
+						"Account.number"
+					]
+				}
+			],
+		"changeSimilarityCompatibility":
+			[	
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"Recommendation.description"
+					]		
+				}
+			],
+		"availabilityCompatibility":
+			[
+				{
+					"characteristic":"Low",
+					"nanoentities":[
+						"News.title",
+						"News.text",
+						"News.image",
+						"Recommendation.description"
+					]
+				}
+			],
+		"consistencyCompatibility":
+			[
+				{
+					"characteristic":"Eventually",
+					"nanoentities":[
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency"
+					]
+				}
+			],
+		"storageSimilarityCompatibility":
+			[
+				{
+					"characteristic":"Huge",
+					"nanoentities":[
+						"News.image"
+					]
+					
+				}
+			],
+		"securityCriticalityCompatibility": 
+			[
+				{
+					"characteristic":"Public",
+					"nanoentities":[
+						"Stock.identifier",
+						"Stock.stockName",
+						"Price.dateTime",
+						"Price.price",
+						"Price.currency",
+						"News.title",
+						"News.text",
+						"News.image"
+					]
+				},
+				{
+					"characteristic":"Critical",
+					"nanoentities":[
+						"AccountOwner.address",
+						"NaturalPerson.name",
+						"Company.companyName"
+					]
+					
+				}
+			]
+	}
+}

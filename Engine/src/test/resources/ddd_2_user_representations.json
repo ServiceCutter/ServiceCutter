@@ -1,0 +1,132 @@
+{ 
+"useCases": 
+	[
+		{
+			"name":"ViewTracking",
+			"nanoentitiesRead": ["Cargo.trackingId", "HandlingEvent.type", "HandlingEvent.location", "HandlingEvent.completionTime", "Delivery.transportStatus", "Delivery.estimatedArrivalTime", "Delivery.misdirected", "Voyage.voyageNumber", "RouteSpecification.destination"],
+			"nanoentitiesWritten":[]
+		},
+		{
+			"name":"ViewCargos",
+			"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.arrivalDeadline", "Delivery.routingStatus", "Itinerary.itineraryNumber"],
+			"nanoentitiesWritten":[]
+		},
+		{
+			"name":"BookCargo",
+			"nanoentitiesRead": ["Location.unLocode"],
+			"nanoentitiesWritten":["Cargo.trackingId", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "RouteSpecification.destination"]
+		},
+		{
+			"name":"ChangeCargoDestination",
+			"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination"],
+			"nanoentitiesWritten":["RouteSpecification.destination"]
+		},
+		{
+			"name":"RouteCargo",
+			"nanoentitiesRead": ["Cargo.trackingId", "RouteSpecification.destination", "RouteSpecification.origin", "RouteSpecification.arrivalDeadline", "Location.unLocode", "Voyage.voyageNumber", "CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"],
+			"nanoentitiesWritten":["Itinerary.itineraryNumber", "Leg.loadLocation", "Leg.unloadLocation", "Leg.loadTime", "Leg.unloadTime"]
+		},
+		{
+			"name":"Create Location",
+			"nanoentitiesRead": [],
+			"nanoentitiesWritten":["Location.unLocode", "Location.name"]
+		},
+		{
+			"name":"Create Voyage",
+			"nanoentitiesRead": [],
+			"nanoentitiesWritten":["Voyage.voyageNumber"]
+		},
+		{
+			"name":"AddCarrierMovement",
+			"nanoentitiesRead": ["Voyage.voyageNumber"],
+			"nanoentitiesWritten":["CarrierMovement.departureLocation", "CarrierMovement.arrivalLocation", "CarrierMovement.departureTime", "CarrierMovement.arrivalTime"]
+		},
+		{
+			"name":"handleCargoEvent",
+			"nanoentitiesRead": ["Voyage.voyageNumber", "Cargo.trackingId"],
+			"nanoentitiesWritten":["HandlingEvent.type", "HandlingEvent.completionTime", "HandlingEvent.registrationTime", "HandlingEvent.location", "Delivery.transportStatus", "Delivery.misdirected", "Delivery.estimatedArrivalTime", "Delivery.isUnloadedAtDestination", "Delivery.routingStatus"]
+		}
+	],
+"compatibilities":
+	{
+		"volatilityCompatibility": 
+			[
+				{
+					"characteristic":"Often",
+					"nanoentities":[
+						"HandlingEvent.type",
+						"HandlingEvent.completionTime",
+						"HandlingEvent.registrationTime",
+						"HandlingEvent.location",
+						"Delivery.transportStatus"
+						
+					]
+					
+				},
+				{
+					"characteristic":"Rarely",
+					"nanoentities":[
+						"Location.unLocode",
+						"Location.name"
+					]
+				}
+			],
+		"changeSimilarityCompatibility":
+			[
+				{
+					"characteristic":"Rarely",
+					"nanoentities":[
+						"Location.unLocode",
+						"Location.name"
+					]
+				}
+			]
+	},
+"sharedOwnerGroups": [
+  {
+	"name": "cargoPlaner",
+	"nanoentities": [
+	  "Cargo.trackingId",
+	  "RouteSpecification.origin",
+	  "RouteSpecification.destination",
+	  "RouteSpecification.arrivalDeadline",
+	  "Itinerary.itineraryNumber",
+	  "Leg.loadLocation",
+	  "Leg.unloadLocation",
+	  "Leg.loadTime",
+	  "Leg.unloadTime",
+	  "Delivery.estimatedArrivalTime",
+	  "Delivery.routingStatus"
+	]
+  },
+  {
+	"name": "cargoTracker",
+	"nanoentities": [
+	  "HandlingEvent.type",
+	  "HandlingEvent.completionTime",
+	  "HandlingEvent.registrationTime",
+	  "HandlingEvent.location",
+		"Delivery.transportStatus",
+	  "Delivery.misdirected",
+	  "Delivery.isUnloadedAtDestination"
+	]
+  },
+  {
+	"name": "voyageManager",
+	"nanoentities": [
+	  "Voyage.voyageNumber",
+	  "CarrierMovement.departureLocation",
+	  "CarrierMovement.arrivalLocation",
+	  "CarrierMovement.departureTime",
+	  "CarrierMovement.arrivalTime"
+	]
+  },
+  {
+	"name": "admin",
+	"nanoentities": [
+	  "Location.name",
+	  "Location.unLocode"
+	]
+  }
+]
+}

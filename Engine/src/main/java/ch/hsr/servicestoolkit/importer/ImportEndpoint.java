@@ -25,12 +25,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import ch.hsr.servicestoolkit.importer.api.Characteristic;
 import ch.hsr.servicestoolkit.importer.api.Compatibilities;
 import ch.hsr.servicestoolkit.importer.api.DomainModel;
 import ch.hsr.servicestoolkit.importer.api.Entity;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation;
 import ch.hsr.servicestoolkit.importer.api.EntityRelation.RelationType;
-import ch.hsr.servicestoolkit.importer.api.ImportCharacteristic;
 import ch.hsr.servicestoolkit.importer.api.ImportNanoentity;
 import ch.hsr.servicestoolkit.importer.api.RelatedGroup;
 import ch.hsr.servicestoolkit.importer.api.RelatedGroups;
@@ -61,8 +61,8 @@ public class ImportEndpoint {
 	private final CouplingInstanceRepository couplingInstanceRepository;
 	private final ModelCompleter modelCompleter;
 	//
-	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.SHARED_OWNER, CouplingCriterion.CONSISTENCY_CONSTRAINT, CouplingCriterion.PREDEFINED_SERVICE,
-			CouplingCriterion.SECURITY_CONSTRAINT);
+	private static List<String> RELATED_GROUPS_IMPORT = Arrays.asList(CouplingCriterion.SHARED_OWNER, CouplingCriterion.CONSISTENCY_CONSTRAINT,
+			CouplingCriterion.PREDEFINED_SERVICE, CouplingCriterion.SECURITY_CONSTRAINT);
 
 	@Autowired
 	public ImportEndpoint(final ModelRepository modelRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
@@ -183,14 +183,18 @@ public class ImportEndpoint {
 
 		// get all entites that will have no other entities merged into them
 		List<Entity> reducableEntities = inputEntites.stream()
-				.filter(entity -> currentRelations.stream().filter(
-						r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE)) || (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
-				.collect(Collectors.toList()).isEmpty()).collect(Collectors.toList());
+				.filter(entity -> currentRelations.stream()
+						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
+								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+						.collect(Collectors.toList()).isEmpty())
+				.collect(Collectors.toList());
 
 		// get all relations that will merge the reducableEntities into another
 		// entity
-		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream().filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
-				|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION))).collect(Collectors.toList());
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
+				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList());
 
 		return relationsToEdgeEntities;
 	}
@@ -246,7 +250,8 @@ public class ImportEndpoint {
 			instance.setModel(model);
 			instance.setNanoentities(loadNanoentities(transaction.getNanoentitiesRead(), model));
 			instance.setSecondNanoentities(loadNanoentities(transaction.getNanoentitiesWritten(), model));
-			log.info("Import use cases {} with fields written {} and fields read {}", transaction.getName(), transaction.getNanoentitiesWritten(), transaction.getNanoentitiesRead());
+			log.info("Import use cases {} with fields written {} and fields read {}", transaction.getName(), transaction.getNanoentitiesWritten(),
+					transaction.getNanoentitiesRead());
 		}
 	}
 
@@ -277,7 +282,7 @@ public class ImportEndpoint {
 	@Path("/{modelId}/characteristics/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importCharacteristics(@PathParam("modelId") final Long modelId, final List<ImportCharacteristic> characteristics) {
+	public void importCharacteristics(@PathParam("modelId") final Long modelId, final List<Characteristic> characteristics) {
 		Model model = modelRepository.findOne(modelId);
 		if (model == null || characteristics == null) {
 			throw new InvalidRestParam();
@@ -285,12 +290,12 @@ public class ImportEndpoint {
 		// persistCharacteristics(model, characteristics, );
 	}
 
-	private void persistCharacteristics(final Model model, final List<ImportCharacteristic> characteristics, final String criterionName) {
+	private void persistCharacteristics(final Model model, final List<Characteristic> characteristics, final String criterionName) {
 		if (characteristics == null || characteristics.isEmpty()) {
 			return;
 		}
-		for (ImportCharacteristic inputCharacteristic : characteristics) {
-			CouplingCriterionCharacteristic characteristic = findCharacteristic(criterionName, inputCharacteristic.getCharacteristicName());
+		for (Characteristic inputCharacteristic : characteristics) {
+			CouplingCriterionCharacteristic characteristic = findCharacteristic(criterionName, inputCharacteristic.getCharacteristic());
 			if (characteristic == null) {
 				log.error("characteristic {} not known! ignoring...", inputCharacteristic);
 				continue;
@@ -304,9 +309,9 @@ public class ImportEndpoint {
 				newInstance.setName(criterionName);
 				newInstance.setModel(model);
 				newInstance.setNanoentities(loadNanoentities(inputCharacteristic.getNanoentities(), model));
-				log.info("Import distance characteristic {}-{} with nanoentities {}", criterionName, inputCharacteristic.getCharacteristicName(), newInstance.getAllNanoentities());
+				log.info("Import distance characteristic {}-{} with nanoentities {}", criterionName, inputCharacteristic.getCharacteristic(), newInstance.getAllNanoentities());
 			} else {
-				log.error("enhancing characteristics not yet implemented. criterion: {}, characteristic: {}", criterionName, inputCharacteristic.getCharacteristicName());
+				log.error("enhancing characteristics not yet implemented. criterion: {}, characteristic: {}", criterionName, inputCharacteristic.getCharacteristic());
 				throw new InvalidRestParam();
 			}
 		}

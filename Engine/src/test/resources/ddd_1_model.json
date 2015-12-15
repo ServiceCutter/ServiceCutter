@@ -1,4 +1,5 @@
 {
+   "name": "Cargo Tracking",
    "entities": [
       {
          "name": "Cargo",

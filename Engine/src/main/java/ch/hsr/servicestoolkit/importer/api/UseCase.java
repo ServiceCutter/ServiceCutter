@@ -21,6 +21,10 @@ public class UseCase {
 		return name;
 	}
 
+	public void setName(final String name) {
+		this.name = name;
+	}
+
 	public List<String> getNanoentitiesRead() {
 		return nanoentitiesRead;
 	}

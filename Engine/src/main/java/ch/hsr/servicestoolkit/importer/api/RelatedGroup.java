@@ -4,8 +4,8 @@ import java.util.List;
 
 public class RelatedGroup {
 
-	private List<String> nanoentities;
 	private String name;
+	private List<String> nanoentities;
 
 	// Jackson
 	public RelatedGroup() {
@@ -24,6 +24,14 @@ public class RelatedGroup {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	public void setNanoentities(final List<String> nanoentities) {
+		this.nanoentities = nanoentities;
 	}
 
 }

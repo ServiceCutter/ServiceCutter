@@ -19,8 +19,8 @@
                 </li>
                 <li ui-sref-active="active" ng-switch-when="true">
                     <a ui-sref="editor">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        <span>Editor</span>
+                        <span class="glyphicon glyphicon-file"></span>
+                        <span>Importer</span>
                     </a>
                 </li>
                 <li ui-sref-active="active" ng-switch-when="true">
@@ -71,37 +71,37 @@
                         <li ui-sref-active="active" ng-switch-when="false"><a ui-sref="login"><span class="glyphicon glyphicon-log-in"></span>
                             &#xA0;<span>Authenticate</span></a></li>
 
-                        <li ui-sref-active="active" ng-switch-when="false"><a ui-sref="register"><span class="glyphicon glyphicon-plus-sign"></span>
-                            &#xA0;<span>Register</span></a></li>
+<!--                         <li ui-sref-active="active" ng-switch-when="false"><a ui-sref="register"><span class="glyphicon glyphicon-plus-sign"></span> -->
+<!--                             &#xA0;<span>Register</span></a></li> -->
                     </ul>
                 </li>
-                <li ng-class="{active: $state.includes('admin')}"  ng-switch-when="true" has-authority="ROLE_ADMIN" class="dropdown pointer">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="">
-                                <span>
-                                    <span class="glyphicon glyphicon-tower"></span>
-                                    <span class="hidden-tablet">Administration</span>
-                                    <b class="caret"></b>
-                                </span>
-                    </a>
-                    <ul class="dropdown-menu">
+<!--                 <li ng-class="{active: $state.includes('admin')}"  ng-switch-when="true" has-authority="ROLE_ADMIN" class="dropdown pointer"> -->
+<!--                     <a class="dropdown-toggle" data-toggle="dropdown" href=""> -->
+<!--                                 <span> -->
+<!--                                     <span class="glyphicon glyphicon-tower"></span> -->
+<!--                                     <span class="hidden-tablet">Administration</span> -->
+<!--                                     <b class="caret"></b> -->
+<!--                                 </span> -->
+<!--                     </a> -->
+<!--                     <ul class="dropdown-menu"> -->
                         <!-- <li ui-sref-active="active"><a ui-sref="user-management"><span class="glyphicon glyphicon-user"></span>
                             &#xA0;<span>User Management</span></a></li> -->
-                        <li ui-sref-active="active"><a ui-sref="tracker"><span class="glyphicon glyphicon-eye-open"></span>
-                                &nbsp;<span>User tracker</span></a></li>
-                        <li ui-sref-active="active"><a ui-sref="metrics"><span class="glyphicon glyphicon-dashboard"></span>
-                            &#xA0;<span>Metrics</span></a></li>
-                        <li ui-sref-active="active"><a ui-sref="health"><span class="glyphicon glyphicon-heart"></span>
-                            &#xA0;<span>Health</span></a></li>
-                        <li ui-sref-active="active"><a ui-sref="configuration"><span class="glyphicon glyphicon-list-alt"></span>
-                            &#xA0;<span>Configuration</span></a></li>
-                        <li ui-sref-active="active"><a ui-sref="audits"><span class="glyphicon glyphicon-bell"></span>
-                            &#xA0;<span>Audits</span></a></li>
-                        <li ui-sref-active="active"><a ui-sref="logs"><span class="glyphicon glyphicon-tasks"></span>
-                            &#xA0;<span>Logs</span></a></li>
-                        <li ng-hide="inProduction" ui-sref-active="active"><a ui-sref="docs"><span class="glyphicon glyphicon-book"></span>
-                            &#xA0;<span>API</span></a></li>
-                        <li ng-hide="inProduction"><a href='/console' target="_tab"><span class="glyphicon glyphicon-hdd"></span>
-                            &#xA0;<span>Database</span></a></li>
+<!--                         <li ui-sref-active="active"><a ui-sref="tracker"><span class="glyphicon glyphicon-eye-open"></span> -->
+<!--                                 &nbsp;<span>User tracker</span></a></li> -->
+<!--                         <li ui-sref-active="active"><a ui-sref="metrics"><span class="glyphicon glyphicon-dashboard"></span> -->
+<!--                             &#xA0;<span>Metrics</span></a></li> -->
+<!--                         <li ui-sref-active="active"><a ui-sref="health"><span class="glyphicon glyphicon-heart"></span> -->
+<!--                             &#xA0;<span>Health</span></a></li> -->
+<!--                         <li ui-sref-active="active"><a ui-sref="configuration"><span class="glyphicon glyphicon-list-alt"></span> -->
+<!--                             &#xA0;<span>Configuration</span></a></li> -->
+<!--                         <li ui-sref-active="active"><a ui-sref="audits"><span class="glyphicon glyphicon-bell"></span> -->
+<!--                             &#xA0;<span>Audits</span></a></li> -->
+<!--                         <li ui-sref-active="active"><a ui-sref="logs"><span class="glyphicon glyphicon-tasks"></span> -->
+<!--                             &#xA0;<span>Logs</span></a></li> -->
+<!--                         <li ng-hide="inProduction" ui-sref-active="active"><a ui-sref="docs"><span class="glyphicon glyphicon-book"></span> -->
+<!--                             &#xA0;<span>API</span></a></li> -->
+<!--                         <li ng-hide="inProduction"><a href='/console' target="_tab"><span class="glyphicon glyphicon-hdd"></span> -->
+<!--                             &#xA0;<span>Database</span></a></li> -->
                     </ul>
                 </li>
             </ul>

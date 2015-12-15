@@ -15,19 +15,50 @@ The Service Cutter consists of the following components:
 
 All source code is released under the terms of the Apache 2.0 license.
 
-## Build and Run
+# Build and Run
 
 Prerequisite: Maven & JDK 1.8 is installed.
 
-Then run in two different command prompts:
-* `cd Engine; mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8090'`
-* `cd Editor; mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8080'`
+Then run in a first command prompt / shell:
+```
+cd Engine
+mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8090'
+```
 
-Now you should be able to access the Service Cutter on the following URL: http://localhost:8080
+After some time you should see the following line:
+
+    2015-12-15 20:21:55.811  INFO 2976 --- [           main] c.h.s.EngineServiceAppication            : Started EngineServiceAppication in 9.113 seconds (JVM running for 9.946)
+
+Open http://localhost:8090/engine to verify whether the engine is running correctly. You should see:
+
+```json
+{"description":"Engine is up and running."}
+```
+
+Now we need to install the JHipster development dependencies:
+
+1. Install Node.js [from the Node.js](http://nodejs.org/) website.
+2. Install Yeoman: `npm install -g yo`
+3. Install Bower: `npm install -g bower`
+4. Install Grunt: `npm install -g grunt-cli`
+
+And in a second command prompt / shell:
+```
+cd Editor
+mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=8080'
+```
+
+Now you should be able to access the Service Cutter using the following URL: http://localhost:8080
 
 The editor by default expects the engine to be accessible under http://localhost:8090. If not, please add the following JVM parameters to the editor:
 * `application.links.engine.host=enginehost`
 * `application.links.engine.port=1234`
+
+# Development
+
+We recommend using Grunt and Eclipse and the [Spring Tool Suite](https://spring.io/tools) for development. 
+
+Information on how to import a JHipster project into Eclipse can be found in the [JHipster documentation](https://jhipster.github.io/configuring_ide_eclipse.html).
 
 # Deployment
 

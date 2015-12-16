@@ -4,127 +4,83 @@
       {
          "name":"AccountOwner",
          "nanoentities":[
-            {
-               "name":"address"
-            }
+               "address"
          ]
       },
       {
          "name":"NaturalPerson",
          "nanoentities":[
-            {
-               "name":"name"
-            }
+               "name"
          ]
       },
       {
          "name":"Company",
          "nanoentities":[
-            {
-               "name":"companyName"
-            }
+               "companyName"
          ]
       },
       {
          "name":"Account",
          "nanoentities":[
-            {
-               "name":"number"
-            }
+               "number"
          ]
       },
       {
          "name":"Recommendation",
          "nanoentities":[
-            {
-               "name":"description"
-            }
+               "description"
          ]
       },
       {
          "name":"PaymentInfo",
          "nanoentities":[
-            {
-               "name":"cashAccount"
-            }
+               "cashAccount"
          ]
       },
       {
          "name":"Instruction",
          "nanoentities":[
-            {
-               "name":"instructedTime"
-            }
+               "instructedTime"
          ]
       },
       {
          "name":"Order",
          "nanoentities":[
-            {
-               "name":"posted"
-            },
-            {
-               "name":"expires"
-            },
-            {
-               "name":"triggerPrice"
-            },
-            {
-               "name":"executed"
-            },
-            {
-               "name":"type"
-            },
-            {
-               "name":"amount"
-            }
+               "posted",
+               "expires",
+               "triggerPrice",
+               "executed",
+               "type",
+               "amount"
          ]
       },
       {
          "name":"Stock",
          "nanoentities":[
-            {
-               "name":"identifier"
-            },
-            {
-               "name":"stockName"
-            }
+               "identifier",
+               "stockName"
          ]
       },
       {
          "name":"Position",
          "nanoentities":[
-            {
-               "name":"balance"
-            }
+               "balance"
          ]
       },
       {
          "name":"Price",
          "nanoentities":[
-            {
-               "name":"dateTime"
-            },
-            {
-               "name":"price"
-            },
-            {
-               "name":"currency"
-            }
+               "dateTime",
+               "price",
+               "currency"
          ]
       },
       {
          "name":"News",
          "nanoentities":[
-            {
-               "name":"title"
-            },
-            {
-               "name":"text"
-            },
-            {
-               "name":"image"
-            }
+               "title",
+               "text",
+               "image"
          ]
       }
    ],

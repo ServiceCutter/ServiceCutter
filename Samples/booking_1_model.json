@@ -4,55 +4,29 @@
     {
       "name": "Customer",
       "nanoentities": [
-        {
-          "name": "firstname"
-        },
-        {
-          "name": "name"
-        },
-        {
-          "name": "street"
-        },
-        {
-          "name": "city"
-        },
-        {
-          "name": "accountNr"
-        },
-        {
-          "name": "creditCard"
-        }
+      		"firstname",
+      		"name",
+			"street",
+			"city",
+			"accountNr",
+			"creditCard"
       ]
     },
     {
       "name": "Booking",
       "nanoentities": [
-        {
-          "name": "bookingDate"
-        },
-        {
-          "name": "paymentDate"
-        },
-        {
-          "name": "totalPrice"
-        },
-        {
-          "name": "bookingState"
-        }
+          "bookingDate",
+          "paymentDate",
+          "totalPrice",
+          "bookingState"
       ]
     },
     {
       "name": "Article",
       "nanoentities": [
-        {
-          "name": "articleName"
-        },
-        {
-          "name": "price"
-        },
-        {
-          "name": "serial"
-        }
+          "articleName",
+          "price",
+          "serial"
       ]
     }
   ],

@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.model.systemdata;
+package ch.hsr.servicecutter.model.userdata;
 
 public enum InstanceType {
 

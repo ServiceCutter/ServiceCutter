@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 
 public class ServiceCut {
 

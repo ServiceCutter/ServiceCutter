@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.model.systemdata;
+package ch.hsr.servicecutter.model.userdata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,33 +39,32 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 
 	@ManyToOne
 	@JsonIgnore
-	private Model model;
+	private UserSystem userSystem;
 
 	@ManyToMany
-	@JoinTable(name = "nanoentity_to_second_couplinginstance", joinColumns = {@JoinColumn(name = "nanoentity_id", referencedColumnName = "id")}, inverseJoinColumns = {
-			@JoinColumn(name = "coupling_id", referencedColumnName = "id")})
+	@JoinTable(name = "nanoentity_to_second_couplinginstance", joinColumns = { @JoinColumn(name = "nanoentity_id", referencedColumnName = "id") }, inverseJoinColumns = {
+			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
 	private List<Nanoentity> nanoentities = new ArrayList<>();
 	@ManyToOne
 	@NotNull
 	private CouplingCriterion couplingCriterion;
 	@ManyToOne
 	private CouplingCriterionCharacteristic characteristic;
-	private boolean singleInstancePerModel = false;
 	@ManyToMany
-	@JoinTable(name = "nanoentity_to_couplinginstance", joinColumns = {@JoinColumn(name = "nanoentity_id", referencedColumnName = "id")}, inverseJoinColumns = {
-			@JoinColumn(name = "coupling_id", referencedColumnName = "id")})
+	@JoinTable(name = "nanoentity_to_couplinginstance", joinColumns = { @JoinColumn(name = "nanoentity_id", referencedColumnName = "id") }, inverseJoinColumns = {
+			@JoinColumn(name = "coupling_id", referencedColumnName = "id") })
 	private List<Nanoentity> secondNanoentities = new ArrayList<>();
 
 	@Enumerated(EnumType.STRING)
 	private InstanceType instanceType;
 
-	public CouplingInstance(CouplingCriterion couplingCriterion, InstanceType type) {
+	public CouplingInstance(final CouplingCriterion couplingCriterion, final InstanceType type) {
 		Assert.assertNotEquals("Constructor only to be used for not-compatibility criteria!", CouplingType.COMPATIBILITY, couplingCriterion.getType());
 		instanceType = type;
 		this.couplingCriterion = couplingCriterion;
 	}
 
-	public CouplingInstance(CouplingCriterionCharacteristic characteristic, InstanceType type) {
+	public CouplingInstance(final CouplingCriterionCharacteristic characteristic, final InstanceType type) {
 		instanceType = type;
 		setCharacteristicAndCriterion(characteristic);
 	}
@@ -96,14 +95,6 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 		}
 	}
 
-	public boolean isSingleInstancePerModel() {
-		return singleInstancePerModel;
-	}
-
-	public void setSingleInstancePerModel(final boolean singleInstancePerModel) {
-		this.singleInstancePerModel = singleInstancePerModel;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -130,15 +121,15 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 		return true;
 	}
 
-	public void setModel(final Model model) {
-		this.model = model;
+	public void setSystem(final UserSystem userSystem) {
+		this.userSystem = userSystem;
 	}
 
 	public CouplingCriterion getCouplingCriterion() {
 		return couplingCriterion;
 	}
 
-	public void setCouplingCriterion(CouplingCriterion couplingCriterion) {
+	public void setCouplingCriterion(final CouplingCriterion couplingCriterion) {
 		this.couplingCriterion = couplingCriterion;
 	}
 
@@ -146,11 +137,11 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 		return characteristic;
 	}
 
-	public void setCharacteristic(CouplingCriterionCharacteristic characteristic) {
+	public void setCharacteristic(final CouplingCriterionCharacteristic characteristic) {
 		setCharacteristicAndCriterion(characteristic);
 	}
 
-	public boolean isCharacteristic(String name) {
+	public boolean isCharacteristic(final String name) {
 		return characteristic != null && characteristic.getName().equals(name);
 	}
 
@@ -176,14 +167,14 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 		return result;
 	}
 
-	private void setCharacteristicAndCriterion(CouplingCriterionCharacteristic characteristic) {
+	private void setCharacteristicAndCriterion(final CouplingCriterionCharacteristic characteristic) {
 		Assert.assertNotNull(characteristic);
 		this.characteristic = characteristic;
 		this.couplingCriterion = characteristic.getCouplingCriterion();
 	}
 
 	@Override
-	public int compareTo(CouplingInstance o) {
+	public int compareTo(final CouplingInstance o) {
 		return couplingCriterion.getName().compareTo(o.getCouplingCriterion().getName());
 	}
 

@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.hsr.servicecutter.model.systemdata.CouplingInstance;
-import ch.hsr.servicecutter.model.systemdata.InstanceType;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.CouplingInstance;
+import ch.hsr.servicecutter.model.userdata.InstanceType;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Scorer;
 

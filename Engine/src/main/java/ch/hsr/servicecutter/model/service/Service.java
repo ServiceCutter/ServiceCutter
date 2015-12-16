@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 
 public class Service {
 

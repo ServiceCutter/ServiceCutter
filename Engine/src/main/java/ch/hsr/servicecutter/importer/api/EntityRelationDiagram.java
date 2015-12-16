@@ -2,12 +2,12 @@ package ch.hsr.servicecutter.importer.api;
 
 import java.util.List;
 
-public class DomainModel {
+public class EntityRelationDiagram {
 	String name;
 	List<Entity> entities;
 	List<EntityRelation> relations;
 
-	public DomainModel() {
+	public EntityRelationDiagram() {
 	}
 
 	public List<Entity> getEntities() {

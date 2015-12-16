@@ -27,7 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import ch.hsr.servicecutter.EngineServiceAppication;
 import ch.hsr.servicecutter.IntegrationTestHelper;
-import ch.hsr.servicecutter.importer.api.DomainModel;
+import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
 import ch.hsr.servicecutter.solver.Service;
 import ch.hsr.servicecutter.solver.SolverResult;
 
@@ -55,9 +55,9 @@ public class SolverEndpointTest {
 	@Ignore
 	public void testExampleModelFromFile() throws UnsupportedEncodingException, URISyntaxException, IOException {
 
-		DomainModel model = IntegrationTestHelper.readFromFile("test_domain_model.json", DomainModel.class);
+		EntityRelationDiagram model = IntegrationTestHelper.readFromFile("test_domain_model.json", EntityRelationDiagram.class);
 
-		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
+		HttpEntity<EntityRelationDiagram> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
 		ResponseEntity<Map<String, Object>> modelResponse = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,
 				new ParameterizedTypeReference<Map<String, Object>>() {
 				});

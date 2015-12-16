@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ch.hsr.servicecutter.model.systemdata.CouplingInstance;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.CouplingInstance;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 import ch.hsr.servicecutter.scorer.EntityPair;
 
 import java.util.Set;

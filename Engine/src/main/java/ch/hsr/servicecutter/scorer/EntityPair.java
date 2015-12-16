@@ -1,6 +1,6 @@
 package ch.hsr.servicecutter.scorer;
 
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 
 public class EntityPair {
 	public final Nanoentity nanoentityA;

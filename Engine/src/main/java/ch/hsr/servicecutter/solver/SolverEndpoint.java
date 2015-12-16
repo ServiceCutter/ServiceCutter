@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import ch.hsr.servicecutter.model.repository.ModelRepository;
-import ch.hsr.servicecutter.model.systemdata.Model;
+import ch.hsr.servicecutter.model.repository.UserSystemRepository;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 import ch.hsr.servicecutter.rest.InvalidRestParam;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
@@ -30,7 +30,7 @@ import ch.hsr.servicecutter.solver.analyzer.ServiceCutAnalyzer;
 public class SolverEndpoint {
 
 	private final Logger log = LoggerFactory.getLogger(SolverEndpoint.class);
-	private final ModelRepository modelRepository;
+	private final UserSystemRepository userSystemRepository;
 	private ServiceCutAnalyzer analyzer;
 	private Scorer scorer;
 
@@ -39,8 +39,8 @@ public class SolverEndpoint {
 	public static final String[] MODES = new String[] { MODE_GIRVAN_NEWMAN, MODE_LEUNG };
 
 	@Autowired
-	public SolverEndpoint(final ModelRepository modelRepository, final Scorer scorer, final ServiceCutAnalyzer analyzer) {
-		this.modelRepository = modelRepository;
+	public SolverEndpoint(final UserSystemRepository userSystemRepository, final Scorer scorer, final ServiceCutAnalyzer analyzer) {
+		this.userSystemRepository = userSystemRepository;
 		this.scorer = scorer;
 		this.analyzer = analyzer;
 	}
@@ -51,8 +51,8 @@ public class SolverEndpoint {
 	@Path("/{modelId}")
 	@Transactional
 	public SolverResult solveModel(@PathParam("modelId") final Long id, final SolverConfiguration config) {
-		Model model = modelRepository.findOne(id);
-		if (model == null || config == null || config.getPriorities().isEmpty()) {
+		UserSystem userSystem = userSystemRepository.findOne(id);
+		if (userSystem == null || config == null || config.getPriorities().isEmpty()) {
 			return new SolverResult(Collections.emptySet());
 		}
 
@@ -61,14 +61,14 @@ public class SolverEndpoint {
 		StopWatch sw = new StopWatch();
 		sw.start();
 
-		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(model, (final String key) -> {
+		Map<EntityPair, Map<String, Score>> scores = scorer.getScores(userSystem, (final String key) -> {
 			return config.getPriorityForCouplingCriterion(key);
 		});
 		if (MODE_LEUNG.equals(algorithm)) {
-			solver = new GraphStreamSolver(model, scores, config);
+			solver = new GraphStreamSolver(userSystem, scores, config);
 		} else if (MODE_GIRVAN_NEWMAN.equals(algorithm)) {
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
-			solver = new GephiSolver(model, scores, numberOfClusters);
+			solver = new GephiSolver(userSystem, scores, numberOfClusters);
 		} else {
 			log.error("algorithm {} not found, supported values: {}", algorithm, MODES);
 			throw new InvalidRestParam();
@@ -79,9 +79,9 @@ public class SolverEndpoint {
 		SolverResult result = solver.solve();
 		sw.stop();
 		log.info("Found clusters in {}ms", sw.getLastTaskTimeMillis());
-		log.info("model {} solved, found {} bounded contexts: {}", model.getId(), result.getServices().size(), result.toString());
+		log.info("userSystem {} solved, found {} bounded contexts: {}", userSystem.getId(), result.getServices().size(), result.toString());
 		if (result.getServices().size() > 0) {
-			analyzer.analyseResult(result, scores, model);
+			analyzer.analyseResult(result, scores, userSystem);
 		} else {
 			log.warn("No services found!");
 		}

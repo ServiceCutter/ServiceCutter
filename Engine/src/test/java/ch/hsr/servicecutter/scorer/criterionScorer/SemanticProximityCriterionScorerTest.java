@@ -9,7 +9,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.criterionScorer.SemanticProximityCriterionScorer;
 

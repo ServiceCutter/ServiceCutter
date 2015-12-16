@@ -16,23 +16,23 @@ import ch.hsr.servicecutter.model.repository.CouplingCriterionCharacteristicRepo
 import ch.hsr.servicecutter.model.repository.CouplingCriterionRepository;
 import ch.hsr.servicecutter.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
-import ch.hsr.servicecutter.model.systemdata.CouplingInstance;
-import ch.hsr.servicecutter.model.systemdata.InstanceType;
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.CouplingInstance;
+import ch.hsr.servicecutter.model.userdata.InstanceType;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 
 @Component
-public class ModelCompleter {
+public class UserSystemCompleter {
 
 	private CouplingInstanceRepository couplingInstanceRepository;
 	private CouplingCriterionRepository couplingCriterionRepository;
 	private CouplingCriterionCharacteristicRepository characteristicRepository;
 	private NanoentityRepository nanoentityRepository;
 
-	private final Logger log = LoggerFactory.getLogger(ModelCompleter.class);
+	private final Logger log = LoggerFactory.getLogger(UserSystemCompleter.class);
 
 	@Autowired
-	public ModelCompleter(final CouplingCriterionRepository couplingCriterionRepository, final CouplingCriterionCharacteristicRepository characteristicRepository,
+	public UserSystemCompleter(final CouplingCriterionRepository couplingCriterionRepository, final CouplingCriterionCharacteristicRepository characteristicRepository,
 			final CouplingInstanceRepository couplingInstanceRepository, final NanoentityRepository nanoentityRepository) {
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.characteristicRepository = characteristicRepository;
@@ -42,12 +42,13 @@ public class ModelCompleter {
 
 	/**
 	 * creates characteristics instances for the default characteristic of a
-	 * coupling criteria with all nanoentities in the model for which no
+	 * coupling criteria with all nanoentities in the system for which no
 	 * characteristic is defined.
 	 */
-	public void completeModelWithDefaultsForDistance(final Model model) {
-		Set<Nanoentity> allNanoentitiesInModel = nanoentityRepository.findByModel(model);
-		Map<String, Set<CouplingInstance>> instancesByCriterion = couplingInstanceRepository.findByModelGroupedByCriterionFilteredByCriterionType(model, CouplingType.COMPATIBILITY);
+	public void completeSystemWithDefaultsForDistance(final UserSystem system) {
+		Set<Nanoentity> allNanoentitiesInModel = nanoentityRepository.findByUserSystem(system);
+		Map<String, Set<CouplingInstance>> instancesByCriterion = couplingInstanceRepository.findByUserSystemGroupedByCriterionFilteredByCriterionType(system,
+				CouplingType.COMPATIBILITY);
 
 		// For every criterion
 		for (Entry<String, Set<CouplingInstance>> criterion : instancesByCriterion.entrySet()) {
@@ -56,14 +57,15 @@ public class ModelCompleter {
 			Set<Nanoentity> missingNanoentities = allNanoentitiesInModel.stream().filter(nanoentity -> !definedNanoentities.contains(nanoentity)).collect(Collectors.toSet());
 
 			if (!missingNanoentities.isEmpty()) {
-				CouplingCriterionCharacteristic defaultCharacteristic = characteristicRepository.readByCouplingCriterionAndIsDefault(couplingCriterionRepository.readByName(criterion.getKey()), true);
-				Set<CouplingInstance> instances = couplingInstanceRepository.findByModelAndCharacteristic(model, defaultCharacteristic);
+				CouplingCriterionCharacteristic defaultCharacteristic = characteristicRepository
+						.readByCouplingCriterionAndIsDefault(couplingCriterionRepository.readByName(criterion.getKey()), true);
+				Set<CouplingInstance> instances = couplingInstanceRepository.findByUserSystemAndCharacteristic(system, defaultCharacteristic);
 				CouplingInstance instance;
 				if (instances.size() == 1) {
 					instance = instances.iterator().next();
 				} else if (instances.size() == 0) {
 					instance = new CouplingInstance(defaultCharacteristic, InstanceType.CHARACTERISTIC);
-					model.addCouplingInstance(instance);
+					system.addCouplingInstance(instance);
 					instance.setName(defaultCharacteristic.getName());
 					couplingInstanceRepository.save(instance);
 				} else {
@@ -72,7 +74,8 @@ public class ModelCompleter {
 				for (Nanoentity nanoentity : missingNanoentities) {
 					instance.addNanoentity(nanoentity);
 				}
-				log.info("Complete model with instance of characteristic {} of criterion {} and nanoentities {}", defaultCharacteristic.getName(), criterion.getKey(), missingNanoentities);
+				log.info("Complete model with instance of characteristic {} of criterion {} and nanoentities {}", defaultCharacteristic.getName(), criterion.getKey(),
+						missingNanoentities);
 			}
 
 		}

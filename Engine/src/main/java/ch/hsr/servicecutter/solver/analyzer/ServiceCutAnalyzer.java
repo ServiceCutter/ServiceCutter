@@ -18,10 +18,10 @@ import org.springframework.util.Assert;
 
 import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
-import ch.hsr.servicecutter.model.systemdata.CouplingInstance;
-import ch.hsr.servicecutter.model.systemdata.InstanceType;
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.CouplingInstance;
+import ch.hsr.servicecutter.model.userdata.InstanceType;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
 import ch.hsr.servicecutter.solver.Service;
@@ -39,21 +39,21 @@ public class ServiceCutAnalyzer {
 		this.nanoentityRepository = nanoentityRepository;
 	}
 
-	private Nanoentity findNanoentity(final String nanoentityName, final Model model) {
+	private Nanoentity findNanoentity(final String nanoentityName, final UserSystem userSystem) {
 		Nanoentity nanoentity;
 		if (nanoentityName.contains(".")) {
 			String[] splittedName = nanoentityName.split("\\.");
-			nanoentity = nanoentityRepository.findByContextAndNameAndModel(splittedName[0], splittedName[1], model);
+			nanoentity = nanoentityRepository.findByContextAndNameAndUserSystem(splittedName[0], splittedName[1], userSystem);
 		} else {
-			nanoentity = nanoentityRepository.findByNameAndModel(nanoentityName, model);
+			nanoentity = nanoentityRepository.findByNameAndUserSystem(nanoentityName, userSystem);
 		}
 		return nanoentity;
 
 	}
 
-	public void analyseResult(final SolverResult solverResult, final Map<EntityPair, Map<String, Score>> scores, final Model model) {
+	public void analyseResult(final SolverResult solverResult, final Map<EntityPair, Map<String, Score>> scores, final UserSystem userSystem) {
 		// use case responsibility
-		final Map<Service, List<CouplingInstance>> useCaseResponsibilites = getUseCaseResponsibilites(solverResult.getServices(), model);
+		final Map<Service, List<CouplingInstance>> useCaseResponsibilites = getUseCaseResponsibilites(solverResult.getServices(), userSystem);
 		solverResult.setUseCaseResponsibility(transformResponsibilityMap(useCaseResponsibilites));
 		for (Entry<String, List<String>> responsibility : solverResult.getUseCaseResponsibility().entrySet()) {
 			log.info("attach use cases {} to service {}", responsibility.getValue().toString(), responsibility.getKey());
@@ -66,7 +66,7 @@ public class ServiceCutAnalyzer {
 		for (int a = 0; a < serviceList.size() - 1; a++) {
 			for (int b = a + 1; b < serviceList.size(); b++) {
 				ServiceTuple serviceTuple = new ServiceTuple(serviceList.get(a).getName(), serviceList.get(b).getName());
-				Double score = getProximityScoreFor(serviceList.get(a), serviceList.get(b), scores, model);
+				Double score = getProximityScoreFor(serviceList.get(a), serviceList.get(b), scores, userSystem);
 				final List<String> sharedNanoentities = getSharedNanoentities(serviceList.get(a), serviceList.get(b), useCaseResponsibilites);
 				if (score > 0 && !sharedNanoentities.isEmpty()) {
 					log.info("create service relation for services {} and {} with score {} and nanoentities {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score,
@@ -109,9 +109,9 @@ public class ServiceCutAnalyzer {
 		return result;
 	}
 
-	private Map<Service, List<CouplingInstance>> getUseCaseResponsibilites(final Set<Service> set, final Model model) {
+	private Map<Service, List<CouplingInstance>> getUseCaseResponsibilites(final Set<Service> set, final UserSystem userSystem) {
 		Map<Service, List<CouplingInstance>> useCaseResponsibilites = new HashMap<>();
-		model.getCouplingInstances().stream().filter((instance) -> {
+		userSystem.getCouplingInstances().stream().filter((instance) -> {
 			return InstanceType.USE_CASE.equals(instance.getType()) || InstanceType.LATENCY_USE_CASE.equals(instance.getType());
 		}).forEach((instance) -> {
 			Service responsibleService = getResponsibleService(set, instance);
@@ -143,11 +143,11 @@ public class ServiceCutAnalyzer {
 		return responsibleService;
 	}
 
-	private Double getProximityScoreFor(final Service serviceA, final Service serviceB, final Map<EntityPair, Map<String, Score>> scores, final Model model) {
+	private Double getProximityScoreFor(final Service serviceA, final Service serviceB, final Map<EntityPair, Map<String, Score>> scores, final UserSystem userSystem) {
 		Double score = 0d;
 		for (String nanoentityA : serviceA.getNanoentities()) {
 			for (String nanoentityB : serviceB.getNanoentities()) {
-				EntityPair nanoentityTuple = new EntityPair(findNanoentity(nanoentityA, model), findNanoentity(nanoentityB, model));
+				EntityPair nanoentityTuple = new EntityPair(findNanoentity(nanoentityA, userSystem), findNanoentity(nanoentityB, userSystem));
 				final Map<String, Score> scoresByTuple = scores.get(nanoentityTuple);
 				if (scoresByTuple == null) {
 					continue;

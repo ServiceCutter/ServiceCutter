@@ -19,8 +19,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import ch.hsr.servicecutter.EngineServiceAppication;
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -34,15 +34,15 @@ public class EngineServiceRestTest {
 
 	@Test
 	public void createEmptyModel() {
-		Model model = new Model();
+		UserSystem model = new UserSystem();
 		model.setName("testModel");
-		HttpEntity<Model> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
-		ResponseEntity<Model> requestResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models", HttpMethod.POST, request, Model.class);
+		HttpEntity<UserSystem> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
+		ResponseEntity<UserSystem> requestResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models", HttpMethod.POST, request, UserSystem.class);
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET,
-				IntegrationTestHelper.createEmptyHttpRequest(), Model.class);
+		ResponseEntity<UserSystem> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET,
+				IntegrationTestHelper.createEmptyHttpRequest(), UserSystem.class);
 		assertEquals("testModel", assertResult.getBody().getName());
 	}
 
@@ -55,9 +55,9 @@ public class EngineServiceRestTest {
 	}
 
 	private Long createModelOnApi() {
-		Model model = createModel();
-		HttpEntity<Model> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
-		ResponseEntity<Model> entity = restTemplate.exchange("http://localhost:" + this.port + "/engine/models/", HttpMethod.POST, request, Model.class);
+		UserSystem model = createModel();
+		HttpEntity<UserSystem> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
+		ResponseEntity<UserSystem> entity = restTemplate.exchange("http://localhost:" + this.port + "/engine/models/", HttpMethod.POST, request, UserSystem.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		return entity.getBody().getId();
 	}
@@ -70,8 +70,8 @@ public class EngineServiceRestTest {
 		return models;
 	}
 
-	private Model createModel() {
-		Model model = new Model();
+	private UserSystem createModel() {
+		UserSystem model = new UserSystem();
 		model.setName("firstModel");
 		Nanoentity nanoentity1 = new Nanoentity();
 		nanoentity1.setName("firstNanoentity");

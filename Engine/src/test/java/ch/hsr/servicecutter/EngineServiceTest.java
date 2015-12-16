@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicecutter.EngineService;
 import ch.hsr.servicecutter.EngineServiceAppication;
-import ch.hsr.servicecutter.model.systemdata.Model;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -21,39 +21,39 @@ public class EngineServiceTest {
 
 	@Test
 	public void testCreateModel() {
-		Long id = service.createModel(new Model(), "first").getId();
-		Model result = service.getModel(id);
+		Long id = service.createUserSystem(new UserSystem(), "first").getId();
+		UserSystem result = service.getModel(id);
 		assertEquals("first", result.getName());
 	}
 
 	@Test
 	public void testCreateModelSameName() {
-		Model model = new Model();
+		UserSystem model = new UserSystem();
 		model.setName("second");
-		Long id = service.createModel(model, "second").getId();
-		Model result = service.getModel(id);
+		Long id = service.createUserSystem(model, "second").getId();
+		UserSystem result = service.getModel(id);
 		assertEquals("second", result.getName());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateModelDifferentName() {
-		Model model = new Model();
+		UserSystem model = new UserSystem();
 		model.setName("whateverName");
-		service.createModel(model, "third");
+		service.createUserSystem(model, "third");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCreateModelNoName() {
-		Model model = new Model();
-		service.createModel(model, "");
+		UserSystem model = new UserSystem();
+		service.createUserSystem(model, "");
 	}
 
 	@Test
 	public void testCreateModelNoParamName() {
-		Model model = new Model();
+		UserSystem model = new UserSystem();
 		model.setName("fourth");
-		Long id = service.createModel(model, "").getId();
-		Model result = service.getModel(id);
+		Long id = service.createUserSystem(model, "").getId();
+		UserSystem result = service.getModel(id);
 		assertEquals("fourth", result.getName());
 	}
 }

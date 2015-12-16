@@ -15,8 +15,8 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
 
@@ -29,8 +29,8 @@ public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 	protected double m = 0.1;
 	protected double delta = 0.05;
 
-	public GraphStreamSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final SolverConfiguration config) {
-		super(model, scores);
+	public GraphStreamSolver(final UserSystem userSystem, final Map<EntityPair, Map<String, Score>> scores, final SolverConfiguration config) {
+		super(userSystem, scores);
 		graph = new SingleGraph("Service Cutter Graph");
 		Double m = config.getAlgorithmParams().get("leungM");
 		if (m != null) {

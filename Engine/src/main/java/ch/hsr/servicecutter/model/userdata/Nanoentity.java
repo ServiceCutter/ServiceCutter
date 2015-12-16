@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.model.systemdata;
+package ch.hsr.servicecutter.model.userdata;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +21,7 @@ public class Nanoentity {
 	private String context;
 	@ManyToOne
 	@JsonIgnore
-	private Model model;
+	private UserSystem userSystem;
 
 	public Nanoentity() {
 	}
@@ -64,12 +64,12 @@ public class Nanoentity {
 		// do nothing
 	}
 
-	public Model getModel() {
-		return model;
+	public UserSystem getUserSystem() {
+		return userSystem;
 	}
 
-	public void setModel(final Model model) {
-		this.model = model;
+	public void setUserSystem(final UserSystem userSystem) {
+		this.userSystem = userSystem;
 	}
 
 	@Override

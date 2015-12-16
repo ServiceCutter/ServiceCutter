@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
 
@@ -25,12 +25,12 @@ import ch.hsr.servicecutter.scorer.Score;
  */
 public abstract class AbstractSolver<N, E> implements Solver {
 
-	private Model model;
+	private UserSystem userSystem;
 	private final Logger log = LoggerFactory.getLogger(AbstractSolver.class);
 	private Map<EntityPair, Map<String, Score>> scores;
 
-	public AbstractSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores) {
-		this.model = model;
+	public AbstractSolver(final UserSystem userSystem, final Map<EntityPair, Map<String, Score>> scores) {
+		this.userSystem = userSystem;
 		this.scores = scores;
 		log.info("Created solver of type {}", getClass());
 	}
@@ -118,7 +118,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 
 	protected void buildNodes() {
 		// create nodes
-		for (Nanoentity nanoentity : model.getNanoentities()) {
+		for (Nanoentity nanoentity : userSystem.getNanoentities()) {
 			createNode(createNodeIdentifier(nanoentity));
 		}
 	}

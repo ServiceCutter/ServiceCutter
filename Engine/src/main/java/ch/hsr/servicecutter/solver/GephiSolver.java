@@ -30,8 +30,8 @@ import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
 import cz.cvut.fit.krizeji1.girvan_newman.GirvanNewmanClusterer;
@@ -46,11 +46,11 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 	private Integer numberOfClusters;
 	private char serviceIdGenerator = 'A';
 
-	public GephiSolver(final Model model, final Map<EntityPair, Map<String, Score>> scores, final Integer numberOfClusters) {
-		super(model, scores);
+	public GephiSolver(final UserSystem userSystem, final Map<EntityPair, Map<String, Score>> scores, final Integer numberOfClusters) {
+		super(userSystem, scores);
 		this.numberOfClusters = numberOfClusters;
-		if (model == null || model.getNanoentities().isEmpty()) {
-			throw new InvalidParameterException("invalid model!");
+		if (userSystem == null || userSystem.getNanoentities().isEmpty()) {
+			throw new InvalidParameterException("invalid userSystem!");
 		}
 
 		nodes = new HashMap<>();

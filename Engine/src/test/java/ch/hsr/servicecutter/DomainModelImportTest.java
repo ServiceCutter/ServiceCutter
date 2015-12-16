@@ -23,8 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicecutter.EngineServiceAppication;
-import ch.hsr.servicecutter.importer.api.DomainModel;
+import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -37,9 +36,9 @@ public class DomainModelImportTest {
 
 	@Test
 	public void modelImport() throws IOException, URISyntaxException {
-		DomainModel input = IntegrationTestHelper.readFromFile("test_domain_model.json", DomainModel.class);
+		EntityRelationDiagram input = IntegrationTestHelper.readFromFile("test_domain_model.json", EntityRelationDiagram.class);
 
-		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
+		HttpEntity<EntityRelationDiagram> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
 		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/import", HttpMethod.POST, request,
 				new ParameterizedTypeReference<Map<String, Object>>() {
 				});
@@ -47,6 +46,6 @@ public class DomainModelImportTest {
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 
 		assertNotNull(entity.getBody().get("id"));
-		assertTrue(((String) entity.getBody().get("message")).startsWith("model "));
+		assertTrue(((String) entity.getBody().get("message")).startsWith("userSystem "));
 	}
 }

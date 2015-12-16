@@ -1,6 +1,6 @@
 package ch.hsr.servicecutter.importer.api;
 
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 
 /**
  * Used to import a nanoentity. Has the prefix "Import" to mitigate a name

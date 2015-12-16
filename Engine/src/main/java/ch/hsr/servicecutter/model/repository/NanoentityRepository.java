@@ -4,15 +4,15 @@ import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 
 public interface NanoentityRepository extends CrudRepository<Nanoentity, Long> {
 
-	Nanoentity findByNameAndModel(String name, Model model);
+	Nanoentity findByNameAndUserSystem(String name, UserSystem userSystem);
 
-	Nanoentity findByContextAndNameAndModel(final String context, final String name, Model model);
+	Nanoentity findByContextAndNameAndUserSystem(final String context, final String name, UserSystem userSystem);
 
-	Set<Nanoentity> findByModel(Model model);
+	Set<Nanoentity> findByUserSystem(UserSystem userSystem);
 
 }

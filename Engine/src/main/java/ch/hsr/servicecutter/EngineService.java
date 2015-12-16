@@ -19,66 +19,66 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
 
-import ch.hsr.servicecutter.model.repository.ModelRepository;
-import ch.hsr.servicecutter.model.systemdata.Model;
+import ch.hsr.servicecutter.model.repository.UserSystemRepository;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 
 @Component
 @Path("/engine")
 public class EngineService {
 
 	private Logger log = LoggerFactory.getLogger(EngineService.class);
-	private ModelRepository modelRepository;
+	private UserSystemRepository userSystemsRepository;
 
 	@Autowired
-	public EngineService(final ModelRepository modelRepository) {
-		this.modelRepository = modelRepository;
+	public EngineService(final UserSystemRepository systemRepository) {
+		this.userSystemsRepository = systemRepository;
 	}
 
 	@GET
 	@Path("/models")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public Model[] models() {
-		List<Model> result = Lists.newArrayList(modelRepository.findAll());
-		return result.toArray(new Model[result.size()]);
+	public UserSystem[] userSystems() {
+		List<UserSystem> result = Lists.newArrayList(userSystemsRepository.findAll());
+		return result.toArray(new UserSystem[result.size()]);
 	}
 
 	@GET
 	@Path("/models/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public Model getModel(@PathParam("id") final Long id) {
-		return modelRepository.findOne(id);
+	public UserSystem getModel(@PathParam("id") final Long id) {
+		return userSystemsRepository.findOne(id);
 	}
 
 	@POST
 	@Path("/models")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Model createModel(Model model, @PathParam("modelName") final String modelName) {
-		final String finalModelName = getNameForModel(model, modelName);
-		if (model == null) {
-			model = new Model();
+	public UserSystem createUserSystem(UserSystem system, @PathParam("modelName") final String modelName) {
+		final String finalSystemName = getNameForSystem(system, modelName);
+		if (system == null) {
+			system = new UserSystem();
 		}
-		model.setName(finalModelName);
+		system.setName(finalSystemName);
 
-		log.info("created model {} containing {} nanoentities.", finalModelName, model.getNanoentities().size());
-		modelRepository.save(model);
-		return model;
+		log.info("created usersystem {} containing {} nanoentities.", finalSystemName, system.getNanoentities().size());
+		userSystemsRepository.save(system);
+		return system;
 	}
 
-	private String getNameForModel(final Model model, final String name) {
-		String modelName = (model == null || StringUtils.isEmpty(model.getName())) ? null : model.getName();
-		if (modelName == null && StringUtils.isEmpty(name)) {
-			throw new IllegalArgumentException("no name defined for model");
-		} else if (modelName == null && !StringUtils.isEmpty(name)) {
+	private String getNameForSystem(final UserSystem system, final String name) {
+		String systemName = (system == null || StringUtils.isEmpty(system.getName())) ? null : system.getName();
+		if (systemName == null && StringUtils.isEmpty(name)) {
+			throw new IllegalArgumentException("no name defined for system");
+		} else if (systemName == null && !StringUtils.isEmpty(name)) {
 			return name;
-		} else if (modelName != null && StringUtils.isEmpty(name)) {
-			return modelName;
-		} else if (modelName.equals(name)) {
-			return modelName;
+		} else if (systemName != null && StringUtils.isEmpty(name)) {
+			return systemName;
+		} else if (systemName.equals(name)) {
+			return systemName;
 		} else {
-			throw new IllegalArgumentException("inconsistent model name in URI and body object");
+			throw new IllegalArgumentException("inconsistent system name in URI and body object");
 		}
 	}
 

@@ -19,22 +19,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.hsr.servicecutter.EngineServiceAppication;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic;
-import ch.hsr.servicecutter.model.repository.CouplingCriterionCharacteristicRepository;
-import ch.hsr.servicecutter.model.repository.CouplingCriterionRepository;
-import ch.hsr.servicecutter.model.repository.CouplingInstanceRepository;
-import ch.hsr.servicecutter.model.repository.ModelRepository;
-import ch.hsr.servicecutter.model.repository.NanoentityRepository;
-import ch.hsr.servicecutter.model.systemdata.CouplingInstance;
-import ch.hsr.servicecutter.model.systemdata.InstanceType;
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.CouplingInstance;
+import ch.hsr.servicecutter.model.userdata.InstanceType;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
 public class CouplingInstanceRepositoryTest {
 
 	@Autowired
-	private ModelRepository modelRepository;
+	private UserSystemRepository userSystemRepository;
 	@Autowired
 	private CouplingInstanceRepository couplingInstanceRepository;
 	@Autowired
@@ -48,13 +43,13 @@ public class CouplingInstanceRepositoryTest {
 
 	@Test
 	@Transactional
-	public void testFindByModel() {
+	public void testFindBySystem() {
 		CouplingCriterionCharacteristic characteristic = createCharacteristic();
-		addModel(characteristic);
-		Model model = addModel(characteristic);
+		addSystem(characteristic);
+		UserSystem userSystem = addSystem(characteristic);
 		//
 		em.flush();
-		Set<CouplingInstance> list = couplingInstanceRepository.findByModel(model);
+		Set<CouplingInstance> list = couplingInstanceRepository.findByUserSystem(userSystem);
 		assertThat(list, hasSize(1));
 	}
 
@@ -62,24 +57,24 @@ public class CouplingInstanceRepositoryTest {
 	@Transactional
 	public void testDualCouplingPersistence() {
 		CouplingCriterionCharacteristic characteristic = createCharacteristic();
-		Model model = new Model();
-		modelRepository.save(model);
+		UserSystem userSystem = new UserSystem();
+		userSystemRepository.save(userSystem);
 
-		Nanoentity nanoentity1 = createNanoentity(model, "nanoentity1");
-		Nanoentity nanoentity2 = createNanoentity(model, "nanoentity2");
-		Nanoentity nanoentity3 = createNanoentity(model, "nanoentity3");
+		Nanoentity nanoentity1 = createNanoentity(userSystem, "nanoentity1");
+		Nanoentity nanoentity2 = createNanoentity(userSystem, "nanoentity2");
+		Nanoentity nanoentity3 = createNanoentity(userSystem, "nanoentity3");
 
 		CouplingInstance instance = new CouplingInstance(characteristic, InstanceType.CHARACTERISTIC);
-		model.addCouplingInstance(instance);
+		userSystem.addCouplingInstance(instance);
 		couplingInstanceRepository.save(instance);
 		instance.addNanoentity(nanoentity1);
 		instance.addNanoentity(nanoentity2);
 		instance.addSecondNanoentity(nanoentity3);
-		model.addCouplingInstance(instance);
+		userSystem.addCouplingInstance(instance);
 		//
 		em.flush();
 		em.clear();
-		Set<CouplingInstance> list = couplingInstanceRepository.findByModel(model);
+		Set<CouplingInstance> list = couplingInstanceRepository.findByUserSystem(userSystem);
 
 		assertThat(list, hasSize(1));
 		CouplingInstance persistedInstance = list.iterator().next();
@@ -100,21 +95,21 @@ public class CouplingInstanceRepositoryTest {
 		return characteristic;
 	}
 
-	private Nanoentity createNanoentity(final Model model, final String name) {
+	private Nanoentity createNanoentity(final UserSystem userSystem, final String name) {
 		Nanoentity nanoentity = new Nanoentity(name);
 		nanoentityRepository.save(nanoentity);
-		nanoentity.setModel(model);
-		model.addNanoentity(nanoentity);
+		nanoentity.setUserSystem(userSystem);
+		userSystem.addNanoentity(nanoentity);
 		return nanoentity;
 	}
 
-	Model addModel(final CouplingCriterionCharacteristic characteristic) {
-		Model model = new Model();
-		modelRepository.save(model);
+	UserSystem addSystem(final CouplingCriterionCharacteristic characteristic) {
+		UserSystem userSystem = new UserSystem();
+		userSystemRepository.save(userSystem);
 		CouplingInstance instance = new CouplingInstance(characteristic, InstanceType.CHARACTERISTIC);
 		couplingInstanceRepository.save(instance);
-		model.addCouplingInstance(instance);
-		return model;
+		userSystem.addCouplingInstance(instance);
+		return userSystem;
 	}
 
 }

@@ -12,10 +12,10 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicecutter.EngineServiceAppication;
-import ch.hsr.servicecutter.model.repository.ModelRepository;
+import ch.hsr.servicecutter.model.repository.UserSystemRepository;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
-import ch.hsr.servicecutter.model.systemdata.Model;
-import ch.hsr.servicecutter.model.systemdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.userdata.Nanoentity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -29,23 +29,23 @@ public class NanoentityRepositoryTest {
 	NanoentityRepository dataRepo;
 
 	@Autowired
-	ModelRepository modelRepo;
+	UserSystemRepository userSystemRepo;
 
-	private Model model;
+	private UserSystem userSystem;
 
 	@Before
 	public void setUp() {
-		model = new Model();
-		model.setName("imported Thu Oct 15 09:28:12 CEST 2015");
-		modelRepo.save(model);
+		userSystem = new UserSystem();
+		userSystem.setName("imported Thu Oct 15 09:28:12 CEST 2015");
+		userSystemRepo.save(userSystem);
 
-		Model model2 = new Model();
+		UserSystem model2 = new UserSystem();
 		model2.setName("imported Thu Oct 15 09:28:11 CEST 2015");
-		modelRepo.save(model2);
+		userSystemRepo.save(model2);
 
 		Nanoentity nanoentity1 = new Nanoentity();
 		nanoentity1.setName(NANOENTITY_1);
-		model.addNanoentity(nanoentity1);
+		userSystem.addNanoentity(nanoentity1);
 
 		Nanoentity nanoentity2 = new Nanoentity();
 		nanoentity2.setName(NANOENTITY_2);
@@ -56,8 +56,8 @@ public class NanoentityRepositoryTest {
 
 	@Test
 	public void testFindByName() {
-		assertThat(dataRepo.findByNameAndModel(NANOENTITY_1, model), notNullValue());
-		assertThat(dataRepo.findByNameAndModel(NANOENTITY_2, model), nullValue());
+		assertThat(dataRepo.findByNameAndUserSystem(NANOENTITY_1, userSystem), notNullValue());
+		assertThat(dataRepo.findByNameAndUserSystem(NANOENTITY_2, userSystem), nullValue());
 	}
 
 }

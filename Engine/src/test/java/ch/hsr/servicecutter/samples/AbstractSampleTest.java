@@ -30,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import ch.hsr.servicecutter.EngineServiceAppication;
 import ch.hsr.servicecutter.IntegrationTestHelper;
 import ch.hsr.servicecutter.UrlHelper;
-import ch.hsr.servicecutter.importer.api.DomainModel;
+import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
 import ch.hsr.servicecutter.importer.api.UserRepresentationContainer;
 import ch.hsr.servicecutter.solver.SolverConfiguration;
 import ch.hsr.servicecutter.solver.SolverResult;
@@ -85,9 +85,9 @@ public abstract class AbstractSampleTest {
 	}
 
 	private Integer createModelOnApi() throws URISyntaxException, UnsupportedEncodingException, IOException {
-		DomainModel input = IntegrationTestHelper.readFromFile(getModelFile(), DomainModel.class);
+		EntityRelationDiagram input = IntegrationTestHelper.readFromFile(getModelFile(), EntityRelationDiagram.class);
 
-		HttpEntity<DomainModel> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
+		HttpEntity<EntityRelationDiagram> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
 		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request,
 				new ParameterizedTypeReference<Map<String, Object>>() {
 				});
@@ -95,7 +95,7 @@ public abstract class AbstractSampleTest {
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		Integer modelId = (Integer) entity.getBody().get("id");
 		assertNotNull(modelId);
-		assertTrue(((String) entity.getBody().get("message")).startsWith("model "));
+		assertTrue(((String) entity.getBody().get("message")).startsWith("userSystem "));
 		return modelId;
 	}
 

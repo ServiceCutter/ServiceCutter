@@ -10,18 +10,18 @@ import org.springframework.data.repository.CrudRepository;
 
 import ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic;
 import ch.hsr.servicecutter.model.criteria.CouplingType;
-import ch.hsr.servicecutter.model.systemdata.CouplingInstance;
-import ch.hsr.servicecutter.model.systemdata.InstanceType;
-import ch.hsr.servicecutter.model.systemdata.Model;
+import ch.hsr.servicecutter.model.userdata.CouplingInstance;
+import ch.hsr.servicecutter.model.userdata.InstanceType;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 
 public interface CouplingInstanceRepository extends CrudRepository<CouplingInstance, Long> {
 
-	Set<CouplingInstance> findByModel(Model model);
+	Set<CouplingInstance> findByUserSystem(UserSystem userSystem);
 
-	Set<CouplingInstance> findByModelAndCharacteristic(Model model, CouplingCriterionCharacteristic characteristic);
+	Set<CouplingInstance> findByUserSystemAndCharacteristic(UserSystem userSystem, CouplingCriterionCharacteristic characteristic);
 
-	default Map<String, Set<CouplingInstance>> findByModelGroupedByCriterion(final Model model) {
-		return groupByCriterion(findByModel(model));
+	default Map<String, Set<CouplingInstance>> findByUserSystemGroupedByCriterion(final UserSystem userSystem) {
+		return groupByCriterion(findByUserSystem(userSystem));
 	}
 
 	default Map<String, Set<CouplingInstance>> groupByCriterion(final Set<CouplingInstance> instances) {
@@ -36,14 +36,14 @@ public interface CouplingInstanceRepository extends CrudRepository<CouplingInsta
 		return instancesByCriterion;
 	}
 
-	default Map<String, Set<CouplingInstance>> findByModelGroupedByCriterionFilteredByCriterionType(final Model model, final CouplingType type) {
-		return groupByCriterion(findByModel(model).stream().filter(instance -> type.equals(instance.getCouplingCriterion().getType())).collect(Collectors.toSet()));
+	default Map<String, Set<CouplingInstance>> findByUserSystemGroupedByCriterionFilteredByCriterionType(final UserSystem userSystem, final CouplingType type) {
+		return groupByCriterion(findByUserSystem(userSystem).stream().filter(instance -> type.equals(instance.getCouplingCriterion().getType())).collect(Collectors.toSet()));
 	}
 
-	default Set<CouplingInstance> findByModelAndCriterion(final Model model, final String criterion) {
-		return findByModel(model).stream().filter(instance -> criterion.equals(instance.getCouplingCriterion().getName())).collect(Collectors.toSet());
+	default Set<CouplingInstance> findByUserSystemAndCriterion(final UserSystem userSystem, final String criterion) {
+		return findByUserSystem(userSystem).stream().filter(instance -> criterion.equals(instance.getCouplingCriterion().getName())).collect(Collectors.toSet());
 	}
 
-	Set<CouplingInstance> findByModelAndInstanceType(final Model model, final InstanceType type);
+	Set<CouplingInstance> findByUserSystemAndInstanceType(final UserSystem userSystem, final InstanceType type);
 
 }

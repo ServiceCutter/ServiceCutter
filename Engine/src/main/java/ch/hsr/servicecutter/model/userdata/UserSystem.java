@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.model.systemdata;
+package ch.hsr.servicecutter.model.userdata;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,18 +14,17 @@ import javax.persistence.OneToMany;
 import com.google.common.base.Objects;
 
 @Entity
-// TODO: rename into system
-public class Model {
+public class UserSystem {
 
 	@Id
 	@GeneratedValue
 	private Long id;
 	private String name;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "model", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userSystem", fetch = FetchType.EAGER)
 	private List<Nanoentity> nanoentities = new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "model")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "userSystem")
 	private List<CouplingInstance> couplingInstances = new ArrayList<>();
 
 	public List<Nanoentity> getNanoentities() {
@@ -34,12 +33,12 @@ public class Model {
 
 	public void addNanoentity(final Nanoentity nanoentity) {
 		nanoentities.add(nanoentity);
-		nanoentity.setModel(this);
+		nanoentity.setUserSystem(this);
 	}
 
 	public void addCouplingInstance(final CouplingInstance instance) {
 		couplingInstances.add(instance);
-		instance.setModel(this);
+		instance.setSystem(this);
 	}
 
 	public List<CouplingInstance> getCouplingInstances() {
@@ -65,8 +64,8 @@ public class Model {
 
 	@Override
 	public boolean equals(final Object obj) {
-		if (obj instanceof Model) {
-			Model other = (Model) obj;
+		if (obj instanceof UserSystem) {
+			UserSystem other = (UserSystem) obj;
 			return this == other || Objects.equal(id, other.id);
 		} else {
 			return false;

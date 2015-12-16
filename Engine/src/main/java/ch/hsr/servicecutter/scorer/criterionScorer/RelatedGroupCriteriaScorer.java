@@ -16,16 +16,16 @@ public class RelatedGroupCriteriaScorer implements CriterionScorer {
 	private double penalty;
 	private double premium;
 	private Iterable<Nanoentity> allNanoentities;
-	private boolean penalityToOtherGroups;
-	private boolean penalityToAll;
+	private boolean penaltyToOtherGroups;
+	private boolean penaltyToAll;
 
-	public RelatedGroupCriteriaScorer(final double penalty, final double premium, final Iterable<Nanoentity> iterable, final boolean penalityToOtherGroups,
-			final boolean penalityToAll) {
+	public RelatedGroupCriteriaScorer(final double penalty, final double premium, final Iterable<Nanoentity> iterable, final boolean penaltyToOtherGroups,
+			final boolean penaltyToAll) {
 		this.penalty = penalty;
 		this.premium = premium;
 		this.allNanoentities = iterable;
-		this.penalityToOtherGroups = penalityToOtherGroups;
-		this.penalityToAll = penalityToAll;
+		this.penaltyToOtherGroups = penaltyToOtherGroups;
+		this.penaltyToAll = penaltyToAll;
 	}
 
 	// constructor to only set premium within scores
@@ -33,13 +33,13 @@ public class RelatedGroupCriteriaScorer implements CriterionScorer {
 		this(0d, premium, Collections.emptyList(), false, false);
 	}
 
-	// constructor to only set penaltiy to other groups
-	public RelatedGroupCriteriaScorer(final double premium, final double penalty) {
+	// constructor to set penalty to other groups
+	public RelatedGroupCriteriaScorer(final double penalty, final double premium) {
 		this(penalty, premium, Collections.emptyList(), true, false);
 	}
 
-	// constructor to only set penaltiy to all nanoentities not in group
-	public RelatedGroupCriteriaScorer(final double premium, final double penalty, final Iterable<Nanoentity> allEntities) {
+	// constructor to set penalty to all nanoentities not in group
+	public RelatedGroupCriteriaScorer(final double penalty, final double premium, final Iterable<Nanoentity> allEntities) {
 		this(penalty, premium, allEntities, false, true);
 	}
 
@@ -55,11 +55,11 @@ public class RelatedGroupCriteriaScorer implements CriterionScorer {
 					}
 				}
 			}
-			if (penalty != 0 && penalityToAll) {
+			if (penalty != 0 && penaltyToAll) {
 				setPenaltyToOtherFields(result, instance, allNanoentities);
 			}
 
-			if (penalty != 0 && penalityToOtherGroups) {
+			if (penalty != 0 && penaltyToOtherGroups) {
 				List<Nanoentity> allNanoentitiesInInstances = instances.stream().flatMap(i -> i.getAllNanoentities().stream()).collect(Collectors.toList());
 				setPenaltyToOtherFields(result, instance, allNanoentitiesInInstances);
 			}

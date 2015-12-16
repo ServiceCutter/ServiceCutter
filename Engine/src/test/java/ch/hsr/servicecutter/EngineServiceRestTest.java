@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
+import ch.hsr.servicecutter.model.EngineState;
 import ch.hsr.servicecutter.model.usersystem.Nanoentity;
 import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
@@ -30,6 +31,13 @@ public class EngineServiceRestTest {
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
+
+	@Test
+	public void statusCheck() {
+		ResponseEntity<EngineState> entity = this.restTemplate.getForEntity("http://localhost:" + this.port + "/engine", EngineState.class);
+		assertEquals(HttpStatus.OK, entity.getStatusCode());
+		assertEquals("Engine is up and running.", entity.getBody().getDescription());
+	}
 
 	@Test
 	public void createEmptyModel() {

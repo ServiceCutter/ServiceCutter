@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
 
+import ch.hsr.servicecutter.model.EngineState;
 import ch.hsr.servicecutter.model.repository.UserSystemRepository;
 import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
@@ -32,6 +33,12 @@ public class EngineService {
 	@Autowired
 	public EngineService(final UserSystemRepository systemRepository) {
 		this.userSystemsRepository = systemRepository;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public EngineState message() {
+		return new EngineState("Engine is up and running.");
 	}
 
 	@GET

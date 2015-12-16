@@ -4,6 +4,8 @@ The Service Cutter suggests a structured way to service decomposition. There is 
 
 This readme focuses on installation and development aspects. A comprehensive documentation of the import format and all coupling criteria can be found in the wiki of this repository.
 
+The Service Cutter is based on the Bachelor Thesis by [Lukas Kölbener](https://github.com/koelbener) and [Michael Gysel](https://github.com/gysel).
+
 # Overview
 
 The Service Cutter consists of the following components:

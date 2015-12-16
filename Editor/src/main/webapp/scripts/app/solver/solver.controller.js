@@ -93,18 +93,18 @@ angular.module('editorApp')
 	        		if(typeof listOfUseCases != 'undefined' && listOfUseCases.length > 0){
 	        			$scope.$apply(function() { $scope.selectedServiceUseCases = listOfUseCases;});
 	        		}
-	        		var selectedServiceRelations = [];
-	        		var relations = $scope.result.relations;
-	        		for(var relation in relations){
-						if(relations[relation].serviceA == nodeId || relations[relation].serviceB == nodeId){
-							var r = {};
-							r['name'] = relations[relation].serviceA + ' - ' +  relations[relation].serviceB
-							r['entities'] = relations[relation].sharedEntities;
-							selectedServiceRelations.push(r);
-						}
-	        		}
-	        		$scope.$apply(function() { $scope.selectedServiceRelations = selectedServiceRelations;});
         		}
+        		var selectedServiceRelations = [];
+        		var relations = $scope.result.relations;
+        		for(var relation in relations){
+					if(relations[relation].serviceA == nodeId || relations[relation].serviceB == nodeId){
+						var r = {};
+						r['name'] = relations[relation].serviceA + ' - ' +  relations[relation].serviceB
+						r['entities'] = relations[relation].sharedEntities;
+						selectedServiceRelations.push(r);
+					}
+        		}
+        		$scope.$apply(function() { $scope.selectedServiceRelations = selectedServiceRelations;});
     		}else if(param.edges.length > 0){
         		var edgeId = param.edges[0];
     			var relations = $scope.result.relations;

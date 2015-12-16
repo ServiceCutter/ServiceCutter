@@ -8,7 +8,7 @@ db:
     POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
 
 editor:
-  image: services-toolkit/editor
+  image: servicecutter/editor
   ports:
    - "40001:8080"
   links:
@@ -21,7 +21,7 @@ editor:
     ENGINE_PORT: "8080"
 
 engine:
-  image: services-toolkit/engine
+  image: servicecutter/engine
 #  build: Engine/docker
   expose:
    - 8080

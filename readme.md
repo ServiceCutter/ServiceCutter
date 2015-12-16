@@ -14,6 +14,7 @@ The Service Cutter consists of the following components:
    * A tiny booking system with three entities.
    * The domain model of the DDD sample application "[Cargo Tracker](http://dddsample.sourceforge.net/)"
    * An imaginary trading system one might find in a bank.
+* **CC-Cards** - contains the coupling criteria cards as `png` files.
 
 All source code is released under the terms of the Apache 2.0 license.
 

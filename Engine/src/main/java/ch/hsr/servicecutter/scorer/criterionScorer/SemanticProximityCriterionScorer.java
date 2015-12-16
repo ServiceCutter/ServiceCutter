@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import ch.hsr.servicecutter.model.solver.EntityPair;
 import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
 import ch.hsr.servicecutter.model.usersystem.InstanceType;
 import ch.hsr.servicecutter.model.usersystem.Nanoentity;
-import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Scorer;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {

@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.scorer;
+package ch.hsr.servicecutter.model.solver;
 
 import ch.hsr.servicecutter.model.usersystem.Nanoentity;
 

@@ -28,8 +28,8 @@ import org.springframework.web.client.RestTemplate;
 import ch.hsr.servicecutter.EngineServiceAppication;
 import ch.hsr.servicecutter.IntegrationTestHelper;
 import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
-import ch.hsr.servicecutter.solver.Service;
-import ch.hsr.servicecutter.solver.SolverResult;
+import ch.hsr.servicecutter.model.solver.Service;
+import ch.hsr.servicecutter.model.solver.SolverResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)

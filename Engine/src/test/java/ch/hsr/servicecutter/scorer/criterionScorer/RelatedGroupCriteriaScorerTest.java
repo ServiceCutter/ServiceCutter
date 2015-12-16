@@ -10,9 +10,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import ch.hsr.servicecutter.model.solver.EntityPair;
 import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
 import ch.hsr.servicecutter.model.usersystem.Nanoentity;
-import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.criterionScorer.RelatedGroupCriteriaScorer;
 
 public class RelatedGroupCriteriaScorerTest {

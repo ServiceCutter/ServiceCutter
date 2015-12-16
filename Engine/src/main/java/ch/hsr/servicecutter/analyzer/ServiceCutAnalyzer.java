@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.solver.analyzer;
+package ch.hsr.servicecutter.analyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,16 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import ch.hsr.servicecutter.model.analyzer.ServiceRelation;
+import ch.hsr.servicecutter.model.analyzer.ServiceTuple;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
+import ch.hsr.servicecutter.model.solver.EntityPair;
+import ch.hsr.servicecutter.model.solver.Service;
+import ch.hsr.servicecutter.model.solver.SolverResult;
 import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
 import ch.hsr.servicecutter.model.usersystem.InstanceType;
 import ch.hsr.servicecutter.model.usersystem.Nanoentity;
 import ch.hsr.servicecutter.model.usersystem.UserSystem;
-import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
-import ch.hsr.servicecutter.solver.Service;
-import ch.hsr.servicecutter.solver.SolverResult;
 
 @Component
 public class ServiceCutAnalyzer {

@@ -1,5 +1,7 @@
 package ch.hsr.servicecutter.solver;
 
+import ch.hsr.servicecutter.model.solver.SolverResult;
+
 public interface Solver {
 
 	/**

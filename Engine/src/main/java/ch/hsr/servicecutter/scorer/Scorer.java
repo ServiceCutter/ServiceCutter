@@ -16,6 +16,7 @@ import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.criteria.CouplingType;
 import ch.hsr.servicecutter.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
+import ch.hsr.servicecutter.model.solver.EntityPair;
 import ch.hsr.servicecutter.model.usersystem.InstanceType;
 import ch.hsr.servicecutter.model.usersystem.UserSystem;
 import ch.hsr.servicecutter.scorer.criterionScorer.CharacteristicsCriteriaScorer;

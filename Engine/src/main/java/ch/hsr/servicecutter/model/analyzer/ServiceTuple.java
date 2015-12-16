@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.solver.analyzer;
+package ch.hsr.servicecutter.model.analyzer;
 
 public class ServiceTuple {
 

@@ -3,8 +3,8 @@ package ch.hsr.servicecutter.scorer.criterionScorer;
 import java.util.Map;
 import java.util.Set;
 
+import ch.hsr.servicecutter.model.solver.EntityPair;
 import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
-import ch.hsr.servicecutter.scorer.EntityPair;
 
 public interface CriterionScorer {
 

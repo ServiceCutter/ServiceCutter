@@ -1,4 +1,4 @@
-package ch.hsr.servicecutter.solver;
+package ch.hsr.servicecutter.model.solver;
 
 import java.util.List;
 

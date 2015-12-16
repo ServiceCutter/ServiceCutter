@@ -17,13 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
+import ch.hsr.servicecutter.analyzer.ServiceCutAnalyzer;
 import ch.hsr.servicecutter.model.repository.UserSystemRepository;
+import ch.hsr.servicecutter.model.solver.EntityPair;
+import ch.hsr.servicecutter.model.solver.SolverResult;
 import ch.hsr.servicecutter.model.usersystem.UserSystem;
 import ch.hsr.servicecutter.rest.InvalidRestParam;
-import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
 import ch.hsr.servicecutter.scorer.Scorer;
-import ch.hsr.servicecutter.solver.analyzer.ServiceCutAnalyzer;
 
 @Component
 @Path("/engine/solver")

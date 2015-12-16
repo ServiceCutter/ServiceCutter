@@ -32,8 +32,8 @@ import ch.hsr.servicecutter.IntegrationTestHelper;
 import ch.hsr.servicecutter.UrlHelper;
 import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
 import ch.hsr.servicecutter.importer.api.UserRepresentationContainer;
+import ch.hsr.servicecutter.model.solver.SolverResult;
 import ch.hsr.servicecutter.solver.SolverConfiguration;
-import ch.hsr.servicecutter.solver.SolverResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)

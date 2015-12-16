@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import ch.hsr.servicecutter.model.solver.EntityPair;
 import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
 import ch.hsr.servicecutter.model.usersystem.Nanoentity;
-import ch.hsr.servicecutter.scorer.EntityPair;
 
 public class RelatedGroupCriteriaScorer implements CriterionScorer {
 

@@ -1,10 +1,10 @@
-package ch.hsr.servicecutter.solver;
+package ch.hsr.servicecutter.model.solver;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ch.hsr.servicecutter.solver.analyzer.ServiceRelation;
+import ch.hsr.servicecutter.model.analyzer.ServiceRelation;
 
 public class SolverResult {
 

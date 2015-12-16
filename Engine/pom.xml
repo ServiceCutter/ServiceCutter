@@ -12,7 +12,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<docker.image.prefix>services-toolkit</docker.image.prefix>
+		<docker.image.prefix>servicecutter</docker.image.prefix>
 		<jacoco-maven-plugin.version>0.7.4.201502262128</jacoco-maven-plugin.version>
 	</properties>
 

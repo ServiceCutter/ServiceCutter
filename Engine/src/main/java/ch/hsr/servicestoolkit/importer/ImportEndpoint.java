@@ -1,6 +1,7 @@
 package ch.hsr.servicestoolkit.importer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -354,4 +356,24 @@ public class ImportEndpoint {
 		CouplingCriterionCharacteristic result = couplingCriteriaCharacteristicRepository.readByNameAndCouplingCriterion(characteristic, couplingCriterion);
 		return result;
 	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("//{id}/couplingcriteria")
+	@Transactional
+	public List<CouplingInstance> getModelCoupling(@PathParam("id") final Long id) {
+		List<CouplingInstance> result = new ArrayList<>();
+		Model model = modelRepository.findOne(id);
+		Set<CouplingInstance> instances = couplingInstanceRepository.findByModel(model);
+		result.addAll(instances);
+		for (CouplingInstance couplingInstance : instances) {
+			// init lazy collection, otherwise you'll get a serialization
+			// exception as the transaction is already closed
+			couplingInstance.getAllNanoentities().size();
+		}
+		log.debug("return criteria for model {}: {}", model.getName(), result.toString());
+		Collections.sort(result);
+		return result;
+	}
+
 }

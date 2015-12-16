@@ -2,7 +2,7 @@
 
 The Service Cutter suggests a structured way to service decomposition. There is [a tutorial](https://servicecutter.github.io/) providing you with a functional overview. 
 
-This readme focuses on installation and development aspects. A comprehensive documentation of the import file is attached in the file `import.md` in this repository.
+This readme focuses on installation and development aspects. A comprehensive documentation of the import format and all coupling criteria can be found in the wiki of this repository.
 
 # Overview
 

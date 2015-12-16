@@ -35,8 +35,8 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 
 		List<CouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.getType().equals(InstanceType.AGGREGATION)).collect(Collectors.toList());
 		for (CouplingInstance aggregationInstance : aggregationInstances) {
-			for (Nanoentity nanoentityA : aggregationInstance.getNanoentities()) {
-				for (Nanoentity nanoentityB : aggregationInstance.getSecondNanoentities()) {
+			for (Nanoentity nanoentityA : aggregationInstance.getAllNanoentities()) {
+				for (Nanoentity nanoentityB : aggregationInstance.getAllNanoentities()) {
 					addToResult(nanoentityA, nanoentityB, SCORE_AGGREGATION);
 				}
 			}

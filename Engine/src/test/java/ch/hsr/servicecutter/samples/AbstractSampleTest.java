@@ -68,6 +68,7 @@ public abstract class AbstractSampleTest {
 		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
 		});
 
+		System.out.println(entity.getBody().get("warnings"));
 		assertTrue(((List<String>) entity.getBody().get("warnings")).isEmpty());
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 	}

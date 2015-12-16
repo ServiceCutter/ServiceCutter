@@ -94,17 +94,18 @@ public class ImportEndpoint {
 		}
 		system.setName(name);
 
-		Map<ImportNanoentity, String> entityAttributes = new HashMap<>();
+		// TODO: handle case if two nanoentities of consolidate entities have
+		// the same name
+		Map<String, String> inputEntityAttributes = new HashMap<>();
 		for (Entity entity : erd.getEntities()) {
-			for (ImportNanoentity attribute : entity.getNanoentities()) {
-				entityAttributes.put(attribute, entity.getName());
+			for (String attribute : entity.getNanoentities()) {
+				inputEntityAttributes.put(attribute, entity.getName());
 			}
-
 		}
 
 		// entities
 		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
-		for (Entry<String, List<ImportNanoentity>> entityAndNanoentities : findRealEntities(erd).entrySet()) {
+		for (Entry<String, List<String>> entityAndNanoentities : findRealEntities(erd).entrySet()) {
 			CouplingInstance entityInstance = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
 			system.addCouplingInstance(entityInstance);
 			couplingInstanceRepository.save(entityInstance);
@@ -112,8 +113,8 @@ public class ImportEndpoint {
 			entityInstance.setName(entityName);
 			entityInstance.setSystem(system);
 			log.info("store entity with attributes {}", entityAndNanoentities.getValue());
-			for (ImportNanoentity entityAttribute : entityAndNanoentities.getValue()) {
-				Nanoentity nanoentity = persistNanoentity(system, entityAttributes.get(entityAttribute), entityAttribute.getName());
+			for (String entityAttribute : entityAndNanoentities.getValue()) {
+				Nanoentity nanoentity = persistNanoentity(system, inputEntityAttributes.get(entityAttribute), entityAttribute);
 				entityInstance.addNanoentity(nanoentity);
 				log.info("Import nanoentity {}", nanoentity.getContextName());
 			}
@@ -126,10 +127,9 @@ public class ImportEndpoint {
 				CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.AGGREGATION);
 				couplingInstanceRepository.save(instance);
 				List<Nanoentity> originNanoentities = relation.getOrigin().getNanoentities().stream()
-						.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getOrigin().getName(), attr.getName(), system)).collect(Collectors.toList());
+						.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getOrigin().getName(), attr, system)).collect(Collectors.toList());
 				List<Nanoentity> destinationNanoentities = relation.getDestination().getNanoentities().stream()
-						.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getDestination().getName(), attr.getName(), system))
-						.collect(Collectors.toList());
+						.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getDestination().getName(), attr, system)).collect(Collectors.toList());
 				instance.setNanoentities(originNanoentities);
 				instance.setSecondNanoentities(destinationNanoentities);
 				instance.setSystem(system);
@@ -145,8 +145,8 @@ public class ImportEndpoint {
 		return result;
 	}
 
-	private Map<String, List<ImportNanoentity>> findRealEntities(final EntityRelationDiagram erd) {
-		Map<String, List<ImportNanoentity>> realEntities = new HashMap<>();
+	private Map<String, List<String>> findRealEntities(final EntityRelationDiagram erd) {
+		Map<String, List<String>> realEntities = new HashMap<>();
 		for (Entity entity : erd.getEntities()) {
 			realEntities.put(entity.getName(), entity.getNanoentities());
 		}
@@ -160,7 +160,7 @@ public class ImportEndpoint {
 			log.info("Entity reduction iteration, reduce relations {}", relationsToEdgeEntities);
 			for (EntityRelation relation : relationsToEdgeEntities) {
 				if (RelationType.COMPOSITION.equals(relation.getType())) {
-					List<ImportNanoentity> list = realEntities.get(relation.getOrigin().getName());
+					List<String> list = realEntities.get(relation.getOrigin().getName());
 					if (list != null) {
 						list.addAll(relation.getDestination().getNanoentities());
 					} else {
@@ -279,6 +279,7 @@ public class ImportEndpoint {
 
 	private Nanoentity persistNanoentity(final UserSystem system, final String context, final String name) {
 		Nanoentity nanoentity = new Nanoentity();
+
 		nanoentity.setName(name);
 		nanoentity.setContext(context);
 		system.addNanoentity(nanoentity);

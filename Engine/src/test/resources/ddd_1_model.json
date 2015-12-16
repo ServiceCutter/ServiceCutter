@@ -4,121 +4,71 @@
       {
          "name": "Cargo",
          "nanoentities": [
-            {
-               "name":"trackingId"
-            }
+             "trackingId"
          ]
       },
       {
          "name": "RouteSpecification",
          "nanoentities": [
-            {
-               "name":"origin"
-            },
-            {
-               "name":"destination"
-            },
-            {
-               "name":"arrivalDeadline"
-            }
+               "origin",
+               "destination",
+               "arrivalDeadline"
          ]
       },
       {
          "name": "Leg",
          "nanoentities": [
-            {
-               "name":"loadLocation"
-            },
-            {
-               "name":"unloadLocation"
-            },
-            {
-               "name":"loadTime"
-            },
-            {
-               "name":"unloadTime"
-            }
+               "loadLocation",
+               "unloadLocation",
+               "loadTime",
+               "unloadTime"
          ]
       },
       {
          "name":"Voyage",
          "nanoentities":[
-            {
-               "name":"voyageNumber"
-            }
+               "voyageNumber"
          ]
       },
       {
          "name":"CarrierMovement",
          "nanoentities":[
-            {
-               "name":"departureLocation"
-            },
-            {
-               "name":"arrivalLocation"
-            },
-            {
-               "name":"departureTime"
-            },
-            {
-               "name":"arrivalTime"
-            }
+               "departureLocation",
+               "arrivalLocation",
+               "departureTime",
+               "arrivalTime"
          ]
       },
 	  {
          "name":"Itinerary",
          "nanoentities":[
-            {
-               "name":"itineraryNumber"
-            }
+               "itineraryNumber"
          ]
       },
       {
          "name":"Delivery",
          "nanoentities":[
-            {
-               "name":"transportStatus"
-            },
-            {
-               "name":"misdirected"
-            },
-            {
-               "name":"estimatedArrivalTime"
-            },
-            {
-               "name":"isUnloadedAtDestination"
-            },
-            {
-               "name":"routingStatus"
-            }
+               "transportStatus",
+               "misdirected",
+               "estimatedArrivalTime",
+               "isUnloadedAtDestination",
+               "routingStatus"
          ]
       },
       {
          "name":"Location",
          "nanoentities":[
-            {
-               "name":"unLocode"
-            },
-            {
-               "name":"name"
-            }
+               "unLocode",
+               "name"
          ]
       },
       {
          "name":"HandlingEvent",
          "nanoentities":[
-            {
-               "name":"type"
-            },
-            {
-               "name":"completionTime"
-            },
-            {
-               "name":"registrationTime"
-            },
-            {
-               "name":"location"
-            }
+               "type",
+               "completionTime",
+               "registrationTime",
+               "location"
          ]
       }
    ],

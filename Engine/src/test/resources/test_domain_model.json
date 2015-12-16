@@ -3,97 +3,63 @@
     {
       "name": "Reservation",
       "nanoentities": [
-        {
-          "name": "reserviertAm"
-        },
-        {
-          "name": "status"
-        }
+          "reserviertAm",
+          "status"
       ]
     },
     {
       "name": "Kunde",
       "nanoentities": [
-        {
-          "name": "name"
-        },
-        {
-          "name": "adresse"
-        }
+          "name",
+          "adresse"
       ]
     },
     {
       "name": "VideoTitel",
       "nanoentities": [
-        {
-          "name": "titel"
-        },
-        {
-          "name": "preisProTag"
-        }
+          "titel",
+          "preisProTag"
       ]
     },
     {
       "name": "Ausleihposition",
       "nanoentities": [
-        {
-          "name": "zurueckAm"
-        },
-        {
-          "name": "barcode"
-        }
+          "zurueckAm",
+          "barcode"
       ]
     },
     {
       "name": "Ausleihe",
       "nanoentities": [
-        {
-          "name": "ausgeliehenAm"
-        },
-        {
-          "name": "abgerechnetAm"
-        }
+          "ausgeliehenAm",
+          "abgerechnetAm"
       ]
     },
     {
       "name": "Bezahlung",
       "nanoentities": [
-        {
-          "name": "erstelltAm"
-        }
+          "erstelltAm"
       ]
     },
     {
       "name": "Kreditkartenzahlung",
       "nanoentities": [
-        {
-          "name": "kartenID"
-        },
-        {
-          "name": "gueltigBis"
-        },
-        {
-          "name": "kaution"
-        }
+          "kartenID",
+          "gueltigBis",
+          "kaution"
       ]
     },
     {
       "name": "DVD",
       "nanoentities": [
-        {
-          "name": "einkaufsDatum"
-        },
-        {
-          "name": "einkaufsPreis"
-        }
+          "einkaufsDatum",
+          "einkaufsPreis"
       ]
     },
     {
       "name": "Barzahlung",
       "nanoentities": [
-        {
-          "name": "rueckgeld"
-        }
+          "rueckgeld"
       ]
     }
   ],

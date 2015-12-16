@@ -1,8 +1,11 @@
 package ch.hsr.servicecutter.scorer.criterionScorer;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import ch.hsr.servicecutter.model.solver.EntityPair;
 import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
@@ -13,11 +16,31 @@ public class RelatedGroupCriteriaScorer implements CriterionScorer {
 	private double penalty;
 	private double premium;
 	private Iterable<Nanoentity> allNanoentities;
+	private boolean penalityToOtherGroups;
+	private boolean penalityToAll;
 
-	public RelatedGroupCriteriaScorer(final double penalty, final double premium, final Iterable<Nanoentity> iterable) {
+	public RelatedGroupCriteriaScorer(final double penalty, final double premium, final Iterable<Nanoentity> iterable, final boolean penalityToOtherGroups,
+			final boolean penalityToAll) {
 		this.penalty = penalty;
 		this.premium = premium;
 		this.allNanoentities = iterable;
+		this.penalityToOtherGroups = penalityToOtherGroups;
+		this.penalityToAll = penalityToAll;
+	}
+
+	// constructor to only set premium within scores
+	public RelatedGroupCriteriaScorer(final double premium) {
+		this(0d, premium, Collections.emptyList(), false, false);
+	}
+
+	// constructor to only set penaltiy to other groups
+	public RelatedGroupCriteriaScorer(final double premium, final double penalty) {
+		this(penalty, premium, Collections.emptyList(), true, false);
+	}
+
+	// constructor to only set penaltiy to all nanoentities not in group
+	public RelatedGroupCriteriaScorer(final double premium, final double penalty, final Iterable<Nanoentity> allEntities) {
+		this(penalty, premium, allEntities, false, true);
 	}
 
 	@Override
@@ -32,20 +55,26 @@ public class RelatedGroupCriteriaScorer implements CriterionScorer {
 					}
 				}
 			}
-			// add penalty to from nanoentities in group to all other
-			// TODO: this overwrites some relations with the same value,
-			// optimize!
-			if (penalty != 0) {
-				for (Nanoentity groupEntity : instance.getAllNanoentities()) {
-					for (Nanoentity otherEntity : allNanoentities) {
-						if (!instance.getAllNanoentities().contains(otherEntity)) {
-							result.put(new EntityPair(groupEntity, otherEntity), penalty);
-						}
-					}
-				}
+			if (penalty != 0 && penalityToAll) {
+				setPenaltyToOtherFields(result, instance, allNanoentities);
+			}
+
+			if (penalty != 0 && penalityToOtherGroups) {
+				List<Nanoentity> allNanoentitiesInInstances = instances.stream().flatMap(i -> i.getAllNanoentities().stream()).collect(Collectors.toList());
+				setPenaltyToOtherFields(result, instance, allNanoentitiesInInstances);
 			}
 		}
 		return result;
+	}
+
+	private void setPenaltyToOtherFields(final Map<EntityPair, Double> result, final CouplingInstance instance, final Iterable<Nanoentity> otherNanoentities) {
+		for (Nanoentity groupEntity : instance.getAllNanoentities()) {
+			for (Nanoentity otherEntity : otherNanoentities) {
+				if (!instance.getAllNanoentities().contains(otherEntity)) {
+					result.put(new EntityPair(groupEntity, otherEntity), penalty);
+				}
+			}
+		}
 	}
 
 }

@@ -5,8 +5,8 @@ import java.util.List;
 public class Compatibilities {
 	private List<Characteristic> contentVolatility;
 	private List<Characteristic> structuralVolatility;
-	private List<Characteristic> availability;
-	private List<Characteristic> consistency;
+	private List<Characteristic> availabilityCriticality;
+	private List<Characteristic> consistencyCriticality;
 	private List<Characteristic> storageSimilarity;
 	private List<Characteristic> securityCriticality;
 
@@ -29,20 +29,20 @@ public class Compatibilities {
 		this.structuralVolatility = structuralVolatility;
 	}
 
-	public List<Characteristic> getAvailability() {
-		return availability;
+	public List<Characteristic> getAvailabilityCriticality() {
+		return availabilityCriticality;
 	}
 
-	public void setAvailability(final List<Characteristic> availability) {
-		this.availability = availability;
+	public void setAvailabilityCriticality(final List<Characteristic> availability) {
+		this.availabilityCriticality = availability;
 	}
 
-	public List<Characteristic> getConsistency() {
-		return consistency;
+	public List<Characteristic> getConsistencyCriticality() {
+		return consistencyCriticality;
 	}
 
-	public void setConsistency(final List<Characteristic> consistency) {
-		this.consistency = consistency;
+	public void setConsistencyCriticality(final List<Characteristic> consistency) {
+		this.consistencyCriticality = consistency;
 	}
 
 	public List<Characteristic> getStorageSimilarity() {

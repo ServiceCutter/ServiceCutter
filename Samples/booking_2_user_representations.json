@@ -29,7 +29,7 @@
 	],
 "compatibilities": 
 	{
-		"availability": 
+		"availabilityCriticality": 
 			[
 				{
 					"characteristic":"Low",

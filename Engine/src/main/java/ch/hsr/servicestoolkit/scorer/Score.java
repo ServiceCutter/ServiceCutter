@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score.relations;
+package ch.hsr.servicestoolkit.scorer;
 
 import java.security.InvalidParameterException;
 

@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.model;
+package ch.hsr.servicestoolkit.model.systemdata;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import com.google.common.base.Objects;
 
 @Entity
+// TODO: rename into system
 public class Model {
 
 	@Id

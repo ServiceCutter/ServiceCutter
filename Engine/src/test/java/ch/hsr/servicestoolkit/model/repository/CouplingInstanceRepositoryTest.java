@@ -17,12 +17,12 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicestoolkit.EngineServiceAppication;
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.InstanceType;
-import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.InstanceType;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)

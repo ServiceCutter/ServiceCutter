@@ -1,6 +1,6 @@
 package ch.hsr.servicestoolkit.importer.api;
 
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
 
 /**
  * Used to import a nanoentity. Has the prefix "Import" to mitigate a name

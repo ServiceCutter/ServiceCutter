@@ -8,11 +8,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.InstanceType;
-import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.criteria.CouplingType;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.InstanceType;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
 
 public interface CouplingInstanceRepository extends CrudRepository<CouplingInstance, Long> {
 

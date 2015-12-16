@@ -1,9 +1,9 @@
-package ch.hsr.servicestoolkit.score;
+package ch.hsr.servicestoolkit.scorer.criterionScorer;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
 
 public class TestDataHelper {
 

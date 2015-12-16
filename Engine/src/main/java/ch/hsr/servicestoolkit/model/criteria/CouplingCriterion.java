@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.model;
+package ch.hsr.servicestoolkit.model.criteria;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

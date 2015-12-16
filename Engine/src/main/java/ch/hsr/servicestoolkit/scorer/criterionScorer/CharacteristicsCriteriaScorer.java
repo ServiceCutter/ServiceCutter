@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score.relations;
+package ch.hsr.servicestoolkit.scorer.criterionScorer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,8 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
+import ch.hsr.servicestoolkit.scorer.EntityPair;
 import jersey.repackaged.com.google.common.collect.Lists;
 
 public class CharacteristicsCriteriaScorer implements CriterionScorer {

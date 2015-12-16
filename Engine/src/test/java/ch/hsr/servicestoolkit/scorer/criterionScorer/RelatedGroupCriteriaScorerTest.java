@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score.relations;
+package ch.hsr.servicestoolkit.scorer.criterionScorer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -10,8 +10,10 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
+import ch.hsr.servicestoolkit.scorer.EntityPair;
+import ch.hsr.servicestoolkit.scorer.criterionScorer.RelatedGroupCriteriaScorer;
 
 public class RelatedGroupCriteriaScorerTest {
 

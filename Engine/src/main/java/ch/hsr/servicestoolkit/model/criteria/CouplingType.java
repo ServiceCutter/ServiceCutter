@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.model;
+package ch.hsr.servicestoolkit.model.criteria;
 
 public enum CouplingType {
 	COHESIVENESS, COMPATIBILITY, CONSTRAINTS, COMMUNICATION

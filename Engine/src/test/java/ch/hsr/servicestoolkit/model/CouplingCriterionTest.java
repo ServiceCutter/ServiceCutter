@@ -5,6 +5,8 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
+
 public class CouplingCriterionTest {
 
 	@Test

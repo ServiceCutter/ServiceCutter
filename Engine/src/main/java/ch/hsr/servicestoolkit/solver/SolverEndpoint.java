@@ -17,12 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.repository.ModelRepository;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
 import ch.hsr.servicestoolkit.rest.InvalidRestParam;
-import ch.hsr.servicestoolkit.score.relations.EntityPair;
-import ch.hsr.servicestoolkit.score.relations.Score;
-import ch.hsr.servicestoolkit.score.relations.Scorer;
+import ch.hsr.servicestoolkit.scorer.EntityPair;
+import ch.hsr.servicestoolkit.scorer.Score;
+import ch.hsr.servicestoolkit.scorer.Scorer;
 import ch.hsr.servicestoolkit.solver.analyzer.ServiceCutAnalyzer;
 
 @Component

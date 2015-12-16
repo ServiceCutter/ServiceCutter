@@ -1,8 +1,9 @@
-package ch.hsr.servicestoolkit.score.relations;
+package ch.hsr.servicestoolkit.scorer.criterionScorer;
 
 import java.util.Set;
 
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
+import ch.hsr.servicestoolkit.scorer.Scorer;
 
 public class CohesiveGroupCriterionScorer extends RelatedGroupCriteriaScorer {
 

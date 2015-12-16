@@ -10,16 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.InstanceType;
-import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.criteria.CouplingType;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionCharacteristicRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.InstanceType;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
 
 @Component
 public class ModelCompleter {

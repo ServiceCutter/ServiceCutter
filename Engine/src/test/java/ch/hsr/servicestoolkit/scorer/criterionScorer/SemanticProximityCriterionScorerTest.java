@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score.relations;
+package ch.hsr.servicestoolkit.scorer.criterionScorer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -9,7 +9,8 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
+import ch.hsr.servicestoolkit.scorer.EntityPair;
 
 public class SemanticProximityCriterionScorerTest {
 

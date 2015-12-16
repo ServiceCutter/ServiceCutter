@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.model;
+package ch.hsr.servicestoolkit.model.criteria;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,12 +11,6 @@ import com.google.common.base.MoreObjects;
 @Entity
 @Table(name = "cc_characteristic")
 public class CouplingCriterionCharacteristic {
-
-	// TODO cleanup
-	public static final String AGGREGATION = "Aggregation";
-	public static final String COMPOSITION = "Composition";
-	public static final String INHERITANCE = "Inheritance";
-	public static final String SAME_ENTITY = "Same Entity";
 
 	@Id
 	@GeneratedValue

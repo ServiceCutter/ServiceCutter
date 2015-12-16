@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionCharacteristicRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionRepository;
 

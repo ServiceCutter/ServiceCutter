@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.model;
+package ch.hsr.servicestoolkit.model.systemdata;
 
 public enum InstanceType {
 

@@ -15,10 +15,10 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.Nanoentity;
-import ch.hsr.servicestoolkit.score.relations.EntityPair;
-import ch.hsr.servicestoolkit.score.relations.Score;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
+import ch.hsr.servicestoolkit.scorer.EntityPair;
+import ch.hsr.servicestoolkit.scorer.Score;
 
 public class GraphStreamSolver extends AbstractSolver<Node, Edge> {
 

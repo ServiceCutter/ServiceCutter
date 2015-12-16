@@ -35,17 +35,17 @@ import ch.hsr.servicestoolkit.importer.api.ImportNanoentity;
 import ch.hsr.servicestoolkit.importer.api.RelatedGroup;
 import ch.hsr.servicestoolkit.importer.api.UseCase;
 import ch.hsr.servicestoolkit.importer.api.UserRepresentationContainer;
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.InstanceType;
-import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterionCharacteristic;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionCharacteristicRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingCriterionRepository;
 import ch.hsr.servicestoolkit.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicestoolkit.model.repository.ModelRepository;
 import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.InstanceType;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
 import ch.hsr.servicestoolkit.rest.InvalidRestParam;
 
 @Component

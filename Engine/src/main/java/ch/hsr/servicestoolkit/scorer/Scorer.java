@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score.relations;
+package ch.hsr.servicestoolkit.scorer;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -12,12 +12,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingType;
-import ch.hsr.servicestoolkit.model.InstanceType;
-import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.criteria.CouplingType;
 import ch.hsr.servicestoolkit.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
+import ch.hsr.servicestoolkit.model.systemdata.InstanceType;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.scorer.criterionScorer.CharacteristicsCriteriaScorer;
+import ch.hsr.servicestoolkit.scorer.criterionScorer.CohesiveGroupCriterionScorer;
+import ch.hsr.servicestoolkit.scorer.criterionScorer.ExclusiveGroupCriterionScorer;
+import ch.hsr.servicestoolkit.scorer.criterionScorer.SemanticProximityCriterionScorer;
+import ch.hsr.servicestoolkit.scorer.criterionScorer.SeparatedGroupCriterionScorer;
 
 @Component
 public class Scorer {
@@ -35,20 +40,6 @@ public class Scorer {
 	public Scorer(final CouplingInstanceRepository repo, final NanoentityRepository nanoentityRepo) {
 		this.couplingInstancesRepo = repo;
 		this.nanoentityRepo = nanoentityRepo;
-	}
-
-	// TODO unused?
-	public Map<EntityPair, Map<String, Score>> updateConfig(final Map<EntityPair, Map<String, Score>> scores, final Function<String, Double> priorityProvider) {
-		Map<EntityPair, Map<String, Score>> result = new HashMap<>();
-		for (Entry<EntityPair, Map<String, Score>> scoresByNanoentityTuple : scores.entrySet()) {
-			result.put(scoresByNanoentityTuple.getKey(), new HashMap<>());
-			for (Entry<String, Score> scoreByCriterion : scoresByNanoentityTuple.getValue().entrySet()) {
-				result.get(scoresByNanoentityTuple.getKey()).put(scoreByCriterion.getKey(),
-						// scoreByCriterion.getValue().withPriority(config.getPriorityForCouplingCriterion(scoreByCriterion.getKey())));
-						scoreByCriterion.getValue().withPriority(priorityProvider.apply(scoreByCriterion.getKey())));
-			}
-		}
-		return result;
 	}
 
 	public Map<EntityPair, Map<String, Score>> getScores(final Model model, final Function<String, Double> priorityProvider) {

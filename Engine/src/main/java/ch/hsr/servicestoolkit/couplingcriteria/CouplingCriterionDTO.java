@@ -2,9 +2,9 @@ package ch.hsr.servicestoolkit.couplingcriteria;
 
 import java.util.List;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.CouplingType;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.criteria.CouplingType;
 
 public class CouplingCriterionDTO implements Comparable<CouplingCriterionDTO> {
 

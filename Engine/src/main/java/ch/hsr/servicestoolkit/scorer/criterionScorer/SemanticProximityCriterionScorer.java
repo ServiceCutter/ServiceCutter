@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.score.relations;
+package ch.hsr.servicestoolkit.scorer.criterionScorer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterionCharacteristic;
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.InstanceType;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
+import ch.hsr.servicestoolkit.scorer.EntityPair;
+import ch.hsr.servicestoolkit.scorer.Scorer;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {
 	Map<EntityPair, Double> result = new HashMap<>();
@@ -35,8 +37,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 			addScoreForMixedAccess(nanoentitiesWritten, nanoentitiesRead);
 		}
 
-		List<CouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.isCharacteristic(CouplingCriterionCharacteristic.AGGREGATION))
-				.collect(Collectors.toList());
+		List<CouplingInstance> aggregationInstances = instances.stream().filter(instance -> instance.getType().equals(InstanceType.AGGREGATION)).collect(Collectors.toList());
 		for (CouplingInstance aggregationInstance : aggregationInstances) {
 			for (Nanoentity nanoentityA : aggregationInstance.getNanoentities()) {
 				for (Nanoentity nanoentityB : aggregationInstance.getSecondNanoentities()) {

@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.model;
+package ch.hsr.servicestoolkit.model.systemdata;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

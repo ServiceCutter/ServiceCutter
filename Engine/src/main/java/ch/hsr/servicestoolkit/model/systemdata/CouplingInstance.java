@@ -1,4 +1,4 @@
-package ch.hsr.servicestoolkit.model;
+package ch.hsr.servicestoolkit.model.systemdata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,9 @@ import org.junit.Assert;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterionCharacteristic;
+import ch.hsr.servicestoolkit.model.criteria.CouplingType;
 import ch.hsr.servicestoolkit.model.service.Service;
 import ch.hsr.servicestoolkit.model.service.ServiceCut;
 

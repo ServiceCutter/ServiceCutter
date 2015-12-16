@@ -16,14 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import ch.hsr.servicestoolkit.model.CouplingCriterion;
-import ch.hsr.servicestoolkit.model.CouplingInstance;
-import ch.hsr.servicestoolkit.model.InstanceType;
-import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.criteria.CouplingCriterion;
 import ch.hsr.servicestoolkit.model.repository.NanoentityRepository;
-import ch.hsr.servicestoolkit.score.relations.EntityPair;
-import ch.hsr.servicestoolkit.score.relations.Score;
+import ch.hsr.servicestoolkit.model.systemdata.CouplingInstance;
+import ch.hsr.servicestoolkit.model.systemdata.InstanceType;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
+import ch.hsr.servicestoolkit.scorer.EntityPair;
+import ch.hsr.servicestoolkit.scorer.Score;
 import ch.hsr.servicestoolkit.solver.Service;
 import ch.hsr.servicestoolkit.solver.SolverResult;
 

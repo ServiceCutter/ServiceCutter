@@ -19,9 +19,8 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
 
-import ch.hsr.servicestoolkit.model.EngineState;
-import ch.hsr.servicestoolkit.model.Model;
 import ch.hsr.servicestoolkit.model.repository.ModelRepository;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
 
 @Component
 @Path("/engine")
@@ -33,12 +32,6 @@ public class EngineService {
 	@Autowired
 	public EngineService(final ModelRepository modelRepository) {
 		this.modelRepository = modelRepository;
-	}
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public EngineState message() {
-		return new EngineState("Engine is up and running.");
 	}
 
 	@GET

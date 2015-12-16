@@ -4,8 +4,8 @@ import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ch.hsr.servicestoolkit.model.Nanoentity;
-import ch.hsr.servicestoolkit.model.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
 
 public interface NanoentityRepository extends CrudRepository<Nanoentity, Long> {
 

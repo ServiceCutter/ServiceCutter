@@ -18,9 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicestoolkit.model.EngineState;
-import ch.hsr.servicestoolkit.model.Model;
-import ch.hsr.servicestoolkit.model.Nanoentity;
+import ch.hsr.servicestoolkit.model.systemdata.Model;
+import ch.hsr.servicestoolkit.model.systemdata.Nanoentity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -33,13 +32,6 @@ public class EngineServiceRestTest {
 	private RestTemplate restTemplate = new TestRestTemplate();
 
 	@Test
-	public void statusCheck() {
-		ResponseEntity<EngineState> entity = this.restTemplate.getForEntity("http://localhost:" + this.port + "/engine", EngineState.class);
-		assertEquals(HttpStatus.OK, entity.getStatusCode());
-		assertEquals("Engine is up and running.", entity.getBody().getDescription());
-	}
-
-	@Test
 	public void createEmptyModel() {
 		Model model = new Model();
 		model.setName("testModel");
@@ -48,8 +40,8 @@ public class EngineServiceRestTest {
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET, IntegrationTestHelper.createEmptyHttpRequest(),
-				Model.class);
+		ResponseEntity<Model> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET,
+				IntegrationTestHelper.createEmptyHttpRequest(), Model.class);
 		assertEquals("testModel", assertResult.getBody().getName());
 	}
 

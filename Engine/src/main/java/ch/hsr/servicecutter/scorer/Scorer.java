@@ -71,7 +71,7 @@ public class Scorer {
 
 		// latency
 		Map<EntityPair, Double> latencyScores = new CohesiveGroupCriterionScorer()
-				.getScores(couplingInstancesRepo.findByUserSystemAndInstanceType(userSystem, InstanceType.USE_CASE));
+				.getScores(couplingInstancesRepo.findByUserSystemAndInstanceType(userSystem, InstanceType.LATENCY_USE_CASE));
 		addScoresByCriterionToResult(result, CouplingCriterion.LATENCY, latencyScores, priorityProvider.apply(CouplingCriterion.LATENCY));
 
 		// security contextuality

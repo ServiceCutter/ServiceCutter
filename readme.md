@@ -58,7 +58,7 @@ The editor by default expects the engine to be accessible under [http://localhos
 
 # Development
 
-We recommend using Grunt and Eclipse and the [Spring Tool Suite](https://spring.io/tools) for development. 
+We recommend using Grunt and Eclipse (including [Spring Tool Suite](https://spring.io/tools)) for development. 
 
 Information on how to import a JHipster project into Eclipse can be found in the [JHipster documentation](https://jhipster.github.io/configuring_ide_eclipse.html).
 

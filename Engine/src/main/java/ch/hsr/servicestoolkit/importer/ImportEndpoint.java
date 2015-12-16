@@ -226,11 +226,11 @@ public class ImportEndpoint {
 		persistUseCases(model, userRepresentations.getUseCases(), warnings);
 		Compatibilities compatibilities = userRepresentations.getCompatibilities();
 		if (compatibilities != null) {
-			persistCharacteristics(model, compatibilities.getChangeSimilarity(), CouplingCriterion.CHANGE_SIMILARITY, warnings);
+			persistCharacteristics(model, compatibilities.getStructuralVolatility(), CouplingCriterion.STRUCTURAL_VOLATILITY, warnings);
 			persistCharacteristics(model, compatibilities.getConsistency(), CouplingCriterion.CONSISTENCY, warnings);
 			persistCharacteristics(model, compatibilities.getSecurityCriticality(), CouplingCriterion.SECURITY_CRITICALITY, warnings);
 			persistCharacteristics(model, compatibilities.getStorageSimilarity(), CouplingCriterion.STORAGE_SIMILARITY, warnings);
-			persistCharacteristics(model, compatibilities.getVolatility(), CouplingCriterion.VOLATILITY, warnings);
+			persistCharacteristics(model, compatibilities.getContentVolatility(), CouplingCriterion.CONTENT_VOLATILITY, warnings);
 			persistCharacteristics(model, compatibilities.getAvailability(), CouplingCriterion.AVAILABILITY, warnings);
 		}
 		persistRelatedGroups(model, userRepresentations.getAggregates(), CouplingCriterion.CONSISTENCY_CONSTRAINT, warnings);

@@ -1,11 +1,11 @@
 insert into coupling_criterion (id, code, name, type) values ( 1, 'CC-1', 'Identity & Lifecycle Commonality', 'COHESIVENESS');
 insert into coupling_criterion (id, code, name, type) values ( 2, 'CC-2', 'Semantic Proximity', 'COHESIVENESS');
 insert into coupling_criterion (id, code, name, type) values (14, 'CC-3', 'Shared Owner', 'COHESIVENESS');
-insert into coupling_criterion (id, code, name, type) values (11, 'CC-4', 'Change Similarity', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values (11, 'CC-4', 'Structural Volatility', 'COMPATIBILITY');
 insert into coupling_criterion (id, code, name, type) values (15, 'CC-5', 'Latency', 'COHESIVENESS');
 insert into coupling_criterion (id, code, name, type) values ( 8, 'CC-6', 'Consistency', 'COMPATIBILITY');
 insert into coupling_criterion (id, code, name, type) values ( 6, 'CC-7', 'Availability', 'COMPATIBILITY');
-insert into coupling_criterion (id, code, name, type) values ( 7, 'CC-8', 'Volatility', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values ( 7, 'CC-8', 'Content Volatility', 'COMPATIBILITY');
 insert into coupling_criterion (id, code, name, type) values (16, 'CC-9', 'Consistency Constraint', 'CONSTRAINTS');
 --insert into coupling_criterion (id, code, name, type) values (13, 'CC-10', 'Mutability', 'COMMUNICATION');
 insert into coupling_criterion (id, code, name, type) values ( 9, 'CC-11', 'Storage Similarity', 'COMPATIBILITY');
@@ -65,7 +65,7 @@ update coupling_criterion set description = 'Groups of nanoentities are semantic
 --update coupling_criterion set decomposition_impact = 'Immutable data are well suited for published language and communication between services. So if data fields have high coupling but are immutable, they might still be splitted across services if this generates other advantages.' where id = 13;
 -- update coupling_criterion set decomposition_impact = 'Services should reflect the organization of a company.' where id = 13;
 
--- CC-4 Change Similarity
+-- CC-4 Structural Volatility
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (28, 11, 10, 'Often', 0);
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (29, 11, 4, 'Normal', 1);
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (30, 11, 0, 'Rarely', 0);
@@ -80,7 +80,7 @@ insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_defau
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (12, 6, 4, 'Normal', 1);
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (13, 6, 0, 'Low', 0);
 
--- CC-8 Volatility
+-- CC-8 Content Volatility
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (14, 7, 10, 'Often', 0);
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (15, 7, 5, 'Regularly', 1);
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (16, 7, 0, 'Rarely', 0);

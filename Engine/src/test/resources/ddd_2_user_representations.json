@@ -49,7 +49,7 @@
 	],
 "compatibilities":
 	{
-		"volatility": 
+		"contentVolatility": 
 			[
 				{
 					"characteristic":"Often",
@@ -71,7 +71,7 @@
 					]
 				}
 			],
-		"changeSimilarity":
+		"structuralVolatility":
 			[
 				{
 					"characteristic":"Rarely",

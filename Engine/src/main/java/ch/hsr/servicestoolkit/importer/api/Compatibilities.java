@@ -3,8 +3,8 @@ package ch.hsr.servicestoolkit.importer.api;
 import java.util.List;
 
 public class Compatibilities {
-	private List<Characteristic> volatility;
-	private List<Characteristic> changeSimilarity;
+	private List<Characteristic> contentVolatility;
+	private List<Characteristic> structuralVolatility;
 	private List<Characteristic> availability;
 	private List<Characteristic> consistency;
 	private List<Characteristic> storageSimilarity;
@@ -13,20 +13,20 @@ public class Compatibilities {
 	public Compatibilities() {
 	}
 
-	public List<Characteristic> getVolatility() {
-		return volatility;
+	public List<Characteristic> getContentVolatility() {
+		return contentVolatility;
 	}
 
-	public void setVolatility(final List<Characteristic> volatility) {
-		this.volatility = volatility;
+	public void setContentVolatility(final List<Characteristic> contentVolatility) {
+		this.contentVolatility = contentVolatility;
 	}
 
-	public List<Characteristic> getChangeSimilarity() {
-		return changeSimilarity;
+	public List<Characteristic> getStructuralVolatility() {
+		return structuralVolatility;
 	}
 
-	public void setChangeSimilarity(final List<Characteristic> changeSimilarity) {
-		this.changeSimilarity = changeSimilarity;
+	public void setStructuralVolatility(final List<Characteristic> structuralVolatility) {
+		this.structuralVolatility = structuralVolatility;
 	}
 
 	public List<Characteristic> getAvailability() {

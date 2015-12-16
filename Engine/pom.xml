@@ -6,7 +6,7 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.2.5.RELEASE</version>
 	</parent>
-	<groupId>ch.hsr.servicestoolkit</groupId>
+	<groupId>ch.hsr.servicecutter</groupId>
 	<artifactId>engine</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 

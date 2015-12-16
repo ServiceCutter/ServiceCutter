@@ -48,9 +48,9 @@ public class SolverEndpoint {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{modelId}")
+	@Path("/{systemId}")
 	@Transactional
-	public SolverResult solveModel(@PathParam("modelId") final Long id, final SolverConfiguration config) {
+	public SolverResult solveSystem(@PathParam("systemId") final Long id, final SolverConfiguration config) {
 		UserSystem userSystem = userSystemRepository.findOne(id);
 		if (userSystem == null || config == null || config.getPriorities().isEmpty()) {
 			return new SolverResult(Collections.emptySet());

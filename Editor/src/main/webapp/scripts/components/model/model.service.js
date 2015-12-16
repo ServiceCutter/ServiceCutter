@@ -2,9 +2,9 @@
 
 angular.module('editorApp')
     .factory('Model', function ($resource) {
-        return $resource('api/engine/models/:id', {modelId: '@id'}, {
+        return $resource('api/engine/systems/:id', {modelId: '@id'}, {
                 all: {
-                	url: 'api/engine/models',
+                	url: 'api/engine/systems',
                 	method: 'GET',
                 	isArray: true
                 },

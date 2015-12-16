@@ -22,7 +22,7 @@ public class EngineServiceTest {
 	@Test
 	public void testCreateModel() {
 		Long id = service.createUserSystem(new UserSystem(), "first").getId();
-		UserSystem result = service.getModel(id);
+		UserSystem result = service.getSystem(id);
 		assertEquals("first", result.getName());
 	}
 
@@ -31,7 +31,7 @@ public class EngineServiceTest {
 		UserSystem model = new UserSystem();
 		model.setName("second");
 		Long id = service.createUserSystem(model, "second").getId();
-		UserSystem result = service.getModel(id);
+		UserSystem result = service.getSystem(id);
 		assertEquals("second", result.getName());
 	}
 
@@ -53,7 +53,7 @@ public class EngineServiceTest {
 		UserSystem model = new UserSystem();
 		model.setName("fourth");
 		Long id = service.createUserSystem(model, "").getId();
-		UserSystem result = service.getModel(id);
+		UserSystem result = service.getSystem(id);
 		assertEquals("fourth", result.getName());
 	}
 }

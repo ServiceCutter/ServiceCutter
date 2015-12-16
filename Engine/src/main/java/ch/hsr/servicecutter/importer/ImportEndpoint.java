@@ -63,12 +63,12 @@ public class ImportEndpoint {
 
 	@Autowired
 	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository,
-			final CouplingInstanceRepository couplingInstanceRepository, final UserSystemCompleter modelCompleter, final CouplingCriterionRepository couplingCriterionRepository,
+			final CouplingInstanceRepository couplingInstanceRepository, final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
 			final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository) {
 		this.userSystemRepository = userSystemRepository;
 		this.nanoentityRepository = nanoentityRepository;
 		this.couplingInstanceRepository = couplingInstanceRepository;
-		this.systemCompleter = modelCompleter;
+		this.systemCompleter = systemCompleter;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.couplingCriteriaCharacteristicRepository = couplingCriteriaCharacteristicRepository;
 	}
@@ -203,16 +203,16 @@ public class ImportEndpoint {
 	}
 
 	@POST
-	@Path("/{modelId}/userrepresentations/")
+	@Path("/{systemId}/userrepresentations/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public Map<String, Object> importUserRepresentations(@PathParam("modelId") final Long modelId, final UserRepresentationContainer userRepresentations) {
+	public Map<String, Object> importUserRepresentations(@PathParam("systemId") final Long systemId, final UserRepresentationContainer userRepresentations) {
 		Map<String, Object> result = new HashMap<>();
 		List<String> warnings = new ArrayList<>();
 		result.put("warnings", warnings);
 
-		UserSystem system = userSystemRepository.findOne(modelId);
+		UserSystem system = userSystemRepository.findOne(systemId);
 		if (system == null) {
 			warnings.add("system not defined!");
 			return result;
@@ -264,11 +264,11 @@ public class ImportEndpoint {
 	}
 
 	@POST
-	@Path("/{modelId}/nanoentities/")
+	@Path("/{systemId}/nanoentities/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importNanoentities(@PathParam("modelId") final Long modelId, final List<ImportNanoentity> nanoentities) {
-		UserSystem system = userSystemRepository.findOne(modelId);
+	public void importNanoentities(@PathParam("systemId") final Long systemId, final List<ImportNanoentity> nanoentities) {
+		UserSystem system = userSystemRepository.findOne(systemId);
 		if (system == null) {
 			throw new InvalidRestParam();
 		}
@@ -360,7 +360,7 @@ public class ImportEndpoint {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("//{id}/couplingcriteria")
+	@Path("/{id}/couplingcriteria")
 	@Transactional
 	public List<CouplingInstance> getSystemCoupling(@PathParam("id") final Long id) {
 		List<CouplingInstance> result = new ArrayList<>();
@@ -372,7 +372,7 @@ public class ImportEndpoint {
 			// exception as the transaction is already closed
 			couplingInstance.getAllNanoentities().size();
 		}
-		log.debug("return criteria for model {}: {}", system.getName(), result.toString());
+		log.debug("return criteria for system {}: {}", system.getName(), result.toString());
 		Collections.sort(result);
 		return result;
 	}

@@ -18,9 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
-import ch.hsr.servicecutter.EngineServiceAppication;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
 import ch.hsr.servicecutter.model.userdata.Nanoentity;
+import ch.hsr.servicecutter.model.userdata.UserSystem;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
@@ -34,52 +33,52 @@ public class EngineServiceRestTest {
 
 	@Test
 	public void createEmptyModel() {
-		UserSystem model = new UserSystem();
-		model.setName("testModel");
-		HttpEntity<UserSystem> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
-		ResponseEntity<UserSystem> requestResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models", HttpMethod.POST, request, UserSystem.class);
+		UserSystem system = new UserSystem();
+		system.setName("testModel");
+		HttpEntity<UserSystem> request = IntegrationTestHelper.createHttpRequestWithPostObj(system);
+		ResponseEntity<UserSystem> requestResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/systems", HttpMethod.POST, request, UserSystem.class);
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<UserSystem> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/models/" + id, HttpMethod.GET,
+		ResponseEntity<UserSystem> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/systems/" + id, HttpMethod.GET,
 				IntegrationTestHelper.createEmptyHttpRequest(), UserSystem.class);
 		assertEquals("testModel", assertResult.getBody().getName());
 	}
 
 	@Test
 	public void createModelWithEntities() {
-		int before = countModels();
+		int before = countSystems();
 		createModelOnApi();
 		// test whether created model is visible
-		assertEquals(before + 1, countModels());
+		assertEquals(before + 1, countSystems());
 	}
 
 	private Long createModelOnApi() {
-		UserSystem model = createModel();
+		UserSystem model = createSystem();
 		HttpEntity<UserSystem> request = IntegrationTestHelper.createHttpRequestWithPostObj(model);
-		ResponseEntity<UserSystem> entity = restTemplate.exchange("http://localhost:" + this.port + "/engine/models/", HttpMethod.POST, request, UserSystem.class);
+		ResponseEntity<UserSystem> entity = restTemplate.exchange("http://localhost:" + this.port + "/engine/systems/", HttpMethod.POST, request, UserSystem.class);
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		return entity.getBody().getId();
 	}
 
-	private int countModels() {
+	private int countSystems() {
 		@SuppressWarnings("rawtypes")
-		ResponseEntity<List> response = restTemplate.getForEntity("http://localhost:" + this.port + "/engine/models", List.class);
+		ResponseEntity<List> response = restTemplate.getForEntity("http://localhost:" + this.port + "/engine/systems", List.class);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		int models = response.getBody().size();
-		return models;
+		int systems = response.getBody().size();
+		return systems;
 	}
 
-	private UserSystem createModel() {
-		UserSystem model = new UserSystem();
-		model.setName("firstModel");
+	private UserSystem createSystem() {
+		UserSystem userSystem = new UserSystem();
+		userSystem.setName("firstModel");
 		Nanoentity nanoentity1 = new Nanoentity();
 		nanoentity1.setName("firstNanoentity");
 		Nanoentity nanoentity2 = new Nanoentity();
 		nanoentity2.setName("secondNanoentity");
-		model.addNanoentity(nanoentity1);
-		model.addNanoentity(nanoentity2);
-		return model;
+		userSystem.addNanoentity(nanoentity1);
+		userSystem.addNanoentity(nanoentity2);
+		return userSystem;
 	}
 
 }

@@ -35,7 +35,7 @@ public class EngineService {
 	}
 
 	@GET
-	@Path("/models")
+	@Path("/systems")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
 	public UserSystem[] userSystems() {
@@ -44,15 +44,15 @@ public class EngineService {
 	}
 
 	@GET
-	@Path("/models/{id}")
+	@Path("/systems/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public UserSystem getModel(@PathParam("id") final Long id) {
+	public UserSystem getSystem(@PathParam("id") final Long id) {
 		return userSystemsRepository.findOne(id);
 	}
 
 	@POST
-	@Path("/models")
+	@Path("/systems")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserSystem createUserSystem(UserSystem system, @PathParam("modelName") final String modelName) {

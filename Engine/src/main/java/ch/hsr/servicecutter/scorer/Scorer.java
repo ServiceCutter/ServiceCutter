@@ -57,7 +57,7 @@ public class Scorer {
 	}
 
 	private void addScoresForProximityCriteria(final UserSystem userSystem, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
-		Map<EntityPair, Double> lifecycleScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByUserSystem(userSystem))
+		Map<EntityPair, Double> lifecycleScores = new CohesiveGroupCriterionScorer()
 				.getScores(couplingInstancesRepo.findByUserSystemAndCriterion(userSystem, CouplingCriterion.IDENTITY_LIFECYCLE));
 		addScoresByCriterionToResult(result, CouplingCriterion.IDENTITY_LIFECYCLE, lifecycleScores, priorityProvider.apply(CouplingCriterion.IDENTITY_LIFECYCLE));
 
@@ -65,23 +65,24 @@ public class Scorer {
 				.getScores(couplingInstancesRepo.findByUserSystemAndCriterion(userSystem, CouplingCriterion.SEMANTIC_PROXIMITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.SEMANTIC_PROXIMITY, semanticProximityScores, priorityProvider.apply(CouplingCriterion.SEMANTIC_PROXIMITY));
 
-		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByUserSystem(userSystem))
+		Map<EntityPair, Double> responsibilityScores = new CohesiveGroupCriterionScorer()
 				.getScores(couplingInstancesRepo.findByUserSystemAndCriterion(userSystem, CouplingCriterion.SHARED_OWNER));
 		addScoresByCriterionToResult(result, CouplingCriterion.SHARED_OWNER, responsibilityScores, priorityProvider.apply(CouplingCriterion.SHARED_OWNER));
 
 		// latency
-		Map<EntityPair, Double> latencyScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByUserSystem(userSystem))
+		Map<EntityPair, Double> latencyScores = new CohesiveGroupCriterionScorer()
 				.getScores(couplingInstancesRepo.findByUserSystemAndInstanceType(userSystem, InstanceType.USE_CASE));
 		addScoresByCriterionToResult(result, CouplingCriterion.LATENCY, latencyScores, priorityProvider.apply(CouplingCriterion.LATENCY));
 
 		// security contextuality
-		Map<EntityPair, Double> securityContextualityScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByUserSystem(userSystem))
+		Map<EntityPair, Double> securityContextualityScores = new CohesiveGroupCriterionScorer()
 				.getScores(couplingInstancesRepo.findByUserSystemAndCriterion(userSystem, CouplingCriterion.SECURITY_CONTEXUALITY));
 		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONTEXUALITY, securityContextualityScores, priorityProvider.apply(CouplingCriterion.SECURITY_CONTEXUALITY));
 
 	}
 
-	private void addScoresForCharacteristicsCriteria(final UserSystem userSystem, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
+	private void addScoresForCharacteristicsCriteria(final UserSystem userSystem, final Function<String, Double> priorityProvider,
+			final Map<EntityPair, Map<String, Score>> result) {
 		Map<String, Map<EntityPair, Double>> scoresByCriterion = new CharacteristicsCriteriaScorer()
 				.getScores(couplingInstancesRepo.findByUserSystemGroupedByCriterionFilteredByCriterionType(userSystem, CouplingType.COMPATIBILITY));
 		for (Entry<String, Map<EntityPair, Double>> distanceScores : scoresByCriterion.entrySet()) {
@@ -90,7 +91,7 @@ public class Scorer {
 	}
 
 	private void addScoresForConstraintsCriteria(final UserSystem userSystem, final Function<String, Double> priorityProvider, final Map<EntityPair, Map<String, Score>> result) {
-		Map<EntityPair, Double> securityScores = new SeparatedGroupCriterionScorer(nanoentityRepo.findByUserSystem(userSystem))
+		Map<EntityPair, Double> securityScores = new SeparatedGroupCriterionScorer()
 				.getScores(couplingInstancesRepo.findByUserSystemAndCriterion(userSystem, CouplingCriterion.SECURITY_CONSTRAINT));
 		addScoresByCriterionToResult(result, CouplingCriterion.SECURITY_CONSTRAINT, securityScores, priorityProvider.apply(CouplingCriterion.SECURITY_CONSTRAINT));
 
@@ -98,7 +99,7 @@ public class Scorer {
 				.getScores(couplingInstancesRepo.findByUserSystemAndCriterion(userSystem, CouplingCriterion.PREDEFINED_SERVICE));
 		addScoresByCriterionToResult(result, CouplingCriterion.PREDEFINED_SERVICE, predefinedServiceScores, priorityProvider.apply(CouplingCriterion.PREDEFINED_SERVICE));
 
-		Map<EntityPair, Double> consistencyConstraintScores = new CohesiveGroupCriterionScorer(nanoentityRepo.findByUserSystem(userSystem))
+		Map<EntityPair, Double> consistencyConstraintScores = new CohesiveGroupCriterionScorer()
 				.getScores(couplingInstancesRepo.findByUserSystemAndCriterion(userSystem, CouplingCriterion.CONSISTENCY_CONSTRAINT));
 		addScoresByCriterionToResult(result, CouplingCriterion.CONSISTENCY_CONSTRAINT, consistencyConstraintScores,
 				priorityProvider.apply(CouplingCriterion.CONSISTENCY_CONSTRAINT));

@@ -1,7 +1,9 @@
 package ch.hsr.servicecutter.samples;
 
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -68,17 +70,15 @@ public abstract class AbstractSampleTest {
 		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
 		});
 
-		System.out.println(entity.getBody().get("warnings"));
-		assertTrue(((List<String>) entity.getBody().get("warnings")).isEmpty());
+		assertThat(((List<String>) entity.getBody().get("warnings")), empty());
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 	}
 
 	private void solveModel(final Integer modelId) {
 		SolverConfiguration config = new SolverConfiguration();
 		HttpEntity<SolverConfiguration> request = IntegrationTestHelper.createHttpRequestWithPostObj(config);
-		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request,
-				new ParameterizedTypeReference<SolverResult>() {
-				});
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request, new ParameterizedTypeReference<SolverResult>() {
+		});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
 
@@ -89,9 +89,8 @@ public abstract class AbstractSampleTest {
 		EntityRelationDiagram input = IntegrationTestHelper.readFromFile(getModelFile(), EntityRelationDiagram.class);
 
 		HttpEntity<EntityRelationDiagram> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
-		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request,
-				new ParameterizedTypeReference<Map<String, Object>>() {
-				});
+		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
+		});
 
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 		Integer modelId = (Integer) entity.getBody().get("id");

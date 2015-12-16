@@ -21,10 +21,10 @@ public class CouplingCriterion {
 	public static final String CONSISTENCY_CONSTRAINT = "Consistency Constraint";
 	public static final String CONTENT_VOLATILITY = "Content Volatility";
 	public static final String STRUCTURAL_VOLATILITY = "Structural Volatility";
-	public static final String CONSISTENCY = "Consistency";
+	public static final String CONSISTENCY = "Consistency Criticality";
 	public static final String SECURITY_CRITICALITY = "Security Criticality";
 	public static final String STORAGE_SIMILARITY = "Storage Similarity";
-	public static final String AVAILABILITY = "Availability";
+	public static final String AVAILABILITY = "Availability Criticality";
 	public static final String SECURITY_CONTEXUALITY = "Security Contextuality";
 	public static final String LATENCY = "Latency";
 

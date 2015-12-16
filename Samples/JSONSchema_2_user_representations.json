@@ -1,0 +1,242 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "type": "object",
+  "properties": {
+    "aggregates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "useCases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentitiesRead": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nanoentitiesWritten": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "latencyCritical": {
+            "type": "boolean",
+            "required": false
+          }
+        }
+      }
+    },
+    "separatedSecurityZones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "predefinedServices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securityAccessGroups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "compatibilities": {
+      "type": "object",
+      "properties": {
+        "storageSimilarity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "characteristic": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "structuralVolatility": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "characteristic": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "consistencyCriticality": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "characteristic": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "securityCriticality": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "characteristic": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "availabilityCriticality": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "characteristic": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "contentVolatility": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "characteristic": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sharedOwnerGroups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

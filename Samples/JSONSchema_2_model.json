@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nanoentities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "AGGREGATION",
+              "COMPOSITION",
+              "INHERITANCE"
+            ]
+          },
+          "destination": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "origin": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "nanoentities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -62,8 +62,8 @@ public class ImportEndpoint {
 	//
 
 	@Autowired
-	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository,
-			final CouplingInstanceRepository couplingInstanceRepository, final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
+	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
+			final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
 			final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository) {
 		this.userSystemRepository = userSystemRepository;
 		this.nanoentityRepository = nanoentityRepository;
@@ -94,7 +94,7 @@ public class ImportEndpoint {
 		}
 		system.setName(name);
 
-		// TODO: handle case if two nanoentities of consolidate entities have
+		// TODO: handle case if two nanoentities of consolidated entities have
 		// the same name
 		Map<String, String> inputEntityAttributes = new HashMap<>();
 		for (Entity entity : erd.getEntities()) {
@@ -138,8 +138,6 @@ public class ImportEndpoint {
 				log.info("Import aggregation on {} and {}", instance.getNanoentities(), instance.getSecondNanoentities());
 			}
 		}
-		// TODO: remove return value and set location header to URL of generated
-		// model
 		result.put("message", "userSystem " + system.getId() + " has been created");
 		result.put("id", system.getId());
 		return result;
@@ -152,9 +150,7 @@ public class ImportEndpoint {
 		}
 		List<EntityRelation> currentRelations = new ArrayList<>(erd.getRelations());
 
-		// Merge composition and inheritance UML-entities together to real
-		// entities
-		// TODO throw error if Composition/inheritance relations contain cycles!
+		// does this work with cycles?
 		List<EntityRelation> relationsToEdgeEntities = getRelationsToEdgeEntities(currentRelations, erd.getEntities());
 		while (!relationsToEdgeEntities.isEmpty()) {
 			log.info("Entity reduction iteration, reduce relations {}", relationsToEdgeEntities);
@@ -176,7 +172,6 @@ public class ImportEndpoint {
 				relationsToEdgeEntities = getRelationsToEdgeEntities(currentRelations, erd.getEntities());
 			}
 		}
-
 		return realEntities;
 	}
 
@@ -186,19 +181,14 @@ public class ImportEndpoint {
 
 		// get all entites that will have no other entities merged into them
 		List<Entity> reducableEntities = inputEntites.stream()
-				.filter(entity -> currentRelations.stream()
-						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
-								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
-						.collect(Collectors.toList()).isEmpty())
-				.collect(Collectors.toList());
+				.filter(entity -> currentRelations.stream().filter(
+						r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE)) || (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList()).isEmpty()).collect(Collectors.toList());
 
 		// get all relations that will merge the reducableEntities into
-		// another
-		// entity
-		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
-				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
-						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
-				.collect(Collectors.toList());
+		// another entity
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream().filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+				|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION))).collect(Collectors.toList());
 		return relationsToEdgeEntities;
 	}
 
@@ -218,9 +208,12 @@ public class ImportEndpoint {
 			return result;
 		}
 
-		// TODO create better check if userRepts are already loaded
-		long count = couplingInstanceRepository.findByUserSystem(system).stream().filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY)
-				&& !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE)).count();
+		// This query could be refined: this is a bit of a hack to figure out
+		// whether user representations already have been loaded.
+		// And it is not efficient at all!
+		long count = couplingInstanceRepository.findByUserSystem(system).stream()
+				.filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY) && !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE))
+				.count();
 		if (count != 0) {
 			warnings.add("Enhancing an already specified system is not yet implemented!");
 			return result;

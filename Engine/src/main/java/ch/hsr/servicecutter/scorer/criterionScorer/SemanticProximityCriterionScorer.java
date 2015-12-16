@@ -14,11 +14,10 @@ import ch.hsr.servicecutter.scorer.Scorer;
 
 public class SemanticProximityCriterionScorer implements CriterionScorer {
 	Map<EntityPair, Double> result = new HashMap<>();
-	// TODO: make configurable in UI
 	private static final int SCORE_WRITE = 10;
 	private static final int SCORE_READ = 3;
-	// use the same score as for reads for two nanoentities of which
-	// one is read and the other written
+	// MIXED=reads for two nanoentities of which one is read and the other
+	// written
 	private static final int SCORE_MIXED = 3;
 	private static final int SCORE_AGGREGATION = 1;
 

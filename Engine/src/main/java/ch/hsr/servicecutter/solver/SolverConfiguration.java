@@ -16,7 +16,7 @@ public class SolverConfiguration {
 	private Map<String, Double> weights = new HashMap<>();
 	private Map<String, Double> algorithmParams = new HashMap<>();
 	private Map<String, Double> priorities = new HashMap<>();
-	private String algorithm = "Girvan-Newman"; // TODO Refactor
+	private String algorithm = SolverEndpoint.MODE_GIRVAN_NEWMAN; // default
 
 	private Logger log = LoggerFactory.getLogger(SolverConfiguration.class);
 

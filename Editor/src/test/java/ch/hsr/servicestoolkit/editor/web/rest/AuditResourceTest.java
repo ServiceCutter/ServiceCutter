@@ -1,16 +1,18 @@
 package ch.hsr.servicestoolkit.editor.web.rest;
 
-import ch.hsr.servicestoolkit.editor.Application;
-import ch.hsr.servicestoolkit.editor.config.audit.AuditEventConverter;
-import ch.hsr.servicestoolkit.editor.domain.PersistentAuditEvent;
-import ch.hsr.servicestoolkit.editor.repository.PersistenceAuditEventRepository;
-import ch.hsr.servicestoolkit.editor.service.AuditEventService;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import javax.inject.Inject;
+
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -18,13 +20,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
-
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import ch.hsr.servicestoolkit.editor.Application;
+import ch.hsr.servicestoolkit.editor.config.audit.AuditEventConverter;
+import ch.hsr.servicestoolkit.editor.domain.PersistentAuditEvent;
+import ch.hsr.servicestoolkit.editor.repository.PersistenceAuditEventRepository;
+import ch.hsr.servicestoolkit.editor.service.AuditEventService;
 
 /**
  * Test class for the AuditResource REST controller.
@@ -37,69 +39,62 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class AuditResourceTest {
 
-    private static final String SAMPLE_PRINCIPAL = "SAMPLE_PRINCIPAL";
-    private static final String SAMPLE_TYPE = "SAMPLE_TYPE";
-    private static final LocalDateTime SAMPLE_TIMESTAMP = LocalDateTime.parse("2015-08-04T10:11:30");
+	private static final String SAMPLE_PRINCIPAL = "SAMPLE_PRINCIPAL";
+	private static final String SAMPLE_TYPE = "SAMPLE_TYPE";
+	private static final LocalDateTime SAMPLE_TIMESTAMP = LocalDateTime.parse("2015-08-04T10:11:30");
 
-    @Inject
-    private PersistenceAuditEventRepository auditEventRepository;
+	@Inject
+	private PersistenceAuditEventRepository auditEventRepository;
 
-    @Inject
-    private AuditEventConverter auditEventConverter;
+	@Inject
+	private AuditEventConverter auditEventConverter;
 
-    private PersistentAuditEvent auditEvent;
+	private PersistentAuditEvent auditEvent;
 
-    private MockMvc restAuditMockMvc;
+	private MockMvc restAuditMockMvc;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        AuditEventService auditEventService =
-                new AuditEventService(auditEventRepository, auditEventConverter);
-        AuditResource auditResource = new AuditResource(auditEventService);
-        this.restAuditMockMvc = MockMvcBuilders.standaloneSetup(auditResource).build();
-    }
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		AuditEventService auditEventService = new AuditEventService(auditEventRepository, auditEventConverter);
+		AuditResource auditResource = new AuditResource(auditEventService);
+		this.restAuditMockMvc = MockMvcBuilders.standaloneSetup(auditResource).build();
+	}
 
-    @Before
-    public void initTest() {
-        auditEventRepository.deleteAll();
-        auditEvent = new PersistentAuditEvent();
-        auditEvent.setAuditEventType(SAMPLE_TYPE);
-        auditEvent.setPrincipal(SAMPLE_PRINCIPAL);
-        auditEvent.setAuditEventDate(SAMPLE_TIMESTAMP);
-    }
+	@Before
+	public void initTest() {
+		auditEventRepository.deleteAll();
+		auditEvent = new PersistentAuditEvent();
+		auditEvent.setAuditEventType(SAMPLE_TYPE);
+		auditEvent.setPrincipal(SAMPLE_PRINCIPAL);
+		auditEvent.setAuditEventDate(SAMPLE_TIMESTAMP);
+	}
 
+	@Test
+	public void getAllAudits() throws Exception {
+		// Initialize the database
+		auditEventRepository.save(auditEvent);
 
-    @Test
-    public void getAllAudits() throws Exception {
-        // Initialize the database
-        auditEventRepository.save(auditEvent);
+		// Get all the audits
+		restAuditMockMvc.perform(get("/api/audits")).andExpect(status().isOk())
+				// .andDo(print())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
+	}
 
-        // Get all the audits
-        restAuditMockMvc.perform(get("/api/audits"))
-                .andExpect(status().isOk())
-                // .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[*].principal").value(hasItem(SAMPLE_PRINCIPAL)));
-    }
+	@Test
+	public void getAudit() throws Exception {
+		// Initialize the database
+		auditEventRepository.save(auditEvent);
 
-    @Test
-    public void getAudit() throws Exception {
-        // Initialize the database
-        auditEventRepository.save(auditEvent);
+		// Get the audit
+		restAuditMockMvc.perform(get("/api/audits/{id}", auditEvent.getId())).andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.principal").value(SAMPLE_PRINCIPAL));
+	}
 
-        // Get the audit
-        restAuditMockMvc.perform(get("/api/audits/{id}", auditEvent.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.principal").value(SAMPLE_PRINCIPAL));
-    }
-
-    @Test
-    public void getNonExistingAudit() throws Exception {
-        // Get the audit
-        restAuditMockMvc.perform(get("/api/audits/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
-    }
+	@Test
+	public void getNonExistingAudit() throws Exception {
+		// Get the audit
+		restAuditMockMvc.perform(get("/api/audits/{id}", Long.MAX_VALUE)).andExpect(status().isNotFound());
+	}
 
 }

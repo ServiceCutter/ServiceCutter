@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.1.9" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="ch.hsr.servicecutter.model.Model" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicestoolkit/model/Model.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="1" language="java" name="ch.hsr.servicecutter.model.usersystem.UserSystem" project="Engine" 
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/Model.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="161" y="83"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -10,8 +10,8 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="ch.hsr.servicecutter.model.CouplingCriterion" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicestoolkit/model/CouplingCriterion.java" binary="false" 
+  <class id="2" language="java" name="ch.hsr.servicecutter.model.criteria.CouplingCriterion" project="Engine" 
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/criteria/CouplingCriterion.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="489" y="490"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
@@ -20,8 +20,8 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="ch.hsr.servicecutter.model.CouplingCriterionCharacteristic" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicestoolkit/model/CouplingCriterionCharacteristic.java" binary="false" 
+  <class id="3" language="java" name="ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic" project="Engine" 
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/criteria/CouplingCriterionCharacteristic.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="161" y="490"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
@@ -30,8 +30,8 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="ch.hsr.servicecutter.model.CouplingInstance" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicestoolkit/model/CouplingInstance.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="4" language="java" name="ch.hsr.servicecutter.model.usersystem.CouplingInstance" project="Engine" 
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/CouplingInstance.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="161" y="264"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -39,8 +39,8 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="ch.hsr.servicecutter.model.NanoEntity" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicestoolkit/model/NanoEntity.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="ch.hsr.servicecutter.model.usersystem.Nanoentity" project="Engine" 
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/Nanoentity.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="489" y="83"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -48,8 +48,8 @@
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <enumeration id="6" language="java" name="ch.hsr.servicecutter.model.InstanceType" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicestoolkit/model/InstanceType.java" binary="false" corner="BOTTOM_RIGHT">    
+  <enumeration id="6" language="java" name="ch.hsr.servicecutter.model.usersystem.InstanceType" project="Engine" 
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/InstanceType.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="488" y="264"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      

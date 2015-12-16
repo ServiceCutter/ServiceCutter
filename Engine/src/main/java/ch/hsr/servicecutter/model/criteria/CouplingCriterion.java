@@ -35,7 +35,6 @@ public class CouplingCriterion {
 	private String name;
 	@Column(length = 400)
 	private String description;
-	private String decompositionImpact;
 	@Enumerated(EnumType.STRING)
 	private CouplingType type;
 
@@ -84,14 +83,6 @@ public class CouplingCriterion {
 
 	public void setDescription(final String description) {
 		this.description = description;
-	}
-
-	public String getDecompositionImpact() {
-		return decompositionImpact;
-	}
-
-	public void setDecompositionImpact(final String decompositionImpact) {
-		this.decompositionImpact = decompositionImpact;
 	}
 
 	public CouplingType getType() {

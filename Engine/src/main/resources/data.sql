@@ -3,8 +3,8 @@ insert into coupling_criterion (id, code, name, type) values ( 2, 'CC-2', 'Seman
 insert into coupling_criterion (id, code, name, type) values (14, 'CC-3', 'Shared Owner', 'COHESIVENESS');
 insert into coupling_criterion (id, code, name, type) values (11, 'CC-4', 'Structural Volatility', 'COMPATIBILITY');
 insert into coupling_criterion (id, code, name, type) values (15, 'CC-5', 'Latency', 'COHESIVENESS');
-insert into coupling_criterion (id, code, name, type) values ( 8, 'CC-6', 'Consistency', 'COMPATIBILITY');
-insert into coupling_criterion (id, code, name, type) values ( 6, 'CC-7', 'Availability', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values ( 8, 'CC-6', 'Consistency Criticality', 'COMPATIBILITY');
+insert into coupling_criterion (id, code, name, type) values ( 6, 'CC-7', 'Availability Criticality', 'COMPATIBILITY');
 insert into coupling_criterion (id, code, name, type) values ( 7, 'CC-8', 'Content Volatility', 'COMPATIBILITY');
 insert into coupling_criterion (id, code, name, type) values (16, 'CC-9', 'Consistency Constraint', 'CONSTRAINTS');
 --insert into coupling_criterion (id, code, name, type) values (13, 'CC-10', 'Mutability', 'COMMUNICATION');
@@ -48,22 +48,6 @@ update coupling_criterion set description = 'A security role is allowed to see o
 update coupling_criterion set description = 'Criticality of an nanoentity in case of data loss or a privacy violation. Represents the reputational or financial damage when the information is disclosed to unauthorized parties. As high security criticality comes at a cost, nanoentities classified with different characteristics should not be composed in the same service.' where id = 4;
 -- CC-16
 update coupling_criterion set description = 'Groups of nanoentities are semantically related but must not reside in the same service in order to satisfy information security requirements. This restriction can be established by an external party such as a certification authority or an internal design team.' where id = 3;
-
--- decomposition impact // NOT UP TO DATE!
--- update coupling_criterion set decomposition_impact = 'Model in same service.' where id = 1;
--- update coupling_criterion set decomposition_impact = 'Gather together those things that change for the same reason, and separate those things that change for different reasons. (Robert C. Martin)' where id = 2;
--- update coupling_criterion set decomposition_impact = 'Model in different services.' where id = 3;
--- update coupling_criterion set decomposition_impact = 'Do not model requirements with different criticality in same service.' where id = 4;
--- update coupling_criterion set decomposition_impact = 'Do not mix different security contexts in a single service.' where id = 5;
--- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 6;
--- update coupling_criterion set decomposition_impact = 'Do not model data with different requirements in same service.' where id = 7;
--- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 8;
--- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service.' where id = 9;
---update coupling_criterion set decomposition_impact = 'Model data which is regularly accessed within the same services to avoid network traffic' where id = 10;
--- update coupling_criterion set decomposition_impact = 'Do not model requirements with different requirements in same service' where id = 11;
--- update coupling_criterion set decomposition_impact = 'Respect the constraints in the modelling algorithm.' where id = 12;
---update coupling_criterion set decomposition_impact = 'Immutable data are well suited for published language and communication between services. So if data fields have high coupling but are immutable, they might still be splitted across services if this generates other advantages.' where id = 13;
--- update coupling_criterion set decomposition_impact = 'Services should reflect the organization of a company.' where id = 13;
 
 -- CC-4 Structural Volatility
 insert into cc_characteristic (id, coupling_criterion_id, weight, name, is_default) values (28, 11, 10, 'Often', 0);

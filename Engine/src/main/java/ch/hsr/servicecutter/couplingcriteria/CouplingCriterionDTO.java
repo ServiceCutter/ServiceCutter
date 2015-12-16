@@ -13,7 +13,6 @@ public class CouplingCriterionDTO implements Comparable<CouplingCriterionDTO> {
 	private final String name;
 	private final String description;
 	private final List<CouplingCriterionCharacteristic> characteristics;
-	private final String decompositionImpact;
 	private final CouplingType type;
 
 	public CouplingCriterionDTO(final CouplingCriterion couplingCriterion, final List<CouplingCriterionCharacteristic> characteristics) {
@@ -21,7 +20,6 @@ public class CouplingCriterionDTO implements Comparable<CouplingCriterionDTO> {
 		this.name = couplingCriterion.getName();
 		this.id = couplingCriterion.getId();
 		this.description = couplingCriterion.getDescription();
-		decompositionImpact = couplingCriterion.getDecompositionImpact();
 		type = couplingCriterion.getType();
 		code = couplingCriterion.getCode();
 	}
@@ -40,10 +38,6 @@ public class CouplingCriterionDTO implements Comparable<CouplingCriterionDTO> {
 
 	public String getDescription() {
 		return description;
-	}
-
-	public String getDecompositionImpact() {
-		return decompositionImpact;
 	}
 
 	public CouplingType getType() {

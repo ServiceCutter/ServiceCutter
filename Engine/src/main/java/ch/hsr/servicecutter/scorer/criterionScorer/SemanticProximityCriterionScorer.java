@@ -24,10 +24,7 @@ public class SemanticProximityCriterionScorer implements CriterionScorer {
 	@Override
 	public Map<EntityPair, Double> getScores(final Set<CouplingInstance> instances) {
 		Set<CouplingInstance> useCaseInstances = instances;
-		// TODO found missing filter on 15.12.2015, activate it after thesis is
-		// due in order to keep test results stable.
-		// useCaseInstances = instances.stream().filter(instance ->
-		// instance.getType().equals(InstanceType.USE_CASE)).collect(Collectors.toSet());
+		useCaseInstances = instances.stream().filter(instance -> instance.getType().equals(InstanceType.USE_CASE)).collect(Collectors.toSet());
 		for (CouplingInstance instance : useCaseInstances) {
 			List<Nanoentity> nanoentitiesWritten = instance.getSecondNanoentities();
 			List<Nanoentity> nanoentitiesRead = instance.getNanoentities();

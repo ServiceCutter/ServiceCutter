@@ -10,9 +10,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic;
 import ch.hsr.servicecutter.model.criteria.CouplingType;
-import ch.hsr.servicecutter.model.userdata.CouplingInstance;
-import ch.hsr.servicecutter.model.userdata.InstanceType;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
+import ch.hsr.servicecutter.model.usersystem.InstanceType;
+import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
 public interface CouplingInstanceRepository extends CrudRepository<CouplingInstance, Long> {
 

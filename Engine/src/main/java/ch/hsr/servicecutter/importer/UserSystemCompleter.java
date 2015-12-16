@@ -16,10 +16,10 @@ import ch.hsr.servicecutter.model.repository.CouplingCriterionCharacteristicRepo
 import ch.hsr.servicecutter.model.repository.CouplingCriterionRepository;
 import ch.hsr.servicecutter.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
-import ch.hsr.servicecutter.model.userdata.CouplingInstance;
-import ch.hsr.servicecutter.model.userdata.InstanceType;
-import ch.hsr.servicecutter.model.userdata.Nanoentity;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
+import ch.hsr.servicecutter.model.usersystem.InstanceType;
+import ch.hsr.servicecutter.model.usersystem.Nanoentity;
+import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
 @Component
 public class UserSystemCompleter {

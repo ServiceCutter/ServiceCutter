@@ -18,10 +18,10 @@ import org.springframework.util.Assert;
 
 import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
-import ch.hsr.servicecutter.model.userdata.CouplingInstance;
-import ch.hsr.servicecutter.model.userdata.InstanceType;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
-import ch.hsr.servicecutter.model.userdata.Nanoentity;
+import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
+import ch.hsr.servicecutter.model.usersystem.InstanceType;
+import ch.hsr.servicecutter.model.usersystem.Nanoentity;
+import ch.hsr.servicecutter.model.usersystem.UserSystem;
 import ch.hsr.servicecutter.scorer.EntityPair;
 import ch.hsr.servicecutter.scorer.Score;
 import ch.hsr.servicecutter.solver.Service;

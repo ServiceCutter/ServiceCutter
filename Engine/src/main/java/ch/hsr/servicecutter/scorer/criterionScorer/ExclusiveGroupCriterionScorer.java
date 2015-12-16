@@ -2,7 +2,7 @@ package ch.hsr.servicecutter.scorer.criterionScorer;
 
 import java.util.Set;
 
-import ch.hsr.servicecutter.model.userdata.Nanoentity;
+import ch.hsr.servicecutter.model.usersystem.Nanoentity;
 import ch.hsr.servicecutter.scorer.Scorer;
 
 public class ExclusiveGroupCriterionScorer extends RelatedGroupCriteriaScorer {

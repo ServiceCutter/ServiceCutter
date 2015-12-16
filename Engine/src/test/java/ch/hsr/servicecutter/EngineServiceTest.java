@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicecutter.EngineService;
 import ch.hsr.servicecutter.EngineServiceAppication;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)

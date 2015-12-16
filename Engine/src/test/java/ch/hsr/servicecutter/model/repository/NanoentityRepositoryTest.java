@@ -13,9 +13,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.hsr.servicecutter.EngineServiceAppication;
 import ch.hsr.servicecutter.model.repository.UserSystemRepository;
+import ch.hsr.servicecutter.model.usersystem.Nanoentity;
+import ch.hsr.servicecutter.model.usersystem.UserSystem;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
-import ch.hsr.servicecutter.model.userdata.Nanoentity;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)

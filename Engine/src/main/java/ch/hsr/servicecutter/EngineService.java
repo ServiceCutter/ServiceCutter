@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 import com.google.common.collect.Lists;
 
 import ch.hsr.servicecutter.model.repository.UserSystemRepository;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
 @Component
 @Path("/engine")

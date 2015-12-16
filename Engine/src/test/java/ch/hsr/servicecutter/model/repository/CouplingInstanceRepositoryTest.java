@@ -19,10 +19,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.hsr.servicecutter.EngineServiceAppication;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic;
-import ch.hsr.servicecutter.model.userdata.CouplingInstance;
-import ch.hsr.servicecutter.model.userdata.InstanceType;
-import ch.hsr.servicecutter.model.userdata.Nanoentity;
-import ch.hsr.servicecutter.model.userdata.UserSystem;
+import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
+import ch.hsr.servicecutter.model.usersystem.InstanceType;
+import ch.hsr.servicecutter.model.usersystem.Nanoentity;
+import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)

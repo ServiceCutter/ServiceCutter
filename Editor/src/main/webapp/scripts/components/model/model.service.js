@@ -13,7 +13,7 @@ angular.module('editorApp')
                 },
                 getCoupling: {
                 	method: 'GET',
-                	url: 'api/engine/import/:id/couplingcriteria',
+                	url: 'api/engine/:id/couplingdata',
                 	isArray: true
                 }
             });

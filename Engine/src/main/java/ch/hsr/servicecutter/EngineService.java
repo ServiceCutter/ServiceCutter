@@ -1,6 +1,9 @@
 package ch.hsr.servicecutter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -20,7 +23,9 @@ import org.springframework.util.StringUtils;
 import com.google.common.collect.Lists;
 
 import ch.hsr.servicecutter.model.EngineState;
+import ch.hsr.servicecutter.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicecutter.model.repository.UserSystemRepository;
+import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
 import ch.hsr.servicecutter.model.usersystem.UserSystem;
 
 @Component
@@ -29,10 +34,12 @@ public class EngineService {
 
 	private Logger log = LoggerFactory.getLogger(EngineService.class);
 	private UserSystemRepository userSystemsRepository;
+	private CouplingInstanceRepository couplingInstanceRepository;
 
 	@Autowired
-	public EngineService(final UserSystemRepository systemRepository) {
+	public EngineService(final UserSystemRepository systemRepository, final CouplingInstanceRepository couplingInstanceRepository) {
 		this.userSystemsRepository = systemRepository;
+		this.couplingInstanceRepository = couplingInstanceRepository;
 	}
 
 	@GET
@@ -87,6 +94,25 @@ public class EngineService {
 		} else {
 			throw new IllegalArgumentException("inconsistent system name in URI and body object");
 		}
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{id}/couplingdata")
+	@Transactional
+	public List<CouplingInstance> getSystemCoupling(@PathParam("id") final Long id) {
+		List<CouplingInstance> result = new ArrayList<>();
+		UserSystem system = userSystemsRepository.findOne(id);
+		Set<CouplingInstance> instances = couplingInstanceRepository.findByUserSystem(system);
+		result.addAll(instances);
+		for (CouplingInstance couplingInstance : instances) {
+			// init lazy collection, otherwise you'll get a serialization
+			// exception as the transaction is already closed
+			couplingInstance.getAllNanoentities().size();
+		}
+		log.debug("return criteria for system {}: {}", system.getName(), result.toString());
+		Collections.sort(result);
+		return result;
 	}
 
 }

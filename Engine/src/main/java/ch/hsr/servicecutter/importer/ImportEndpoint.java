@@ -1,7 +1,6 @@
 package ch.hsr.servicecutter.importer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -62,8 +60,8 @@ public class ImportEndpoint {
 	//
 
 	@Autowired
-	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
-			final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
+	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository,
+			final CouplingInstanceRepository couplingInstanceRepository, final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
 			final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository) {
 		this.userSystemRepository = userSystemRepository;
 		this.nanoentityRepository = nanoentityRepository;
@@ -77,14 +75,13 @@ public class ImportEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public Map<String, Object> importERD(final EntityRelationDiagram erd) {
+	public ImportResult importERD(final EntityRelationDiagram erd) {
+		ImportResult result = new ImportResult();
 		if (erd == null) {
 			throw new InvalidRestParam();
 		}
-		Map<String, Object> result = new HashMap<>();
-
 		List<String> warnings = new ArrayList<>();
-		result.put("warnings", warnings);
+		result.setWarnings(warnings);
 
 		UserSystem system = new UserSystem();
 		userSystemRepository.save(system);
@@ -138,8 +135,8 @@ public class ImportEndpoint {
 				log.info("Import aggregation on {} and {}", instance.getNanoentities(), instance.getSecondNanoentities());
 			}
 		}
-		result.put("message", "userSystem " + system.getId() + " has been created");
-		result.put("id", system.getId());
+		result.setMessage("userSystem " + system.getId() + " has been created");
+		result.setId(system.getId());
 		return result;
 	}
 
@@ -181,14 +178,18 @@ public class ImportEndpoint {
 
 		// get all entites that will have no other entities merged into them
 		List<Entity> reducableEntities = inputEntites.stream()
-				.filter(entity -> currentRelations.stream().filter(
-						r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE)) || (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
-				.collect(Collectors.toList()).isEmpty()).collect(Collectors.toList());
+				.filter(entity -> currentRelations.stream()
+						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
+								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+						.collect(Collectors.toList()).isEmpty())
+				.collect(Collectors.toList());
 
 		// get all relations that will merge the reducableEntities into
 		// another entity
-		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream().filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
-				|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION))).collect(Collectors.toList());
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
+				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList());
 		return relationsToEdgeEntities;
 	}
 
@@ -197,10 +198,11 @@ public class ImportEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public Map<String, Object> importUserRepresentations(@PathParam("systemId") final Long systemId, final UserRepresentationContainer userRepresentations) {
-		Map<String, Object> result = new HashMap<>();
+	public ImportResult importUserRepresentations(@PathParam("systemId") final Long systemId, final UserRepresentationContainer userRepresentations) {
+		ImportResult result = new ImportResult();
 		List<String> warnings = new ArrayList<>();
-		result.put("warnings", warnings);
+		result.setWarnings(warnings);
+		result.setId(systemId);
 
 		UserSystem system = userSystemRepository.findOne(systemId);
 		if (system == null) {
@@ -211,9 +213,8 @@ public class ImportEndpoint {
 		// This query could be refined: this is a bit of a hack to figure out
 		// whether user representations already have been loaded.
 		// And it is not efficient at all!
-		long count = couplingInstanceRepository.findByUserSystem(system).stream()
-				.filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY) && !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE))
-				.count();
+		long count = couplingInstanceRepository.findByUserSystem(system).stream().filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY)
+				&& !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE)).count();
 		if (count != 0) {
 			warnings.add("Enhancing an already specified system is not yet implemented!");
 			return result;
@@ -237,6 +238,7 @@ public class ImportEndpoint {
 		persistRelatedGroups(system, userRepresentations.getSharedOwnerGroups(), CouplingCriterion.SHARED_OWNER, warnings);
 
 		log.info("Imported user representations");
+		result.setMessage("Imported user representations");
 		return result;
 	}
 
@@ -260,7 +262,8 @@ public class ImportEndpoint {
 	@Path("/{systemId}/nanoentities/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public void importNanoentities(@PathParam("systemId") final Long systemId, final List<ImportNanoentity> nanoentities) {
+	public ImportResult importNanoentities(@PathParam("systemId") final Long systemId, final List<ImportNanoentity> nanoentities) {
+		ImportResult result = new ImportResult();
 		UserSystem system = userSystemRepository.findOne(systemId);
 		if (system == null) {
 			throw new InvalidRestParam();
@@ -268,6 +271,9 @@ public class ImportEndpoint {
 		nanoentities.forEach((nanoentity) -> {
 			persistNanoentity(system, nanoentity.getContext(), nanoentity.getName());
 		});
+		result.setId(systemId);
+		result.setMessage("Nanoentities imported");
+		return result;
 	}
 
 	private Nanoentity persistNanoentity(final UserSystem system, final String context, final String name) {
@@ -349,25 +355,6 @@ public class ImportEndpoint {
 	private CouplingCriterionCharacteristic findCharacteristic(final String coupling, final String characteristic) {
 		CouplingCriterion couplingCriterion = couplingCriterionRepository.readByName(coupling);
 		CouplingCriterionCharacteristic result = couplingCriteriaCharacteristicRepository.readByNameAndCouplingCriterion(characteristic, couplingCriterion);
-		return result;
-	}
-
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{id}/couplingcriteria")
-	@Transactional
-	public List<CouplingInstance> getSystemCoupling(@PathParam("id") final Long id) {
-		List<CouplingInstance> result = new ArrayList<>();
-		UserSystem system = userSystemRepository.findOne(id);
-		Set<CouplingInstance> instances = couplingInstanceRepository.findByUserSystem(system);
-		result.addAll(instances);
-		for (CouplingInstance couplingInstance : instances) {
-			// init lazy collection, otherwise you'll get a serialization
-			// exception as the transaction is already closed
-			couplingInstance.getAllNanoentities().size();
-		}
-		log.debug("return criteria for system {}: {}", system.getName(), result.toString());
-		Collections.sort(result);
 		return result;
 	}
 

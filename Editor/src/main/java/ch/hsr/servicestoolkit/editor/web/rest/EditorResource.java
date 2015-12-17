@@ -51,13 +51,11 @@ public class EditorResource {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_JSON);
 			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
-			@SuppressWarnings("rawtypes")
-			ResponseEntity<Map> responseEntity = rest.exchange(engineUrl + "/engine/import", HttpMethod.POST, requestEntity, Map.class);
-			@SuppressWarnings("unchecked")
-			Map<String, Object> serviceResponse = responseEntity.getBody();
+			ResponseEntity<ImportResult> responseEntity = rest.exchange(engineUrl + "/engine/import", HttpMethod.POST, requestEntity, ImportResult.class);
+			Map<String, Object> serviceResponse = new HashMap<>();
 			serviceResponse.put("message", "Upload successful!");
-			@SuppressWarnings("unchecked")
-			List<String> warnings = (List<String>) serviceResponse.get("warnings");
+			serviceResponse.put("id", responseEntity.getBody().getId());
+			List<String> warnings = responseEntity.getBody().getWarnings();
 			if (warnings != null && !warnings.isEmpty()) {
 				serviceResponse.put("warnings", warnings);
 			}
@@ -93,10 +91,9 @@ public class EditorResource {
 			HttpEntity<?> requestEntity = new HttpEntity<Object>(theString, headers);
 			String path = engineUrl + "/engine/import/" + modelId + "/" + "userrepresentations" + "/";
 			log.debug("post on {}", path);
-			ResponseEntity<Map<String, Object>> resultEntity = rest.exchange(path, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {
+			ResponseEntity<ImportResult> resultEntity = rest.exchange(path, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<ImportResult>() {
 			});
-			@SuppressWarnings("unchecked")
-			List<String> warnings = (List<String>) resultEntity.getBody().get("warnings");
+			List<String> warnings = resultEntity.getBody().getWarnings();
 			if (warnings != null && !warnings.isEmpty()) {
 				resultBody.put("warnings", warnings);
 			}

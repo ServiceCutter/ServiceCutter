@@ -24,7 +24,8 @@
 		{	
 			"name":"payBooking",
 			"nanoentitiesRead": ["Customer.creditCard"],
-			"nanoentitiesWritten":["Booking.paymentDate", "Booking.bookingState"]
+			"nanoentitiesWritten":["Booking.paymentDate", "Booking.bookingState"],
+			"isLatencyCritical":"true"
 		}
 	],
 "compatibilities": 

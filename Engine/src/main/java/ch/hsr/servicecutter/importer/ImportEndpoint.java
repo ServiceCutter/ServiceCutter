@@ -29,7 +29,7 @@ import ch.hsr.servicecutter.importer.api.Entity;
 import ch.hsr.servicecutter.importer.api.EntityRelation;
 import ch.hsr.servicecutter.importer.api.EntityRelation.RelationType;
 import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
-import ch.hsr.servicecutter.importer.api.ImportNanoentity;
+import ch.hsr.servicecutter.importer.api.NanoentitiesImport;
 import ch.hsr.servicecutter.importer.api.RelatedGroup;
 import ch.hsr.servicecutter.importer.api.UseCase;
 import ch.hsr.servicecutter.importer.api.UserRepresentationContainer;
@@ -262,18 +262,15 @@ public class ImportEndpoint {
 	@Path("/{systemId}/nanoentities/")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Transactional
-	public ImportResult importNanoentities(@PathParam("systemId") final Long systemId, final List<ImportNanoentity> nanoentities) {
-		ImportResult result = new ImportResult();
+	public UserSystem importNanoentities(@PathParam("systemId") final Long systemId, final NanoentitiesImport nanoentities) {
 		UserSystem system = userSystemRepository.findOne(systemId);
 		if (system == null) {
 			throw new InvalidRestParam();
 		}
-		nanoentities.forEach((nanoentity) -> {
+		nanoentities.getNanoentities().forEach((nanoentity) -> {
 			persistNanoentity(system, nanoentity.getContext(), nanoentity.getName());
 		});
-		result.setId(systemId);
-		result.setMessage("Nanoentities imported");
-		return result;
+		return system;
 	}
 
 	private Nanoentity persistNanoentity(final UserSystem system, final String context, final String name) {

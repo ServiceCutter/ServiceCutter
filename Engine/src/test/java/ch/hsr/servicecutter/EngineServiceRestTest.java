@@ -41,16 +41,15 @@ public class EngineServiceRestTest {
 
 	@Test
 	public void createEmptyModel() {
-		UserSystem system = new UserSystem();
-		system.setName("testModel");
-		HttpEntity<UserSystem> request = IntegrationTestHelper.createHttpRequestWithPostObj(system);
+		String name = "testModel";
+		HttpEntity<String> request = IntegrationTestHelper.createHttpRequestWithPostObj(name);
 		ResponseEntity<UserSystem> requestResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/systems", HttpMethod.POST, request, UserSystem.class);
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
 		ResponseEntity<UserSystem> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/systems/" + id, HttpMethod.GET,
 				IntegrationTestHelper.createEmptyHttpRequest(), UserSystem.class);
-		assertEquals("testModel", assertResult.getBody().getName());
+		assertEquals("testModel", assertResult.getBody().getName().toString());
 	}
 
 	@Test

@@ -7,20 +7,18 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import ch.hsr.servicecutter.solver.SolverConfiguration;
-
 public class SolverConfigurationTest {
 
 	@Test(expected = InvalidParameterException.class)
 	public void testNullConfiguration() {
 		SolverConfiguration config = new SolverConfiguration();
-		config.setWeights(null);
+		config.setPriorities(null);
 	}
 
 	@Test
 	public void testEmptyConfig() {
 		SolverConfiguration config = new SolverConfiguration();
-		assertEquals(new Double(0d), config.getWeightForCharacteristic("sameEntity"));
+		assertEquals(new Double(1.0d), config.getPriorityForCouplingCriterion("sameEntity"));
 	}
 
 	@Test
@@ -28,8 +26,8 @@ public class SolverConfigurationTest {
 		HashMap<String, Double> weights = new HashMap<String, Double>();
 		weights.put("sameEntity", 2.4d);
 		SolverConfiguration config = new SolverConfiguration();
-		config.setWeights(weights);
-		assertEquals(new Double(2.4d), config.getWeightForCharacteristic("sameEntity"));
+		config.setPriorities(weights);
+		assertEquals(new Double(2.4d), config.getPriorityForCouplingCriterion("sameEntity"));
 	}
 
 }

@@ -9,11 +9,11 @@ public class UrlHelper {
 		return HOST + port + "/engine/import";
 	}
 
-	public static String userRepresentations(final Integer modelId, final int port) {
+	public static String userRepresentations(final Long modelId, final int port) {
 		return HOST + port + IMPORTER_PATH + modelId.toString() + "/userrepresentations/";
 	}
 
-	public static String solve(final Integer modelId, final int port) {
+	public static String solve(final Long modelId, final int port) {
 		return HOST + port + SOLVER_PATH + modelId;
 	}
 }

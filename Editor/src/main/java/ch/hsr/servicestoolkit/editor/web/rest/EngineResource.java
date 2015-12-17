@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 @RestController
 @RequestMapping("/api/engine")
 public class EngineResource {
@@ -28,17 +30,20 @@ public class EngineResource {
 	/**
 	 * a spring mvc forward proxy inspired by
 	 * http://stackoverflow.com/a/23736527/2219787
+	 * 
+	 * @throws JsonProcessingException
 	 */
 	@RequestMapping("/**")
 	@ResponseBody
-	public Object mirrorRest(@RequestBody(required = false) Object body, HttpMethod method, HttpServletRequest request, HttpServletResponse response) throws URISyntaxException {
+	public Object mirrorRest(@RequestBody(required = false) final Object body, final HttpMethod method, final HttpServletRequest request, final HttpServletResponse response)
+			throws URISyntaxException, JsonProcessingException {
 		String requestURI = mapRequestURI(request.getRequestURI());
 		URI uri = new URI("http", null, host, port, requestURI, request.getQueryString(), null);
 		ResponseEntity<Object> responseEntity = restTemplate.exchange(uri, method, new HttpEntity<Object>(body), Object.class);
 		return responseEntity.getBody();
 	}
 
-	String mapRequestURI(String requestURI) {
+	String mapRequestURI(final String requestURI) {
 		return requestURI.replaceFirst("^/api", "");
 	}
 

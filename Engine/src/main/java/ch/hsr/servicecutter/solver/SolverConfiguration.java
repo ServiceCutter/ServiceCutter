@@ -13,19 +13,13 @@ import com.google.common.base.MoreObjects;
 @Component
 public class SolverConfiguration {
 
-	private Map<String, Double> weights = new HashMap<>();
 	private Map<String, Double> algorithmParams = new HashMap<>();
 	private Map<String, Double> priorities = new HashMap<>();
 	private String algorithm = SolverEndpoint.MODE_GIRVAN_NEWMAN; // default
 
 	private Logger log = LoggerFactory.getLogger(SolverConfiguration.class);
 
-	public void setWeights(final Map<String, Double> weights) {
-		if (weights != null) {
-			this.weights = weights;
-		} else {
-			throw new InvalidParameterException("weights should not be null!");
-		}
+	public SolverConfiguration() {
 	}
 
 	public void setAlgorithmParams(final Map<String, Double> mclParams) {
@@ -40,21 +34,15 @@ public class SolverConfiguration {
 		return priorities;
 	}
 
-	// needed for jackson deserialization
-	public Map<String, Double> getWeights() {
-		return weights;
+	public void setPriorities(final Map<String, Double> priorities) {
+		if (priorities == null) {
+			throw new InvalidParameterException();
+		}
+		this.priorities = priorities;
 	}
 
 	public Map<String, Double> getAlgorithmParams() {
 		return algorithmParams;
-	}
-
-	public Double getWeightForCharacteristic(final String characteristicType) {
-		if (!weights.containsKey(characteristicType)) {
-			log.error("no weight defined for characteristic: " + characteristicType + ". Use 0");
-			return 0d;
-		}
-		return weights.get(characteristicType);
 	}
 
 	public Double getPriorityForCouplingCriterion(final String criterionType) {
@@ -83,7 +71,7 @@ public class SolverConfiguration {
 
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(getClass()).add("algorithm", algorithm).add("weights", weights).add("algorithmParams", algorithmParams).add("priorities", priorities).toString();
+		return MoreObjects.toStringHelper(getClass()).add("algorithm", algorithm).add("algorithmParams", algorithmParams).add("priorities", priorities).toString();
 	}
 
 }

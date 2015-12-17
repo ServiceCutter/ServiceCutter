@@ -9,8 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import ch.hsr.servicecutter.EngineServiceAppication;
 import ch.hsr.servicecutter.IntegrationTestHelper;
 import ch.hsr.servicecutter.UrlHelper;
+import ch.hsr.servicecutter.importer.ImportResult;
 import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
 import ch.hsr.servicecutter.importer.api.UserRepresentationContainer;
 import ch.hsr.servicecutter.model.solver.SolverResult;
@@ -50,15 +49,14 @@ public abstract class AbstractSampleTest {
 
 	@Test
 	public void sample() throws UnsupportedEncodingException, URISyntaxException, IOException {
-		Integer modelId = createModelOnApi();
+		Long modelId = createModelOnApi();
 
 		uploadUserRepresentations(modelId);
 
 		solveModel(modelId);
 	}
 
-	@SuppressWarnings("unchecked")
-	private void uploadUserRepresentations(final Integer modelId) throws URISyntaxException, UnsupportedEncodingException, IOException {
+	private void uploadUserRepresentations(final Long modelId) throws URISyntaxException, UnsupportedEncodingException, IOException {
 		UserRepresentationContainer userRepContainer = IntegrationTestHelper.readFromFile(getRepresentationsFile(), UserRepresentationContainer.class);
 
 		log.info("read user Representations: {}", userRepContainer);
@@ -67,35 +65,36 @@ public abstract class AbstractSampleTest {
 		String path = UrlHelper.userRepresentations(modelId, port);
 		log.info("store user representations on {}", path);
 
-		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
+		ResponseEntity<ImportResult> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<ImportResult>() {
 		});
 
-		assertThat(((List<String>) entity.getBody().get("warnings")), empty());
+		assertThat((entity.getBody().getWarnings()), empty());
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
 	}
 
-	private void solveModel(final Integer modelId) {
+	private void solveModel(final Long modelId) {
 		SolverConfiguration config = new SolverConfiguration();
 		HttpEntity<SolverConfiguration> request = IntegrationTestHelper.createHttpRequestWithPostObj(config);
-		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request, new ParameterizedTypeReference<SolverResult>() {
-		});
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request,
+				new ParameterizedTypeReference<SolverResult>() {
+				});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
 
 		log.info("found services {}", solverResponse.getBody().getServices());
 	}
 
-	private Integer createModelOnApi() throws URISyntaxException, UnsupportedEncodingException, IOException {
+	private Long createModelOnApi() throws URISyntaxException, UnsupportedEncodingException, IOException {
 		EntityRelationDiagram input = IntegrationTestHelper.readFromFile(getModelFile(), EntityRelationDiagram.class);
 
 		HttpEntity<EntityRelationDiagram> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
-		ResponseEntity<Map<String, Object>> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
+		ResponseEntity<ImportResult> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request, new ParameterizedTypeReference<ImportResult>() {
 		});
 
 		assertEquals(HttpStatus.OK, entity.getStatusCode());
-		Integer modelId = (Integer) entity.getBody().get("id");
+		Long modelId = entity.getBody().getId();
 		assertNotNull(modelId);
-		assertTrue(((String) entity.getBody().get("message")).startsWith("userSystem "));
+		assertTrue(entity.getBody().getMessage().startsWith("userSystem "));
 		return modelId;
 	}
 

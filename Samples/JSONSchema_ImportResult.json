@@ -1,0 +1,17 @@
+{
+   "type":"object",
+   "properties":{
+      "message":{
+         "type":"string"
+      },
+      "warnings":{
+         "type":"array",
+         "items":{
+            "type":"string"
+         }
+      },
+      "id":{
+         "type":"number"
+      }
+   }
+}

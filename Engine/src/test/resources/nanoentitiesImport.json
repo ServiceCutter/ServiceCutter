@@ -1,0 +1,17 @@
+{
+"nanoentities":
+	[
+		{
+			"name":"nanoenitiy1",
+			"context":"context1"
+		},
+		{
+			"name":"nanoenitiy2",
+			"context":"context1"
+		},
+		{
+			"name":"nanoenitiy1",
+			"context":"context2"
+		}
+	]
+}

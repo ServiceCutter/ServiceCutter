@@ -1,5 +1,6 @@
 package ch.hsr.servicecutter.solver;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
@@ -16,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import ch.hsr.servicecutter.analyzer.ServiceCutAnalyzer;
 import ch.hsr.servicecutter.model.repository.UserSystemRepository;
@@ -51,7 +55,8 @@ public class SolverEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{systemId}")
 	@Transactional
-	public SolverResult solveSystem(@PathParam("systemId") final Long id, final SolverConfiguration config) {
+	public SolverResult solveSystem(@PathParam("systemId") final Long id, final SolverConfiguration config) throws JsonGenerationException, JsonMappingException, IOException {
+
 		UserSystem userSystem = userSystemRepository.findOne(id);
 		if (userSystem == null || config == null || config.getPriorities().isEmpty()) {
 			return new SolverResult(Collections.emptySet());

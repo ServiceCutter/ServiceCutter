@@ -17,15 +17,15 @@
 	</properties>
 
 	<repositories>
-		<repository>
-			<id>gephi-snapshots</id>
-			<name>Gephi Snapshots</name>
-			<url>http://nexus.gephi.org/nexus/content/repositories/snapshots/</url>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>gephi-snapshots</id> -->
+<!-- 			<name>Gephi Snapshots</name> -->
+<!-- 			<url>http://nexus.gephi.org/nexus/content/repositories/snapshots/</url> -->
+<!-- 		</repository> -->
 		<repository>
 			<id>gephi-releases</id>
 			<name>Gephi Releases</name>
-			<url>http://nexus.gephi.org/nexus/content/repositories/releases/</url>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
 			<id>project-3rd-party</id>

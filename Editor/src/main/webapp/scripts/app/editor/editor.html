@@ -63,8 +63,10 @@
         	<h3>Enhance System #{{modelId}}</h3>
 			
 			 <form class="form-inline">
-				<div class="btn btn-default" ngf-select ng-model="userRepFile" ngf-multiple="false">Upload User Representations</div>
-				<span>{{userRepStatus}}</span>
+				<div class="btn btn-default" ngf-select ng-model="userRepFile" ngf-multiple="false">
+					<span class="glyphicon glyphicon-open-file" aria-hidden="true"></span>
+					Upload User Representations</div>
+				<div>{{userRepStatus}}</div>
 				</p>
             </form>
             

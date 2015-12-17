@@ -42,7 +42,7 @@ Open http://localhost:8090/engine to verify whether the engine is running correc
 
 Now we need to install the JHipster development dependencies:
 
-1. Install Node.js [from the Node.js](http://nodejs.org/) website.
+1. Install Node.js [from the Node.js; tested with LTS](http://nodejs.org/) website.
 2. Install Yeoman: `npm install -g yo`
 3. Install Bower: `npm install -g bower`
 4. Install Grunt: `npm install -g grunt-cli`

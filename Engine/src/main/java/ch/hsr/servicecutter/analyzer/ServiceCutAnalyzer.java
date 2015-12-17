@@ -73,7 +73,7 @@ public class ServiceCutAnalyzer {
 				if (score > 0 && !sharedNanoentities.isEmpty()) {
 					log.info("create service relation for services {} and {} with score {} and nanoentities {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score,
 							sharedNanoentities.toString());
-					relations.add(new ServiceRelation(sharedNanoentities, score, serviceTuple.getServiceA(), serviceTuple.getServiceB()));
+					relations.add(new ServiceRelation(sharedNanoentities, serviceTuple.getServiceA(), serviceTuple.getServiceB()));
 				}
 			}
 		}

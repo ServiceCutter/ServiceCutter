@@ -1,10 +1,13 @@
 {
+   "$schema":"http://json-schema.org/draft-03/schema#",
    "type":"object",
+   "additionalProperties":false,
    "properties":{
       "nanoentities":{
          "type":"array",
          "items":{
             "type":"object",
+            "additionalProperties":false,
             "properties":{
                "name":{
                   "type":"string"

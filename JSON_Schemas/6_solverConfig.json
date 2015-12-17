@@ -36,79 +36,11 @@
           "type": "number"
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "inflation",
-        "power",
-        "prune",
-        "extraClusters",
-        "numberOfClusters",
-        "leungM",
-        "leungDelta"
-      ]
+      "additionalProperties": false
     },
     "priorities": {
       "id": "priorities",
-      "type": "object",
-      "properties": {
-        "Identity & Lifecycle Commonality": {
-          "id": "Identity & Lifecycle Commonality",
-          "type": "integer"
-        },
-        "Semantic Proximity": {
-          "id": "Semantic Proximity",
-          "type": "integer"
-        },
-        "Shared Owner": {
-          "id": "Shared Owner",
-          "type": "integer"
-        },
-        "Structural Volatility": {
-          "id": "Structural Volatility",
-          "type": "number"
-        },
-        "Latency": {
-          "id": "Latency",
-          "type": "integer"
-        },
-        "Consistency Criticality": {
-          "id": "Consistency Criticality",
-          "type": "number"
-        },
-        "Availability Criticality": {
-          "id": "Availability Criticality",
-          "type": "number"
-        },
-        "Content Volatility": {
-          "id": "Content Volatility",
-          "type": "number"
-        },
-        "Consistency Constraint": {
-          "id": "Consistency Constraint",
-          "type": "integer"
-        },
-        "Storage Similarity": {
-          "id": "Storage Similarity",
-          "type": "number"
-        },
-        "Predefined Service Constraint": {
-          "id": "Predefined Service Constraint",
-          "type": "integer"
-        },
-        "Security Contextuality": {
-          "id": "Security Contextuality",
-          "type": "integer"
-        },
-        "Security Criticality": {
-          "id": "Security Criticality",
-          "type": "number"
-        },
-        "Security Constraint": {
-          "id": "Security Constraint",
-          "type": "integer"
-        }
-      },
-      "additionalProperties": false
+      "type": "object"
     },
     "algorithm": {
       "id": "algorithm",

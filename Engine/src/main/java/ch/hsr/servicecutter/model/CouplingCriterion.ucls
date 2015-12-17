@@ -2,8 +2,9 @@
 <class-diagram version="1.1.9" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="ch.hsr.servicecutter.model.usersystem.UserSystem" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/Model.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="161" y="83"/>    
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/UserSystem.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="161" y="88"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -13,14 +14,15 @@
   <class id="2" language="java" name="ch.hsr.servicecutter.model.criteria.CouplingCriterion" project="Engine" 
     file="/Engine/src/main/java/ch/hsr/servicecutter/model/criteria/CouplingCriterion.java" binary="false" 
     corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="489" y="490"/>    
+    <position height="-1" width="-1" x="492" y="490"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="false"/>      
       <operations public="false" package="false" protected="false" private="false" static="true"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic" project="Engine" 
+  <class id="3" language="java" name="ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic" 
+    project="Engine" 
     file="/Engine/src/main/java/ch/hsr/servicecutter/model/criteria/CouplingCriterionCharacteristic.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="161" y="490"/>    
@@ -31,8 +33,9 @@
     </display>  
   </class>  
   <class id="4" language="java" name="ch.hsr.servicecutter.model.usersystem.CouplingInstance" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/CouplingInstance.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="161" y="264"/>    
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/CouplingInstance.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="161" y="269"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="false"/>      
@@ -40,8 +43,9 @@
     </display>  
   </class>  
   <class id="5" language="java" name="ch.hsr.servicecutter.model.usersystem.Nanoentity" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/Nanoentity.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="489" y="83"/>    
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/Nanoentity.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="492" y="88"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -49,8 +53,9 @@
     </display>  
   </class>  
   <enumeration id="6" language="java" name="ch.hsr.servicecutter.model.usersystem.InstanceType" project="Engine" 
-    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/InstanceType.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="488" y="264"/>    
+    file="/Engine/src/main/java/ch/hsr/servicecutter/model/usersystem/InstanceType.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="491" y="269"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -60,10 +65,10 @@
   <association id="7">    
     <end type="SOURCE" refId="3" navigable="false">      
       <attribute id="8" name="couplingCriterion">        
-        <position height="0" width="0" x="-246" y="-96"/>      
+        <position height="0" width="0" x="-243" y="-91"/>      
       </attribute>      
       <multiplicity id="9" minimum="0" maximum="1">        
-        <position height="0" width="0" x="-246" y="-96"/>      
+        <position height="0" width="0" x="-243" y="-91"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
@@ -84,10 +89,10 @@
   <association id="13">    
     <end type="SOURCE" refId="1" navigable="false">      
       <attribute id="14" name="nanoentities">        
-        <position height="0" width="0" x="47" y="-70"/>      
+        <position height="0" width="0" x="50" y="-65"/>      
       </attribute>      
       <multiplicity id="15" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="47" y="-70"/>      
+        <position height="0" width="0" x="50" y="-65"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
@@ -95,25 +100,33 @@
   </association>  
   <association id="16">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="17" name="couplingCriterion">        
-        <position height="18" width="88" x="363" y="387"/>      
+      <attribute id="17" name="instanceType">        
+        <position height="0" width="0" x="3" y="5"/>      
       </attribute>      
-      <multiplicity id="18" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="2" navigable="true"/>    
-    <display labels="true" multiplicity="false"/>  
-  </association>  
-  <association id="19">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="20" name="instanceType"/>      
-      <multiplicity id="21" minimum="0" maximum="1"/>    
+      <multiplicity id="18" minimum="0" maximum="1">        
+        <position height="0" width="0" x="3" y="5"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="false"/>  
   </association>  
+  <association id="19">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="20" name="couplingCriterion">        
+        <position height="18" width="88" x="366" y="392"/>      
+      </attribute>      
+      <multiplicity id="21" minimum="0" maximum="1">        
+        <position height="0" width="0" x="3" y="5"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="false"/>  
+  </association>  
   <association id="22">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="23" name="characteristic"/>      
+      <attribute id="23" name="characteristic">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
       <multiplicity id="24" minimum="0" maximum="1">        
         <position height="16" width="23" x="217" y="422"/>      
       </multiplicity>    

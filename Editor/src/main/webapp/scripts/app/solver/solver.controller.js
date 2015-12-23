@@ -23,6 +23,7 @@ angular.module('editorApp')
 
         $scope.$watch('algorithm', function () {
         	$scope.girvanNewmanActive = $scope.algorithm == 'Girvan-Newman';
+        	$scope.greedyActive = $scope.algorithm == 'Greedy';
         	$scope.solve();
         });
         
@@ -232,7 +233,7 @@ angular.module('editorApp')
         		XL : {value: 8, name: "XL"},
         		XXL : {value: 13, name: "XXL"}
         }
-        $scope.availableAlgorithms = ['Leung','Girvan-Newman'];
+        $scope.availableAlgorithms = ['Leung','Girvan-Newman', 'Greedy'];
         
         $scope.criteriaTypes = ["COHESIVENESS", "COMPATIBILITY", "CONSTRAINTS"];
         

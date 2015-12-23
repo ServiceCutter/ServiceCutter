@@ -29,6 +29,7 @@ import ch.hsr.servicecutter.model.usersystem.UserSystem;
 import ch.hsr.servicecutter.rest.InvalidRestParam;
 import ch.hsr.servicecutter.scorer.Score;
 import ch.hsr.servicecutter.scorer.Scorer;
+import ch.hsr.servicecutter.solver.greedy.GreedySolver;
 
 @Component
 @Path("/engine/solver")
@@ -41,7 +42,8 @@ public class SolverEndpoint {
 
 	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
 	public static final String MODE_LEUNG = "Leung";
-	public static final String[] MODES = new String[] { MODE_GIRVAN_NEWMAN, MODE_LEUNG };
+	public static final String MODE_GREEDY = "Greedy";
+	public static final String[] MODES = new String[] { MODE_GIRVAN_NEWMAN, MODE_LEUNG, MODE_GREEDY };
 
 	@Autowired
 	public SolverEndpoint(final UserSystemRepository userSystemRepository, final Scorer scorer, final ServiceCutAnalyzer analyzer) {
@@ -75,6 +77,9 @@ public class SolverEndpoint {
 		} else if (MODE_GIRVAN_NEWMAN.equals(algorithm)) {
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
 			solver = new GephiSolver(userSystem, scores, numberOfClusters);
+		} else if (MODE_GREEDY.equals(algorithm)) {
+			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
+			solver = new GreedySolver(userSystem.getNanoentities(), scores, numberOfClusters);
 		} else {
 			log.error("algorithm {} not found, supported values: {}", algorithm, MODES);
 			throw new InvalidRestParam();

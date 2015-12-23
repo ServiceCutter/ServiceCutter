@@ -106,7 +106,7 @@
 				<h3>Algorithm</h3>
 				<select class="form-control" ng-model="algorithm" ng-options="a for a in availableAlgorithms"></select>
 
-				<div ng-show="girvanNewmanActive">
+				<div ng-show="girvanNewmanActive || greedyActive">
 					<h3>Number of Services:</h3>
 					<div width="50%">
 					    <rzslider rz-slider-model="numberSlider" 

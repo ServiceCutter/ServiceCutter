@@ -25,8 +25,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterionCharacteristic;
 import ch.hsr.servicecutter.model.criteria.CouplingType;
-import ch.hsr.servicecutter.model.service.Service;
-import ch.hsr.servicecutter.model.service.ServiceCut;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -101,24 +99,6 @@ public class CouplingInstance implements Comparable<CouplingInstance> {
 
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	public boolean nanoentitiesAreInSameService(final ServiceCut cut) {
-		// TYPE: proximity
-		for (Service service : cut.getServices()) {
-			for (Nanoentity nanoentity : getAllNanoentities()) {
-				// if service contains any of the nanoentities
-				if (service.getNanoentities().contains(nanoentity)) {
-					// then is has to contain ALL of them
-					if (service.getNanoentities().containsAll(getAllNanoentities())) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
 	}
 
 	public void setSystem(final UserSystem userSystem) {

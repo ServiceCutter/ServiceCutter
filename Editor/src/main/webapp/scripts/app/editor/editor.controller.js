@@ -79,21 +79,33 @@ angular.module('editorApp')
         	Model.getCoupling({id:id}, function(coupling) {
         		$scope.model['coupling'] = coupling;
         	});
-        }
+        };
         
         $scope.listNanoentityNames = function (nanoentities) {
         	return nanoentities.map(function (o,i) {
         		return o.name;
         	}).join(', ');
-        }
+        };
         
+        $scope.deleteSystem = function () {
+        	if($scope.modelId != 0) {
+        		Model.delete({id:$scope.modelId}, function () {
+        			$scope.modelId = 0;
+        			$scope.loadAvailableModels();
+        		});
+        	}
+        };
+        
+        $scope.loadAvailableModels = function () {
+        	$scope.availableModels = Model.all(function () {
+        		$scope.status = 'Select a model or upload a new one.';
+        	});
+        }
         
         $scope.userRepStatus = '';
         $scope.status = '';
         $scope.modelId = ($rootScope.modelId == undefined ? 0 : $rootScope.modelId) ;
         $scope.model = null;
         $scope.modelsById = {};
-        $scope.availableModels = Model.all(function(models) {
-        	$scope.status = 'Select a model or upload a new one.';
-        });
+        $scope.loadAvailableModels();
     });

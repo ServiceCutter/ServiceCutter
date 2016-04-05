@@ -1,6 +1,8 @@
 package ch.hsr.servicecutter;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
@@ -47,9 +49,33 @@ public class EngineServiceRestTest {
 		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
 		Long id = requestResult.getBody().getId();
 
-		ResponseEntity<UserSystem> assertResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/systems/" + id, HttpMethod.GET,
-				IntegrationTestHelper.createEmptyHttpRequest(), UserSystem.class);
+		ResponseEntity<UserSystem> assertResult = getSystem(id);
 		assertEquals("testModel", assertResult.getBody().getName().toString());
+	}
+
+	@Test
+	public void createAndDeleteSystem() {
+		String name = "testModel";
+		HttpEntity<String> request = IntegrationTestHelper.createHttpRequestWithPostObj(name);
+		ResponseEntity<UserSystem> requestResult = this.restTemplate.exchange("http://localhost:" + this.port + "/engine/systems", HttpMethod.POST, request, UserSystem.class);
+		assertEquals(HttpStatus.OK, requestResult.getStatusCode());
+		Long id = requestResult.getBody().getId();
+
+		ResponseEntity<UserSystem> assertResult = getSystem(id);
+		assertEquals("testModel", assertResult.getBody().getName());
+
+		this.restTemplate.delete(createURL(id));
+		ResponseEntity<?> notFoundResult = this.restTemplate.exchange(createURL(id), HttpMethod.GET, IntegrationTestHelper.createEmptyHttpRequest(), (Class<?>) null);
+		// TODO it would be more appropriate to receive a 404 here
+		assertThat(notFoundResult.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+	}
+
+	private ResponseEntity<UserSystem> getSystem(Long id) {
+		return this.restTemplate.exchange(createURL(id), HttpMethod.GET, IntegrationTestHelper.createEmptyHttpRequest(), UserSystem.class);
+	}
+
+	private String createURL(Long id) {
+		return "http://localhost:" + this.port + "/engine/systems/" + id;
 	}
 
 	@Test

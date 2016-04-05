@@ -11,6 +11,9 @@ angular.module('editorApp')
                 get: {
                 	method: 'GET'
                 },
+                delete: {
+                	method: 'DELETE'
+                },
                 getCoupling: {
                 	method: 'GET',
                 	url: 'api/engine/:id/couplingdata',

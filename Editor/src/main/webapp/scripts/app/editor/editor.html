@@ -11,11 +11,15 @@
 		            </select>
             	</div>
 	
+				<button title="Delete system" class="btn btn-default" ng-click="deleteSystem()" ng-show="modelId">
+					<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+				</button>
+
 				<div class="btn btn-default" ngf-select ng-model="file" ngf-multiple="false">
 					<span class="glyphicon glyphicon-open-file" aria-hidden="true"></span>
 					Upload File
 				</div>
-
+				
 				<span>{{status}}</span>
             </form>
             

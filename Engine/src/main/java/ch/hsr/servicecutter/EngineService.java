@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,6 +28,7 @@ import ch.hsr.servicecutter.model.repository.UserSystemRepository;
 import ch.hsr.servicecutter.model.usersystem.CouplingInstance;
 import ch.hsr.servicecutter.model.usersystem.UserSystem;
 import ch.hsr.servicecutter.rest.InvalidRestParam;
+import ch.hsr.servicecutter.rest.ResourceNotFoundException;
 
 @Component
 @Path("/engine")
@@ -62,7 +64,11 @@ public class EngineService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
 	public UserSystem getSystem(@PathParam("id") final Long id) {
-		return userSystemsRepository.findOne(id);
+		UserSystem result = userSystemsRepository.findOne(id);
+		if (result == null) {
+			throw new ResourceNotFoundException("System with id " + id);
+		}
+		return result;
 	}
 
 	@POST
@@ -79,6 +85,13 @@ public class EngineService {
 		log.info("created usersystem {} ", systemName);
 		userSystemsRepository.save(system);
 		return system;
+	}
+
+	@DELETE
+	@Path("/systems/{id}")
+	@Transactional
+	public void deleteUserSystem(@PathParam("id") Long id) {
+		userSystemsRepository.delete(id);
 	}
 
 	@GET

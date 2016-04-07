@@ -167,11 +167,21 @@ angular.module('editorApp')
 				}
 			}
 			// service relations
-			if($scope.showRelations){
-    			for(var relation in $scope.result.relations){
-    					var fromNode = $scope.result.relations[relation].serviceA;
-    					var toNode = $scope.result.relations[relation].serviceB;
-    					serviceEdges.add({from: fromNode, to: toNode, id: fromNode + '-'+toNode, color:'#B0DF9B'});
+			if ($scope.showRelations){
+    			for (var relation in $scope.result.relations){
+    					var relation = $scope.result.relations[relation];
+    					var fromNode = relation.serviceA;
+    					var toNode = relation.serviceB;
+    					var a = '';
+    					if (relation.direction == "BIDIRECTIONAL") {
+    						a = 'to, from';
+    					} else if (relation.direction == "INCOMING") {
+    						a = 'from';
+    					} else if (relation.direction == "OUTGOING") {
+    						a = 'to';
+    					}
+    					var edge = {from: fromNode, to: toNode, id: fromNode + '-'+toNode, color:'#B0DF9B', arrows: a};
+    					serviceEdges.add(edge);
     			}
 			}
 	        $scope.graphData = {

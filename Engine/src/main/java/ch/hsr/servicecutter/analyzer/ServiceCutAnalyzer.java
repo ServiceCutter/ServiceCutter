@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import ch.hsr.servicecutter.model.analyzer.ServiceRelation;
-import ch.hsr.servicecutter.model.analyzer.ServiceTuple;
+import ch.hsr.servicecutter.model.analyzer.ServiceRelation.Direction;
 import ch.hsr.servicecutter.model.criteria.CouplingCriterion;
 import ch.hsr.servicecutter.model.repository.NanoentityRepository;
 import ch.hsr.servicecutter.model.solver.EntityPair;
@@ -67,13 +67,14 @@ public class ServiceCutAnalyzer {
 
 		for (int a = 0; a < serviceList.size() - 1; a++) {
 			for (int b = a + 1; b < serviceList.size(); b++) {
-				ServiceTuple serviceTuple = new ServiceTuple(serviceList.get(a).getName(), serviceList.get(b).getName());
-				Double score = getProximityScoreFor(serviceList.get(a), serviceList.get(b), scores, userSystem);
-				final List<String> sharedNanoentities = getSharedNanoentities(serviceList.get(a), serviceList.get(b), useCaseResponsibilites);
-				if (score > 0 && !sharedNanoentities.isEmpty()) {
-					log.info("create service relation for services {} and {} with score {} and nanoentities {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score,
-							sharedNanoentities.toString());
-					relations.add(new ServiceRelation(sharedNanoentities, serviceTuple.getServiceA(), serviceTuple.getServiceB()));
+				Service serviceA = serviceList.get(a);
+				Service serviceB = serviceList.get(b);
+				Double score = getProximityScoreFor(serviceA, serviceB, scores, userSystem);
+				ServiceRelation relation = createServiceRelation(serviceA, serviceB, useCaseResponsibilites);
+				if (score > 0 && !relation.getSharedEntities().isEmpty()) {
+					log.info("create service relation for services {} and {} with score {} and nanoentities {}", serviceA.getName(), serviceB.getName(), score,
+							relation.getSharedEntities().toString());
+					relations.add(relation);
 				}
 			}
 		}
@@ -81,23 +82,31 @@ public class ServiceCutAnalyzer {
 
 	}
 
-	private List<String> getSharedNanoentities(final Service serviceA, final Service serviceB, final Map<Service, List<CouplingInstance>> useCaseResponsibilites) {
-		// use set to avoid duplicates
-		Set<String> result = new HashSet<String>();
-		result.addAll(getSharedNanoentities(useCaseResponsibilites.get(serviceA), serviceB));
-		result.addAll(getSharedNanoentities(useCaseResponsibilites.get(serviceB), serviceA));
-		return new ArrayList<String>(result);
+	private ServiceRelation createServiceRelation(final Service serviceA, final Service serviceB, final Map<Service, List<CouplingInstance>> useCaseResponsibilites) {
+		Set<String> sharedNanoentities = new HashSet<String>();
+		List<String> aToB = getSharedNanoentities(useCaseResponsibilites.get(serviceA), serviceB);
+		sharedNanoentities.addAll(aToB);
+		List<String> bToA = getSharedNanoentities(useCaseResponsibilites.get(serviceB), serviceA);
+		sharedNanoentities.addAll(bToA);
+
+		Direction direction = null;
+		if (!aToB.isEmpty() && !bToA.isEmpty()) {
+			direction = Direction.BIDIRECTIONAL;
+		} else if (!aToB.isEmpty()) {
+			direction = Direction.OUTGOING;
+		} else if (!bToA.isEmpty()) {
+			direction = Direction.INCOMING;
+		}
+		return new ServiceRelation(sharedNanoentities, serviceA.getName(), serviceB.getName(), direction);
 	}
 
 	private List<String> getSharedNanoentities(final List<CouplingInstance> primaryUseCases, final Service otherService) {
 		// for all use cases of primaryService, collect the nanoentities placed
-		// in
-		// otherService and return it as StringList
+		// in otherService and return it as StringList
 		if (primaryUseCases == null || primaryUseCases.isEmpty()) {
 			return Collections.emptyList();
 		}
-		return primaryUseCases.stream()
-				.flatMap(instance -> instance.getAllNanoentities().stream().filter(nanoentity -> otherService.getNanoentities().contains(nanoentity.getContextName())))
+		return primaryUseCases.stream().flatMap(instance -> instance.getAllNanoentities().stream().filter(nanoentity -> otherService.getNanoentities().contains(nanoentity.getContextName())))
 				.map(nanoentity -> nanoentity.getContextName()).collect(Collectors.toList());
 	}
 
@@ -132,10 +141,8 @@ public class ServiceCutAnalyzer {
 		Service responsibleService = null;
 		Double highestScore = 0d;
 		for (final Service service : set) {
-			final long numberOfNanoentitiesWritten = dualInstance.getSecondNanoentities().stream()
-					.filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName())).count();
-			final long numberOfNanoentitiesRead = dualInstance.getNanoentities().stream().filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName()))
-					.count();
+			final long numberOfNanoentitiesWritten = dualInstance.getSecondNanoentities().stream().filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName())).count();
+			final long numberOfNanoentitiesRead = dualInstance.getNanoentities().stream().filter(nanoentity -> service.getNanoentities().contains(nanoentity.getContextName())).count();
 			final double score = numberOfNanoentitiesRead * SCORE_READ + numberOfNanoentitiesWritten * SCORE_WRITE;
 			if (score > highestScore) {
 				highestScore = score;

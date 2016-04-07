@@ -1,5 +1,7 @@
 package ch.hsr.servicecutter.importer;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -60,8 +63,8 @@ public class ImportEndpoint {
 	//
 
 	@Autowired
-	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository,
-			final CouplingInstanceRepository couplingInstanceRepository, final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
+	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
+			final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
 			final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository) {
 		this.userSystemRepository = userSystemRepository;
 		this.nanoentityRepository = nanoentityRepository;
@@ -178,18 +181,14 @@ public class ImportEndpoint {
 
 		// get all entites that will have no other entities merged into them
 		List<Entity> reducableEntities = inputEntites.stream()
-				.filter(entity -> currentRelations.stream()
-						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
-								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
-						.collect(Collectors.toList()).isEmpty())
-				.collect(Collectors.toList());
+				.filter(entity -> currentRelations.stream().filter(
+						r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE)) || (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList()).isEmpty()).collect(Collectors.toList());
 
 		// get all relations that will merge the reducableEntities into
 		// another entity
-		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
-				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
-						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
-				.collect(Collectors.toList());
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream().filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+				|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION))).collect(Collectors.toList());
 		return relationsToEdgeEntities;
 	}
 
@@ -210,14 +209,13 @@ public class ImportEndpoint {
 			return result;
 		}
 
-		// This query could be refined: this is a bit of a hack to figure out
-		// whether user representations already have been loaded.
-		// And it is not efficient at all!
-		long count = couplingInstanceRepository.findByUserSystem(system).stream().filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY)
-				&& !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE)).count();
-		if (count != 0) {
-			warnings.add("Enhancing an already specified system is not yet implemented!");
-			return result;
+		Predicate<CouplingInstance> notImportedWithERD = i -> notAggregation(i) && notEntity(i);
+		List<CouplingInstance> existingInstances = couplingInstanceRepository.findByUserSystem(system).stream().filter(notImportedWithERD).collect(toList());
+		boolean replaced = false;
+		if (!existingInstances.isEmpty()) {
+			replaced = true;
+			couplingInstanceRepository.delete(existingInstances);
+			log.info("Deleted {} existing coupling instances.", existingInstances.size());
 		}
 
 		persistUseCases(system, userRepresentations.getUseCases(), warnings);
@@ -238,8 +236,16 @@ public class ImportEndpoint {
 		persistRelatedGroups(system, userRepresentations.getSharedOwnerGroups(), CouplingCriterion.SHARED_OWNER, warnings);
 
 		log.info("Imported user representations");
-		result.setMessage("Imported user representations");
+		result.setMessage(replaced ? "Replaced all existing User Representations." : "Imported all user representations.");
 		return result;
+	}
+
+	private boolean notEntity(CouplingInstance i) {
+		return !(i.getCouplingCriterion().is(CouplingCriterion.IDENTITY_LIFECYCLE) && i.getType().equals(InstanceType.SAME_ENTITY));
+	}
+
+	private boolean notAggregation(CouplingInstance i) {
+		return !(i.getCouplingCriterion().is(CouplingCriterion.SEMANTIC_PROXIMITY) && i.getType().equals(InstanceType.AGGREGATION));
 	}
 
 	private void persistUseCases(final UserSystem system, final List<UseCase> useCases, final List<String> warnings) {

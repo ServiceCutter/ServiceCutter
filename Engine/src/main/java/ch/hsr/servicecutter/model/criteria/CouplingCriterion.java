@@ -98,4 +98,8 @@ public class CouplingCriterion {
 		return MoreObjects.toStringHelper(this.getClass()).add("id", id).add("name", name).add("type", type).toString();
 	}
 
+	public boolean is(String name) {
+		return name.equals(this.name);
+	}
+
 }

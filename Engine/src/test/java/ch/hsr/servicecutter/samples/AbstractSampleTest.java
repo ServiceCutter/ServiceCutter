@@ -48,7 +48,7 @@ public abstract class AbstractSampleTest {
 	private Logger log = LoggerFactory.getLogger(AbstractSampleTest.class);
 
 	@Test
-	public void sample() throws UnsupportedEncodingException, URISyntaxException, IOException {
+	public void runTest() throws UnsupportedEncodingException, URISyntaxException, IOException {
 		Long modelId = createModelOnApi();
 
 		uploadUserRepresentations(modelId);
@@ -75,9 +75,8 @@ public abstract class AbstractSampleTest {
 	private void solveModel(final Long modelId) {
 		SolverConfiguration config = new SolverConfiguration();
 		HttpEntity<SolverConfiguration> request = IntegrationTestHelper.createHttpRequestWithPostObj(config);
-		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request,
-				new ParameterizedTypeReference<SolverResult>() {
-				});
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request, new ParameterizedTypeReference<SolverResult>() {
+		});
 
 		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
 

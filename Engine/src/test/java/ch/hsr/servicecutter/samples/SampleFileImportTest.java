@@ -1,10 +1,11 @@
 package ch.hsr.servicecutter.samples;
 
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -33,6 +35,7 @@ import ch.hsr.servicecutter.UrlHelper;
 import ch.hsr.servicecutter.importer.ImportResult;
 import ch.hsr.servicecutter.importer.api.EntityRelationDiagram;
 import ch.hsr.servicecutter.importer.api.UserRepresentationContainer;
+import ch.hsr.servicecutter.model.repository.CouplingInstanceRepository;
 import ch.hsr.servicecutter.model.solver.SolverResult;
 import ch.hsr.servicecutter.solver.SolverConfiguration;
 
@@ -40,66 +43,80 @@ import ch.hsr.servicecutter.solver.SolverConfiguration;
 @SpringApplicationConfiguration(classes = EngineServiceAppication.class)
 @IntegrationTest("server.port=0")
 @WebAppConfiguration
-public abstract class AbstractSampleTest {
+public class SampleFileImportTest {
 
 	@Value("${local.server.port}")
 	private int port;
 	private RestTemplate restTemplate = new TestRestTemplate();
-	private Logger log = LoggerFactory.getLogger(AbstractSampleTest.class);
+	@Autowired
+	private CouplingInstanceRepository couplingInstanceRepository;
+	private static final Logger LOG = LoggerFactory.getLogger(SampleFileImportTest.class);
 
 	@Test
-	public void sample() throws UnsupportedEncodingException, URISyntaxException, IOException {
-		Long modelId = createModelOnApi();
+	public void testBookingSample() throws UnsupportedEncodingException, URISyntaxException, IOException {
+		Long modelId = createModelOnApi("booking_1_model.json");
+		uploadUserRepresentations(modelId, "booking_2_user_representations.json");
+		solveModel(modelId);
+	}
 
-		uploadUserRepresentations(modelId);
+	@Test
+	public void testTradingSystem() throws UnsupportedEncodingException, URISyntaxException, IOException {
+		Long modelId = createModelOnApi("trading_1_model.json");
+
+		long before = couplingInstanceRepository.count();
+		uploadUserRepresentations(modelId, "trading_2_user_representations.json");
+		long after = couplingInstanceRepository.count();
+		assertThat(after, greaterThan(before));
 
 		solveModel(modelId);
 	}
 
-	private void uploadUserRepresentations(final Long modelId) throws URISyntaxException, UnsupportedEncodingException, IOException {
-		UserRepresentationContainer userRepContainer = IntegrationTestHelper.readFromFile(getRepresentationsFile(), UserRepresentationContainer.class);
+	@Test
+	public void testDDD() throws UnsupportedEncodingException, URISyntaxException, IOException {
+		Long modelId = createModelOnApi("ddd_1_model.json");
+		uploadUserRepresentations(modelId, "ddd_2_user_representations.json");
+		solveModel(modelId);
+	}
 
-		log.info("read user Representations: {}", userRepContainer);
+	private void uploadUserRepresentations(final Long modelId, String representationsFile) throws URISyntaxException, UnsupportedEncodingException, IOException {
+		UserRepresentationContainer userRepContainer = IntegrationTestHelper.readFromFile(representationsFile, UserRepresentationContainer.class);
+
+		LOG.info("read user Representations: {}", userRepContainer);
 
 		HttpEntity<UserRepresentationContainer> request = IntegrationTestHelper.createHttpRequestWithPostObj(userRepContainer);
 		String path = UrlHelper.userRepresentations(modelId, port);
-		log.info("store user representations on {}", path);
+		LOG.info("store user representations on {}", path);
 
 		ResponseEntity<ImportResult> entity = this.restTemplate.exchange(path, HttpMethod.POST, request, new ParameterizedTypeReference<ImportResult>() {
 		});
 
 		assertThat((entity.getBody().getWarnings()), empty());
-		assertEquals(HttpStatus.OK, entity.getStatusCode());
+		assertThat(entity.getStatusCode(), is(HttpStatus.OK));
 	}
 
 	private void solveModel(final Long modelId) {
 		SolverConfiguration config = new SolverConfiguration();
 		HttpEntity<SolverConfiguration> request = IntegrationTestHelper.createHttpRequestWithPostObj(config);
-		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request,
-				new ParameterizedTypeReference<SolverResult>() {
-				});
+		ResponseEntity<SolverResult> solverResponse = this.restTemplate.exchange(UrlHelper.solve(modelId, port), HttpMethod.POST, request, new ParameterizedTypeReference<SolverResult>() {
+		});
 
-		assertEquals(HttpStatus.OK, solverResponse.getStatusCode());
+		assertThat(solverResponse.getStatusCode(), is(HttpStatus.OK));
 
-		log.info("found services {}", solverResponse.getBody().getServices());
+		LOG.info("found services {}", solverResponse.getBody().getServices());
 	}
 
-	private Long createModelOnApi() throws URISyntaxException, UnsupportedEncodingException, IOException {
-		EntityRelationDiagram input = IntegrationTestHelper.readFromFile(getModelFile(), EntityRelationDiagram.class);
+	private Long createModelOnApi(String modelFile) throws URISyntaxException, UnsupportedEncodingException, IOException {
+		EntityRelationDiagram input = IntegrationTestHelper.readFromFile(modelFile, EntityRelationDiagram.class);
 
 		HttpEntity<EntityRelationDiagram> request = IntegrationTestHelper.createHttpRequestWithPostObj(input);
 		ResponseEntity<ImportResult> entity = this.restTemplate.exchange(UrlHelper.importDomain(port), HttpMethod.POST, request, new ParameterizedTypeReference<ImportResult>() {
 		});
 
-		assertEquals(HttpStatus.OK, entity.getStatusCode());
+		assertThat(entity.getStatusCode(), is(HttpStatus.OK));
 		Long modelId = entity.getBody().getId();
-		assertNotNull(modelId);
-		assertTrue(entity.getBody().getMessage().startsWith("userSystem "));
+		assertThat(modelId, notNullValue());
+		assertThat(entity.getBody().getMessage(), startsWith("userSystem "));
 		return modelId;
 	}
-
-	protected abstract String getModelFile();
-
-	protected abstract String getRepresentationsFile();
 
 }

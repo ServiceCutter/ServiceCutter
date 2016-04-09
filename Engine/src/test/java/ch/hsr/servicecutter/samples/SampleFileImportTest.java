@@ -68,6 +68,11 @@ public class SampleFileImportTest {
 		long after = couplingInstanceRepository.count();
 		assertThat(after, greaterThan(before));
 
+		// upload again
+		uploadUserRepresentations(modelId, "trading_2_user_representations.json");
+		long afterReupload = couplingInstanceRepository.count();
+		assertThat(afterReupload, is(after));
+
 		solveModel(modelId);
 	}
 

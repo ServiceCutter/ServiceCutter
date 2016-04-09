@@ -14,7 +14,7 @@ public class EntityRelationDiagram {
 		return entities;
 	}
 
-	public void setEntities(List<Entity> entities) {
+	public void setEntities(final List<Entity> entities) {
 		this.entities = entities;
 	}
 
@@ -22,8 +22,12 @@ public class EntityRelationDiagram {
 		return relations;
 	}
 
-	public void setRelations(List<EntityRelation> relations) {
+	public void setRelations(final List<EntityRelation> relations) {
 		this.relations = relations;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 	public String getName() {

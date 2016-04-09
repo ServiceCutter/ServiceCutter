@@ -127,12 +127,12 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		for (Entry<EntityPair, Map<String, Score>> entry : scores.entrySet()) {
 			setWeight(entry.getKey().nanoentityA, entry.getKey().nanoentityB, entry.getValue().values().stream().mapToDouble(Score::getPrioritizedScore).sum());
 			// Logging
-			log.info("Score for nanoentity tuple {}", entry.getKey());
+			log.debug("Score for nanoentity tuple {}", entry.getKey());
 			for (Entry<String, Score> criteriaScores : entry.getValue().entrySet()) {
-				log.info("{}: {} with priority {} results in {}", criteriaScores.getKey(), criteriaScores.getValue().getScore(), criteriaScores.getValue().getPriority(),
+				log.debug("{}: {} with priority {} results in {}", criteriaScores.getKey(), criteriaScores.getValue().getScore(), criteriaScores.getValue().getPriority(),
 						criteriaScores.getValue().getPrioritizedScore());
 			}
-			log.info("---------------------------------------------------");
+			log.debug("---------------------------------------------------");
 		}
 
 		deleteNegativeEdges();
@@ -150,7 +150,7 @@ public abstract class AbstractSolver<N, E> implements Solver {
 				edgesToRemove.add(edge);
 			}
 		}
-		log.info("Deleting {} edges with zero or negative weight", edgesToRemove.size());
+		log.debug("Deleting {} edges with zero or negative weight", edgesToRemove.size());
 		for (E edge : edgesToRemove) {
 			removeEdge(edge);
 
@@ -162,10 +162,10 @@ public abstract class AbstractSolver<N, E> implements Solver {
 		N nodeB = getNode(second);
 		E existingEdge = getEdge(first, second);
 		if (existingEdge != null) {
-			log.info("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
+			log.debug("add {} to weight of edge from node {} to {}", weight, nodeA, nodeB);
 			setWeight(existingEdge, weight);
 		} else {
-			log.info("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
+			log.debug("create edge with weight {} from node {} to {}", weight, nodeA, nodeB);
 			createEdgeAndSetWeight(first, second, weight);
 		}
 

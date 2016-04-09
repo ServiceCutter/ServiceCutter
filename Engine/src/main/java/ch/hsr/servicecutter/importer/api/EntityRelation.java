@@ -22,12 +22,24 @@ public class EntityRelation {
 		return destination;
 	}
 
+	public void setDestination(final Entity destination) {
+		this.destination = destination;
+	}
+
+	public void setOrigin(final Entity origin) {
+		this.origin = origin;
+	}
+
 	public Entity getOrigin() {
 		return origin;
 	}
 
 	public RelationType getType() {
 		return type;
+	}
+
+	public void setType(final RelationType type) {
+		this.type = type;
 	}
 
 	public static enum RelationType {

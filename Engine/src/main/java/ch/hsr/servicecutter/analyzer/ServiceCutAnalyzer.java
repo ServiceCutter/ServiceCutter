@@ -71,7 +71,7 @@ public class ServiceCutAnalyzer {
 				Double score = getProximityScoreFor(serviceList.get(a), serviceList.get(b), scores, userSystem);
 				final List<String> sharedNanoentities = getSharedNanoentities(serviceList.get(a), serviceList.get(b), useCaseResponsibilites);
 				if (score > 0 && !sharedNanoentities.isEmpty()) {
-					log.info("create service relation for services {} and {} with score {} and nanoentities {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score,
+					log.debug("create service relation for services {} and {} with score {} and nanoentities {}", serviceList.get(a).getName(), serviceList.get(b).getName(), score,
 							sharedNanoentities.toString());
 					relations.add(new ServiceRelation(sharedNanoentities, serviceTuple.getServiceA(), serviceTuple.getServiceB()));
 				}

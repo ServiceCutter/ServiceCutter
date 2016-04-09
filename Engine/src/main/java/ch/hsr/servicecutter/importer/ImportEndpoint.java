@@ -50,6 +50,7 @@ import ch.hsr.servicecutter.rest.InvalidRestParam;
 @Path("/engine/import")
 public class ImportEndpoint {
 
+	public static final int NR_OF_CLONES = 60;
 	private final Logger log = LoggerFactory.getLogger(ImportEndpoint.class);
 	private final UserSystemRepository userSystemRepository;
 	private final NanoentityRepository nanoentityRepository;
@@ -75,68 +76,81 @@ public class ImportEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public ImportResult importERD(final EntityRelationDiagram erd) {
+	public ImportResult importERD(final EntityRelationDiagram inputErd) {
 		ImportResult result = new ImportResult();
-		if (erd == null) {
+		if (inputErd == null) {
 			throw new InvalidRestParam();
 		}
 		List<String> warnings = new ArrayList<>();
 		result.setWarnings(warnings);
 
-		UserSystem system = new UserSystem();
-		userSystemRepository.save(system);
-		String name = erd.getName();
-		if (!StringUtils.hasLength(name)) {
-			name = "imported " + new Date().toString();
-		}
-		system.setName(name);
+		for (int i = 1; i <= NR_OF_CLONES; i++) {
+			// int i = NR_OF_CLONES;
 
-		// TODO: handle case if two nanoentities of consolidated entities have
-		// the same name
-		Map<String, String> inputEntityAttributes = new HashMap<>();
-		for (Entity entity : erd.getEntities()) {
-			for (String attribute : entity.getNanoentities()) {
-				inputEntityAttributes.put(attribute, entity.getName());
+			UserSystem system = new UserSystem();
+			userSystemRepository.save(system);
+			String name = inputErd.getName();
+			if (!StringUtils.hasLength(name)) {
+				name = "imported " + new Date().toString() + i;
+			}
+			system.setName(name + i);
+			log.info("System {}-{} created", system.getName(), system.getId());
+
+			List<EntityRelationDiagram> clonedErds = new ArrayList<>();
+			clonedErds = InputCloner.cloneErd(inputErd, i);
+
+			for (EntityRelationDiagram erd : clonedErds) {
+				// TODO: handle case if two nanoentities of consolidated
+				// entities
+				// have
+				// the same name
+				Map<String, String> inputEntityAttributes = new HashMap<>();
+				for (Entity entity : erd.getEntities()) {
+					for (String attribute : entity.getNanoentities()) {
+						inputEntityAttributes.put(attribute, entity.getName());
+					}
+				}
+
+				// entities
+				CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
+				for (Entry<String, List<String>> entityAndNanoentities : findRealEntities(erd).entrySet()) {
+					CouplingInstance entityInstance = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
+					system.addCouplingInstance(entityInstance);
+					couplingInstanceRepository.save(entityInstance);
+					String entityName = entityAndNanoentities.getKey();
+					entityInstance.setName(entityName);
+					entityInstance.setSystem(system);
+					log.info("store entity with attributes {}", entityAndNanoentities.getValue());
+					for (String entityAttribute : entityAndNanoentities.getValue()) {
+						Nanoentity nanoentity = persistNanoentity(system, inputEntityAttributes.get(entityAttribute), entityAttribute);
+						entityInstance.addNanoentity(nanoentity);
+						log.info("Import nanoentity {}", nanoentity.getContextName());
+					}
+				}
+
+				// Aggregations
+				CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
+				for (EntityRelation relation : erd.getRelations()) {
+					if (RelationType.AGGREGATION.equals(relation.getType())) {
+						CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.AGGREGATION);
+						couplingInstanceRepository.save(instance);
+						List<Nanoentity> originNanoentities = relation.getOrigin().getNanoentities().stream()
+								.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getOrigin().getName(), attr, system)).collect(Collectors.toList());
+						List<Nanoentity> destinationNanoentities = relation.getDestination().getNanoentities().stream()
+								.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getDestination().getName(), attr, system))
+								.collect(Collectors.toList());
+						instance.setNanoentities(originNanoentities);
+						instance.setSecondNanoentities(destinationNanoentities);
+						instance.setSystem(system);
+						instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
+
+						log.info("Import aggregation on {} and {}", instance.getNanoentities(), instance.getSecondNanoentities());
+					}
+				}
 			}
 		}
-
-		// entities
-		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
-		for (Entry<String, List<String>> entityAndNanoentities : findRealEntities(erd).entrySet()) {
-			CouplingInstance entityInstance = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
-			system.addCouplingInstance(entityInstance);
-			couplingInstanceRepository.save(entityInstance);
-			String entityName = entityAndNanoentities.getKey();
-			entityInstance.setName(entityName);
-			entityInstance.setSystem(system);
-			log.info("store entity with attributes {}", entityAndNanoentities.getValue());
-			for (String entityAttribute : entityAndNanoentities.getValue()) {
-				Nanoentity nanoentity = persistNanoentity(system, inputEntityAttributes.get(entityAttribute), entityAttribute);
-				entityInstance.addNanoentity(nanoentity);
-				log.info("Import nanoentity {}", nanoentity.getContextName());
-			}
-		}
-
-		// Aggregations
-		CouplingCriterion semanticProximity = couplingCriterionRepository.readByName(CouplingCriterion.SEMANTIC_PROXIMITY);
-		for (EntityRelation relation : erd.getRelations()) {
-			if (RelationType.AGGREGATION.equals(relation.getType())) {
-				CouplingInstance instance = new CouplingInstance(semanticProximity, InstanceType.AGGREGATION);
-				couplingInstanceRepository.save(instance);
-				List<Nanoentity> originNanoentities = relation.getOrigin().getNanoentities().stream()
-						.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getOrigin().getName(), attr, system)).collect(Collectors.toList());
-				List<Nanoentity> destinationNanoentities = relation.getDestination().getNanoentities().stream()
-						.map(attr -> nanoentityRepository.findByContextAndNameAndUserSystem(relation.getDestination().getName(), attr, system)).collect(Collectors.toList());
-				instance.setNanoentities(originNanoentities);
-				instance.setSecondNanoentities(destinationNanoentities);
-				instance.setSystem(system);
-				instance.setName(relation.getOrigin().getName() + "." + relation.getDestination().getName());
-
-				log.info("Import aggregation on {} and {}", instance.getNanoentities(), instance.getSecondNanoentities());
-			}
-		}
-		result.setMessage("userSystem " + system.getId() + " has been created");
-		result.setId(system.getId());
+		result.setMessage("userSystems has been created");
+		result.setId(1l);
 		return result;
 	}
 
@@ -198,48 +212,58 @@ public class ImportEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public ImportResult importUserRepresentations(@PathParam("systemId") final Long systemId, final UserRepresentationContainer userRepresentations) {
+	public ImportResult importUserRepresentations(@PathParam("systemId") final Long systemId, final UserRepresentationContainer inputUserRepresentations) {
 		ImportResult result = new ImportResult();
 		List<String> warnings = new ArrayList<>();
 		result.setWarnings(warnings);
 		result.setId(systemId);
 
-		UserSystem system = userSystemRepository.findOne(systemId);
-		if (system == null) {
-			warnings.add("system not defined!");
-			return result;
-		}
+		for (Long systemNr = 1l; systemNr <= NR_OF_CLONES; systemNr++) {
+			// Long systemNr = 1l;
 
-		// This query could be refined: this is a bit of a hack to figure out
-		// whether user representations already have been loaded.
-		// And it is not efficient at all!
-		long count = couplingInstanceRepository.findByUserSystem(system).stream().filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY)
-				&& !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE)).count();
-		if (count != 0) {
-			warnings.add("Enhancing an already specified system is not yet implemented!");
-			return result;
-		}
+			UserSystem system = userSystemRepository.findOne(systemNr);
+			if (system == null) {
+				warnings.add("system not defined!");
+				return result;
+			}
 
-		persistUseCases(system, userRepresentations.getUseCases(), warnings);
-		Compatibilities compatibilities = userRepresentations.getCompatibilities();
-		if (compatibilities != null) {
-			persistCharacteristics(system, compatibilities.getStructuralVolatility(), CouplingCriterion.STRUCTURAL_VOLATILITY, warnings);
-			persistCharacteristics(system, compatibilities.getConsistencyCriticality(), CouplingCriterion.CONSISTENCY, warnings);
-			persistCharacteristics(system, compatibilities.getSecurityCriticality(), CouplingCriterion.SECURITY_CRITICALITY, warnings);
-			persistCharacteristics(system, compatibilities.getStorageSimilarity(), CouplingCriterion.STORAGE_SIMILARITY, warnings);
-			persistCharacteristics(system, compatibilities.getContentVolatility(), CouplingCriterion.CONTENT_VOLATILITY, warnings);
-			persistCharacteristics(system, compatibilities.getAvailabilityCriticality(), CouplingCriterion.AVAILABILITY, warnings);
-		}
-		persistRelatedGroups(system, userRepresentations.getAggregates(), CouplingCriterion.CONSISTENCY_CONSTRAINT, warnings);
-		persistRelatedGroups(system, userRepresentations.getEntities(), CouplingCriterion.IDENTITY_LIFECYCLE, warnings);
-		persistRelatedGroups(system, userRepresentations.getPredefinedServices(), CouplingCriterion.PREDEFINED_SERVICE, warnings);
-		persistRelatedGroups(system, userRepresentations.getSecurityAccessGroups(), CouplingCriterion.SECURITY_CONTEXUALITY, warnings);
-		persistRelatedGroups(system, userRepresentations.getSeparatedSecurityZones(), CouplingCriterion.SECURITY_CONSTRAINT, warnings);
-		persistRelatedGroups(system, userRepresentations.getSharedOwnerGroups(), CouplingCriterion.SHARED_OWNER, warnings);
+			// This query could be refined: this is a bit of a hack to figure
+			// out
+			// whether user representations already have been loaded.
+			// And it is not efficient at all!
+			long count = couplingInstanceRepository.findByUserSystem(system).stream().filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY)
+					&& !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE)).count();
+			if (count != 0) {
+				warnings.add("Enhancing an already specified system is not yet implemented!");
+				return result;
+			}
 
+			List<UserRepresentationContainer> clonedUserReps = InputCloner.cloneUserReps(inputUserRepresentations, Integer.toUnsignedLong(NR_OF_CLONES));
+
+			for (UserRepresentationContainer userRepresentations : clonedUserReps) {
+
+				persistUseCases(system, userRepresentations.getUseCases(), warnings);
+				Compatibilities compatibilities = userRepresentations.getCompatibilities();
+				if (compatibilities != null) {
+					persistCharacteristics(system, compatibilities.getStructuralVolatility(), CouplingCriterion.STRUCTURAL_VOLATILITY, warnings);
+					persistCharacteristics(system, compatibilities.getConsistencyCriticality(), CouplingCriterion.CONSISTENCY, warnings);
+					persistCharacteristics(system, compatibilities.getSecurityCriticality(), CouplingCriterion.SECURITY_CRITICALITY, warnings);
+					persistCharacteristics(system, compatibilities.getStorageSimilarity(), CouplingCriterion.STORAGE_SIMILARITY, warnings);
+					persistCharacteristics(system, compatibilities.getContentVolatility(), CouplingCriterion.CONTENT_VOLATILITY, warnings);
+					persistCharacteristics(system, compatibilities.getAvailabilityCriticality(), CouplingCriterion.AVAILABILITY, warnings);
+				}
+				persistRelatedGroups(system, userRepresentations.getAggregates(), CouplingCriterion.CONSISTENCY_CONSTRAINT, warnings);
+				persistRelatedGroups(system, userRepresentations.getEntities(), CouplingCriterion.IDENTITY_LIFECYCLE, warnings);
+				persistRelatedGroups(system, userRepresentations.getPredefinedServices(), CouplingCriterion.PREDEFINED_SERVICE, warnings);
+				persistRelatedGroups(system, userRepresentations.getSecurityAccessGroups(), CouplingCriterion.SECURITY_CONTEXUALITY, warnings);
+				persistRelatedGroups(system, userRepresentations.getSeparatedSecurityZones(), CouplingCriterion.SECURITY_CONSTRAINT, warnings);
+				persistRelatedGroups(system, userRepresentations.getSharedOwnerGroups(), CouplingCriterion.SHARED_OWNER, warnings);
+			}
+		}
 		log.info("Imported user representations");
 		result.setMessage("Imported user representations");
 		return result;
+
 	}
 
 	private void persistUseCases(final UserSystem system, final List<UseCase> useCases, final List<String> warnings) {
@@ -294,9 +318,9 @@ public class ImportEndpoint {
 				warnings.add("characteristic " + inputCharacteristic + " not known!");
 				continue;
 			}
-			Set<CouplingInstance> instance = couplingInstanceRepository.findByUserSystemAndCharacteristic(system, characteristic);
+			Set<CouplingInstance> instances = couplingInstanceRepository.findByUserSystemAndCharacteristic(system, characteristic);
 
-			if (instance == null || instance.isEmpty()) {
+			if (instances == null || instances.isEmpty()) {
 				CouplingInstance newInstance = new CouplingInstance(characteristic, InstanceType.CHARACTERISTIC);
 				system.addCouplingInstance(newInstance);
 				couplingInstanceRepository.save(newInstance);
@@ -305,7 +329,14 @@ public class ImportEndpoint {
 				newInstance.setNanoentities(loadNanoentities(inputCharacteristic.getNanoentities(), system, warnings));
 				log.info("Import distance characteristic {}-{} with nanoentities {}", criterionName, inputCharacteristic.getCharacteristic(), newInstance.getAllNanoentities());
 			} else {
-				log.error("enhancing characteristics not yet implemented. criterion: {}, characteristic: {}", criterionName, inputCharacteristic.getCharacteristic());
+				List<Nanoentity> nanoentities = new ArrayList<>();
+				nanoentities.addAll(loadNanoentities(inputCharacteristic.getNanoentities(), system, warnings));
+				CouplingInstance instance = instances.iterator().next();
+				nanoentities.addAll(instance.getAllNanoentities());
+				instance.setNanoentities(nanoentities);
+				// log.error("enhancing characteristics not yet implemented.
+				// criterion: {}, characteristic: {}", criterionName,
+				// inputCharacteristic.getCharacteristic());
 			}
 		}
 		systemCompleter.completeSystemWithDefaultsForDistance(system);

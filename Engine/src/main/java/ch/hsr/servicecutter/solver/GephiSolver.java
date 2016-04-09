@@ -66,7 +66,7 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 
 		log.info("final edges: ");
 		for (Edge edge : undirectedGraph.getEdges()) {
-			log.info("{}-{}: {}", edge.getSource().getNodeData().getLabel(), edge.getTarget().getNodeData().getLabel(), edge.getWeight());
+			log.debug("{}-{}: {}", edge.getSource().getNodeData().getLabel(), edge.getTarget().getNodeData().getLabel(), edge.getWeight());
 		}
 		saveAsPdf();
 

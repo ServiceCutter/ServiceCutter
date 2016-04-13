@@ -81,12 +81,6 @@ angular.module('editorApp')
         	});
         };
         
-        $scope.listNanoentityNames = function (nanoentities) {
-        	return nanoentities.map(function (o,i) {
-        		return o.name;
-        	}).join(', ');
-        };
-        
         $scope.deleteSystem = function () {
         	if($scope.modelId != 0) {
         		Model.delete({id:$scope.modelId}, function () {

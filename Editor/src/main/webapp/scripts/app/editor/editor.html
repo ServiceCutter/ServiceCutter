@@ -36,11 +36,14 @@
 			
 				<p>Name: <strong>{{model.name}}</strong></p>
 				
-				<p>Nanoentities:</p>
+				<h3>Nanoentities</h3>
 				
-				<ul>
-					<li ng-repeat="nanoentity in model.nanoentities">#{{nanoentity.id}} - {{nanoentity.contextName}}</li>
-				</ul>
+				<span ng-repeat="nanoentity in model.nanoentities">
+					<span class="label label-default">
+						{{nanoentity.contextName}} 
+					</span> &nbsp;
+				</span>
+
 			
 			</div>
 			
@@ -48,16 +51,23 @@
 			
 				<h3>Coupling</h3>
 				
-				<ul>
-					<li ng-repeat="coupling in model.coupling">{{coupling.couplingCriterion.name}}
-					<span ng-show="coupling.instanceType">- {{coupling.instanceType}}</span>
-					<span ng-show="coupling.characteristic.name">- <strong>{{coupling.characteristic.name}}</strong></span>
-					<span ng-show="!coupling.characteristic.name">- <strong>{{coupling.name}}</strong></span>
-					<ul>
-						<li>{{ listNanoentityNames(coupling.allNanoentities) }}</li>
-					</ul>
-					</li>
-				</ul>
+				<div class="panel panel-primary" ng-repeat="coupling in model.coupling">
+					<div class="panel-heading">
+						{{coupling.couplingCriterion.name}} 
+						<span ng-show="coupling.instanceType">- {{coupling.instanceType}}</span>
+						<span ng-show="coupling.characteristic.name">- <strong>{{coupling.characteristic.name}}</strong></span>
+						<span ng-show="!coupling.characteristic.name">- <strong>{{coupling.name}}</strong></span>
+					</div>
+					<div class="panel-body">
+						<span ng-repeat="nanoentity in coupling.allNanoentities">
+							<span class="label label-default"
+								popover-append-to-body="true" popover="{{nanoentity.contextName}}" popover-trigger="mouseenter">
+								{{nanoentity.name}} 
+							</span> &nbsp;
+						</span>
+						
+					</div>
+				</div>
 			
             </div>
             

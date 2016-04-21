@@ -51,7 +51,14 @@
 			
 				<h3>Coupling</h3>
 				
-				<div class="panel panel-primary" ng-repeat="coupling in model.coupling">
+				<form stlyle="margin-bottom: 10px;">
+  					<div class="form-group">
+						<input type="text" class="form-control" ng-model="ccFilter"
+							placeholder="Filter Coupling Criteria instances" />
+					</div>
+				</form>
+				
+				<div class="panel panel-primary" ng-repeat="coupling in model.coupling | filter:ccFilter">
 					<div class="panel-heading">
 						{{coupling.couplingCriterion.name}} 
 						<span ng-show="coupling.instanceType">- {{coupling.instanceType}}</span>

@@ -102,4 +102,5 @@ angular.module('editorApp')
         $scope.model = null;
         $scope.modelsById = {};
         $scope.loadAvailableModels();
+        $scope.ccFilter = '';
     });

@@ -93,12 +93,13 @@
 				</div>
 				</form></div>
 
-				<h3>Analysis Mode</h3>
+				<h3>Service Dependencies</h3>
 				<form class="form-inline" name="myVizForm">	
 				<div class="form-group form-group-sm">
 					<div class="alert alert-info" role="alert" ng-show="disableVisualization">Please provide use case specifications or change Semantic Proximity priority to enable analysis mode</div>			
 					<div ng-show="!disableVisualization"> 
-						<toggle-switch ng-model="showRelations" id="show-relations" ng-click="repaintGraph()"></toggle-switch>
+						<toggle-switch ng-model="showRelations" id="show-relations" ng-click="repaintGraph()"
+							on-label="Shown" off-label="Hidden"></toggle-switch>
 					</div>
 				</div>
 				</form>

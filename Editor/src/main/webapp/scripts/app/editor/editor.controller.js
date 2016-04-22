@@ -96,6 +96,28 @@ angular.module('editorApp')
         	});
         }
         
+        // this is an adjacent 3-colors set created by http://paletton.com/
+        // the starting color is #337ab7 which is the primary color of bootstrap
+        $scope.colors = ['#337BB7', '#4442C2', '#2BBE83', '#7EB1DC', '#8B89E1', // color 1 
+                         '#79DFB6', '#5393C8', '#6361D0', '#4CCD99', '#1265AB', // color 2 
+                         '#2522B7', '#08B36E', '#094B83', '#16148D', '#008A52']; // color 3
+        $scope.contextColors = {};
+        $scope.$watch('model.nanoentities', function() {
+        	var index = 0;
+        	if($scope.model != null) {
+        		angular.forEach($scope.model.nanoentities, function(nanoentity) {
+        			var context = nanoentity.context;
+        			if(!(context in $scope.contextColors)) {
+        				$scope.contextColors[context] = $scope.colors[index++ % $scope.colors.length];
+        			}
+        		});
+        	}
+        });
+        
+        $scope.getColor = function (context) {
+        	return $scope.contextColors[context];
+        }
+        
         $scope.userRepStatus = '';
         $scope.status = '';
         $scope.modelId = ($rootScope.modelId == undefined ? 0 : $rootScope.modelId) ;

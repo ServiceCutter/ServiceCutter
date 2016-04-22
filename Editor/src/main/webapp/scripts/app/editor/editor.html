@@ -39,7 +39,7 @@
 				<h3>Nanoentities</h3>
 				
 				<span ng-repeat="nanoentity in model.nanoentities">
-					<span class="label label-default">
+					<span class="label label-default" style="background-color: {{getColor(nanoentity.context)}};">
 						{{nanoentity.contextName}} 
 					</span> &nbsp;
 				</span>

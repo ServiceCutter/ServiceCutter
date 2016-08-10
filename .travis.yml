@@ -8,9 +8,4 @@ before_install:
   - nvm install $NODE_VERSION
   - npm install -g npm
   - npm install -g bower grunt-cli
-  - node -v
-  - npm -v
-  - bower -v
-  - grunt -v
-  - java -version
 install: npm install

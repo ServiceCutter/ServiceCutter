@@ -1,8 +1,5 @@
 package ch.hsr.servicecutter.solver;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,11 +15,6 @@ import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.io.exporter.api.ExportController;
-import org.gephi.preview.api.PreviewController;
-import org.gephi.preview.api.PreviewModel;
-import org.gephi.preview.api.PreviewProperty;
-import org.gephi.preview.types.EdgeColor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.jfree.util.Log;
@@ -67,35 +59,6 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 		log.info("final edges: ");
 		for (Edge edge : undirectedGraph.getEdges()) {
 			log.info("{}-{}: {}", edge.getSource().getNodeData().getLabel(), edge.getTarget().getNodeData().getLabel(), edge.getWeight());
-		}
-		saveAsPdf();
-
-	}
-
-	private void saveAsPdf() {
-
-		PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
-		PreviewModel previewModel = previewController.getModel();
-
-		// Preview
-		previewModel.getProperties().putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-		previewModel.getProperties().putValue(PreviewProperty.BACKGROUND_COLOR, Color.TRANSLUCENT);
-		previewModel.getProperties().putValue(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
-
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.GRAY));
-		previewModel.getProperties().putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.01f));
-		previewModel.getProperties().putValue(PreviewProperty.NODE_LABEL_FONT, previewModel.getProperties().getFontValue(PreviewProperty.NODE_LABEL_FONT).deriveFont(50f));
-
-		previewController.refreshPreview();
-
-		// Export
-		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-		try {
-			ec.exportFile(new File("debug_graph.gexf"));
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			return;
 		}
 	}
 
@@ -206,7 +169,8 @@ public class GephiSolver extends AbstractSolver<Node, Edge> {
 
 	private GraphModel bootstrapGephi() {
 		// boostrap gephi
-		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+		Lookup lookup = Lookup.getDefault();
+		ProjectController pc = lookup.lookup(ProjectController.class);
 		pc.newProject();
 		@SuppressWarnings("unused")
 		Workspace workspace = pc.getCurrentWorkspace();

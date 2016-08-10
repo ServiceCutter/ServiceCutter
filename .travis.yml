@@ -7,10 +7,10 @@ env:
 before_install:
   - nvm install $NODE_VERSION
   - npm install -g npm
-  - npm install -g bower gulp-cli
+  - npm install -g bower grunt-cli
   - node -v
   - npm -v
   - bower -v
-  - gulp -v
+  - grunt -v
   - java -version
 install: npm install

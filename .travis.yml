@@ -1,3 +1,16 @@
 language: java
 jdk:
   - oraclejdk8
+sudo: false
+env:
+  - NODE_VERSION=4.4.7
+before_install:
+  - nvm install $NODE_VERSION
+  - npm install -g npm
+  - npm install -g bower gulp-cli
+  - node -v
+  - npm -v
+  - bower -v
+  - gulp -v
+  - java -version
+install: npm install

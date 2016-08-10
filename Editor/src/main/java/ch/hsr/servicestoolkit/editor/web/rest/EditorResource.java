@@ -93,11 +93,12 @@ public class EditorResource {
 			log.debug("post on {}", path);
 			ResponseEntity<ImportResult> resultEntity = rest.exchange(path, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<ImportResult>() {
 			});
-			List<String> warnings = resultEntity.getBody().getWarnings();
+			ImportResult body = resultEntity.getBody();
+			List<String> warnings = body.getWarnings();
 			if (warnings != null && !warnings.isEmpty()) {
 				resultBody.put("warnings", warnings);
 			}
-			resultBody.put("message", "Upload successfull!");
+			resultBody.put("message", body.getMessage());
 			result = ResponseEntity.ok(resultBody);
 		} catch (HttpClientErrorException e) {
 			log.error("", e.getResponseBodyAsString());

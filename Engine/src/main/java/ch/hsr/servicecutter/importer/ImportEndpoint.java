@@ -1,12 +1,14 @@
 package ch.hsr.servicecutter.importer;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -60,8 +62,8 @@ public class ImportEndpoint {
 	//
 
 	@Autowired
-	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository,
-			final CouplingInstanceRepository couplingInstanceRepository, final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
+	public ImportEndpoint(final UserSystemRepository userSystemRepository, final NanoentityRepository nanoentityRepository, final CouplingInstanceRepository couplingInstanceRepository,
+			final UserSystemCompleter systemCompleter, final CouplingCriterionRepository couplingCriterionRepository,
 			final CouplingCriterionCharacteristicRepository couplingCriteriaCharacteristicRepository) {
 		this.userSystemRepository = userSystemRepository;
 		this.nanoentityRepository = nanoentityRepository;
@@ -69,6 +71,36 @@ public class ImportEndpoint {
 		this.systemCompleter = systemCompleter;
 		this.couplingCriterionRepository = couplingCriterionRepository;
 		this.couplingCriteriaCharacteristicRepository = couplingCriteriaCharacteristicRepository;
+	}
+
+	private class TemporaryNanoentity {
+
+		private String originalEntity;
+		private String originalName;
+		private String newEntity;
+
+		public TemporaryNanoentity(String originalEntity, String originalName) {
+			this.originalEntity = originalEntity;
+			this.originalName = originalName;
+			this.newEntity = originalEntity;
+		}
+
+		public String getOriginalEntity() {
+			return originalEntity;
+		}
+
+		public String getOriginalName() {
+			return originalName;
+		}
+
+		public String getNewEntity() {
+			return newEntity;
+		}
+
+		public void setNewEntity(String newEntity) {
+			this.newEntity = newEntity;
+		}
+
 	}
 
 	@POST
@@ -91,29 +123,21 @@ public class ImportEndpoint {
 		}
 		system.setName(name);
 
-		// TODO: handle case if two nanoentities of consolidated entities have
-		// the same name
-		Map<String, String> inputEntityAttributes = new HashMap<>();
-		for (Entity entity : erd.getEntities()) {
-			for (String attribute : entity.getNanoentities()) {
-				inputEntityAttributes.put(attribute, entity.getName());
-			}
-		}
+		List<TemporaryNanoentity> nanoentities = erd.getEntities().stream().flatMap(e -> e.getNanoentities().stream().map(n -> new TemporaryNanoentity(e.getName(), n))).collect(toList());
 
 		// entities
 		CouplingCriterion criterion = couplingCriterionRepository.readByName(CouplingCriterion.IDENTITY_LIFECYCLE);
-		for (Entry<String, List<String>> entityAndNanoentities : findRealEntities(erd).entrySet()) {
-			CouplingInstance entityInstance = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
-			system.addCouplingInstance(entityInstance);
-			couplingInstanceRepository.save(entityInstance);
-			String entityName = entityAndNanoentities.getKey();
-			entityInstance.setName(entityName);
-			entityInstance.setSystem(system);
-			log.info("store entity with attributes {}", entityAndNanoentities.getValue());
-			for (String entityAttribute : entityAndNanoentities.getValue()) {
-				Nanoentity nanoentity = persistNanoentity(system, inputEntityAttributes.get(entityAttribute), entityAttribute);
-				entityInstance.addNanoentity(nanoentity);
-				log.info("Import nanoentity {}", nanoentity.getContextName());
+		Map<String, List<TemporaryNanoentity>> nanoentitiesByEntity = expandEntitiesByCompositionAndInheritance(erd, nanoentities).stream()
+				.collect(Collectors.groupingBy(TemporaryNanoentity::getNewEntity));
+		for (Entry<String, List<TemporaryNanoentity>> entityAndNanoentities : nanoentitiesByEntity.entrySet()) {
+			CouplingInstance entityCoupling = new CouplingInstance(criterion, InstanceType.SAME_ENTITY);
+			system.addCouplingInstance(entityCoupling);
+			couplingInstanceRepository.save(entityCoupling);
+			entityCoupling.setName(entityAndNanoentities.getKey());
+			entityCoupling.setSystem(system);
+			log.info("Store entity {} with attributes {}", entityAndNanoentities.getKey(), entityAndNanoentities.getValue());
+			for (TemporaryNanoentity newNanoentity : entityAndNanoentities.getValue()) {
+				entityCoupling.addNanoentity(createNanoentity(system, newNanoentity.getOriginalEntity(), newNanoentity.getOriginalName()));
 			}
 		}
 
@@ -140,11 +164,7 @@ public class ImportEndpoint {
 		return result;
 	}
 
-	private Map<String, List<String>> findRealEntities(final EntityRelationDiagram erd) {
-		Map<String, List<String>> realEntities = new HashMap<>();
-		for (Entity entity : erd.getEntities()) {
-			realEntities.put(entity.getName(), entity.getNanoentities());
-		}
+	private List<TemporaryNanoentity> expandEntitiesByCompositionAndInheritance(final EntityRelationDiagram erd, List<TemporaryNanoentity> nanoentities) {
 		List<EntityRelation> currentRelations = new ArrayList<>(erd.getRelations());
 
 		// does this work with cycles?
@@ -152,24 +172,23 @@ public class ImportEndpoint {
 		while (!relationsToEdgeEntities.isEmpty()) {
 			log.info("Entity reduction iteration, reduce relations {}", relationsToEdgeEntities);
 			for (EntityRelation relation : relationsToEdgeEntities) {
+				String destinationEntity = relation.getDestination().getName();
+				String originEntity = relation.getOrigin().getName();
 				if (RelationType.COMPOSITION.equals(relation.getType())) {
-					List<String> list = realEntities.get(relation.getOrigin().getName());
-					if (list != null) {
-						list.addAll(relation.getDestination().getNanoentities());
-					} else {
-						log.error("ignore relation {}", relation);
-					}
-					realEntities.remove(relation.getDestination().getName());
+					// move all nanoentities from the destination to the origin
+					// entity
+					nanoentities.stream().filter(n -> destinationEntity.equals(n.getOriginalEntity())).forEach(n -> n.setNewEntity(originEntity));
 				} else if (RelationType.INHERITANCE.equals(relation.getType())) {
-					realEntities.get(relation.getDestination().getName()).addAll(relation.getOrigin().getNanoentities());
-					realEntities.remove(relation.getOrigin().getName());
+					// move all nanoentities from the origin to the destination
+					// entity
+					nanoentities.stream().filter(n -> originEntity.equals(n.getOriginalEntity())).forEach(n -> n.setNewEntity(destinationEntity));
 				}
 
 				currentRelations.remove(relation);
 				relationsToEdgeEntities = getRelationsToEdgeEntities(currentRelations, erd.getEntities());
 			}
 		}
-		return realEntities;
+		return nanoentities;
 	}
 
 	// returns a list of relations where the destination has no outgoing
@@ -178,18 +197,14 @@ public class ImportEndpoint {
 
 		// get all entites that will have no other entities merged into them
 		List<Entity> reducableEntities = inputEntites.stream()
-				.filter(entity -> currentRelations.stream()
-						.filter(r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE))
-								|| (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
-						.collect(Collectors.toList()).isEmpty())
-				.collect(Collectors.toList());
+				.filter(entity -> currentRelations.stream().filter(
+						r2 -> (r2.getDestination().equals(entity) && r2.getType().equals(RelationType.INHERITANCE)) || (r2.getOrigin().equals(entity) && r2.getType().equals(RelationType.COMPOSITION)))
+				.collect(Collectors.toList()).isEmpty()).collect(Collectors.toList());
 
 		// get all relations that will merge the reducableEntities into
 		// another entity
-		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream()
-				.filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
-						|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION)))
-				.collect(Collectors.toList());
+		List<EntityRelation> relationsToEdgeEntities = currentRelations.stream().filter(r -> (reducableEntities.contains(r.getOrigin()) && r.getType().equals(RelationType.INHERITANCE))
+				|| (reducableEntities.contains(r.getDestination()) && r.getType().equals(RelationType.COMPOSITION))).collect(Collectors.toList());
 		return relationsToEdgeEntities;
 	}
 
@@ -210,14 +225,13 @@ public class ImportEndpoint {
 			return result;
 		}
 
-		// This query could be refined: this is a bit of a hack to figure out
-		// whether user representations already have been loaded.
-		// And it is not efficient at all!
-		long count = couplingInstanceRepository.findByUserSystem(system).stream().filter(i -> !i.getCouplingCriterion().getName().equals(CouplingCriterion.SEMANTIC_PROXIMITY)
-				&& !i.getCouplingCriterion().getName().equals(CouplingCriterion.IDENTITY_LIFECYCLE)).count();
-		if (count != 0) {
-			warnings.add("Enhancing an already specified system is not yet implemented!");
-			return result;
+		Predicate<CouplingInstance> notImportedWithERD = i -> notAggregation(i) && notEntity(i);
+		List<CouplingInstance> existingInstances = couplingInstanceRepository.findByUserSystem(system).stream().filter(notImportedWithERD).collect(toList());
+		boolean replaced = false;
+		if (!existingInstances.isEmpty()) {
+			replaced = true;
+			couplingInstanceRepository.delete(existingInstances);
+			log.info("Deleted {} existing coupling instances.", existingInstances.size());
 		}
 
 		persistUseCases(system, userRepresentations.getUseCases(), warnings);
@@ -238,8 +252,16 @@ public class ImportEndpoint {
 		persistRelatedGroups(system, userRepresentations.getSharedOwnerGroups(), CouplingCriterion.SHARED_OWNER, warnings);
 
 		log.info("Imported user representations");
-		result.setMessage("Imported user representations");
+		result.setMessage(replaced ? "Replaced all existing User Representations." : "Imported all user representations.");
 		return result;
+	}
+
+	private boolean notEntity(CouplingInstance i) {
+		return !(i.getCouplingCriterion().is(CouplingCriterion.IDENTITY_LIFECYCLE) && i.getType().equals(InstanceType.SAME_ENTITY));
+	}
+
+	private boolean notAggregation(CouplingInstance i) {
+		return !(i.getCouplingCriterion().is(CouplingCriterion.SEMANTIC_PROXIMITY) && i.getType().equals(InstanceType.AGGREGATION));
 	}
 
 	private void persistUseCases(final UserSystem system, final List<UseCase> useCases, final List<String> warnings) {
@@ -268,14 +290,13 @@ public class ImportEndpoint {
 			throw new InvalidRestParam();
 		}
 		nanoentities.getNanoentities().forEach((nanoentity) -> {
-			persistNanoentity(system, nanoentity.getContext(), nanoentity.getName());
+			createNanoentity(system, nanoentity.getContext(), nanoentity.getName());
 		});
 		return system;
 	}
 
-	private Nanoentity persistNanoentity(final UserSystem system, final String context, final String name) {
+	private Nanoentity createNanoentity(final UserSystem system, final String context, final String name) {
 		Nanoentity nanoentity = new Nanoentity();
-
 		nanoentity.setName(name);
 		nanoentity.setContext(context);
 		system.addNanoentity(nanoentity);

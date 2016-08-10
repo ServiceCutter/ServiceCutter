@@ -16,24 +16,6 @@
 		<jacoco-maven-plugin.version>0.7.4.201502262128</jacoco-maven-plugin.version>
 	</properties>
 
-	<repositories>
-<!-- 		<repository> -->
-<!-- 			<id>gephi-snapshots</id> -->
-<!-- 			<name>Gephi Snapshots</name> -->
-<!-- 			<url>http://nexus.gephi.org/nexus/content/repositories/snapshots/</url> -->
-<!-- 		</repository> -->
-		<repository>
-			<id>gephi-releases</id>
-			<name>Gephi Releases</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>project-3rd-party</id>
-			<name>Project 3rd Party JARs</name>
-			<url>http://sinv-56064.edu.hsr.ch/nexus/content/repositories/thirdparty</url>
-		</repository>
-	</repositories>
-
 	<!-- Add typical dependencies for a web application -->
 	<dependencies>
 		<dependency>
@@ -74,29 +56,9 @@
 			<version>18.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.gephi</groupId>
-			<artifactId>gephi-toolkit</artifactId>
-			<version>0.8.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.gephi</groupId>
-			<artifactId>clustering-plugin</artifactId>
-			<version>0.8.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.gephi</groupId>
-			<artifactId>algorithms-plugin</artifactId>
-			<version>0.8.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.gephi</groupId>
-			<artifactId>newman-plugin</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.gephi</groupId>
-			<artifactId>newman-plugin-missing-dependencies</artifactId>
-			<version>1.0</version>
+			<groupId>com.servicecutter.clustering.gephi</groupId>
+			<artifactId>girvan-newman</artifactId>
+			<version>0.8.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>

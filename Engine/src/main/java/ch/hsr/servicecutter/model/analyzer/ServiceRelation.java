@@ -1,24 +1,32 @@
 package ch.hsr.servicecutter.model.analyzer;
 
-import java.util.List;
+import java.util.Set;
 
 public class ServiceRelation {
 
+	public enum Direction {
+		OUTGOING, // service A to service B
+		INCOMING, // the other way round
+		BIDIRECTIONAL
+	}
+
 	private String serviceA;
 	private String serviceB;
-	private List<String> sharedEntities;
+	private Set<String> sharedEntities;
+	private Direction direction;
 
 	public ServiceRelation() {
 		// Jackson
 	}
 
-	public ServiceRelation(final List<String> sharedEntities, final String serviceA, final String serviceB) {
+	public ServiceRelation(final Set<String> sharedEntities, final String serviceA, final String serviceB, final Direction direction) {
 		this.sharedEntities = sharedEntities;
 		this.serviceA = serviceA;
 		this.serviceB = serviceB;
+		this.direction = direction;
 	}
 
-	public List<String> getSharedEntities() {
+	public Set<String> getSharedEntities() {
 		return sharedEntities;
 	}
 
@@ -29,4 +37,9 @@ public class ServiceRelation {
 	public String getServiceB() {
 		return serviceB;
 	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
 }

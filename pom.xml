@@ -11,6 +11,7 @@
     <name>Service Cutter</name>
 
     <modules>
+        <module>girvan-newman</module>
         <module>Engine</module>
         <module>Editor</module>
     </modules>

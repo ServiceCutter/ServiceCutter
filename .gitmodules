@@ -1,0 +1,3 @@
+[submodule "girvan-newman"]
+	path = girvan-newman
+	url = git@github.com:ServiceCutter/girvan-newman.git

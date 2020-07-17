@@ -1,0 +1,12 @@
+FROM maven:3.6.1-jdk-8-alpine AS build
+ARG BASE=/usr/src/engine
+COPY pom.xml ${BASE}/
+COPY src ${BASE}/src
+RUN mvn -f ${BASE}/pom.xml clean package -DskipTests
+
+FROM openjdk:8-jdk-alpine
+COPY --from=build /usr/src/engine/target/engine-0.0.1-SNAPSHOT.jar /app/engine.jar
+
+EXPOSE 8090
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","-Dserver.port=8090","/app/engine.jar"]
+

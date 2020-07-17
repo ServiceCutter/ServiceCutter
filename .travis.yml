@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - oraclejdk8
+  - openjdk8
 sudo: false
 env:
   - NODE_VERSION=8.11.2

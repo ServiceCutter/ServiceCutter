@@ -7,6 +7,6 @@ RUN mvn -f ${BASE}/pom.xml clean package -DskipTests
 FROM openjdk:8-jdk-alpine
 COPY --from=build /usr/src/engine/target/engine-0.0.1-SNAPSHOT.jar /app/engine.jar
 
-EXPOSE 8090
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","-Dserver.port=8090","/app/engine.jar"]
+EXPOSE 8080
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/engine.jar"]
 

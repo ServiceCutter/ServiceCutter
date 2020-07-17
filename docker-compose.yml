@@ -13,9 +13,23 @@ services:
     build: Engine
     image: servicecutter/engine
     expose:
-     - 8090
-    ports:
-     - "8090:8090"
+     - 8080
     depends_on:
      - db
+ 
+  editor:
+    build: Editor
+    image: servicecutter/editor
+    ports:
+     - "8080:8080"
+    links:
+      - db
+      - engine
+    environment:
+      POSTGRES_USER: "editor"
+      POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
+      ENGINE_HOST: "engine"
+      ENGINE_PORT: "8080"
+    depends_on:
+     - engine
 

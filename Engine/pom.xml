@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>com.servicecutter.clustering.gephi</groupId>
 			<artifactId>girvan-newman</artifactId>
-			<version>0.8.3</version>
+			<version>0.8.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -208,4 +208,10 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<repositories>
+		<repository>
+			<id>clojars-repo</id>
+			<url>https://repo.clojars.org/</url>
+		</repository>
+	</repositories>
 </project>

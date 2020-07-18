@@ -14,7 +14,6 @@
 		<java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-		<docker.image.prefix>servicecutter</docker.image.prefix>
 		<jacoco-maven-plugin.version>0.7.4.201502262128</jacoco-maven-plugin.version>
 	</properties>
 
@@ -60,7 +59,7 @@
 		<dependency>
 			<groupId>com.servicecutter.clustering.gephi</groupId>
 			<artifactId>girvan-newman</artifactId>
-			<version>0.8.3</version>
+			<version>0.8.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -106,22 +105,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.2.3</version>
-				<configuration>
-					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-					<dockerDirectory>docker</dockerDirectory>
-					<resources>
-						<resource>
-							<targetPath>/</targetPath>
-							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.jar</include>
-						</resource>
-					</resources>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -208,4 +191,10 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<repositories>
+		<repository>
+			<id>clojars-repo</id>
+			<url>https://repo.clojars.org/</url>
+		</repository>
+	</repositories>
 </project>

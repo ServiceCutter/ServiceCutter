@@ -21,7 +21,6 @@
     </prerequisites>
 
     <properties>
-		<docker.image.prefix>servicecutter</docker.image.prefix>
         <hikaricp.version>2.4.0</hikaricp.version>
         <assertj-core.version>3.1.0</assertj-core.version>
         <awaitility.version>1.4.0</awaitility.version>
@@ -589,22 +588,6 @@
                     </arguments>
                 </configuration>
             </plugin>
-	        <plugin>
-	            <groupId>com.spotify</groupId>
-	            <artifactId>docker-maven-plugin</artifactId>
-	            <version>0.2.3</version>
-	            <configuration>
-	                <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-	                <dockerDirectory>docker</dockerDirectory>
-	                <resources>
-	                    <resource>
-	                        <targetPath>/</targetPath>
-	                        <directory>${project.build.directory}</directory>
-	                        <include>${project.build.finalName}.war</include>
-	                    </resource>
-	                </resources>
-	            </configuration>
-	        </plugin>
         </plugins>
         <pluginManagement>
         	<plugins>

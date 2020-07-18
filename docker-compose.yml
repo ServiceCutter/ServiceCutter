@@ -1,29 +1,35 @@
-db:
-  image: postgres:9.4
-  restart: always
-  expose:
-    - 5432
-  environment:
-    POSTGRES_USER: "editor"
-    POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
+version: "3"
+services:
+  db:
+    image: postgres:9.4
+    restart: always
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: "editor"
+      POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
 
-editor:
-  image: servicecutter/editor
-  ports:
-   - "40001:8080"
-  links:
-    - db
-    - engine
-  environment:
-    POSTGRES_USER: "editor"
-    POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
-    ENGINE_HOST: "engine"
-    ENGINE_PORT: "8080"
+  engine:
+    build: Engine
+    image: servicecutter/engine
+    expose:
+     - 8080
+    depends_on:
+     - db
+ 
+  editor:
+    build: Editor
+    image: servicecutter/editor
+    ports:
+     - "8080:8080"
+    links:
+      - db
+      - engine
+    environment:
+      POSTGRES_USER: "editor"
+      POSTGRES_PASSWORD: "N0A8KHWWHMjRBTrc8UjL"
+      ENGINE_HOST: "engine"
+      ENGINE_PORT: "8080"
+    depends_on:
+     - engine
 
-engine:
-  image: servicecutter/engine
-#  build: Engine/docker
-  expose:
-   - 8080
-  ports:
-   - "40000:8080"

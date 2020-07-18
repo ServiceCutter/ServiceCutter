@@ -19,7 +19,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | b
  && mvn -f ${BASE}/pom.xml clean package -DskipTests
 
 FROM openjdk:8-jdk-alpine
-COPY --from=build /usr/src/editor/target/editor-0.0.1-SNAPSHOT.war /app/editor.war
+COPY --from=build /usr/src/editor/target/editor-*.war /app/editor.war
 
 EXPOSE 8080
 ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom -jar /app/editor.war --spring.datasource.serverName=db --spring.datasource.username=$POSTGRES_USER --spring.datasource.password=$POSTGRES_PASSWORD --application.links.engine.port=$ENGINE_PORT --application.links.engine.host=$ENGINE_HOST

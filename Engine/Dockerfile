@@ -5,8 +5,7 @@ COPY src ${BASE}/src
 RUN mvn -f ${BASE}/pom.xml clean package -DskipTests
 
 FROM openjdk:8-jdk-alpine
-COPY --from=build /usr/src/engine/target/engine-0.0.1-SNAPSHOT.jar /app/engine.jar
+COPY --from=build /usr/src/engine/target/engine-*.jar /app/engine.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/engine.jar"]
-

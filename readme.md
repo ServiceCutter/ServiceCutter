@@ -78,4 +78,4 @@ The required setup and dependencies are demonstrated in the provided Docker conf
 
 ## Docker
 
-All components can be built and started using docker and docker compose. Just run `docker-compose up` in the root directory of this repository (you don't have to pre-build the applications).
+All components can be built and started using Docker and Docker Compose. Just run `docker-compose up` in the root directory of this repository (you don't have to pre-build the applications).

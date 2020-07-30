@@ -12,7 +12,7 @@
 					</div>
 					<span>{{status}}</span>
 				</form>
-	
+
 				<div id="result-container" ng-show="modelId">
 					<div class="graph-container" ngsf-fullscreen>
 						<vis-network data="graphData" options="graphOptions"
@@ -22,9 +22,9 @@
 							<span class="glyphicon glyphicon-resize-full"></span>&nbsp;Fullscreen
 							</button>
 						</div>
-					</div>	
+					</div>
 				</div>
-				            
+
 				<div ng-show="selectedServiceName && showRelations">
 					<h3>{{selectedServiceName}}</h3>
 					<p>Responsible for Use Cases:</p>
@@ -41,25 +41,29 @@
 						</ul>
 					</div>
 				</div>
-				<div ng-show="showGirvanWarning" 
+				<div ng-show="showGirvanWarning"
 					class="alert alert-danger" role="alert">
 					<strong>Alert:</strong>The Girvan-Newman algorithm has problems finding services from the input data. Please add more data to describe your system, change priorities or change to Leung algorithm.
 				</div>
-				
-				<div ng-show="showGirvanWarningNoC" 
+
+				<div ng-show="showGirvanWarningNoC"
 					class="alert alert-danger" role="alert">
 					<strong>Alert:</strong>The Girvan-Newman algorithm could not provide to requested number of services.
 				</div>
-				
-				<div ng-show="!girvanNewmanActive" class="alert alert-info" role="alert">
+
+				<div ng-show="leungActive" class="alert alert-info" role="alert">
 					<strong>Hint:</strong> Leung algorithm is not deterministic. Recalculate to run the algorithm again.
 				</div>
-				
-				<div ng-show="showRelations && !(selectedServiceName || selectedServiceRelations)" 
+
+				<div ng-show="cwActive" class="alert alert-info" role="alert">
+					<strong>Hint:</strong> Chinese Whispers algorithm is randomized, which means that running the process on the same graph several times can lead to different results. Recalculate to run the algorithm again.
+				</div>
+
+				<div ng-show="showRelations && !(selectedServiceName || selectedServiceRelations)"
 					class="alert alert-info" role="alert">
 					<strong>Hint:</strong> Select a service or a relation between services to see responsibilities and published language.
 				</div>
-				
+
 			</div>
 			<div class="col-md-5">
 			<!-- this structure is a bit complicated as bootstrap requires:
@@ -70,11 +74,11 @@
 					<span class="glyphicon glyphicon-repeat"></span>&nbsp;Recalculate
 				</button>
 				<button class="btn btn-default" title="Save suggested service cut" ng-click="downloadCut()" ng-disabled="!modelId">
-					<span class="glyphicon glyphicon-download-alt"></span>&nbsp;Export JSON 
+					<span class="glyphicon glyphicon-download-alt"></span>&nbsp;Export JSON
 				</button>
 
 				<h3>Priorities</h3>
-				
+
 				<div class="row"><form class="form-inline" name="myForm">
 				<div ng-repeat="type in criteriaTypes" class="form-group form-group-sm col-md-12">
 					<h4>{{type | capitalize}} Criteria</h4>
@@ -94,58 +98,58 @@
 				</form></div>
 
 				<h3>Service Dependencies</h3>
-				<form class="form-inline" name="myVizForm">	
+				<form class="form-inline" name="myVizForm">
 				<div class="form-group form-group-sm">
-					<div class="alert alert-info" role="alert" ng-show="disableVisualization">Please provide use case specifications or change Semantic Proximity priority to enable analysis mode</div>			
-					<div ng-show="!disableVisualization"> 
+					<div class="alert alert-info" role="alert" ng-show="disableVisualization">Please provide use case specifications or change Semantic Proximity priority to enable analysis mode</div>
+					<div ng-show="!disableVisualization">
 						<toggle-switch ng-model="showRelations" id="show-relations" ng-click="repaintGraph()"
 							on-label="Shown" off-label="Hidden"></toggle-switch>
 					</div>
 				</div>
 				</form>
-				
+
 				<h3>Algorithm</h3>
 				<select class="form-control" ng-model="algorithm" ng-options="a for a in availableAlgorithms"></select>
 
 				<div ng-show="girvanNewmanActive">
 					<h3>Number of Services:</h3>
 					<div width="50%">
-					    <rzslider rz-slider-model="numberSlider" 
-					    	rz-slider-step="1" 
-					    	rz-slider-precision="0" 
-					    	rz-slider-floor="0" 
-					    	rz-slider-on-end="requireRecalculate()" 
+					    <rzslider rz-slider-model="numberSlider"
+					    	rz-slider-step="1"
+					    	rz-slider-precision="0"
+					    	rz-slider-floor="0"
+					    	rz-slider-on-end="requireRecalculate()"
 					    	rz-slider-ceil="30">
 					    </rzslider>
 					</div>
 				</div>
 
 
-<!-- excluded to simplify UI for demonstration purposes   				
+<!-- excluded to simplify UI for demonstration purposes
 				<h3>Algorithm parameters</h3>
 				<div width="50%">
-				    <span class="inline-help" popover="An exponential factor applied to the clustering function. For values > 0 more preference is given to a node with 
+				    <span class="inline-help" popover="An exponential factor applied to the clustering function. For values > 0 more preference is given to a node with
 				    	more neighbours; for values < 0 less." popover-trigger="mouseenter">
 				    	Node characteristic preference</span> (Leung):<br />
-				    <rzslider rz-slider-model="leungM" 
-				    	rz-slider-step="0.1" 
-				    	rz-slider-precision="1" 
-				    	rz-slider-floor="-2" 
+				    <rzslider rz-slider-model="leungM"
+				    	rz-slider-step="0.1"
+				    	rz-slider-precision="1"
+				    	rz-slider-floor="-2"
 				    	rz-slider-ceil="2">
 				    </rzslider>
-				    <span class="inline-help" popover="The hop attenuation factor governs how far a particular label can spread as a function of the geodesic distance 
-				    from its origin. This additional parameter adds in extra uncertainties to the algorithm but may encourage a stronger local community to form before 
+				    <span class="inline-help" popover="The hop attenuation factor governs how far a particular label can spread as a function of the geodesic distance
+				    from its origin. This additional parameter adds in extra uncertainties to the algorithm but may encourage a stronger local community to form before
 				    a large cluster start to dominate." popover-trigger="mouseenter">Hop attenuation factor</span> (Leung):<br />
-				    <rzslider rz-slider-model="leungDelta" 
-				    	rz-slider-step="0.05" 
-				    	rz-slider-precision="2" 
-				    	rz-slider-floor="0" 
+				    <rzslider rz-slider-model="leungDelta"
+				    	rz-slider-step="0.05"
+				    	rz-slider-precision="2"
+				    	rz-slider-floor="0"
 				    	rz-slider-ceil="1">
 				    </rzslider>
 				</div>
--->				
+-->
 			</div>
-			
+
 		</div>
 	</div>
 </div>

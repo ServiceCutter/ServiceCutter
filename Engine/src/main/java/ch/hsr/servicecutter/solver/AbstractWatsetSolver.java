@@ -47,8 +47,8 @@ public abstract class AbstractWatsetSolver extends AbstractSolver<String, Defaul
 
     @Override
     protected void createEdgeAndSetWeight(Nanoentity first, Nanoentity second, double weight) {
-        graph.addEdge(createNodeIdentifier(first), createNodeIdentifier(second));
-        graph.setEdgeWeight(createNodeIdentifier(first), createNodeIdentifier(second), weight);
+        DefaultWeightedEdge edge = graph.addEdge(createNodeIdentifier(first), createNodeIdentifier(second));
+        setWeight(edge, weight);
     }
 
     @Override

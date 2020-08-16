@@ -21,7 +21,7 @@ angular.module('editorApp')
         	}
         });
 
-        $scope.$watch('algorithm', function () {
+            $scope.$watch('algorithm', function () {
         	$scope.girvanNewmanActive = $scope.algorithm == 'Girvan-Newman';
         	$scope.leungActive = $scope.algorithm == 'Leung';
         	$scope.cwActive = $scope.algorithm == 'Chinese Whispers';

@@ -6,13 +6,13 @@ angular.module('editorApp')
             $scope.account = account;
             $scope.isAuthenticated = Principal.isAuthenticated;
         });
-        
+
         //introduce early to not show the alerts on init
-        $scope.recalculationRequired = false,        
+        $scope.recalculationRequired = false,
 		$scope.showGirvanWarning = false;
-        
+
         /********* SOLVE ***********/
-        
+
         $scope.$watch('modelId', function () {
         	if($scope.modelId != undefined){
 	        	$scope.solve();
@@ -23,19 +23,21 @@ angular.module('editorApp')
 
         $scope.$watch('algorithm', function () {
         	$scope.girvanNewmanActive = $scope.algorithm == 'Girvan-Newman';
+        	$scope.leungActive = $scope.algorithm == 'Leung';
+        	$scope.cwActive = $scope.algorithm == 'Chinese Whispers';
         	$scope.solve();
         });
-        
+
         $scope.requireRecalculate=function(){
         	$scope.recalculationRequired  = true;
         }
-        
+
         $scope.solve=function(){
         	$scope.selectedServiceName = '';
         	$scope.solveModel($scope.modelId);
         	$scope.recalculationRequired = false;
         }
-        
+
         $scope.solveModel = function(modelId) {
         	if(parseInt(modelId) > 0) {
         		var solverConfig = {'algorithmParams': {'inflation': $scope.inflationSlider,
@@ -44,7 +46,10 @@ angular.module('editorApp')
         										  'extraClusters': $scope.extraClusterSlider,
         										  'numberOfClusters': $scope.numberSlider,
         										  'leungM': $scope.leungM,
-        										  'leungDelta': $scope.leungDelta
+        										  'leungDelta': $scope.leungDelta,
+        										  'mclExpansionOperations': $scope.mclExpansionOperations,
+        										  'mclPowerCoefficient': $scope.mclPowerCoefficient,
+        										  'cwNodeWeighting': $scope.cwNodeWeighting
         							},
         							'priorities': {},
         							'algorithm': $scope.algorithm
@@ -54,7 +59,7 @@ angular.module('editorApp')
         				solverConfig.priorities[value.name] = parseFloat(value.priority)
         			}
         		})
-        		
+
         		$http.post('/api/engine/solver/' + modelId, solverConfig).
 		    		success(function(data) {
 		        		$scope.result = data;
@@ -62,9 +67,9 @@ angular.module('editorApp')
 	            });
         	}
         }
-        
-        
-        
+
+
+
         /****  EXPORTER  **********/
 
         $scope.downloadCut = function() {
@@ -72,15 +77,15 @@ angular.module('editorApp')
         	var data = new Blob([data], { type: 'text/plain;charset=utf-8' });
             FileSaver.saveAs(data, 'Services.json');
         }
-        
-        /****** ANALYSE MODE ********/ 
-        
+
+        /****** ANALYSE MODE ********/
+
         $scope.removeSelection = function(param) {
     		$scope.selectedServiceName = (function () { return; })();
     		$scope.selectedServiceUseCases = (function () { return; })();
-    		$scope.selectedServiceRelations = (function () { return; })();        	
+    		$scope.selectedServiceRelations = (function () { return; })();
         }
-        
+
         $scope.updateSelection = function(param) {
         	$scope.$apply(function() {
         		$scope.removeSelection();
@@ -121,7 +126,7 @@ angular.module('editorApp')
         		}
         	}
         };
-        
+
         //watch for service relations
         $scope.$watch('result', function () {
         	var hasRelations = $scope.result && $scope.result.relations && $scope.result.relations.length > 0;
@@ -138,11 +143,11 @@ angular.module('editorApp')
 				font: '19px arial black'
 			}
 		};
-        
+
         $scope.graphResize = function(param) {
         	this.fit(); // Zooms out so all nodes fit on the canvas.
         };
-                
+
         $scope.graphEvents = {
             	selectNode: $scope.updateSelection,
             	deselectNode: $scope.updateSelection,
@@ -190,19 +195,19 @@ angular.module('editorApp')
             };
 	        $scope.removeSelection();
         }
-        
 
-  
-        
+
+
+
         /***** MISC ***********/
-        
+
         $scope.expectComparator = function (actual, expected) {
             if (!expected) {
                return true;
             }
             return angular.equals(expected, actual);
         }
-        
+
         // watcher for girvanNewmanWarningNoC
         $scope.$watch('result', function () {
 			$scope.showGirvanWarningNoC = false;
@@ -212,10 +217,10 @@ angular.module('editorApp')
 				}
         	}
         });
-        
+
         // watcher for girvanNewmanWarningNoClustering
         $scope.$watch('result', function () {
-        	$scope.showGirvanWarning = false;	
+        	$scope.showGirvanWarning = false;
         	var oneNanoEntityPerService = true;
 
         	if($scope.result && $scope.girvanNewmanActive == true){
@@ -226,27 +231,27 @@ angular.module('editorApp')
 						oneNanoEntityPerService = false;
 					}
 				}
-				
+
 				$scope.showGirvanWarning = oneNanoEntityPerService;
         	}
         });
-        
+
         /***** DEFINITIONS ***********/
-        
+
         $scope.priorityMetric = {
         		IGNORE : {value: 0, name: "IGNORE"},
         		XS : {value: 0.5, name: "XS"},
-        		S : {value: 1, name: "S"}, 
-        		M: {value: 3, name: "M"}, 
+        		S : {value: 1, name: "S"},
+        		M: {value: 3, name: "M"},
         		L : {value: 5, name: "L"},
         		XL : {value: 8, name: "XL"},
         		XXL : {value: 13, name: "XXL"}
         }
-        $scope.availableAlgorithms = ['Leung','Girvan-Newman'];
-        
+        $scope.availableAlgorithms = ['Leung','Girvan-Newman','Chinese Whispers','Markov (MCL)'];
+
         $scope.criteriaTypes = ["COHESIVENESS", "COMPATIBILITY", "CONSTRAINTS"];
-        
-        
+
+
         /***** DEFAULTS ***********/
         // init priorities, algorithm and then solve if global models have been defined
         $scope.criteria = Coupling.all(function(criteria) {
@@ -257,26 +262,31 @@ angular.module('editorApp')
         			value.priority = 0.5
         		}
         	})
-        	
-        	
+
+
         	$scope.algorithm = 'Girvan-Newman'; // default
         	$scope.modelId = $rootScope.modelId;
         });
-        
+
         $scope.solved = false;
-        
+
 		$scope.powerSlider = 1;
 		$scope.inflationSlider = 2;
 		$scope.pruneSlider = 0.0;
 		$scope.extraClusterSlider = 0;
 		$scope.numberSlider = 3;
 		$scope.showRelations = false;
-		
+
 		$scope.leungM = 0.1;
 		$scope.leungDelta = 0.55;
 
+		$scope.mclExpansionOperations = 2;
+		$scope.mclPowerCoefficient = 2;
+
+		$scope.cwNodeWeighting = 0;
+
         $scope.availableModels = Model.all();
-        
+
     }).filter('capitalize', function() {
         return function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}
         });

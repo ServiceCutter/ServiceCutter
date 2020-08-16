@@ -41,7 +41,9 @@ public class SolverEndpoint {
 
 	public static final String MODE_GIRVAN_NEWMAN = "Girvan-Newman";
 	public static final String MODE_LEUNG = "Leung";
-	public static final String[] MODES = new String[] { MODE_GIRVAN_NEWMAN, MODE_LEUNG };
+	public static final String MODE_CW = "Chinese Whispers";
+	public static final String MODE_MARKOV = "Markov (MCL)";
+	public static final String[] MODES = new String[] { MODE_GIRVAN_NEWMAN, MODE_LEUNG, MODE_CW, MODE_MARKOV };
 
 	@Autowired
 	public SolverEndpoint(final UserSystemRepository userSystemRepository, final Scorer scorer, final ServiceCutAnalyzer analyzer) {
@@ -75,6 +77,10 @@ public class SolverEndpoint {
 		} else if (MODE_GIRVAN_NEWMAN.equals(algorithm)) {
 			Integer numberOfClusters = config.getValueForAlgorithmParam("numberOfClusters").intValue();
 			solver = new GephiSolver(userSystem, scores, numberOfClusters);
+		} else if (MODE_CW.equals(algorithm)) {
+			solver = new ChineseWhispersSolver(userSystem, scores, config);
+		} else if (MODE_MARKOV.equals(algorithm)) {
+			solver = new MarkovSolver(userSystem, scores, config);
 		} else {
 			log.error("algorithm {} not found, supported values: {}", algorithm, MODES);
 			throw new InvalidRestParam();

@@ -34,6 +34,18 @@
         "leungDelta": {
           "id": "leungDelta",
           "type": "number"
+        },
+        "mclExpansionOperations": {
+          "id": "mclExpansionOperations",
+          "type": "integer"
+        },
+        "mclPowerCoefficient": {
+          "id": "mclPowerCoefficient",
+          "type": "number"
+        },
+        "cwNodeWeighting": {
+          "id": "cwNodeWeighting",
+          "type": "integer"
         }
       },
       "additionalProperties": false

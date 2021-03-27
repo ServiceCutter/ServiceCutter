@@ -24,6 +24,10 @@ All source code is released under the terms of the Apache 2.0 license.
 
 # Build and Run
 
+> :warning: **This project is no longer maintained.** 
+> The build is currently broken, and it would require significant effort to update all dependencies.
+> Please use our [Docker images](#docker) to test Service Cutter locally.
+
 Prerequisite: JDK 1.8 and Maven is installed and added to the path.
 
 Then run in a command prompt / shell:
@@ -78,4 +82,5 @@ The required setup and dependencies are demonstrated in the provided Docker conf
 
 ## Docker
 
-All components can be built and started using Docker and Docker Compose. Just run `docker-compose up` in the root directory of this repository (you don't have to pre-build the applications).
+The fastest way to run Service Cutter is using Docker and Docker Compose. 
+Just run `docker-compose up` in the root directory of this repository.

@@ -5,12 +5,11 @@ The Service Cutter suggests a structured way to service decomposition. There is 
 This readme focuses on installation and development aspects. A comprehensive documentation of the import format and all coupling criteria can be found in the [wiki](https://github.com/ServiceCutter/ServiceCutter/wiki) of this repository.
 
 The Service Cutter is based on the Bachelor Thesis by [Lukas Kölbener](https://github.com/koelbener) and [Michael Gysel](https://github.com/gysel).
-
 Build status: [![Build Status](https://travis-ci.org/ServiceCutter/ServiceCutter.svg?branch=master)](https://travis-ci.org/ServiceCutter/ServiceCutter)
 
 # Overview
 
-The Service Cutter consists of the following components:
+Service Cutter consists of the following components:
 
 * **Editor** - a web application, the graphical user interface of the Service Cutter (based on [JHipster](https://jhipster.github.io/)).
 * **Engine** - the RESTful HTTP API offering the core functionality of the service cutter (based on [Spring Boot](http://projects.spring.io/spring-boot/) and [Jersey](https://jersey.java.net/))
@@ -20,9 +19,14 @@ The Service Cutter consists of the following components:
    * An imaginary trading system one might find in a bank.
 * **CC-Cards** - contains the coupling criteria cards as `png` files.
 
-All source code is released under the terms of the Apache 2.0 license.
+The conference paper ["Service Cutter: A Systematic Approach to Service Decomposition"](https://www.researchgate.net/publication/307873263_Service_Cutter_A_Systematic_Approach_to_Service_Decomposition) features decomposition method, coupling criteria, and tool architecture.
+
+*Update (July 28 2020):* Context Mapper, providing a DSL and tools for domain-driven design, integrates parts of Service Cutter since its version 5.14. See ["Context Map Suggestions with Service Cutter"]( https://contextmapper.org/docs/service-cutter-context-map-suggestions/).
+
 
 # Build and Run
+
+All source code is released under the terms of the Apache 2.0 license.
 
 > :warning: **This project is no longer maintained.** 
 > The build is currently broken, and it would require significant effort to update all dependencies.

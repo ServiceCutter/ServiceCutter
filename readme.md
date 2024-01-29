@@ -2,6 +2,9 @@
 
 The Service Cutter suggests a structured way to service decomposition. There is [a tutorial](https://servicecutter.github.io/) providing you with a functional overview. 
 
+> :warning: **This project is no longer maintained.** 
+> The build is currently broken, and it would require significant effort to update all dependencies.
+
 This readme focuses on installation and development aspects. A comprehensive documentation of the import format and all coupling criteria can be found in the [wiki](https://github.com/ServiceCutter/ServiceCutter/wiki) of this repository.
 
 The Service Cutter is based on the Bachelor Thesis by [Lukas Kölbener](https://github.com/koelbener) and [Michael Gysel](https://github.com/gysel).
@@ -21,8 +24,10 @@ Service Cutter consists of the following components:
 
 The conference paper ["Service Cutter: A Systematic Approach to Service Decomposition"](https://www.researchgate.net/publication/307873263_Service_Cutter_A_Systematic_Approach_to_Service_Decomposition) features decomposition method, coupling criteria, and tool architecture.
 
+<!--
+Taken out (at least) temporarily, rationale: <https://contextmapper.org/news/2023/11/24/v6.10.0-released/>
 *Update (July 28 2020):* Context Mapper, providing a DSL and tools for domain-driven design, integrates parts of Service Cutter since its version 5.14. See ["Context Map Suggestions with Service Cutter"]( https://contextmapper.org/docs/service-cutter-context-map-suggestions/).
-
+-->
 
 # Build and Run
 
